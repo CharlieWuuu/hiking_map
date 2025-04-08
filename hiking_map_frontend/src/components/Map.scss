@@ -1,0 +1,66 @@
+.Map {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    margin-left: 1rem;
+
+    .leaflet-container {
+        height: 100%;
+        width: 100%;
+        border-radius: 2rem;
+        overflow: hidden;
+        background: white;
+
+        &:before {
+            content: '';
+            position: absolute;
+            display: block;
+            height: 100%;
+            width: 100%;
+            box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.6);
+            border-radius: 2rem;
+            z-index: 1000;
+        }
+        .leaflet-pane.leaflet-map-pane {
+            .leaflet-pane.leaflet-tile-pane {
+                .leaflet-layer {
+                    filter: saturate(0.8);
+                    opacity: 0.8 !important;
+                }
+            }
+        }
+
+        .leaflet-control-container {
+            .leaflet-bottom.leaflet-right {
+                .leaflet-control-zoom.leaflet-bar.leaflet-control {
+                    border: none;
+                    box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+                    border-radius: 0.5rem;
+                    .leaflet-control-zoom-in {
+                        border-top-left-radius: 0.5rem;
+                        border-top-right-radius: 0.5rem;
+                        span {
+                            color: gray;
+                        }
+                    }
+                    .leaflet-control-zoom-out {
+                        border-bottom-left-radius: 0.5rem;
+                        border-bottom-right-radius: 0.5rem;
+                        span {
+                            color: gray;
+                        }
+                    }
+                }
+                .leaflet-control-attribution.leaflet-control {
+                    width: 80px;
+                    display: flex;
+                    border-radius: 4px 0 0 0;
+                    a {
+                        opacity: 0.5;
+                    }
+                }
+            }
+        }
+    }
+}

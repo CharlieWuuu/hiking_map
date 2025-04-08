@@ -1,0 +1,8 @@
+// RWD 範例
+@mixin respond($breakpoint) {
+    @if $breakpoint == sm {
+        @media (max-width: 600px) {
+            @content;
+        }
+    }
+}

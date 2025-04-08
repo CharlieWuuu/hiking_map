@@ -14,7 +14,6 @@ export class TrailsService {
     const rows = await this.trailRepo.query(`
         SELECT id, length, ST_AsGeoJSON(ST_Transform(geom, 4326)) AS geometry
         FROM hiking_map
-        LIMIT 1
     `);
 
     return {

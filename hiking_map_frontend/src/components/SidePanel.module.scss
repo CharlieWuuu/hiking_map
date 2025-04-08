@@ -1,0 +1,33 @@
+@use '../styles/colors' as colors;
+
+.sidePanel {
+    background-color: colors.$blue;
+    overflow: hidden;
+    transition: all 1.2s ease;
+    width: 0%;
+    display: block;
+    border-radius: 2rem;
+    margin-left: 1rem;
+
+    &.open {
+        width: 100%; // 或你想要的寬度
+    }
+
+    &.close {
+        width: 0%;
+    }
+    > div {
+        min-width: 300px;
+        position: relative;
+        .togglePanel {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+        }
+
+        h2 {
+            margin-top: 0;
+            text-wrap: nowrap;
+        }
+    }
+}

@@ -1,0 +1,19 @@
+@use 'sass:color';
+
+// 文字顏色
+$text_black: rgba(20, 20, 20, 1);
+$text_white: rgba(240, 240, 240, 1);
+
+// 字體大小
+$font_base: 16px;
+$font_title: 24px;
+
+// 網站用色
+$border: rgba(150, 150, 150, 1);
+$gold: #d6af36;
+$gold_lighten: color.scale($gold, $lightness: 10%);
+$gold_darken: color.scale($gold, $lightness: -10%);
+$gold_darken_2: color.scale($gold, $lightness: -20%);
+
+$gray: rgba(150, 150, 150, 1);
+$blue: rgb(79, 145, 168);
