@@ -7,7 +7,13 @@
 
     button {
         text-wrap: nowrap;
-        background-color: colors.$blue;
-        color: white;
+        background-color: colors.$background_blue;
+        color: colors.$text_black;
+        &:hover {
+            background-color: colors.$background_blue_darken;
+        }
+        &.active {
+            background-color: colors.$background_blue_darken;
+        }
     }
 }

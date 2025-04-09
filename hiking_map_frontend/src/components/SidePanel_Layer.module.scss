@@ -1,0 +1,9 @@
+.SidePanel_Layer {
+    fieldset {
+        border: none;
+        text-align: start;
+        > label {
+            cursor: pointer;
+        }
+    }
+}

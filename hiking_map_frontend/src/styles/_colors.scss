@@ -1,7 +1,7 @@
 @use 'sass:color';
 
 // 文字顏色
-$text_black: rgba(20, 20, 20, 1);
+$text_black: rgb(19, 16, 81);
 $text_white: rgba(240, 240, 240, 1);
 
 // 字體大小
@@ -16,4 +16,8 @@ $gold_darken: color.scale($gold, $lightness: -10%);
 $gold_darken_2: color.scale($gold, $lightness: -20%);
 
 $gray: rgba(150, 150, 150, 1);
-$blue: rgb(79, 145, 168);
+
+$background_blue: rgb(211, 217, 233);
+$background_blue_lighten: color.scale($background_blue, $lightness: 10%);
+$background_blue_darken: color.scale($background_blue, $lightness: -10%);
+$background_blue_darken_2: color.scale($background_blue, $lightness: -20%);
