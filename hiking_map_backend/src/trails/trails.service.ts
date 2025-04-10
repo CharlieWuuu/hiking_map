@@ -12,8 +12,22 @@ export class TrailsService {
 
   async findAllGeoJSON() {
     const rows = await this.trailRepo.query(`
-        SELECT id, length, ST_AsGeoJSON(ST_Transform(geom, 4326)) AS geometry
-        FROM hiking_map
+      SELECT
+        hiking_map.id,
+        hiking_map.length,
+        ST_AsGeoJSON(hiking_map.geom) AS geometry,
+        ST_AsGeoJSON(hiking_map.center) AS center,
+        ST_AsGeoJSON(hiking_map.bounds) AS bounds,
+        hiking_map_info.name,
+        hiking_map_info.county,
+        hiking_map_info.town,
+        hiking_map_info.time ,
+        hiking_map_info.url,
+        hiking_map_info.note
+      FROM hiking_map
+      JOIN hiking_map_info
+        ON hiking_map.id = hiking_map_info.id
+      ORDER BY hiking_map.id ASC;
     `);
 
     return {
@@ -24,6 +38,21 @@ export class TrailsService {
         properties: {
           id: row.id,
           length: row.length,
+          center: [
+            JSON.parse(row.center).coordinates[0],
+            JSON.parse(row.center).coordinates[1],
+          ],
+          bounds: JSON.parse(row.bounds).coordinates[0],
+          name: row.name,
+          county: row.county,
+          town: row.town,
+          time: new Date(row.time).toLocaleDateString('zh-TW', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
+          url: row.url !== null ? row.url.split('|') : null,
+          note: row.note,
         },
       })),
     };

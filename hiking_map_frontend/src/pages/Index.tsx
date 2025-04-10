@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import SideBar from '../components/SideBar';
-import SidePanel from '../components/SidePanel';
-import Map from '../components/Map';
+import { useState, useEffect } from 'react';
+import SideBar from '../components/Map/SideBar';
+import SidePanel from '../components/Map/SidePanel';
+import Map from '../components/Map/Map';
 import styles from './Index.module.scss';
 import '../styles/main.scss';
 import { BaseMapEn, BaseMapSettingEn, BaseMapLayerSettings } from '../types/baseMapSettings';
 import { SidePanelStatus } from '../types/SidePanelStatus';
+import type { FeatureCollection } from 'geojson';
 
 export default function Index() {
     const [panelType, setPanelType] = useState<SidePanelStatus['panelType']>('layer');
@@ -36,11 +37,22 @@ export default function Index() {
         }
     };
 
+    const [geojson, setGeojson] = useState<FeatureCollection | null>(null);
+    useEffect(() => {
+        fetch('http://localhost:3001/trails')
+            .then((res) => res.json())
+            .then((data: FeatureCollection) => setGeojson(data));
+    }, []);
+
+    const [panToId, setPanToId] = useState<number | null>(null);
+    const [hoverFeatureId, setHoverFeatureId] = useState<number | null>(null);
+    const [activeFeatureId, setActiveFeatureId] = useState<number | null>(null);
+
     return (
         <div className={styles.Index}>
             <SideBar changePanelType={changePanelType} isActive={isActive} togglePanel={setIsActive} />
-            <SidePanel panelType={panelType} isActive={isActive} baseMap={baseMap} setBaseMap={setBaseMap} baseMap_setting={baseMap_setting} updateBaseMap_setting={updateBaseMap_setting} />
-            <Map baseMap={baseMap} baseMap_setting={baseMap_setting} />
+            <SidePanel panelType={panelType} isActive={isActive} baseMap={baseMap} setBaseMap={setBaseMap} baseMap_setting={baseMap_setting} updateBaseMap_setting={updateBaseMap_setting} geojson={geojson} setPanToId={setPanToId} hoverFeatureId={hoverFeatureId} setHoverFeatureId={setHoverFeatureId} activeFeatureId={activeFeatureId} setActiveFeatureId={setActiveFeatureId} />
+            <Map baseMap={baseMap} baseMap_setting={baseMap_setting} geojson={geojson} panToId={panToId} hoverFeatureId={hoverFeatureId} activeFeatureId={activeFeatureId} />
         </div>
     );
 }

@@ -1,25 +1,27 @@
-@use '../styles/colors' as colors;
+@use '../../styles/colors' as colors;
 
 .sidePanel {
     background-color: colors.$background_blue;
     overflow: hidden;
     transition: all 1.2s ease;
     width: 0%;
+    height: 100%;
     display: block;
     border-radius: 2rem;
     margin-left: 1rem;
-    padding: 1rem;
 
     &.open {
-        width: calc(100% - 1rem); // 或你想要的寬度
+        width: 100%; // 或你想要的寬度
     }
 
     &.close {
         width: 0%;
-        padding: 1rem 0rem;
     }
     > div {
         min-width: 300px;
+        width: 100%;
+        height: 100%;
+        padding: 1rem;
         position: relative;
         .togglePanel {
             position: absolute;

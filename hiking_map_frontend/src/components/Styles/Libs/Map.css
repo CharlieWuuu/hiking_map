@@ -1,0 +1,56 @@
+.Map {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  background-color: transparent;
+  margin-left: 1rem;
+}
+.Map .leaflet-container {
+  height: 100%;
+  width: 100%;
+  border-radius: 2rem;
+  overflow: hidden;
+  background: white;
+}
+.Map .leaflet-container:before {
+  content: "";
+  position: absolute;
+  display: block;
+  height: 100%;
+  width: 100%;
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.6);
+          box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.6);
+  border-radius: 2rem;
+  z-index: 10000;
+  pointer-events: none;
+}
+.Map .leaflet-container .leaflet-control-container .leaflet-bottom.leaflet-right .leaflet-control-zoom.leaflet-bar.leaflet-control {
+  border: none;
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+          box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+  border-radius: 0.5rem;
+}
+.Map .leaflet-container .leaflet-control-container .leaflet-bottom.leaflet-right .leaflet-control-zoom.leaflet-bar.leaflet-control .leaflet-control-zoom-in {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+.Map .leaflet-container .leaflet-control-container .leaflet-bottom.leaflet-right .leaflet-control-zoom.leaflet-bar.leaflet-control .leaflet-control-zoom-in span {
+  color: gray;
+}
+.Map .leaflet-container .leaflet-control-container .leaflet-bottom.leaflet-right .leaflet-control-zoom.leaflet-bar.leaflet-control .leaflet-control-zoom-out {
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+.Map .leaflet-container .leaflet-control-container .leaflet-bottom.leaflet-right .leaflet-control-zoom.leaflet-bar.leaflet-control .leaflet-control-zoom-out span {
+  color: gray;
+}
+.Map .leaflet-container .leaflet-control-container .leaflet-bottom.leaflet-right .leaflet-control-attribution.leaflet-control {
+  width: 80px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border-radius: 4px 0 0 0;
+}
+.Map .leaflet-container .leaflet-control-container .leaflet-bottom.leaflet-right .leaflet-control-attribution.leaflet-control a {
+  opacity: 0.5;
+}/*# sourceMappingURL=Map.css.map */

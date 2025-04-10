@@ -1,9 +1,13 @@
 .SidePanel_Layer {
     fieldset {
+        margin-bottom: 1rem;
         border: none;
         text-align: start;
         > label {
             cursor: pointer;
+        }
+        > div {
+            margin-left: 2rem;
         }
     }
 }

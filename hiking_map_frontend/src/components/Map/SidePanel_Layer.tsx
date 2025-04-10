@@ -1,5 +1,5 @@
 import styles from './SidePanel_Layer.module.scss';
-import { BaseMapEn, BaseMapLayerSettings, BaseMapSettingEn } from '../types/baseMapSettings';
+import { BaseMapEn, BaseMapLayerSettings, BaseMapSettingEn } from '../../types/baseMapSettings';
 
 type Props = {
     baseMap: BaseMapEn;
@@ -16,6 +16,7 @@ export default function SidePanel_Layer({ baseMap, setBaseMap, baseMap_setting, 
 
     return (
         <div className={styles.SidePanel_Layer}>
+            <h2>圖層設定</h2>
             {baseMaps.map(({ key, label }) => (
                 <fieldset key={key}>
                     <label>
