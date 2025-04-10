@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TrailsModule } from './trails/trails.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { TrailsModule } from './trails/trails.module';
       ssl: { rejectUnauthorized: false },
     }),
     TrailsModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
