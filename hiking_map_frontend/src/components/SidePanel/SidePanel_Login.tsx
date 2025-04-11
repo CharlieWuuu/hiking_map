@@ -30,8 +30,6 @@ export default function SidePanel_Login({ loginStatus, setLoginStatus }: Props) 
                     setLoginStatus(true);
                     localStorage.setItem('token', data.token); // 或用 sessionStorage 看你需求
                 }
-
-                console.log(data);
             });
     };
 

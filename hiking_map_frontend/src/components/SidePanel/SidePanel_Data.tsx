@@ -81,10 +81,6 @@ export default function SidePanel_Data({ geojson, setPanToId, hoverFeatureId, se
         });
     }, [activeFeatureId]);
 
-    useEffect(() => {
-        console.log(detailCard);
-    }, [detailCard]);
-
     return (
         <div className={styles.SidePanel_Data}>
             <h2>資料</h2>

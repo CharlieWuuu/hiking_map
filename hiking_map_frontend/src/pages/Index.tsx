@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import SideBar from '../components/Map/SideBar';
-import SidePanel from '../components/Map/SidePanel';
+import SideBar from '../components/SideBar/SideBar';
+import SidePanel from '../components/SidePanel/SidePanel';
 import Map from '../components/Map/Map';
 import styles from './Index.module.scss';
 import '../styles/main.scss';

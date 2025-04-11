@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 import { BaseMapEn, BaseMapSettingEn } from '../../types/baseMapSettings';
 import type { FeatureCollection } from 'geojson';
 import './Map.scss';
-import { useIsResizing } from './useIsResizing';
+import { useIsResizing } from '../../hooks/useIsResizing';
 
 interface Props {
     baseMap: BaseMapEn;

@@ -4,8 +4,13 @@
         flex-direction: column;
         align-items: center;
         gap: 1rem;
-        fieldset {
-            border: none;
+        > div {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            fieldset {
+                border: none;
+            }
         }
         button {
             width: fit-content;
