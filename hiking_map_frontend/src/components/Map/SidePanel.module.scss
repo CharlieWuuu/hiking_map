@@ -3,18 +3,20 @@
 .sidePanel {
     background-color: colors.$background_blue;
     overflow: hidden;
-    transition: all 1.2s ease;
-    width: 0%;
+    //transition: all 1.2s ease;
+    width: 100%; // 或你想要的寬度
+    // width: 0%;
     height: 100%;
     display: block;
-    border-radius: 2rem;
+    border-radius: 0.5rem;
     margin-left: 1rem;
 
     &.open {
-        width: 100%; // 或你想要的寬度
+        // width: 100%; // 或你想要的寬度
     }
 
     &.close {
+        display: none;
         width: 0%;
     }
     > div {

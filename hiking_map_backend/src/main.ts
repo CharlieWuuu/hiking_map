@@ -7,6 +7,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: 'http://localhost:5173', // 👈 允許你的前端開發主機（Vite 預設是 5173）
+    credentials: true,
+  });
+
   // Swagger 設定
   const config = new DocumentBuilder()
     .setTitle('Hiking Map API')

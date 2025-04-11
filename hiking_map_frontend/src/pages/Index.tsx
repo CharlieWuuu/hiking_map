@@ -15,7 +15,10 @@ export default function Index() {
 
     const [baseMap_setting, setBaseMap_setting] = useState<BaseMapLayerSettings>({
         osm: { opacity: 0.6, saturate: 0.6 },
-        carto: { opacity: 1, saturate: 1 },
+        OpenTopoMap: { opacity: 0.6, saturate: 0.6 },
+        carto_light: { opacity: 1, saturate: 1 },
+        carto_dark: { opacity: 1, saturate: 1 },
+        EsriWorldTopographicMap: { opacity: 1, saturate: 1 },
     });
 
     const updateBaseMap_setting = (key: BaseMapEn, settingKey: BaseMapSettingEn, newValue: number) => {
@@ -48,10 +51,12 @@ export default function Index() {
     const [hoverFeatureId, setHoverFeatureId] = useState<number | null>(null);
     const [activeFeatureId, setActiveFeatureId] = useState<number | null>(null);
 
+    const [loginStatus, setLoginStatus] = useState<boolean>(false);
+
     return (
         <div className={styles.Index}>
-            <SideBar changePanelType={changePanelType} isActive={isActive} togglePanel={setIsActive} />
-            <SidePanel panelType={panelType} isActive={isActive} baseMap={baseMap} setBaseMap={setBaseMap} baseMap_setting={baseMap_setting} updateBaseMap_setting={updateBaseMap_setting} geojson={geojson} setPanToId={setPanToId} hoverFeatureId={hoverFeatureId} setHoverFeatureId={setHoverFeatureId} activeFeatureId={activeFeatureId} setActiveFeatureId={setActiveFeatureId} />
+            <SideBar changePanelType={changePanelType} isActive={isActive} togglePanel={setIsActive} loginStatus={loginStatus} />
+            <SidePanel panelType={panelType} isActive={isActive} baseMap={baseMap} setBaseMap={setBaseMap} baseMap_setting={baseMap_setting} updateBaseMap_setting={updateBaseMap_setting} geojson={geojson} setPanToId={setPanToId} hoverFeatureId={hoverFeatureId} setHoverFeatureId={setHoverFeatureId} activeFeatureId={activeFeatureId} setActiveFeatureId={setActiveFeatureId} loginStatus={loginStatus} setLoginStatus={setLoginStatus} />
             <Map baseMap={baseMap} baseMap_setting={baseMap_setting} geojson={geojson} panToId={panToId} hoverFeatureId={hoverFeatureId} activeFeatureId={activeFeatureId} />
         </div>
     );

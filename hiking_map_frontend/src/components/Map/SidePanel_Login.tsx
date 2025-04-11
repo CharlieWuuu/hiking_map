@@ -1,26 +1,66 @@
-export default function SidePanel_Login() {
+import styles from './SidePanel_Login.module.scss';
+import { useState } from 'react';
+
+type Props = {
+    loginStatus: boolean;
+    setLoginStatus: (loginStatus: boolean) => void;
+};
+
+export default function SidePanel_Login({ loginStatus, setLoginStatus }: Props) {
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [onSubmit, setOnSubmit] = useState<boolean>(false);
+
+    const login = () => {
+        setOnSubmit(true);
+        fetch('http://localhost:3001/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+            }),
+        })
+            .then((res) => res.json())
+            .then((data: any) => {
+                if (data.statusCode !== 401) {
+                    setOnSubmit(false);
+                    setLoginStatus(true);
+                    localStorage.setItem('token', data.token); // 或用 sessionStorage 看你需求
+                }
+
+                console.log(data);
+            });
+    };
+
     return (
-        <div>
+        <div className={styles.SidePanel_Login}>
             <h2>登入</h2>
             <form>
-                <label htmlFor="username">使用者名稱:</label>
-                <input type="text" id="username" name="username" required />
-                <br />
-                <label htmlFor="password">密碼:</label>
-                <input type="password" id="password" name="password" required />
-                <br />
-                <button type="submit">登入</button>
-                <button type="button" onClick={() => alert('註冊功能尚未實作')}>
-                    註冊
-                </button>
-                <button type="button" onClick={() => alert('忘記密碼功能尚未實作')}>
-                    忘記密碼
+                {loginStatus ? (
+                    <div>
+                        <p>歡迎回來：{username}</p>
+                    </div>
+                ) : (
+                    <div>
+                        {' '}
+                        <fieldset>
+                            <label htmlFor="username">使用者名稱：</label>
+                            <input type="text" id="username" name="username" onInput={(e) => setUsername((e.target as HTMLInputElement).value)} required />
+                        </fieldset>
+                        <fieldset>
+                            <label htmlFor="password">密　　　碼：</label>
+                            <input type="password" id="password" name="password" onInput={(e) => setPassword((e.target as HTMLInputElement).value)} required />
+                        </fieldset>
+                    </div>
+                )}
+
+                <button onClick={login} type="button" disabled={onSubmit}>
+                    {onSubmit ? '登入中...' : loginStatus ? '登出' : '登入'}
                 </button>
             </form>
-            <p>使用者名稱和密碼是必填的。</p>
-            <p>請確保您已經註冊並擁有有效的帳戶。</p>
-            <p>如有任何問題，請聯繫我們的客服。</p>
-            <p>客服電話：123-456-7890</p>
         </div>
     );
 }

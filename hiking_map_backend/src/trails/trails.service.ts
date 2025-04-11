@@ -46,11 +46,13 @@ export class TrailsService {
           name: row.name,
           county: row.county,
           town: row.town,
-          time: new Date(row.time).toLocaleDateString('zh-TW', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }),
+          time: (() => {
+            const date = new Date(row.time);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}年${month}月${day}日`;
+          })(),
           url: row.url !== null ? row.url.split('|') : null,
           note: row.note,
         },

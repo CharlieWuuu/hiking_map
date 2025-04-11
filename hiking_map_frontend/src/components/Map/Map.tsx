@@ -86,7 +86,10 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
 export default function Map({ baseMap, baseMap_setting, geojson, panToId, hoverFeatureId, activeFeatureId }: Props) {
     const baseMapUrl = {
         osm: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        carto: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+        OpenTopoMap: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+        carto_light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+        carto_dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+        EsriWorldTopographicMap: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
     }[baseMap];
     const mapWrapperRef = useRef<HTMLDivElement>(null);
     const isResizing = useIsResizing(mapWrapperRef as React.RefObject<HTMLElement>, 600); // 600ms：你的動畫時間
