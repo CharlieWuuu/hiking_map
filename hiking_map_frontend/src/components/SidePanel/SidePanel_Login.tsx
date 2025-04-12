@@ -37,14 +37,17 @@ export default function SidePanel_Login() {
 
     return (
         <div className={styles.SidePanel_Login}>
-            <h2>{isLoggedIn ? '已登入' : '登入'}</h2>
+            {isLoggedIn ? <div className={styles.avatar}>頭像</div> : <h2>登入</h2>}
             <form onSubmit={(e) => e.preventDefault()}>
                 {isLoggedIn ? (
                     <div>
-                        <p>歡迎回來：{user?.username ?? '未知使用者'}</p>
-                        <button type="button" onClick={logout}>
-                            登出
-                        </button>
+                        <div>
+                            <p>{user?.username ?? '未知使用者'}</p>
+                            <p>上次登入時間：</p>
+                            <button type="button" onClick={logout}>
+                                登出
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <div>

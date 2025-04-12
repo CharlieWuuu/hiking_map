@@ -20,17 +20,23 @@ export default function SideBar({ changePanelType, isActive, togglePanel }: Prop
 
     return (
         <div className={styles.sideBar}>
-            <button style={{ backgroundColor: 'transparent', border: '1px solid black', pointerEvents: 'none' }}>
-                登山
-                <br />
-                筆記
-            </button>
-            {/* <button className={isActive ? styles.active : ''} onClick={() => togglePanel(!isActive)}>
+            <div>
+                <button className={styles.Logo}>
+                    登山
+                    <br />
+                    筆記
+                </button>
+                {/* <button className={isActive ? styles.active : ''} onClick={() => togglePanel(!isActive)}>
                 ☰
             </button> */}
-            <button onClick={() => changePanelType('layer')}>圖層</button>
-            <button onClick={() => changePanelType('data')}>資料</button>
-            <button onClick={() => changePanelType('login')}>{isLoggedIn ? '帳號' : '登入'}</button>
+                <button onClick={() => changePanelType('layer')}>圖層</button>
+                <button onClick={() => changePanelType('data')}>資料</button>
+            </div>
+            <div>
+                <button className={styles.authBtn} onClick={() => changePanelType('login')}>
+                    {isLoggedIn ? '帳號' : '登入'}
+                </button>
+            </div>
         </div>
     );
 }
