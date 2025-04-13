@@ -1,7 +1,8 @@
 @use '../../styles/colors' as colors;
 
 .sidePanel {
-    background-color: colors.$background_blue;
+    background-color: colors.$panel;
+    color: colors.$text;
     overflow: hidden;
     //transition: all 1.2s ease;
     width: 100%; // 或你想要的寬度
@@ -9,7 +10,7 @@
     height: 100%;
     display: block;
     border-radius: 0.5rem;
-    margin-left: 1rem;
+    // margin-left: 1rem;
 
     &.open {
         // width: 100%; // 或你想要的寬度

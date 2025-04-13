@@ -14,7 +14,7 @@ export default function Index() {
     const [baseMap, setBaseMap] = useState<BaseMapEn>('osm');
 
     const [baseMap_setting, setBaseMap_setting] = useState<BaseMapLayerSettings>({
-        osm: { opacity: 0.6, saturate: 0.6 },
+        osm: { opacity: 0.3, saturate: 0 },
         OpenTopoMap: { opacity: 0.6, saturate: 0.6 },
         carto_light: { opacity: 1, saturate: 1 },
         carto_dark: { opacity: 1, saturate: 1 },
@@ -55,7 +55,7 @@ export default function Index() {
 
     return (
         <div className={styles.Index}>
-            <SideBar changePanelType={changePanelType} isActive={isActive} togglePanel={setIsActive} loginStatus={loginStatus} />
+            {/* <SideBar changePanelType={changePanelType} isActive={isActive} togglePanel={setIsActive} loginStatus={loginStatus} /> */}
             <SidePanel panelType={panelType} isActive={isActive} baseMap={baseMap} setBaseMap={setBaseMap} baseMap_setting={baseMap_setting} updateBaseMap_setting={updateBaseMap_setting} geojson={geojson} setPanToId={setPanToId} hoverFeatureId={hoverFeatureId} setHoverFeatureId={setHoverFeatureId} activeFeatureId={activeFeatureId} setActiveFeatureId={setActiveFeatureId} loginStatus={loginStatus} setLoginStatus={setLoginStatus} />
             <Map baseMap={baseMap} baseMap_setting={baseMap_setting} geojson={geojson} panToId={panToId} hoverFeatureId={hoverFeatureId} activeFeatureId={activeFeatureId} />
         </div>

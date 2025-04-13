@@ -1,6 +1,9 @@
+@use '../../styles/colors' as colors;
+
 .Navbar {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: colors.$text;
 }

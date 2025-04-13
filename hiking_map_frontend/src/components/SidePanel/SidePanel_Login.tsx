@@ -2,7 +2,12 @@ import styles from './SidePanel_Login.module.scss';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
-export default function SidePanel_Login() {
+type Props = {
+    loginStatus: boolean;
+    setLoginStatus: (loginStatus: boolean) => void;
+};
+
+export default function SidePanel_Login(_: Props) {
     const { isLoggedIn, user, login, logout } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');

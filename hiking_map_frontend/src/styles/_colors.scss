@@ -1,7 +1,7 @@
 @use 'sass:color';
 
 // 文字顏色
-$text_black: rgb(19, 16, 81);
+
 $text_white: rgba(240, 240, 240, 1);
 
 // 字體大小
@@ -9,6 +9,17 @@ $font_base: 16px;
 $font_title: 24px;
 
 // 網站用色
+$accent: #ffff3c;
+$accent_lighten: color.scale($accent, $lightness: 20%); // #ffff66
+$accent_darken: color.scale($accent, $lightness: -50%); // #ffff00
+$background: #1e1e1e;
+
+$text: #f0f0f0;
+$text_contrary: #1e1e1e;
+
+$panel: #464646;
+$panel_active: #909090;
+
 $border: rgba(150, 150, 150, 1);
 $gold: #d6af36;
 $gold_lighten: color.scale($gold, $lightness: 10%);

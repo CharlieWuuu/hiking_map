@@ -104,7 +104,12 @@ export default function Map({ baseMap, baseMap_setting, geojson, panToId, hoverF
                 <PanToEffect panToId={panToId} geojson={geojson} />
                 <ZoomControl position="bottomright" />
                 <ResizeEffect isResizing={isResizing} />
-                {geojson && <GeoJSON data={geojson} style={{ color: 'red', weight: 4 }} />}
+                {geojson && (
+                    <div>
+                        <GeoJSON data={geojson} style={{ color: '#ffffff', weight: 4 }} />
+                        <GeoJSON data={geojson} style={{ color: '#87841B', weight: 2 }} />
+                    </div>
+                )}
                 {hoverFeature && <GeoJSON key={`highlight-white-${hoverFeature.properties?.id}`} data={hoverFeature} style={{ color: 'darkred', weight: 6 }} />}
                 {activeFeature && (
                     <div>
