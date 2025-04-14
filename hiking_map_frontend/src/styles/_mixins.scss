@@ -1,15 +1,31 @@
-// RWD 範例
-@mixin respond($breakpoint) {
-    @if $breakpoint == sm {
-        @media (max-width: 600px) {
-            @content;
-        }
-    }
-}
+@use './colors' as colors;
 
 @mixin flex_center {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1rem;
+}
+
+@mixin scrollbar {
+    overflow: auto;
+    &::-webkit-scrollbar {
+        background-color: colors.$background;
+        width: 1rem;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: colors.$panel;
+        border-radius: 1rem;
+        border: 4px solid colors.$background;
+
+        &:hover {
+            background-color: colors.$panel_active;
+            cursor: pointer;
+        }
+    }
+
+    &::-webkit-scrollbar-corner {
+        background-color: colors.$background;
+    }
 }

@@ -1,11 +1,12 @@
 import { MapContainer, TileLayer, GeoJSON, useMap, ZoomControl } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BaseMapEn, BaseMapSettingEn } from '../../types/baseMapSettings';
 import type { FeatureCollection } from 'geojson';
-import './Map.scss';
+import './Map.scss'; // 1. 因為要改 Leaflet 的樣式而不能用 modules 2. 因為 Panel、Map 的 hover 行為影響到 Panel_Button 的樣式，所以不用 modules
 import { useIsResizing } from '../../hooks/useIsResizing';
+import Panel_Button from '../Panel/Panel_Button';
 
 interface Props {
     baseMap: BaseMapEn;
@@ -84,6 +85,8 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
 }
 
 export default function Map({ baseMap, baseMap_setting, geojson, panToId, hoverFeatureId, activeFeatureId }: Props) {
+    const [IsZoomIn, setIsZoomIn] = useState(false);
+
     const baseMapUrl = {
         osm: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         OpenTopoMap: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
@@ -97,7 +100,8 @@ export default function Map({ baseMap, baseMap_setting, geojson, panToId, hoverF
     const activeFeature = geojson?.features.find((f) => f.properties?.id === activeFeatureId) ?? null;
 
     return (
-        <div className="Map" ref={mapWrapperRef}>
+        <div className={`Map ${IsZoomIn ? 'ZoomIn' : ''}`} ref={mapWrapperRef}>
+            <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={false} />
             <MapContainer center={[25.047924, 121.517081]} zoom={12} scrollWheelZoom={true} zoomControl={false}>
                 <TileEffect baseMap={baseMap} setting={baseMap_setting[baseMap]} />
                 <TileLayer url={baseMapUrl} />

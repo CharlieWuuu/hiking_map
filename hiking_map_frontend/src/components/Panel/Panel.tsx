@@ -1,51 +1,28 @@
-import styles from './Panel.module.scss';
-import ZoomInUrl from '../../assets/Panel_ZoomIn.svg';
-import ZoomOutUrl from '../../assets/Panel_ZoomOut.svg';
-import ClosePanel from '../../assets/Panel_ClosePanel.svg';
+import './Panel.scss'; // 因為 hover 行為影響到 Panel_Button 的樣式，所以不用 modules
+import Panel_Button from './Panel_Button';
 import { useState } from 'react';
 import type { PanelType } from '../../types/uiPanels';
+import Panel_Data from './Panel_Data';
 import Panel_Info from './Panel_Info';
 import Panel_Auth from './Panel_Auth';
+import type { FeatureCollection } from 'geojson';
 
 type Props = {
+    geojson?: FeatureCollection | null;
     type: PanelType;
-    tabs?: React.ReactNode;
     hasCloseButton?: boolean;
     onClose?: () => void;
 };
 
-export default function Panel({ type, tabs, hasCloseButton = true, onClose }: Props) {
+export default function Panel({ geojson, type, hasCloseButton = true, onClose }: Props) {
     const [IsZoomIn, setIsZoomIn] = useState(false);
 
-    // const PANEL_TITLES: Record<PanelType, string> = {
-    //     data: '資料總覽',
-    //     detail: '詳細資料',
-    //     auth: '帳號',
-    //     info: '網站介紹',
-    // };
-
-    // const title = PANEL_TITLES[type];
-
     return (
-        <div className={`${styles.Panel} ${IsZoomIn ? styles.ZoomIn : ''}`}>
-            <div className={styles.panelButton}>
-                <button>
-                    <img src={IsZoomIn ? ZoomOutUrl : ZoomInUrl} alt="放大" onClick={() => setIsZoomIn(!IsZoomIn)} />
-                </button>
-                {hasCloseButton && onClose && (
-                    <button onClick={() => onClose()}>
-                        <img src={ClosePanel} alt="關閉" />
-                    </button>
-                )}
-            </div>
-            {tabs}
-            {/* <div className={styles.title}>
-                <p>{title}</p>
-            </div> */}
-            {/* <div className={styles.content}> */}
+        <div className={`Panel ${IsZoomIn ? 'ZoomIn' : ''}`}>
+            <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={hasCloseButton} onClose={onClose} />
+            {type === 'data' && <Panel_Data geojson={geojson} />}
             {type === 'info' && <Panel_Info />}
             {type === 'auth' && <Panel_Auth loginStatus={false} setLoginStatus={() => {}} />}
-            {/* </div> */}
         </div>
     );
 }

@@ -4,10 +4,14 @@
 .Panel_Tab {
     @include mixins.flex_center;
     button {
-        border: colors.$background_contrary 1px solid;
+        background-color: colors.$panel_active_lighten;
         text-wrap: nowrap;
-        font-size: 1rem;
+        font-size: 1.2rem;
         opacity: 0.6;
+        color: colors.$panel;
+        &:hover {
+            background-color: colors.$background_contrary;
+        }
         &.active {
             opacity: 1;
             background-color: colors.$background_contrary;

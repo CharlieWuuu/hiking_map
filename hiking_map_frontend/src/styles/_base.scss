@@ -1,9 +1,10 @@
 @use './variables' as variables;
 @use './colors' as colors;
 @use './mixins' as mixins;
+@use './fonts' as fonts;
 
 :root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Noto Sans TC', sans-serif;
     line-height: 1.5;
     font-weight: 400;
 

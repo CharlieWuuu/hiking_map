@@ -7,7 +7,6 @@ import { BaseMapEn, BaseMapSettingEn, BaseMapLayerSettings } from '../types/base
 import { SidePanelStatus } from '../types/SidePanelStatus';
 import type { FeatureCollection } from 'geojson';
 import Panel from '../components/Panel/Panel';
-import Panel_Tab from '../components/Panel/Panel_Tab';
 import type { UIPanels, PanelType } from '../types/uiPanels';
 
 type Props = {
@@ -63,7 +62,7 @@ export default function Index({ uiPanels, setUIPanels }: Props) {
     return (
         <div className={styles.Index}>
             <div className={styles.leftPanelContainer}>
-                <Panel type={'data'} tabs={<Panel_Tab />} hasCloseButton={false} />
+                <Panel geojson={geojson} type={'data'} hasCloseButton={false} />
                 {uiPanels?.detail && setUIPanels && <Panel type={'detail'} onClose={() => setUIPanels((prev) => ({ ...prev, detail: false }))} />}
             </div>
 

@@ -14,16 +14,6 @@
         @include mixins.flex_center;
         justify-content: start;
         flex-direction: column;
-        overflow: auto;
-
-        &::-webkit-scrollbar {
-            background-color: colors.$background;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background-color: colors.$panel;
-            border: 0.25rem solid colors.$background;
-            border-radius: 1rem;
-        }
+        @include mixins.scrollbar;
     }
 }
