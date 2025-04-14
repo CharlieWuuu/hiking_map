@@ -14,7 +14,7 @@
         button {
             text-wrap: nowrap;
             background-color: colors.$background_blue;
-            color: colors.$text;
+            color: colors.$background_contrary;
             &:hover {
                 background-color: colors.$background_blue_darken;
             }
@@ -35,7 +35,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                color: colors.$text;
+                color: colors.$background_contrary;
                 &:hover {
                     background-color: colors.$background_blue_lighten;
                 }

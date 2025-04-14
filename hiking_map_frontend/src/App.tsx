@@ -1,12 +1,21 @@
 import Navbar from './components/Layout/Navbar';
 import Index from './pages/Index';
 import styles from './App.module.scss';
+import { useState, useEffect } from 'react';
+import type { UIPanels } from './types/uiPanels';
 
 export default function App() {
+    const [uiPanels, setUIPanels] = useState<UIPanels>({
+        data: true,
+        auth: false,
+        info: false,
+        detail: false,
+    });
+
     return (
         <div className={styles.App}>
-            <Navbar />
-            <Index />
+            <Navbar uiPanels={uiPanels} setUIPanels={setUIPanels} />
+            <Index uiPanels={uiPanels} setUIPanels={setUIPanels} />
         </div>
     );
 }

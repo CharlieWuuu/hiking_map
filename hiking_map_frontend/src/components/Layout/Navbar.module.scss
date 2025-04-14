@@ -1,9 +1,52 @@
 @use '../../styles/colors' as colors;
+@use '../../styles/mixins' as mixins;
 
 .Navbar {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: colors.$text;
+    gap: 1rem;
+    color: colors.$background_contrary;
+    .Logo {
+        img {
+            height: 2rem;
+        }
+    }
+    .SearchBar {
+        @include mixins.flex_center;
+        justify-content: space-between;
+        border-radius: 3rem;
+        border: 1px solid colors.$background_contrary;
+        height: 2rem;
+        padding: 1rem;
+        flex-grow: 1;
+        background-color: colors.$panel;
+        input {
+            color: colors.$background_contrary;
+            background-color: transparent;
+            border: none;
+            font-size: 1rem;
+            flex-grow: 1;
+            outline: none;
+        }
+        img {
+            cursor: pointer;
+        }
+    }
+    .RightButton {
+        @include mixins.flex_center;
+        gap: 0.5rem;
+        button {
+            width: 2rem;
+            height: 2rem;
+
+            img {
+                height: 1rem;
+            }
+            &.authBtn {
+                width: auto;
+            }
+        }
+    }
 }

@@ -107,7 +107,7 @@ export default function Map({ baseMap, baseMap_setting, geojson, panToId, hoverF
                 {geojson && (
                     <div>
                         <GeoJSON data={geojson} style={{ color: '#ffffff', weight: 4 }} />
-                        <GeoJSON data={geojson} style={{ color: '#87841B', weight: 2 }} />
+                        <GeoJSON data={geojson} style={{ color: '#747009', weight: 2 }} />
                     </div>
                 )}
                 {hoverFeature && <GeoJSON key={`highlight-white-${hoverFeature.properties?.id}`} data={hoverFeature} style={{ color: 'darkred', weight: 6 }} />}

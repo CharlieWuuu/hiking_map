@@ -1,0 +1,12 @@
+@use '../../styles/mixins' as mixins;
+@use '../../styles/colors' as colors;
+
+.Panel_Tab {
+    @include mixins.flex_center;
+    button {
+        border: colors.$background_contrary 1px solid;
+        text-wrap: nowrap;
+        font-size: 0.8rem;
+        opacity: 0.6;
+    }
+}
