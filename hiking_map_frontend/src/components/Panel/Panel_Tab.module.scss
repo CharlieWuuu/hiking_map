@@ -6,7 +6,12 @@
     button {
         border: colors.$background_contrary 1px solid;
         text-wrap: nowrap;
-        font-size: 0.8rem;
+        font-size: 1rem;
         opacity: 0.6;
+        &.active {
+            opacity: 1;
+            background-color: colors.$background_contrary;
+            color: colors.$background;
+        }
     }
 }

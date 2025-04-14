@@ -6,8 +6,9 @@
     border-radius: variables.$border_radius;
     background-color: colors.$panel;
     padding: 1rem;
-    @include mixins.flex_center;
+    display: flex;
     flex-direction: column;
+    justify-content: start;
     align-items: start;
     width: 100%; // 之後會調整
     flex-grow: 1;
@@ -45,19 +46,20 @@
         }
     }
 
-    .title {
-        @include mixins.flex_center;
-        justify-content: space-between;
-        text-wrap: nowrap;
-        width: 100%;
-        p {
-            flex-grow: 1;
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-align: start;
-        }
-    }
-    .content {
-        flex-grow: 1;
-    }
+    // .title {
+    //     @include mixins.flex_center;
+    //     justify-content: space-between;
+    //     text-wrap: nowrap;
+    //     width: 100%;
+    //     p {
+    //         flex-grow: 1;
+    //         font-size: 1.5rem;
+    //         font-weight: bold;
+    //         text-align: start;
+    //     }
+    // }
+    // .content {
+    //     flex-grow: 1;
+    //     width: 100%;
+    // }
 }

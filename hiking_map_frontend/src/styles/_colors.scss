@@ -16,6 +16,7 @@ $background: #1e1e1e;
 $background_contrary: #f0f0f0;
 $panel: #464646;
 $panel_active: #909090;
+$panel_active_lighten: color.scale($panel_active, $lightness: 10%);
 
 // 以下之後會移除
 $border: rgba(150, 150, 150, 1);

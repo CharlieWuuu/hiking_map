@@ -4,6 +4,8 @@ import ZoomOutUrl from '../../assets/Panel_ZoomOut.svg';
 import ClosePanel from '../../assets/Panel_ClosePanel.svg';
 import { useState } from 'react';
 import type { PanelType } from '../../types/uiPanels';
+import Panel_Info from './Panel_Info';
+import Panel_Auth from './Panel_Auth';
 
 type Props = {
     type: PanelType;
@@ -15,14 +17,14 @@ type Props = {
 export default function Panel({ type, tabs, hasCloseButton = true, onClose }: Props) {
     const [IsZoomIn, setIsZoomIn] = useState(false);
 
-    const PANEL_TITLES: Record<PanelType, string> = {
-        data: '資料總覽',
-        detail: '詳細資料',
-        auth: '帳號',
-        info: '網站介紹',
-    };
+    // const PANEL_TITLES: Record<PanelType, string> = {
+    //     data: '資料總覽',
+    //     detail: '詳細資料',
+    //     auth: '帳號',
+    //     info: '網站介紹',
+    // };
 
-    const title = PANEL_TITLES[type];
+    // const title = PANEL_TITLES[type];
 
     return (
         <div className={`${styles.Panel} ${IsZoomIn ? styles.ZoomIn : ''}`}>
@@ -37,10 +39,13 @@ export default function Panel({ type, tabs, hasCloseButton = true, onClose }: Pr
                 )}
             </div>
             {tabs}
-            <div className={styles.title}>
+            {/* <div className={styles.title}>
                 <p>{title}</p>
-            </div>
-            <div className={styles.content}>內文</div>
+            </div> */}
+            {/* <div className={styles.content}> */}
+            {type === 'info' && <Panel_Info />}
+            {type === 'auth' && <Panel_Auth loginStatus={false} setLoginStatus={() => {}} />}
+            {/* </div> */}
         </div>
     );
 }

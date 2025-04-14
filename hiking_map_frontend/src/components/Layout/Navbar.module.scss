@@ -1,8 +1,10 @@
 @use '../../styles/colors' as colors;
 @use '../../styles/mixins' as mixins;
+@use '../../styles/variables' as variables;
 
 .Navbar {
     width: 100%;
+    height: variables.$navbar_height;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -10,7 +12,7 @@
     color: colors.$background_contrary;
     .Logo {
         img {
-            height: 2rem;
+            height: variables.$navbar_height;
         }
     }
     .SearchBar {
@@ -18,7 +20,7 @@
         justify-content: space-between;
         border-radius: 3rem;
         border: 1px solid colors.$background_contrary;
-        height: 2rem;
+        height: variables.$navbar_height;
         padding: 1rem;
         flex-grow: 1;
         background-color: colors.$panel;
@@ -39,7 +41,7 @@
         gap: 0.5rem;
         button {
             width: 2rem;
-            height: 2rem;
+            height: variables.$navbar_height;
 
             img {
                 height: 1rem;
