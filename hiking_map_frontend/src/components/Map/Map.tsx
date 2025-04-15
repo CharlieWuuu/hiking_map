@@ -7,14 +7,13 @@ import type { FeatureCollection } from 'geojson';
 import './Map.scss'; // 1. 因為要改 Leaflet 的樣式而不能用 modules 2. 因為 Panel、Map 的 hover 行為影響到 Panel_Button 的樣式，所以不用 modules
 import { useIsResizing } from '../../hooks/useIsResizing';
 import Panel_Button from '../Panel/Panel_Button';
+import { usePanel } from '../../context/PanelContext';
 
 interface Props {
     baseMap: BaseMapEn;
     baseMap_setting: Record<BaseMapEn, Record<BaseMapSettingEn, number>>;
     geojson: FeatureCollection | null;
     panToId: number | null;
-    hoverFeatureId: number | null;
-    activeFeatureId: number | null;
 }
 
 function TileEffect({ baseMap, setting }: { baseMap: BaseMapEn; setting: Record<BaseMapSettingEn, number> }) {
@@ -84,8 +83,9 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
     return null;
 }
 
-export default function Map({ baseMap, baseMap_setting, geojson, panToId, hoverFeatureId, activeFeatureId }: Props) {
+export default function Map({ baseMap, baseMap_setting, geojson, panToId }: Props) {
     const [IsZoomIn, setIsZoomIn] = useState(false);
+    const { hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId } = usePanel();
 
     const baseMapUrl = {
         osm: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -99,6 +99,11 @@ export default function Map({ baseMap, baseMap_setting, geojson, panToId, hoverF
     const hoverFeature = geojson?.features.find((f) => f.properties?.id === hoverFeatureId) ?? null;
     const activeFeature = geojson?.features.find((f) => f.properties?.id === activeFeatureId) ?? null;
 
+    const activeRef = useRef<number | null>(null);
+    useEffect(() => {
+        activeRef.current = activeFeatureId;
+    }, [activeFeatureId]);
+
     return (
         <div className={`Map ${IsZoomIn ? 'ZoomIn' : ''}`} ref={mapWrapperRef}>
             <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={false} />
@@ -110,15 +115,36 @@ export default function Map({ baseMap, baseMap_setting, geojson, panToId, hoverF
                 <ResizeEffect isResizing={isResizing} />
                 {geojson && (
                     <div>
-                        <GeoJSON data={geojson} style={{ color: '#ffffff', weight: 4 }} />
-                        <GeoJSON data={geojson} style={{ color: '#747009', weight: 2 }} />
+                        <GeoJSON
+                            data={geojson}
+                            style={{ color: 'transparent', weight: 10 }}
+                            onEachFeature={(feature, layer) => {
+                                const pathLayer = layer as L.Path;
+                                const id = feature.properties?.id;
+                                pathLayer.on({
+                                    mouseover: () => setHoverFeatureId(id),
+                                    mouseout: () => setHoverFeatureId(null),
+                                    click: () => {
+                                        const currentActive = activeRef.current;
+                                        setActiveFeatureId(currentActive === id ? null : id);
+                                    },
+                                });
+                            }}
+                        />
+                        <GeoJSON data={geojson} style={{ color: '#ffffff', weight: 4, interactive: false }} />
+                        <GeoJSON data={geojson} style={{ color: '#747009', weight: 2, interactive: false }} />
                     </div>
                 )}
-                {hoverFeature && <GeoJSON key={`highlight-white-${hoverFeature.properties?.id}`} data={hoverFeature} style={{ color: 'darkred', weight: 6 }} />}
+                {hoverFeature && hoverFeature !== activeFeature && (
+                    <div>
+                        <GeoJSON key={`highlight-white-${hoverFeature.properties?.id}`} data={hoverFeature} style={{ color: '#ffffff', weight: 6, interactive: false }} />
+                        <GeoJSON key={`highlight-yellow-${hoverFeature.properties?.id}`} data={hoverFeature} style={{ color: '#CFCF13', weight: 3, interactive: false }} />
+                    </div>
+                )}
                 {activeFeature && (
                     <div>
-                        <GeoJSON key={`highlight-white-${activeFeature.properties?.id}`} data={activeFeature} style={{ color: 'white', weight: 12 }} />
-                        <GeoJSON key={`highlight-orange-${activeFeature.properties?.id}`} data={activeFeature} style={{ color: 'orange', weight: 6 }} />
+                        <GeoJSON key={`highlight-white-${activeFeature.properties?.id}`} data={activeFeature} style={{ color: '#000000', weight: 6, interactive: false }} />
+                        <GeoJSON key={`highlight-orange-${activeFeature.properties?.id}`} data={activeFeature} style={{ color: '#FFFF3C', weight: 3, interactive: false }} />
                     </div>
                 )}
             </MapContainer>

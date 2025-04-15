@@ -1,28 +1,25 @@
 import type { FeatureCollection } from 'geojson'; // 引入 geojson 模組
 import { useState } from 'react'; // 引入 useState
 import styles from './Panel_Data_All.module.scss'; // 引入樣式
+import { usePanel } from '../../context/PanelContext';
 
 // 定義參數
 type Props = {
     geojson?: FeatureCollection | null;
     setPanToId?: (id: number | null) => void;
-    hoverFeatureId?: number | null;
-    setHoverFeatureId?: (id: number | null) => void;
-    activeFeatureId?: number | null;
-    setActiveFeatureId?: (id: number | null) => void;
 };
 
 // 定義元件
 export default function Panel_Data_All({ geojson }: Props) {
     const [currentPage, setCurrentPage] = useState(1); // 當前頁數，預設為第 1 頁
     const itemsPerPage = 50; // 每頁顯示的項目數
+    const { hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId } = usePanel();
 
     // 檢查 geojson 是否為 null，如果為 null 表示資料還未讀取
     if (!geojson) {
         return (
-            <div>
-                <h2>資料</h2>
-                <div>資料讀取中...</div>
+            <div className={`${styles.Panel_Data_All} ${styles.onLoading}`}>
+                <span className={styles.loader}></span>
             </div>
         );
     }
@@ -39,6 +36,8 @@ export default function Panel_Data_All({ geojson }: Props) {
 
     const startIndex = (currentPage - 1) * itemsPerPage; // 計算當前頁數的起始索引，例如：位於第 1 頁則為 0
     const currentPageData = features.slice(startIndex, startIndex + itemsPerPage); // 計算當前頁數的資料，例如：從 features 取得從 0 到 0 + 10 (itemsPerPage) 的資料
+    const pageIndexStart = startIndex + 1;
+    const pageIndexEnd = startIndex + itemsPerPage > features.length ? features.length : startIndex + itemsPerPage;
 
     return (
         <div className={styles.Panel_Data_All}>
@@ -46,8 +45,8 @@ export default function Panel_Data_All({ geojson }: Props) {
                 <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
                     上一頁
                 </button>
-                <span style={{ margin: '0 1em' }}>
-                    第 {startIndex + 1} - {startIndex + itemsPerPage > features.length ? features.length : startIndex + itemsPerPage} 筆
+                <span>
+                    第 {pageIndexStart} - {pageIndexEnd} 筆
                 </span>
                 <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
                     下一頁
@@ -68,7 +67,15 @@ export default function Panel_Data_All({ geojson }: Props) {
                     {/* 表身 */}
                     <tbody>
                         {currentPageData.map((feature, index) => (
-                            <tr key={index}>
+                            <tr
+                                className={`${hoverFeatureId === feature.properties?.id ? styles.hover : ''} ${activeFeatureId === feature.properties?.id ? styles.active : ''}`.trim()}
+                                key={index}
+                                onMouseEnter={() => setHoverFeatureId(feature.properties?.id)}
+                                onMouseLeave={() => setHoverFeatureId(null)}
+                                onClick={() => {
+                                    activeFeatureId !== feature.properties?.id && setActiveFeatureId(feature.properties?.id);
+                                    activeFeatureId === feature.properties?.id && setActiveFeatureId(null);
+                                }}>
                                 <td className={styles.Table_id}>{feature.properties?.id}</td>
                                 <td className={styles.Table_name}>{feature.properties?.name}</td>
                                 <td className={styles.Table_county}>{feature.properties?.county}</td>

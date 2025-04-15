@@ -9,8 +9,15 @@
     flex-direction: column;
     gap: 0rem;
 
+    &.onLoading {
+        @include mixins.loader;
+    }
+
     .Table_Pagination {
         display: flex;
+        span {
+            margin: 0 1rem;
+        }
     }
 
     .Table_ScrollWrapper {
@@ -48,6 +55,7 @@
                         text-wrap: nowrap;
                         text-align: left;
                         font-weight: normal;
+                        color: colors.$panel_active;
                         &.Table_id {
                             text-align: right;
                             width: 0;
@@ -65,11 +73,12 @@
             tbody {
                 tr {
                     cursor: pointer;
-                    &:hover {
+                    &.hover {
                         background-color: colors.$panel_active;
                     }
-                    &.activeRow {
-                        background-color: #ffe4b5; // 米黃色當作 active 背景
+                    &.active {
+                        background-color: colors.$accent;
+                        color: colors.$panel;
                         cursor: pointer;
                     }
                     td {

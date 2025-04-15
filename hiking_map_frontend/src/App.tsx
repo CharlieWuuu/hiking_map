@@ -1,7 +1,7 @@
 import Navbar from './components/Layout/Navbar';
 import Index from './pages/Index';
 import styles from './App.module.scss';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { UIPanels } from './types/uiPanels';
 
 export default function App() {

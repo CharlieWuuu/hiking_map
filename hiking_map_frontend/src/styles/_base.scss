@@ -59,6 +59,11 @@ button {
     &.active {
         background-color: colors.$panel_active;
     }
+
+    &:disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
 }
 
 #root {

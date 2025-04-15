@@ -8,6 +8,7 @@ import { SidePanelStatus } from '../types/SidePanelStatus';
 import type { FeatureCollection } from 'geojson';
 import Panel from '../components/Panel/Panel';
 import type { UIPanels, PanelType } from '../types/uiPanels';
+import { PanelProvider } from '../context/PanelContext';
 
 type Props = {
     uiPanels?: UIPanels;
@@ -61,19 +62,20 @@ export default function Index({ uiPanels, setUIPanels }: Props) {
 
     return (
         <div className={styles.Index}>
-            <div className={styles.leftPanelContainer}>
-                <Panel geojson={geojson} type={'data'} hasCloseButton={false} />
-                {uiPanels?.detail && setUIPanels && <Panel type={'detail'} onClose={() => setUIPanels((prev) => ({ ...prev, detail: false }))} />}
-            </div>
-
-            <Map baseMap={baseMap} baseMap_setting={baseMap_setting} geojson={geojson} panToId={panToId} hoverFeatureId={hoverFeatureId} activeFeatureId={activeFeatureId} />
-            {(uiPanels?.info || uiPanels?.auth) && (
-                <div className={styles.rightPanelContainer}>
-                    {uiPanels?.info && setUIPanels && <Panel type={'info'} onClose={() => setUIPanels((prev) => ({ ...prev, info: false }))} />}
-                    {uiPanels?.auth && setUIPanels && <Panel type={'auth'} onClose={() => setUIPanels((prev) => ({ ...prev, auth: false }))} />}
+            <PanelProvider>
+                <div className={styles.leftPanelContainer}>
+                    <Panel geojson={geojson} type={'data'} hasCloseButton={false} />
+                    {uiPanels?.detail && setUIPanels && <Panel type={'detail'} onClose={() => setUIPanels((prev) => ({ ...prev, detail: false }))} />}
                 </div>
-            )}
-            {/* <SidePanel panelType={panelType} isActive={isActive} baseMap={baseMap} setBaseMap={setBaseMap} baseMap_setting={baseMap_setting} updateBaseMap_setting={updateBaseMap_setting} geojson={geojson} setPanToId={setPanToId} hoverFeatureId={hoverFeatureId} setHoverFeatureId={setHoverFeatureId} activeFeatureId={activeFeatureId} setActiveFeatureId={setActiveFeatureId} loginStatus={loginStatus} setLoginStatus={setLoginStatus} /> */}
+                <Map baseMap={baseMap} baseMap_setting={baseMap_setting} geojson={geojson} panToId={panToId} />
+                {(uiPanels?.info || uiPanels?.auth) && (
+                    <div className={styles.rightPanelContainer}>
+                        {uiPanels?.info && setUIPanels && <Panel type={'info'} onClose={() => setUIPanels((prev) => ({ ...prev, info: false }))} />}
+                        {uiPanels?.auth && setUIPanels && <Panel type={'auth'} onClose={() => setUIPanels((prev) => ({ ...prev, auth: false }))} />}
+                    </div>
+                )}
+                {/* <SidePanel panelType={panelType} isActive={isActive} baseMap={baseMap} setBaseMap={setBaseMap} baseMap_setting={baseMap_setting} updateBaseMap_setting={updateBaseMap_setting} geojson={geojson} setPanToId={setPanToId} hoverFeatureId={hoverFeatureId} setHoverFeatureId={setHoverFeatureId} activeFeatureId={activeFeatureId} setActiveFeatureId={setActiveFeatureId} loginStatus={loginStatus} setLoginStatus={setLoginStatus} /> */}{' '}
+            </PanelProvider>
         </div>
     );
 }
