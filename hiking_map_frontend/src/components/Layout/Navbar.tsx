@@ -5,6 +5,7 @@ import InfoUrl from '../../assets/Navbar_Info.svg';
 import FullScreen from '../../assets/FullScreen.svg';
 import FullScreen_back from '../../assets/FullScreen_back.svg';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 import type { UIPanels, PanelType } from '../../types/uiPanels';
 
@@ -15,6 +16,7 @@ type Props = {
 
 export default function Navbar({ uiPanels, setUIPanels }: Props) {
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const { isLoggedIn } = useAuth();
 
     const toggleFullscreen = () => {
         if (!document.fullscreenElement) {
@@ -43,13 +45,13 @@ export default function Navbar({ uiPanels, setUIPanels }: Props) {
             <div className={styles.RightButton}>
                 <button onClick={toggleFullscreen}>{isFullscreen ? <img src={FullScreen_back} alt="全螢幕" /> : <img src={FullScreen} alt="關閉全螢幕" />}</button>
                 {uiPanels && setUIPanels && (
-                    <button onClick={() => setUIPanels({ ...uiPanels, info: !uiPanels.info })}>
-                        <img src={InfoUrl} alt="" />
+                    <button className={`${uiPanels.info ? 'active' : ''}`} onClick={() => setUIPanels({ ...uiPanels, info: !uiPanels.info })}>
+                        <img src={InfoUrl} alt="網站介紹" />
                     </button>
                 )}
                 {uiPanels && setUIPanels && (
-                    <button className={styles.authBtn} onClick={() => setUIPanels({ ...uiPanels, auth: !uiPanels.auth })}>
-                        登入
+                    <button className={`${styles.authBtn} ${uiPanels.auth ? 'active' : ''}`} onClick={() => setUIPanels({ ...uiPanels, auth: !uiPanels.auth })}>
+                        {isLoggedIn ? '帳號' : '登入'}
                     </button>
                 )}
             </div>

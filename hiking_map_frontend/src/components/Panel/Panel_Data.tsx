@@ -1,5 +1,6 @@
 import Panel_Tab from './Panel_Tab';
 import Panel_Data_All from './Panel_Data_All';
+import Panel_Layer from './Panel_Layer';
 import styles from './Panel_Data.module.scss';
 import type { FeatureCollection } from 'geojson';
 import { useState } from 'react';
@@ -14,7 +15,7 @@ export default function Panel_Data({ geojson }: Props) {
             <Panel_Tab panelDataType={panelDataType} setPanelDataType={setPanelDataType} />
             {panelDataType === 'All' && <Panel_Data_All geojson={geojson} />}
             {panelDataType === 'Chart' && <div>我是圖表～</div>}
-            {panelDataType === 'Layer' && <div>我是圖層～</div>}
+            {panelDataType === 'Layer' && <Panel_Layer />}
         </div>
     );
 }

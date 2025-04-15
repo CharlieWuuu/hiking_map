@@ -7,13 +7,11 @@ import type { FeatureCollection } from 'geojson';
 import './Map.scss'; // 1. 因為要改 Leaflet 的樣式而不能用 modules 2. 因為 Panel、Map 的 hover 行為影響到 Panel_Button 的樣式，所以不用 modules
 import { useIsResizing } from '../../hooks/useIsResizing';
 import Panel_Button from '../Panel/Panel_Button';
-import { usePanel } from '../../context/PanelContext';
+import { usePolyline } from '../../context/PolylineContext';
+import { useMapContext } from '../../context/MapContext';
 
 interface Props {
-    baseMap: BaseMapEn;
-    baseMap_setting: Record<BaseMapEn, Record<BaseMapSettingEn, number>>;
     geojson: FeatureCollection | null;
-    panToId: number | null;
 }
 
 function TileEffect({ baseMap, setting }: { baseMap: BaseMapEn; setting: Record<BaseMapSettingEn, number> }) {
@@ -83,17 +81,11 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
     return null;
 }
 
-export default function Map({ baseMap, baseMap_setting, geojson, panToId }: Props) {
+export default function Map({ geojson }: Props) {
     const [IsZoomIn, setIsZoomIn] = useState(false);
-    const { hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId } = usePanel();
+    const { hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId } = usePolyline();
+    const { nowBaseMap, baseMapSetting } = useMapContext();
 
-    const baseMapUrl = {
-        osm: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        OpenTopoMap: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-        carto_light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-        carto_dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-        EsriWorldTopographicMap: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
-    }[baseMap];
     const mapWrapperRef = useRef<HTMLDivElement>(null);
     const isResizing = useIsResizing(mapWrapperRef as React.RefObject<HTMLElement>, 600); // 600ms：你的動畫時間
     const hoverFeature = geojson?.features.find((f) => f.properties?.id === hoverFeatureId) ?? null;
@@ -108,9 +100,9 @@ export default function Map({ baseMap, baseMap_setting, geojson, panToId }: Prop
         <div className={`Map ${IsZoomIn ? 'ZoomIn' : ''}`} ref={mapWrapperRef}>
             <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={false} />
             <MapContainer center={[25.047924, 121.517081]} zoom={12} scrollWheelZoom={true} zoomControl={false}>
-                <TileEffect baseMap={baseMap} setting={baseMap_setting[baseMap]} />
-                <TileLayer url={baseMapUrl} />
-                <PanToEffect panToId={panToId} geojson={geojson} />
+                <TileEffect baseMap={nowBaseMap} setting={baseMapSetting[nowBaseMap]} />
+                <TileLayer url={baseMapSetting[nowBaseMap].url} />
+                <PanToEffect panToId={activeFeatureId} geojson={geojson} />
                 <ZoomControl position="bottomright" />
                 <ResizeEffect isResizing={isResizing} />
                 {geojson && (

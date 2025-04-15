@@ -1,7 +1,7 @@
 import type { FeatureCollection } from 'geojson'; // 引入 geojson 模組
 import { useState } from 'react'; // 引入 useState
 import styles from './Panel_Data_All.module.scss'; // 引入樣式
-import { usePanel } from '../../context/PanelContext';
+import { usePolyline } from '../../context/PolylineContext';
 
 // 定義參數
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 export default function Panel_Data_All({ geojson }: Props) {
     const [currentPage, setCurrentPage] = useState(1); // 當前頁數，預設為第 1 頁
     const itemsPerPage = 50; // 每頁顯示的項目數
-    const { hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId } = usePanel();
+    const { hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId } = usePolyline();
 
     // 檢查 geojson 是否為 null，如果為 null 表示資料還未讀取
     if (!geojson) {
@@ -74,6 +74,7 @@ export default function Panel_Data_All({ geojson }: Props) {
                                 onMouseLeave={() => setHoverFeatureId(null)}
                                 onClick={() => {
                                     activeFeatureId !== feature.properties?.id && setActiveFeatureId(feature.properties?.id);
+
                                     activeFeatureId === feature.properties?.id && setActiveFeatureId(null);
                                 }}>
                                 <td className={styles.Table_id}>{feature.properties?.id}</td>

@@ -1,0 +1,36 @@
+@use '../../styles/mixins' as mixins;
+.Panel_Layer {
+    @include mixins.flex_center;
+    flex-direction: column;
+    align-items: start;
+    gap: 2rem;
+    .Layer {
+        @include mixins.flex_center;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: start;
+        p {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        > div {
+            @include mixins.flex_center;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: start;
+            fieldset {
+                border: none;
+                text-align: start;
+                > label {
+                    width: fit-content;
+                    cursor: pointer;
+                    @include mixins.flex_center;
+                    gap: 0.5rem;
+                }
+                > div {
+                    margin-left: 2rem;
+                }
+            }
+        }
+    }
+}
