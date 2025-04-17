@@ -22,6 +22,7 @@
             @include mixins.flex_center;
             gap: 0.5rem;
             justify-content: space-between;
+            flex-wrap: wrap;
 
             label {
                 width: fit-content;

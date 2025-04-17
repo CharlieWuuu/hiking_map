@@ -15,6 +15,9 @@
     position: relative;
     min-height: 70%;
     height: fit-content;
+    &.Panel_detail {
+        min-height: auto;
+    }
 
     &.ZoomIn {
         position: absolute;

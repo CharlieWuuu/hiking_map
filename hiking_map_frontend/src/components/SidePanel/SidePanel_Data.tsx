@@ -1,5 +1,5 @@
 import type { FeatureCollection } from 'geojson'; // 引入 geojson 模組
-import { useState, useEffect, use } from 'react'; // 引入 useState
+import { useState, useEffect } from 'react'; // 引入 useState
 import styles from './SidePanel_Data.module.scss'; // 引入樣式
 
 // 定義參數
@@ -24,7 +24,7 @@ type Detail_Card = {
 };
 
 // 定義元件
-export default function SidePanel_Data({ geojson, setPanToId, hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId }: Props) {
+export default function SidePanel_Data({ geojson, setPanToId, setHoverFeatureId, activeFeatureId, setActiveFeatureId }: Props) {
     const [currentPage, setCurrentPage] = useState(1); // 當前頁數，預設為第 1 頁
     const itemsPerPage = 50; // 每頁顯示的項目數
 

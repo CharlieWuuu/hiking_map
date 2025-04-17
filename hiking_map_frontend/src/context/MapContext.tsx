@@ -78,11 +78,6 @@ export const MapProvider = ({ children }: { children: ReactNode }) => {
         },
     });
 
-    useEffect(() => {
-        console.log('baseMap:', baseMapSetting[nowBaseMap]);
-        console.log(nowBaseMap);
-    }, [nowBaseMap]);
-
     return <MapContext.Provider value={{ nowBaseMap, setNowBaseMap, baseMapSetting, setBaseMapSetting }}>{children}</MapContext.Provider>;
 };
 

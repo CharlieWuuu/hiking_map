@@ -9,6 +9,7 @@ import { useIsResizing } from '../../hooks/useIsResizing';
 import Panel_Button from '../Panel/Panel_Button';
 import { usePolyline } from '../../context/PolylineContext';
 import { useMapContext } from '../../context/MapContext';
+import { useTableContext } from '../../context/TableContext';
 
 interface Props {
     geojson: FeatureCollection | null;
@@ -95,6 +96,10 @@ export default function Map({ geojson }: Props) {
     useEffect(() => {
         activeRef.current = activeFeatureId;
     }, [activeFeatureId]);
+    const { IdToPage, setFeatures } = useTableContext();
+    useEffect(() => {
+        if (geojson) setFeatures(geojson.features);
+    }, [geojson]);
 
     return (
         <div className={`Map ${IsZoomIn ? 'ZoomIn' : ''}`} ref={mapWrapperRef}>
@@ -119,6 +124,7 @@ export default function Map({ geojson }: Props) {
                                     click: () => {
                                         const currentActive = activeRef.current;
                                         setActiveFeatureId(currentActive === id ? null : id);
+                                        IdToPage(currentActive === id ? null : id);
                                     },
                                 });
                             }}

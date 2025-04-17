@@ -19,10 +19,10 @@ export default function Panel({ geojson, type, hasCloseButton = true, onClose }:
     const [IsZoomIn, setIsZoomIn] = useState(false);
 
     return (
-        <div className={`Panel ${IsZoomIn ? 'ZoomIn' : ''}`}>
+        <div className={`Panel ${IsZoomIn ? 'ZoomIn' : ''} Panel_${type}`}>
             <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={hasCloseButton} onClose={onClose} />
             {type === 'data' && <Panel_Data geojson={geojson} />}
-            {type === 'detail' && <Panel_Detail />}
+            {type === 'detail' && <Panel_Detail geojson={geojson} />}
             {type === 'info' && <Panel_Info />}
             {type === 'auth' && <Panel_Auth loginStatus={false} setLoginStatus={() => {}} />}
         </div>
