@@ -7,57 +7,34 @@ export default function Panel_Layer() {
 
     return (
         <div className={styles.Panel_Layer}>
-            {/* <div className={styles.Layer}>
-                <p>圖層</p>
-                <div>
-                    <fieldset>
-                        <label>
-                            <input type="radio" name="layer" value="all" />
-                            <span>待開發</span>
-                        </label>
-                    </fieldset>
-                </div>
-            </div> */}
-            <div className={styles.Layer}>
+            {/* 待開發圖層樣式設定 */}
+            <fieldset>
                 <p>背景</p>
                 <div>
-                    {/* 之後用成類似 google 地圖顯示截圖 */}
-                    {/* {Object.keys(baseMapSetting).map((key) => {
-                        return (
-                            <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
-                                <img src="" alt="" />
-                                <p>
-                                    {baseMapSetting[key as keyof typeof baseMapSetting].label_zh}｜{baseMapSetting[key as keyof typeof baseMapSetting].label}
-                                </p>
-                            </div>
-                        );
-                    })} */}
                     {Object.keys(baseMapSetting).map((key) => {
                         const nowBaseMapSetting = baseMapSetting[key as keyof typeof baseMapSetting];
                         return (
-                            <fieldset key={key}>
-                                <label>
-                                    <input type="radio" name="baseMap" value={key} checked={nowBaseMap === key} onChange={() => setNowBaseMap(key as BaseMapEn)} />
-                                    <span>
-                                        {nowBaseMapSetting.label_zh}｜{nowBaseMapSetting.label}
-                                    </span>
-                                </label>
-                                {nowBaseMap === key && (
-                                    <div>
-                                        {(['opacity', 'saturate'] as const).map((settingKey) => (
-                                            <div key={settingKey}>
-                                                <label htmlFor={`${key}-${settingKey}`}>{settingKey === 'opacity' ? '透明度' : '飽和度'}</label>
-                                                <input id={`${key}-${settingKey}`} type="range" min={0} max={1} step={0.01} value={baseMapSetting[key][settingKey]} onChange={(e) => setBaseMapSetting((prev) => ({ ...prev, [key]: { ...prev[key], [settingKey]: parseFloat(e.target.value) } }))} />
-                                                <span>{Math.round(baseMapSetting[key][settingKey] * 100)}%</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </fieldset>
+                            <label className={styles.layerLabel}>
+                                <input style={{ display: 'none' }} type="radio" name="baseMap" value={key} checked={nowBaseMap === key} onChange={() => setNowBaseMap(key as BaseMapEn)} />
+                                <img src={nowBaseMapSetting.img} alt="" className={`${nowBaseMap === key ? styles.active : ''}`} />
+                                <span>{nowBaseMapSetting.label_zh} </span>
+                            </label>
                         );
                     })}
                 </div>
-            </div>
+            </fieldset>
+            <fieldset>
+                <p>背景樣式</p>
+                <div className={styles.layerSetting}>
+                    {(['opacity', 'saturate'] as const).map((settingKey) => (
+                        <div key={settingKey} className={styles.layerSettingItem}>
+                            <label>{settingKey === 'opacity' ? '透明度' : '飽和度'}</label>
+                            <input type="range" min={0} max={1} step={0.01} value={baseMapSetting[nowBaseMap][settingKey]} onChange={(e) => setBaseMapSetting((prev) => ({ ...prev, [nowBaseMap]: { ...prev[nowBaseMap], [settingKey]: parseFloat(e.target.value) } }))} />
+                            <span>{Math.round(baseMapSetting[nowBaseMap][settingKey] * 100)}%</span>
+                        </div>
+                    ))}
+                </div>
+            </fieldset>
         </div>
     );
 }

@@ -14,7 +14,7 @@ export default function SidePanel_Layer({ baseMap, setBaseMap, baseMap_setting, 
         { key: 'OpenTopoMap', label: '開放地形圖｜OpenTopoMap' },
         { key: 'carto_light', label: 'Carto 亮色地圖｜Carto Light' },
         { key: 'carto_dark', label: 'Carto 深色地圖｜arto Dark' },
-        { key: 'EsriWorldTopographicMap', label: 'Esri 世界地形圖｜Esri World Topographic Map' },
+        { key: 'EsriTopoMap', label: 'Esri 世界地形圖｜Esri World Topographic Map' },
     ] as const;
 
     return (

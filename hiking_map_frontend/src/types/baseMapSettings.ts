@@ -1,7 +1,7 @@
 // types/baseMapSettings.ts
 import { TileLayer as LeafletTileLayer } from 'leaflet';
 
-export type BaseMapEn = 'osm' | 'OpenTopoMap' | 'carto_light' | 'carto_dark' | 'EsriWorldTopographicMap';
+export type BaseMapEn = 'osm' | 'OpenTopoMap' | 'carto_light' | 'carto_dark' | 'EsriTopoMap';
 
 export type BaseMapZh = '開放街圖' | '開放地形圖' | 'Carto 亮色地圖' | 'Carto 深色地圖' | 'Esri 世界地形圖';
 
