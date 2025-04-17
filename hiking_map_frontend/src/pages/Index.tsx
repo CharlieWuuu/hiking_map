@@ -7,6 +7,7 @@ import Panel from '../components/Panel/Panel';
 import type { UIPanels, PanelType } from '../types/uiPanels';
 import { PolylineProvider } from '../context/PolylineContext';
 import { MapProvider } from '../context/MapContext';
+// import Panel_Tab from '../components/Panel/Panel_Tab';
 
 type Props = {
     uiPanels?: UIPanels;
@@ -14,6 +15,8 @@ type Props = {
 };
 
 export default function Index({ uiPanels, setUIPanels }: Props) {
+    // const [panelDataType, setPanelDataType] = useState<'All' | 'Chart' | 'Layer'>('All');
+
     const [geojson, setGeojson] = useState<FeatureCollection | null>(null);
     useEffect(() => {
         fetch('http://localhost:3001/trails')
@@ -26,6 +29,8 @@ export default function Index({ uiPanels, setUIPanels }: Props) {
             <MapProvider>
                 <PolylineProvider>
                     <div className={styles.leftPanelContainer}>
+                        {/* <Panel_Tab panelDataType={panelDataType} setPanelDataType={setPanelDataType} /> */}
+
                         <Panel geojson={geojson} type={'data'} hasCloseButton={false} />
                         {uiPanels?.detail && setUIPanels && <Panel type={'detail'} onClose={() => setUIPanels((prev) => ({ ...prev, detail: false }))} />}
                     </div>

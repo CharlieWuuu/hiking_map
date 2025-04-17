@@ -3,6 +3,7 @@ import Panel_Button from './Panel_Button';
 import { useState } from 'react';
 import type { PanelType } from '../../types/uiPanels';
 import Panel_Data from './Panel_Data';
+import Panel_Detail from './Panel_Detail';
 import Panel_Info from './Panel_Info';
 import Panel_Auth from './Panel_Auth';
 import type { FeatureCollection } from 'geojson';
@@ -21,6 +22,7 @@ export default function Panel({ geojson, type, hasCloseButton = true, onClose }:
         <div className={`Panel ${IsZoomIn ? 'ZoomIn' : ''}`}>
             <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={hasCloseButton} onClose={onClose} />
             {type === 'data' && <Panel_Data geojson={geojson} />}
+            {type === 'detail' && <Panel_Detail />}
             {type === 'info' && <Panel_Info />}
             {type === 'auth' && <Panel_Auth loginStatus={false} setLoginStatus={() => {}} />}
         </div>

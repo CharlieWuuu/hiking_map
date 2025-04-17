@@ -81,7 +81,14 @@ export default function Panel_Data_All({ geojson }: Props) {
                                 <td className={styles.Table_name}>{feature.properties?.name}</td>
                                 <td className={styles.Table_county}>{feature.properties?.county}</td>
                                 <td className={styles.Table_town}>{feature.properties?.town}</td>
-                                <td className={styles.Table_time}>{feature.properties?.time.split('月')[0] + '月'}</td>
+                                <td className={styles.Table_time}>
+                                    {(() => {
+                                        const date = new Date(feature.properties?.time);
+                                        const year = date.getFullYear();
+                                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                                        return `${year}年${month}月`;
+                                    })()}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

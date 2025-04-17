@@ -7,9 +7,9 @@ import type { UIPanels } from './types/uiPanels';
 export default function App() {
     const [uiPanels, setUIPanels] = useState<UIPanels>({
         data: true,
+        detail: true,
         auth: false,
         info: false,
-        detail: false,
     });
 
     return (

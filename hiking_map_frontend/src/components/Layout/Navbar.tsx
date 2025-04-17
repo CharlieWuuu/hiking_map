@@ -38,7 +38,7 @@ export default function Navbar({ uiPanels, setUIPanels }: Props) {
             <div className={styles.Logo}>
                 <img src={LogoUrl} alt="LOGO" />
             </div>
-            <div className={styles.SearchBar}>
+            <div className={styles.SearchBar} style={{ display: 'none' }}>
                 <input type="text" placeholder="請輸入地點或步道名稱" />
                 <img src={SearchUrl} alt="搜尋" />
             </div>

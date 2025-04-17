@@ -14,7 +14,7 @@ export default function Panel_Layer() {
                     {Object.keys(baseMapSetting).map((key) => {
                         const nowBaseMapSetting = baseMapSetting[key as keyof typeof baseMapSetting];
                         return (
-                            <label className={styles.layerLabel}>
+                            <label className={styles.layerLabel} key={key}>
                                 <input style={{ display: 'none' }} type="radio" name="baseMap" value={key} checked={nowBaseMap === key} onChange={() => setNowBaseMap(key as BaseMapEn)} />
                                 <img src={nowBaseMapSetting.img} alt="" className={`${nowBaseMap === key ? styles.active : ''}`} />
                                 <span>{nowBaseMapSetting.label_zh} </span>
