@@ -1,0 +1,25 @@
+// 常用斷點
+$breakpoints: (
+    xs: 320px,
+    // 小手機
+    sm: 576px,
+    // 手機
+    md: 768px,
+    // 平板
+    lg: 992px,
+    // 小電腦
+    xl: 1200px,
+    // 桌機
+    xxl: 1400px // 大螢幕,,
+);
+
+// 呼叫方式：@include media(sm) { ... }
+@mixin media($breakpoint) {
+    @if map-has-key($breakpoints, $breakpoint) {
+        @media (max-width: map-get($breakpoints, $breakpoint)) {
+            @content;
+        }
+    } @else {
+        @warn "⚠️ 沒有定義 '#{$breakpoint}' 這個斷點";
+    }
+}

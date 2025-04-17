@@ -1,12 +1,15 @@
 @use '../styles/mixins' as mixins;
 @use '../styles/variables' as variables;
 @use '../styles/colors' as colors;
+@use '../styles/media' as media;
+
 .Index {
     @include mixins.flex_center;
     width: 100%;
     height: calc(100% - variables.$navbar_height - 1rem);
 
     position: relative;
+
     .leftPanelContainer,
     .rightPanelContainer {
         width: 100%;
@@ -22,5 +25,13 @@
     }
     .rightPanelContainer {
         max-width: 320px;
+    }
+
+    @include media.media(lg) {
+        flex-direction: column-reverse;
+
+        .leftPanelContainer {
+            max-width: 100%;
+        }
     }
 }

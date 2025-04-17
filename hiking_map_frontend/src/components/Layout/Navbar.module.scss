@@ -1,6 +1,7 @@
 @use '../../styles/colors' as colors;
 @use '../../styles/mixins' as mixins;
 @use '../../styles/variables' as variables;
+@use '../../styles/media' as media;
 
 .Navbar {
     width: 100%;
@@ -10,6 +11,7 @@
     align-items: center;
     gap: 1rem;
     color: colors.$background_contrary;
+
     .Logo {
         img {
             height: variables.$navbar_height;
@@ -19,7 +21,6 @@
         @include mixins.flex_center;
         justify-content: space-between;
         border-radius: 3rem;
-        // border: 1px solid colors.$background_contrary;
         height: variables.$navbar_height;
         padding: 1rem;
         flex-grow: 1;
@@ -50,6 +51,19 @@
             &.authBtn {
                 width: auto;
             }
+        }
+    }
+
+    @include media.media(lg) {
+        justify-content: center;
+        .Logo {
+            img {
+                height: 1.5rem;
+            }
+        }
+        .SearchBar,
+        .RightButton {
+            display: none;
         }
     }
 }
