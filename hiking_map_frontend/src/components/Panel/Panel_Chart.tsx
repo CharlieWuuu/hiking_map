@@ -1,13 +1,10 @@
 import styles from './Panel_Chart.module.scss';
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import type { FeatureCollection } from 'geojson'; // 引入 geojson 模組
+import { useGeojson } from '../../context/GeojsonContext';
 
-type Props = {
-    geojson?: FeatureCollection | null;
-};
-
-export default function Panel_Chart({ geojson }: Props) {
+export default function Panel_Chart() {
+    const { geojson } = useGeojson();
     const chartRef_index = useRef(null);
 
     useEffect(() => {

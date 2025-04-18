@@ -22,6 +22,9 @@
     }
     .leftPanelContainer {
         max-width: 520px;
+        &.Editing {
+            max-width: 50%;
+        }
     }
     .rightPanelContainer {
         max-width: 320px;

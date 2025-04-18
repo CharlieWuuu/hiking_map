@@ -14,6 +14,7 @@ export const PanelProvider = ({ children }: { children: ReactNode }) => {
         detail: false,
         auth: false,
         info: false,
+        edit: false,
     });
 
     return <PanelContext.Provider value={{ uiPanels, setUIPanels }}>{children}</PanelContext.Provider>;

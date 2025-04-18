@@ -10,10 +10,8 @@ import Panel_Button from '../Panel/Panel_Button';
 import { usePolyline } from '../../context/PolylineContext';
 import { useMapContext } from '../../context/MapContext';
 import { useTableContext } from '../../context/TableContext';
-
-interface Props {
-    geojson: FeatureCollection | null;
-}
+import { useGeojson } from '../../context/GeojsonContext';
+import { usePanel } from '../../context/PanelContext';
 
 function TileEffect({ baseMap, setting }: { baseMap: BaseMapEn; setting: Record<BaseMapSettingEn, number> }) {
     const map = useMap();
@@ -82,7 +80,8 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
     return null;
 }
 
-export default function Map({ geojson }: Props) {
+export default function Map() {
+    const { geojson } = useGeojson();
     const [IsZoomIn, setIsZoomIn] = useState(false);
     const { hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId } = usePolyline();
     const { nowBaseMap, baseMapSetting } = useMapContext();
@@ -101,8 +100,10 @@ export default function Map({ geojson }: Props) {
         if (geojson) setFeatures(geojson.features);
     }, [geojson]);
 
+    const { uiPanels } = usePanel();
+
     return (
-        <div className={`Map ${IsZoomIn ? 'ZoomIn' : ''}`} ref={mapWrapperRef}>
+        <div className={`Map ${IsZoomIn ? 'ZoomIn' : ''} ${uiPanels?.edit ? 'Editing' : ''}`} ref={mapWrapperRef}>
             <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={false} />
             <MapContainer center={[25.047924, 121.517081]} zoom={12} scrollWheelZoom={true} zoomControl={false}>
                 <TileEffect baseMap={nowBaseMap} setting={baseMapSetting[nowBaseMap]} />

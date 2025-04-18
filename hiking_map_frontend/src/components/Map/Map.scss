@@ -16,6 +16,10 @@
         z-index: 100000;
     }
 
+    &.Editing {
+        max-width: 50%;
+    }
+
     &:hover {
         .Panel_Button {
             opacity: 0.5;

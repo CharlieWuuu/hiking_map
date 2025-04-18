@@ -1,10 +1,10 @@
 import { usePolyline } from '../../context/PolylineContext';
 import styles from './Panel_Detail.module.scss';
-import type { FeatureCollection } from 'geojson';
-type Props = {
-    geojson?: FeatureCollection | null;
-};
-export default function Panel_Detail({ geojson }: Props) {
+
+import { useGeojson } from '../../context/GeojsonContext';
+
+export default function Panel_Detail() {
+    const { geojson } = useGeojson();
     const { activeFeatureId } = usePolyline();
     const detailCard = geojson?.features[(activeFeatureId as number) - 1]?.properties;
 

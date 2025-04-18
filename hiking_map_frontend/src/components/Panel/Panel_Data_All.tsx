@@ -1,17 +1,13 @@
-import type { FeatureCollection } from 'geojson'; // 引入 geojson 模組
 import styles from './Panel_Data_All.module.scss'; // 引入樣式
 import { usePolyline } from '../../context/PolylineContext';
 import { usePanel } from '../../context/PanelContext';
 import { useTableContext } from '../../context/TableContext';
 import { useRef, useEffect } from 'react';
-
-// 定義參數
-type Props = {
-    geojson?: FeatureCollection | null;
-};
+import { useGeojson } from '../../context/GeojsonContext';
 
 // 定義元件
-export default function Panel_Data_All({ geojson }: Props) {
+export default function Panel_Data_All() {
+    const { geojson } = useGeojson();
     const itemsPerPage = 50; // 每頁顯示的項目數
     const { hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId } = usePolyline();
     const { setUIPanels } = usePanel();

@@ -7,6 +7,8 @@ type PolylineContextType = {
     setHoverFeatureId: (id: number | null) => void;
     activeFeatureId: number | null;
     setActiveFeatureId: (id: number | null) => void;
+    editFeatureId: number | null;
+    setEditFeatureId: (id: number | null) => void;
 };
 
 // 創建一個 Context，初始值為 undefined（因為會在 Provider 裡面真正提供值）
@@ -17,9 +19,10 @@ export const PolylineProvider = ({ children }: { children: ReactNode }) => {
     // 宣告兩個 state，管理目前 hover 到的項目 ID 以及點選的 active 項目 ID
     const [hoverFeatureId, setHoverFeatureId] = useState<number | null>(null);
     const [activeFeatureId, setActiveFeatureId] = useState<number | null>(null);
+    const [editFeatureId, setEditFeatureId] = useState<number | null>(null);
 
     // 把這些 state 綁定到 PolylineContext.Provider 上，這樣被包住的所有 component 就都能使用了
-    return <PolylineContext.Provider value={{ hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId }}>{children}</PolylineContext.Provider>;
+    return <PolylineContext.Provider value={{ hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId, editFeatureId, setEditFeatureId }}>{children}</PolylineContext.Provider>;
 };
 
 // 自定義 hook usePolyline()，讓你在 component 裡可以用得像 useState 一樣直覺。

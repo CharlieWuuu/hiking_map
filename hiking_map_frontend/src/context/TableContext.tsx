@@ -1,9 +1,9 @@
 import type { FeatureCollection } from 'geojson';
 import { createContext, useContext, useMemo, useState } from 'react';
+import { useGeojson } from './GeojsonContext';
 
 type TableProviderProps = {
     children: React.ReactNode;
-    geojson: FeatureCollection | null;
 };
 
 type TableContextType = {
@@ -18,7 +18,8 @@ type TableContextType = {
 
 const TableContext = createContext<TableContextType | undefined>(undefined);
 
-export const TableProvider = ({ children, geojson }: TableProviderProps) => {
+export const TableProvider = ({ children }: TableProviderProps) => {
+    const { geojson } = useGeojson();
     const [features, setFeatures] = useState<FeatureCollection['features']>(geojson?.features ?? []);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;

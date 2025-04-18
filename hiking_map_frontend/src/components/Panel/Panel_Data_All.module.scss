@@ -80,6 +80,11 @@
                         background-color: colors.$accent;
                         color: colors.$panel;
                         cursor: pointer;
+                        .Table_url {
+                            a {
+                                color: colors.$panel;
+                            }
+                        }
                     }
                     td {
                         padding: 0.5rem;
@@ -104,9 +109,17 @@
                         &.Table_length {
                             text-align: right;
                         }
+                        &.Table_url {
+                            a {
+                                text-decoration: underline;
+                                color: colors.$background_contrary;
+                                font-weight: normal;
+                            }
+                        }
                         &.Table_note {
-                            text-wrap: break-word;
+                            text-wrap: auto;
                             text-align: left;
+                            max-width: 100px;
                         }
                     }
                     &:last-child {
@@ -117,7 +130,134 @@
                 }
             }
         }
-        table * {
+    }
+    .Table_Header {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        gap: 2rem;
+        hr {
+            border: none;
+            width: 2px;
+            height: 70%;
+            background-color: colors.$panel_active;
+        }
+    }
+}
+
+.Panel_Edit {
+    .Table_ScrollWrapper {
+        table {
+            tbody {
+                tr {
+                    &:hover {
+                        td {
+                            &.Table_edit {
+                                > div {
+                                    button {
+                                        opacity: 1;
+                                        background-color: colors.$panel_active;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    &.active {
+                        td {
+                            &.Table_edit {
+                                > div {
+                                    button {
+                                        opacity: 1;
+                                        color: colors.$panel;
+                                        border: 1px solid colors.$panel;
+                                        background-color: colors.$accent;
+                                        &:hover {
+                                            background-color: colors.$panel;
+                                            color: colors.$accent;
+                                            border: 1px solid colors.$panel;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    td {
+                        width: 1%;
+
+                        &:not(.Table_id) {
+                            min-width: 140px;
+                        }
+                        input {
+                            border-radius: 0.25rem;
+                            border: 0.5px solid colors.$panel;
+                            padding: 0.1rem 0.2rem;
+                            font-size: 1rem;
+                            color: colors.$panel;
+                        }
+
+                        &.Table_name {
+                            width: 1%;
+                        }
+                        &.Table_length {
+                            min-width: 80px;
+                        }
+
+                        &.Table_url {
+                            > div {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                gap: 0.3rem;
+
+                                input {
+                                    width: 100%;
+                                }
+                                button {
+                                    width: fit-content;
+                                    height: fit-content;
+                                    color: colors.$panel;
+                                    border: 1px solid colors.$panel;
+                                    background-color: colors.$accent;
+                                    font-size: 0.6rem;
+                                    padding: 0rem 0.4rem;
+                                    &:hover {
+                                        background-color: colors.$panel;
+                                        color: colors.$accent;
+                                        border: 1px solid colors.$panel;
+                                    }
+                                }
+                            }
+                        }
+                        &.Table_note {
+                            width: 100%;
+                        }
+                        &.Table_edit {
+                            > div {
+                                height: 100%;
+                                display: flex;
+                                align-items: center;
+                                gap: 0.5rem;
+                                button {
+                                    opacity: 0;
+                                    border: 1px solid colors.$background_contrary;
+                                    font-size: 0.75rem;
+                                    padding: 0.125rem 0.5rem;
+                                    background-color: colors.$panel_active;
+                                    &:hover {
+                                        background-color: colors.$background_contrary;
+                                        color: colors.$panel_active;
+                                        border: 1px solid colors.$background_contrary;
+                                    }
+                                }
+                            }
+                        }
+
+                        input {
+                            width: 100%;
+                        }
+                    }
+                }
+            }
         }
     }
 }
