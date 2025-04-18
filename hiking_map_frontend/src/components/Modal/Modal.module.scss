@@ -1,0 +1,34 @@
+@use '../../styles/mixins' as mixins;
+@use '../../styles/colors' as colors;
+
+.Modal_Backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000000000;
+
+    .Modal_Content {
+        width: 50%;
+        height: 50%;
+        background: colors.$panel;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+        padding: 2rem;
+        border-radius: 0.5rem;
+        min-width: 300px;
+        max-width: 90vw;
+        position: relative;
+
+        .Modal_CloseBtn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            border: none;
+            background: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    }
+}

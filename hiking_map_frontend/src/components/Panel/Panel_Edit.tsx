@@ -2,8 +2,9 @@ import styles from './Panel_Data_All.module.scss'; // 引入樣式
 import { usePolyline } from '../../context/PolylineContext';
 import { usePanel } from '../../context/PanelContext';
 import { useTableContext } from '../../context/TableContext';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { useGeojson } from '../../context/GeojsonContext';
+import { useModal } from '../../context/ModalContext';
 
 // 定義元件
 export default function Panel_Edit() {
@@ -25,6 +26,7 @@ export default function Panel_Edit() {
     const features = geojson?.features; // 取得 geojson 中的 features
     const pageIndexStart = startIndex + 1;
     const pageIndexEnd = Math.min(startIndex + itemsPerPage, features?.length ?? 0);
+    const { setUiModal } = useModal();
 
     return (
         <div className={`${styles.Panel_Data_All} ${styles.Panel_Edit}`}>
@@ -41,7 +43,7 @@ export default function Panel_Edit() {
                     </button>
                 </div>
                 <hr />
-                <button>新增</button>
+                <button onClick={() => setUiModal((prev) => ({ ...prev, upload: true }))}>新增</button>
             </div>
             <div className={styles.Table_ScrollWrapper}>
                 <table cellSpacing="0">

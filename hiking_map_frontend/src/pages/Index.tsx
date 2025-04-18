@@ -4,9 +4,12 @@ import '../styles/main.scss';
 import Panel from '../components/Panel/Panel';
 import { MapProvider } from '../context/MapContext';
 import { usePanel } from '../context/PanelContext';
+import Modal from '../components/Modal/Modal';
+import { useModal } from '../context/ModalContext';
 
 export default function Index() {
     const { uiPanels, setUIPanels } = usePanel();
+    const { uiModal } = useModal();
 
     return (
         <div className={styles.Index}>
@@ -23,6 +26,7 @@ export default function Index() {
                         {uiPanels?.auth && setUIPanels && <Panel type={'auth'} onClose={() => setUIPanels((prev) => ({ ...prev, auth: false }))} />}
                     </div>
                 )}
+                {uiModal?.upload && <Modal />}
             </MapProvider>
         </div>
     );

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TrailsModule } from './trails/trails.module';
 import { AuthModule } from './auth/auth.module';
+import { UploadsModule } from './upload/uploads.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     TrailsModule,
     AuthModule,
+    UploadsModule,
   ],
 })
 export class AppModule {}
