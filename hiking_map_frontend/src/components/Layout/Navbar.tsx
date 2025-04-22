@@ -35,9 +35,9 @@ export default function Navbar() {
     }, []);
 
     const nameList = geojson?.features.map((f) => f.properties?.name).filter((name): name is string => typeof name === 'string') ?? [];
-    const { IdToPage } = useTableContext();
+    const { UuidToPage } = useTableContext();
     const [inputValue, setInputValue] = useState('');
-    const { setActiveFeatureId } = usePolyline();
+    const { setActiveFeatureUuid } = usePolyline();
 
     return (
         <div className={styles.Navbar}>
@@ -54,9 +54,9 @@ export default function Navbar() {
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' && geojson) {
                             const match = geojson.features.find((f) => f.properties?.name === inputValue);
-                            if (match?.properties?.id !== undefined) {
-                                IdToPage(match.properties.id);
-                                setActiveFeatureId(match.properties.id);
+                            if (match?.properties?.uuid !== undefined) {
+                                UuidToPage(match.properties.uuid);
+                                setActiveFeatureUuid(match.properties.uuid);
                                 setUIPanels({ ...uiPanels, detail: true });
                             }
                         }
@@ -74,9 +74,9 @@ export default function Navbar() {
                     onClick={() => {
                         if (geojson) {
                             const match = geojson.features.find((f) => f.properties?.name === inputValue);
-                            if (match?.properties?.id !== undefined) {
-                                IdToPage(match.properties.id);
-                                setActiveFeatureId(match.properties.id);
+                            if (match?.properties?.uuid !== undefined) {
+                                UuidToPage(match.properties.uuid);
+                                setActiveFeatureUuid(match.properties.uuid);
                                 setUIPanels({ ...uiPanels, detail: true });
                             }
                         }

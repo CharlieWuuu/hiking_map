@@ -5,8 +5,9 @@ import { useGeojson } from '../../context/GeojsonContext';
 
 export default function Panel_Detail() {
     const { geojson } = useGeojson();
-    const { activeFeatureId } = usePolyline();
-    const detailCard = geojson?.features[(activeFeatureId as number) - 1]?.properties;
+    const { activeFeatureUuid } = usePolyline();
+    const features = geojson?.features.find((f) => f.properties?.uuid === activeFeatureUuid);
+    const detailCard = features?.properties;
 
     const date = new Date(detailCard?.time);
     const year = date.getFullYear();
@@ -16,17 +17,14 @@ export default function Panel_Detail() {
 
     return (
         <div className={styles.Panel_Detail}>
-            {/* <button onClick={() => setOnEdit(!onEdit)}>✏️</button> */}
             {detailCard && (
                 <div className={`${styles.Detail_Card}`}>
                     <div className={styles.Card_title}>
                         <div className={styles.Card_name}>
                             <p>{detailCard.name}</p>
-                            {/* <input type="text" value={detailCard.name} onChange={(e) => setDetailCard({ ...detailCard, name: e.target.value })} /> */}
                         </div>
                         <div className={styles.Card_id}>
                             <p>#{detailCard.id}</p>
-                            {/* <input type="text" value={`#${detailCard.id}`} onChange={(e) => setDetailCard({ ...detailCard, name: e.target.value })} /> */}
                         </div>
                     </div>
                     <div className={styles.Card_district}>
@@ -35,19 +33,13 @@ export default function Panel_Detail() {
                             {detailCard.county}
                             {detailCard.town}
                         </p>
-
-                        {/* <input type="text" value={detailCard.county} onChange={(e) => setDetailCard({ ...detailCard, name: e.target.value })} /> */}
-
-                        {/* <input type="text" value={detailCard.town} onChange={(e) => setDetailCard({ ...detailCard, name: e.target.value })} /> */}
                     </div>
                     <div className={styles.Card_time}>
                         <span>日期</span>
                         <p>{time}</p>
-                        {/* <input type="text" value={detailCard.time} onChange={(e) => setDetailCard({ ...detailCard, name: e.target.value })} /> */}
                     </div>
                     <div className={styles.Card_length}>
                         <span>距離</span> <p>{detailCard.length} 公里</p>
-                        {/* <input type="text" value={`${detailCard.length} 公里`} onChange={(e) => setDetailCard({ ...detailCard, name: e.target.value })} /> */}
                     </div>
                     <div className={styles.Card_url}>
                         <span>路線連結</span>
@@ -60,14 +52,12 @@ export default function Panel_Detail() {
                                 </div>
                             ))
                         ) : (
-                            <p>無</p>
+                            <p>-</p>
                         )}
-                        {/* <input type="text" value="另外處理喔～～～" onChange={(e) => setDetailCard({ ...detailCard, name: e.target.value })} /> */}
                     </div>
                     <div className={styles.Card_note}>
                         <span>說明</span>
                         <p>{detailCard.note ?? '-'}</p>
-                        {/* <input type="text" value={detailCard.note ?? '-'} onChange={(e) => setDetailCard({ ...detailCard, name: e.target.value })} /> */}
                     </div>
                 </div>
             )}

@@ -12,7 +12,7 @@ type TableContextType = {
     startIndex: number;
     currentPageData: any[];
     totalPages: number;
-    IdToPage: (id: number | null) => void;
+    UuidToPage: (id: string | null) => void;
     setFeatures: (f: any[]) => void;
 };
 
@@ -28,15 +28,15 @@ export const TableProvider = ({ children }: TableProviderProps) => {
     const currentPageData = useMemo(() => features.slice(startIndex, startIndex + itemsPerPage), [features, startIndex]);
     const totalPages = useMemo(() => Math.ceil(features.length / itemsPerPage), [features]);
 
-    const IdToPage = (id: number | null) => {
-        if (id === null) return;
-        const index = features.findIndex((f) => f.properties?.id === id);
+    const UuidToPage = (uuid: string | null) => {
+        if (uuid === null) return;
+        const index = features.findIndex((f) => f.properties?.uuid === uuid);
         if (index === -1) return;
         const page = Math.floor(index / itemsPerPage) + 1;
         setCurrentPage(page);
     };
 
-    return <TableContext.Provider value={{ currentPage, setCurrentPage, startIndex, currentPageData, totalPages, IdToPage, setFeatures }}>{children}</TableContext.Provider>;
+    return <TableContext.Provider value={{ currentPage, setCurrentPage, startIndex, currentPageData, totalPages, UuidToPage, setFeatures }}>{children}</TableContext.Provider>;
 };
 
 export const useTableContext = () => {

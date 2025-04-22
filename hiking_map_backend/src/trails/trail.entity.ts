@@ -13,4 +13,13 @@ export class Trail {
 
   @Column('geometry', { spatialFeatureType: 'MultiLineString', srid: 4326 })
   geom: object;
+
+  @Column()
+  filename: string;
+
+  @Column({ type: 'jsonb' })
+  geojson: any;
+
+  @Column({ type: 'jsonb', default: {} })
+  properties: Record<string, any>;
 }

@@ -61,19 +61,13 @@
                             width: 0;
                         }
                     }
-
-                    &:first-child {
-                        th {
-                            padding-top: 0.75rem;
-                        }
-                    }
                 }
             }
 
             tbody {
                 tr {
                     cursor: pointer;
-                    &.hover {
+                    &:hover {
                         background-color: colors.$panel_active;
                     }
                     &.active {
@@ -185,13 +179,13 @@
                         width: 1%;
 
                         &:not(.Table_id) {
-                            min-width: 140px;
+                            // min-width: 140px;
                         }
                         input {
                             border-radius: 0.25rem;
                             border: 0.5px solid colors.$panel;
                             padding: 0.1rem 0.2rem;
-                            font-size: 1rem;
+                            font-size: 0.9rem;
                             color: colors.$panel;
                         }
 
@@ -200,6 +194,12 @@
                         }
                         &.Table_length {
                             min-width: 80px;
+                        }
+
+                        &.Table_time {
+                            input {
+                                width: 120px;
+                            }
                         }
 
                         &.Table_url {
@@ -231,6 +231,20 @@
                         &.Table_note {
                             width: 100%;
                         }
+                        &.Table_file {
+                            button {
+                                font-size: 0.75rem;
+                                padding: 0.125rem 0.5rem;
+                                color: colors.$panel;
+                                border: 1px solid colors.$panel;
+                                background-color: colors.$accent;
+                                &:hover {
+                                    background-color: colors.$panel;
+                                    color: colors.$accent;
+                                    border: 1px solid colors.$panel;
+                                }
+                            }
+                        }
                         &.Table_edit {
                             > div {
                                 height: 100%;
@@ -238,6 +252,7 @@
                                 align-items: center;
                                 gap: 0.5rem;
                                 button {
+                                    transition: none;
                                     opacity: 0;
                                     border: 1px solid colors.$background_contrary;
                                     font-size: 0.75rem;

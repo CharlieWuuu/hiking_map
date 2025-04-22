@@ -9,18 +9,19 @@ import { useGeojson } from '../../context/GeojsonContext';
 export default function Panel_Data_All() {
     const { geojson } = useGeojson();
     const itemsPerPage = 50; // 每頁顯示的項目數
-    const { hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId } = usePolyline();
+    const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid } = usePolyline();
     const { setUIPanels } = usePanel();
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
-    const rowRefs = useRef<{ [key: number]: HTMLTableRowElement | null }>({});
+    const rowRefs = useRef<Record<string, HTMLTableRowElement | null>>({});
+
     useEffect(() => {
-        if (activeFeatureId !== null && rowRefs.current[activeFeatureId]) {
-            rowRefs.current[activeFeatureId]?.scrollIntoView({
+        if (activeFeatureUuid !== null && rowRefs.current[activeFeatureUuid]) {
+            rowRefs.current[activeFeatureUuid]?.scrollIntoView({
                 behavior: 'smooth',
-                block: 'center', // 可改為 'center' 看你喜好
+                block: 'center',
             });
         }
-    }, [activeFeatureId]);
+    }, [activeFeatureUuid]);
 
     if (!geojson) {
         return (
@@ -64,25 +65,25 @@ export default function Panel_Data_All() {
                         {currentPageData.map((feature, index) => (
                             <tr
                                 ref={(el) => {
-                                    if (feature.properties?.id !== undefined) {
-                                        rowRefs.current[feature.properties.id] = el;
+                                    if (feature.properties?.uuid !== undefined) {
+                                        rowRefs.current[feature.properties.uuid] = el;
                                     }
                                 }}
-                                className={`${hoverFeatureId === feature.properties?.id ? styles.hover : ''} ${activeFeatureId === feature.properties?.id ? styles.active : ''}`.trim()}
+                                className={`${hoverFeatureUuid === feature.properties?.uuid ? styles.hover : ''} ${activeFeatureUuid === feature.properties?.uuid ? styles.active : ''}`.trim()}
                                 key={index}
-                                onMouseEnter={() => setHoverFeatureId(feature.properties?.id)}
-                                onMouseLeave={() => setHoverFeatureId(null)}
+                                onMouseEnter={() => setHoverFeatureUuid(feature.properties?.uuid)}
+                                onMouseLeave={() => setHoverFeatureUuid(null)}
                                 onClick={() => {
-                                    activeFeatureId !== feature.properties?.id && setActiveFeatureId(feature.properties?.id);
-                                    activeFeatureId !== feature.properties?.id && setUIPanels((prev) => ({ ...prev, detail: true }));
+                                    activeFeatureUuid !== feature.properties?.uuid && setActiveFeatureUuid(feature.properties?.uuid);
+                                    activeFeatureUuid !== feature.properties?.uuid && setUIPanels((prev) => ({ ...prev, detail: true }));
 
-                                    activeFeatureId === feature.properties?.id && setActiveFeatureId(null);
-                                    activeFeatureId === feature.properties?.id && setUIPanels((prev) => ({ ...prev, detail: false }));
+                                    activeFeatureUuid === feature.properties?.uuid && setActiveFeatureUuid(null);
+                                    activeFeatureUuid === feature.properties?.uuid && setUIPanels((prev) => ({ ...prev, detail: false }));
                                 }}>
                                 <td className={styles.Table_id}>{feature.properties?.id}</td>
                                 <td className={styles.Table_name}>{feature.properties?.name}</td>
-                                <td className={styles.Table_county}>{feature.properties?.county}</td>
-                                <td className={styles.Table_town}>{feature.properties?.town}</td>
+                                <td className={styles.Table_county}>{feature.properties?.county ?? '-'}</td>
+                                <td className={styles.Table_town}>{feature.properties?.town ?? '-'} </td>
                                 <td className={styles.Table_time}>
                                     {(() => {
                                         const date = new Date(feature.properties?.time);

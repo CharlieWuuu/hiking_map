@@ -6,6 +6,7 @@ import { TableProvider } from './context/TableContext';
 import { PolylineProvider } from './context/PolylineContext';
 import { GeojsonProvider } from './context/GeojsonContext';
 import { ModalProvider } from './context/ModalContext';
+import Modal from './components/Modal/Modal';
 
 export default function App() {
     return (
@@ -17,6 +18,7 @@ export default function App() {
                             <ModalProvider>
                                 <Navbar />
                                 <Index />
+                                <Modal />
                             </ModalProvider>
                         </PolylineProvider>
                     </TableProvider>

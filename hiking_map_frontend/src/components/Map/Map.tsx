@@ -26,13 +26,13 @@ function TileEffect({ baseMap, setting }: { baseMap: BaseMapEn; setting: Record<
     return null;
 }
 
-function PanToEffect({ panToId, geojson }: { panToId: number | null; geojson: FeatureCollection | null }) {
+function PanToEffect({ panToId, geojson }: { panToId: string | null; geojson: FeatureCollection | null }) {
     const map = useMap();
 
     useEffect(() => {
         if (!panToId || !geojson) return;
 
-        const targetFeature = geojson.features.find((f) => f.properties?.id === panToId);
+        const targetFeature = geojson.features.find((f) => f.properties?.uuid === panToId);
         if (!targetFeature) return;
 
         // 取得四角座標
@@ -83,19 +83,19 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
 export default function Map() {
     const { geojson } = useGeojson();
     const [IsZoomIn, setIsZoomIn] = useState(false);
-    const { hoverFeatureId, setHoverFeatureId, activeFeatureId, setActiveFeatureId } = usePolyline();
+    const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid } = usePolyline();
     const { nowBaseMap, baseMapSetting } = useMapContext();
 
     const mapWrapperRef = useRef<HTMLDivElement>(null);
     const isResizing = useIsResizing(mapWrapperRef as React.RefObject<HTMLElement>, 600); // 600ms：你的動畫時間
-    const hoverFeature = geojson?.features.find((f) => f.properties?.id === hoverFeatureId) ?? null;
-    const activeFeature = geojson?.features.find((f) => f.properties?.id === activeFeatureId) ?? null;
+    const hoverFeature = geojson?.features.find((f) => f.properties?.uuid === hoverFeatureUuid) ?? null;
+    const activeFeature = geojson?.features.find((f) => f.properties?.uuid === activeFeatureUuid) ?? null;
 
-    const activeRef = useRef<number | null>(null);
+    const activeRef = useRef<string | null>(null);
     useEffect(() => {
-        activeRef.current = activeFeatureId;
-    }, [activeFeatureId]);
-    const { IdToPage, setFeatures } = useTableContext();
+        activeRef.current = activeFeatureUuid;
+    }, [activeFeatureUuid]);
+    const { UuidToPage, setFeatures } = useTableContext();
     useEffect(() => {
         if (geojson) setFeatures(geojson.features);
     }, [geojson]);
@@ -108,7 +108,7 @@ export default function Map() {
             <MapContainer center={[25.047924, 121.517081]} zoom={12} scrollWheelZoom={true} zoomControl={false}>
                 <TileEffect baseMap={nowBaseMap} setting={baseMapSetting[nowBaseMap]} />
                 <TileLayer url={baseMapSetting[nowBaseMap].url} />
-                <PanToEffect panToId={activeFeatureId} geojson={geojson} />
+                <PanToEffect panToId={activeFeatureUuid} geojson={geojson} />
                 <ZoomControl position="bottomright" />
                 <ResizeEffect isResizing={isResizing} />
                 {geojson && (
@@ -118,14 +118,14 @@ export default function Map() {
                             style={{ color: 'transparent', weight: 10 }}
                             onEachFeature={(feature, layer) => {
                                 const pathLayer = layer as L.Path;
-                                const id = feature.properties?.id;
+                                const uuid = feature.properties?.uuid;
                                 pathLayer.on({
-                                    mouseover: () => setHoverFeatureId(id),
-                                    mouseout: () => setHoverFeatureId(null),
+                                    mouseover: () => setHoverFeatureUuid(uuid),
+                                    mouseout: () => setHoverFeatureUuid(null),
                                     click: () => {
                                         const currentActive = activeRef.current;
-                                        setActiveFeatureId(currentActive === id ? null : id);
-                                        IdToPage(currentActive === id ? null : id);
+                                        setActiveFeatureUuid(currentActive === uuid ? null : uuid);
+                                        UuidToPage(currentActive === uuid ? null : uuid);
                                     },
                                 });
                             }}
@@ -136,14 +136,14 @@ export default function Map() {
                 )}
                 {hoverFeature && hoverFeature !== activeFeature && (
                     <div>
-                        <GeoJSON key={`highlight-white-${hoverFeature.properties?.id}`} data={hoverFeature} style={{ color: '#ffffff', weight: 6, interactive: false }} />
-                        <GeoJSON key={`highlight-yellow-${hoverFeature.properties?.id}`} data={hoverFeature} style={{ color: '#CFCF13', weight: 3, interactive: false }} />
+                        <GeoJSON key={`highlight-white-${hoverFeature.properties?.uuid}`} data={hoverFeature} style={{ color: '#ffffff', weight: 6, interactive: false }} />
+                        <GeoJSON key={`highlight-yellow-${hoverFeature.properties?.uuid}`} data={hoverFeature} style={{ color: '#CFCF13', weight: 3, interactive: false }} />
                     </div>
                 )}
                 {activeFeature && (
                     <div>
-                        <GeoJSON key={`highlight-white-${activeFeature.properties?.id}`} data={activeFeature} style={{ color: '#000000', weight: 6, interactive: false }} />
-                        <GeoJSON key={`highlight-orange-${activeFeature.properties?.id}`} data={activeFeature} style={{ color: '#FFFF3C', weight: 3, interactive: false }} />
+                        <GeoJSON key={`highlight-white-${activeFeature.properties?.uuid}`} data={activeFeature} style={{ color: '#000000', weight: 6, interactive: false }} />
+                        <GeoJSON key={`highlight-orange-${activeFeature.properties?.uuid}`} data={activeFeature} style={{ color: '#FFFF3C', weight: 3, interactive: false }} />
                     </div>
                 )}
             </MapContainer>

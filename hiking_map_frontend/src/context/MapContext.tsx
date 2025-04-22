@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { createContext, useState, useContext, ReactNode } from 'react';
 import type { BaseMapEn } from '../types/baseMapSettings';
 import osmImgUrl from '../assets/Map_osm.png';
 import OpenTopoMapImgUrl from '../assets/Map_OpenTopoMap.png';

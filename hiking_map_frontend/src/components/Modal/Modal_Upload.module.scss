@@ -1,0 +1,33 @@
+@use '../../styles/mixins' as mixins;
+@use '../../styles/colors' as colors;
+@use '../../styles/variables' as variables;
+.Modal_Upload {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    input {
+        &::file-selector-button {
+            font-weight: bold;
+            color: colors.$background_contrary;
+            padding: 0.2em 0.6rem;
+            border: none;
+            border-radius: variables.$border_radius;
+            background-color: colors.$panel_active;
+            transition: all 0.3s ease-in-out;
+            &:hover {
+                background-color: colors.$panel_active_lighten;
+                cursor: pointer;
+            }
+        }
+    }
+
+    button {
+        background-color: colors.$panel_active;
+        &:hover {
+            background-color: colors.$panel_active_lighten;
+        }
+    }
+}

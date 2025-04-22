@@ -1,22 +1,23 @@
-import { useState, useContext, createContext, ReactNode } from 'react';
-
-type ModalState = {
-    upload: boolean;
-};
+import { useState, useContext, createContext, ReactNode, useEffect } from 'react';
 
 type ModalContextType = {
-    uiModal: ModalState;
-    setUiModal: React.Dispatch<React.SetStateAction<ModalState>>;
+    modalIsOpen: boolean;
+    setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    modalType: string | null;
+    setModalType: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
-    const [uiModal, setUiModal] = useState<ModalState>({
-        upload: false,
-    });
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalType, setModalType] = useState<string | null>(null);
 
-    return <ModalContext.Provider value={{ uiModal, setUiModal }}>{children}</ModalContext.Provider>;
+    useEffect(() => {
+        console.log(123123);
+    }, [modalIsOpen]);
+
+    return <ModalContext.Provider value={{ modalIsOpen, setModalIsOpen, modalType, setModalType }}>{children}</ModalContext.Provider>;
 };
 
 export const useModal = () => {
