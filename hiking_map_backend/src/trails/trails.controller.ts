@@ -13,8 +13,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UpdateTrailDto } from './dto/update-trail.dto';
-import { UpdatePropertiesDto } from './dto/update-properties.dto';
+import { TrailsDto } from './dto/trails.dto';
+import { TrailsInfoDto } from './dto/trails_info.dio';
 
 @ApiTags('Trails')
 @Controller('trails')
@@ -24,27 +24,33 @@ export class TrailsController {
   @Get()
   async getTrails() {
     console.log('Fetching trails...');
-    return this.trailsService.findAllGeoJSON();
+    return this.trailsService.getTrails();
   }
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  async upload(@UploadedFile() file: Express.Multer.File) {
-    return this.trailsService.handleUpload(file);
+  async post(@UploadedFile() file: Express.Multer.File) {
+    return this.trailsService.post(file);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.trailsService.remove(id);
+  @Delete(':uuid')
+  delete(@Param('uuid') uuid: string) {
+    return this.trailsService.delete(uuid);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateTrailDto) {
-    return this.trailsService.update(id, dto);
+  @Put(':uuid')
+  @UseInterceptors(FileInterceptor('file'))
+  put(@Param('uuid') uuid: string, @UploadedFile() file: Express.Multer.File) {
+    return this.trailsService.put(uuid, file);
   }
 
-  @Patch(':id/properties')
-  updateProps(@Param('id') id: string, @Body() dto: UpdatePropertiesDto) {
-    return this.trailsService.updateProperties(id, dto);
+  @Patch(':uuid/properties')
+  patch(@Param('uuid') uuid: string, @Body() dto: TrailsInfoDto) {
+    return this.trailsService.patch(uuid, dto);
+  }
+
+  @Get('export/:type')
+  getExport(@Param('type') type: string) {
+    return this.trailsService.getExport(type);
   }
 }

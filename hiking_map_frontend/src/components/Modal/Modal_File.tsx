@@ -1,12 +1,21 @@
-import styles from './Modal_Upload.module.scss';
+import styles from './Modal_File.module.scss';
 import { useGeojson } from '../../context/GeojsonContext';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useModal } from '../../context/ModalContext';
-export default function Modal_Upload() {
-    const { refreshGeojson } = useGeojson();
+import { usePolyline } from '../../context/PolylineContext';
+
+type Props = {
+    type: string;
+};
+
+export default function Modal_File({ type }: Props) {
+    const { geojson, refreshGeojson } = useGeojson();
     const [file, setFile] = useState<File | null>(null);
     const { setModalIsOpen } = useModal();
     const [uploadComplete, setUploadComplete] = useState(false);
+    const { editFeatureUuid } = usePolyline();
+    const editFeature = geojson?.features.find((f) => f.properties?.uuid === editFeatureUuid)?.properties;
+
     const handleUpload = async () => {
         if (file === null) {
             alert('請選擇檔案');
@@ -14,9 +23,11 @@ export default function Modal_Upload() {
         }
         const formData = new FormData();
         formData.append('file', file);
+        const url = type === 'file_upload' ? 'http://localhost:3001/trails' : `http://localhost:3001/trails/${editFeature?.uuid}`;
+
         try {
-            const res = await fetch('http://localhost:3001/trails', {
-                method: 'POST',
+            const res = await fetch(url, {
+                method: type === 'file_upload' ? 'POST' : 'PUT',
                 body: formData,
             });
 
@@ -45,16 +56,37 @@ export default function Modal_Upload() {
             fileInputRef.current.click();
         }
     };
+    const [fileName, setFileName] = useState('請選擇檔案（.gpx / .geojson）');
+    useEffect(() => {
+        if (type === 'file_update') {
+            setFileName(editFeature?.filename);
+        }
+    }, [type, editFeature]);
     return (
-        <div className={styles.Modal_Upload}>
-            <h2>{uploadComplete ? '上傳完成' : '上傳檔案'}</h2>
-            {!uploadComplete && <input ref={fileInputRef} type="file" id="fileInput" style={{ display: 'none' }} onChange={(e) => setFile(e.target.files?.[0] || null)} />}
+        <div className={styles.Modal_File}>
+            <h2>
+                {type === 'file_upload' && '上傳'}
+                {type === 'file_update' && '更新'}
+                {uploadComplete ? '完成' : '檔案'}
+            </h2>
+            {!uploadComplete && (
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    id="fileInput"
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                        setFile(e.target.files?.[0] || null);
+                        setFileName(e.target.files?.[0]?.name || '請選擇檔案（.gpx / .geojson）');
+                    }}
+                />
+            )}
             {!uploadComplete && (
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     <button type="button" onClick={triggerFileInput} style={{ whiteSpace: 'nowrap' }}>
                         選擇檔案
                     </button>
-                    <p style={{ whiteSpace: 'nowrap' }}>{file?.name || '請選擇檔案（.gpx / .geojson）'}</p>
+                    <p style={{ whiteSpace: 'nowrap' }}>{fileName}</p>
                 </div>
             )}
             {!uploadComplete && <button onClick={handleUpload}>上傳</button>}

@@ -39,4 +39,8 @@
             cursor: pointer;
         }
     }
+
+    button {
+        border: 1px solid colors.$panel_active;
+    }
 }

@@ -1,4 +1,4 @@
-import { useState, useContext, createContext, ReactNode, useEffect } from 'react';
+import { useState, useContext, createContext, ReactNode } from 'react';
 
 type ModalContextType = {
     modalIsOpen: boolean;
@@ -12,10 +12,6 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalType, setModalType] = useState<string | null>(null);
-
-    useEffect(() => {
-        console.log(123123);
-    }, [modalIsOpen]);
 
     return <ModalContext.Provider value={{ modalIsOpen, setModalIsOpen, modalType, setModalType }}>{children}</ModalContext.Provider>;
 };

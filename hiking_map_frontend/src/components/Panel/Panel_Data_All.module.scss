@@ -146,6 +146,13 @@
                 tr {
                     &:hover {
                         td {
+                            &.Table_public {
+                                input {
+                                    &.disabled {
+                                        accent-color: colors.$panel_active;
+                                    }
+                                }
+                            }
                             &.Table_edit {
                                 > div {
                                     button {
@@ -157,6 +164,7 @@
                         }
                     }
                     &.active {
+                        cursor: auto;
                         td {
                             &.Table_edit {
                                 > div {
@@ -178,9 +186,6 @@
                     td {
                         width: 1%;
 
-                        &:not(.Table_id) {
-                            // min-width: 140px;
-                        }
                         input {
                             border-radius: 0.25rem;
                             border: 0.5px solid colors.$panel;
@@ -230,6 +235,14 @@
                         }
                         &.Table_note {
                             width: 100%;
+                        }
+                        &.Table_public {
+                            input {
+                                accent-color: colors.$panel;
+                                &.disabled {
+                                    pointer-events: none;
+                                }
+                            }
                         }
                         &.Table_file {
                             button {

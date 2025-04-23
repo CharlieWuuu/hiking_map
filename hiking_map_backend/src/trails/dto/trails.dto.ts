@@ -1,4 +1,4 @@
-export class UpdateTrailDto {
+export class TrailsDto {
   geojson?: any;
   properties?: Record<string, any>;
 }

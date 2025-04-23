@@ -1,17 +1,26 @@
 import styles from './Panel_Data_All.module.scss'; // 引入樣式
 import { usePolyline } from '../../context/PolylineContext';
-import { usePanel } from '../../context/PanelContext';
 import { useTableContext } from '../../context/TableContext';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useGeojson } from '../../context/GeojsonContext';
 import { useModal } from '../../context/ModalContext';
+import { usePatchData } from '../../context/PatchDataContext';
+
+type patchData = {
+    name: string;
+    county: string;
+    town: string;
+    time: string;
+    url: string[];
+    note: string;
+    public: boolean;
+};
 
 // 定義元件
 export default function Panel_Edit() {
-    const { geojson } = useGeojson();
+    const { geojson, refreshGeojson } = useGeojson();
     const itemsPerPage = 50; // 每頁顯示的項目數
     const { setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid, editFeatureUuid, setEditFeatureUuid, setDeleteFeatureUuid } = usePolyline();
-    const { setUIPanels } = usePanel();
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
     const rowRefs = useRef<Record<string, HTMLTableRowElement | null>>({});
 
@@ -28,6 +37,38 @@ export default function Panel_Edit() {
     const pageIndexStart = startIndex + 1;
     const pageIndexEnd = Math.min(startIndex + itemsPerPage, features?.length ?? 0);
     const { modalIsOpen, setModalIsOpen, setModalType } = useModal();
+    const { patchData, setPatchData } = usePatchData();
+
+    useEffect(() => {
+        console.log(patchData);
+    }, [patchData]);
+
+    const patchProperties = async () => {
+        try {
+            const res = await fetch(`http://localhost:3001/trails/${editFeatureUuid}/properties`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(patchData),
+            });
+
+            const result = await res.json();
+            if (result.success) {
+                setModalType('complete');
+                setModalIsOpen(true);
+                setActiveFeatureUuid(null);
+                setEditFeatureUuid(null);
+                refreshGeojson();
+                setPatchData(null);
+            } else {
+                alert('上傳失敗');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('錯誤：無法上傳');
+        }
+    };
 
     return (
         <div className={`${styles.Panel_Data_All} ${styles.Panel_Edit}`}>
@@ -47,7 +88,7 @@ export default function Panel_Edit() {
                 <button
                     onClick={() => {
                         setModalIsOpen(!modalIsOpen);
-                        setModalType('upload');
+                        setModalType('file_upload');
                     }}>
                     新增
                 </button>
@@ -64,6 +105,7 @@ export default function Panel_Edit() {
                             <th>鄉鎮</th>
                             <th>時間</th>
                             <th>網址</th>
+                            <th>公開</th>
                             <th>備註</th>
                             <th>{editFeatureUuid && '檔案'}</th>
                             <th>{editFeatureUuid && '操作'}</th>
@@ -82,30 +124,20 @@ export default function Panel_Edit() {
                                 className={`${activeFeatureUuid === feature.properties?.uuid ? styles.active : ''}`.trim()}
                                 key={index}
                                 onMouseEnter={() => setHoverFeatureUuid(feature.properties?.uuid)}
-                                onMouseLeave={() => setHoverFeatureUuid(null)}
-                                onClick={() => {
-                                    activeFeatureUuid !== feature.properties?.uuid && setActiveFeatureUuid(feature.properties?.uuid);
-                                    activeFeatureUuid !== feature.properties?.uuid && setUIPanels((prev) => ({ ...prev, detail: true }));
-
-                                    activeFeatureUuid === feature.properties?.uuid && setActiveFeatureUuid(null);
-                                    activeFeatureUuid === feature.properties?.uuid && setUIPanels((prev) => ({ ...prev, detail: false }));
-                                }}>
+                                onMouseLeave={() => setHoverFeatureUuid(null)}>
                                 <td className={styles.Table_id}>{feature.properties?.id}</td>
                                 <td className={styles.Table_name}>
                                     {editFeatureUuid !== feature.properties?.uuid && feature.properties?.name}
-                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.name} />}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.name} onChange={(e) => setPatchData({ ...(patchData as patchData), name: e.target.value as string })} />}
                                 </td>
-                                <td className={styles.Table_length}>
-                                    {editFeatureUuid !== feature.properties?.uuid && feature.properties?.length}
-                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.length} />}
-                                </td>
+                                <td className={styles.Table_length}>{feature.properties?.uuid && feature.properties?.length}</td>
                                 <td className={styles.Table_county}>
-                                    {editFeatureUuid !== feature.properties?.uuid && (feature.properties?.county ?? '-')}
-                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.county} />}
+                                    {editFeatureUuid !== feature.properties?.uuid && (feature.properties?.county || '-')}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.county} onChange={(e) => setPatchData({ ...(patchData as patchData), county: e.target.value as string })} />}
                                 </td>
                                 <td className={styles.Table_town}>
-                                    {editFeatureUuid !== feature.properties?.uuid && (feature.properties?.town ?? '-')}
-                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.town} />}
+                                    {editFeatureUuid !== feature.properties?.uuid && (feature.properties?.town || '-')}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.town} onChange={(e) => setPatchData({ ...(patchData as patchData), town: e.target.value as string })} />}
                                 </td>
                                 <td className={styles.Table_time}>
                                     {editFeatureUuid !== feature.properties?.uuid &&
@@ -116,7 +148,7 @@ export default function Panel_Edit() {
                                             const day = String(date.getDate()).padStart(2, '0');
                                             return `${year}年${month}月${day}日`;
                                         })()}
-                                    {editFeatureUuid === feature.properties?.uuid && <input type="date" defaultValue={new Date(feature.properties?.time).toISOString().split('T')[0]} />}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="date" defaultValue={new Date(feature.properties?.time).toISOString().split('T')[0]} onChange={(e) => setPatchData({ ...(patchData as patchData), time: new Date(e.target.value).toISOString() as string })} />}
                                 </td>
                                 <td className={styles.Table_url}>
                                     {editFeatureUuid !== feature.properties?.uuid &&
@@ -124,27 +156,49 @@ export default function Panel_Edit() {
                                             feature.properties?.url.map((element: string, index: number) => (
                                                 <div key={index}>
                                                     <a href={element} target="_blank" rel="noopener noreferrer">
-                                                        連結-{index + 1}
+                                                        連結({index + 1})
                                                     </a>
                                                 </div>
                                             ))
                                         ) : (
                                             <p>-</p>
                                         ))}
+
                                     {editFeatureUuid === feature.properties?.uuid && (
                                         <div>
-                                            <input type="text" defaultValue="晚點做" />
-                                            <button>新增</button>
+                                            <button
+                                                onClick={() => {
+                                                    setModalType('editUrl');
+                                                    setModalIsOpen(true);
+                                                    setPatchData({
+                                                        ...(patchData as patchData),
+                                                        url: feature.properties?.url,
+                                                    });
+                                                }}>
+                                                編輯
+                                            </button>
                                         </div>
                                     )}
                                 </td>
-                                <td className={styles.Table_note}>
-                                    {editFeatureUuid !== feature.properties?.uuid && (feature.properties?.note ?? '-')}
-                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.note} />}
+                                <td className={styles.Table_public}>
+                                    {editFeatureUuid !== feature.properties?.uuid && feature.properties?.public && <input type="checkbox" defaultChecked={feature.properties?.public} className={styles.disabled} />}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="checkbox" defaultChecked={feature.properties?.public} onChange={(e) => setPatchData({ ...(patchData as patchData), public: e.target.checked as boolean })} />}
                                 </td>
-
-                                <td className={styles.Table_file}>{editFeatureUuid === feature.properties?.uuid && <button>檔案</button>}</td>
-
+                                <td className={styles.Table_note}>
+                                    {editFeatureUuid !== feature.properties?.uuid && (feature.properties?.note || '-')}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.note} onChange={(e) => setPatchData({ ...(patchData as patchData), note: e.target.value as string })} />}
+                                </td>
+                                <td className={styles.Table_file}>
+                                    {editFeatureUuid === feature.properties?.uuid && (
+                                        <button
+                                            onClick={() => {
+                                                setModalType('file_update');
+                                                setModalIsOpen(true);
+                                            }}>
+                                            檔案
+                                        </button>
+                                    )}
+                                </td>
                                 <td className={styles.Table_edit}>
                                     {editFeatureUuid !== feature.properties?.uuid && (
                                         <div>
@@ -152,6 +206,8 @@ export default function Panel_Edit() {
                                                 onClick={() => {
                                                     setActiveFeatureUuid(feature.properties?.uuid);
                                                     setEditFeatureUuid(feature.properties?.uuid);
+                                                    editFeatureUuid !== feature.properties?.uuid && setActiveFeatureUuid(feature.properties?.uuid);
+                                                    editFeatureUuid === feature.properties?.uuid && setActiveFeatureUuid(null);
                                                 }}>
                                                 編輯
                                             </button>
@@ -177,7 +233,12 @@ export default function Panel_Edit() {
                                                 }}>
                                                 取消
                                             </button>
-                                            <button className={styles.save} onClick={(e) => e.stopPropagation()}>
+                                            <button
+                                                className={styles.save}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    patchProperties();
+                                                }}>
                                                 儲存
                                             </button>
                                         </div>
