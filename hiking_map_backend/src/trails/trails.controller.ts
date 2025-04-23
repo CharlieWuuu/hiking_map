@@ -11,9 +11,12 @@ import {
   Body,
   UploadedFile,
   UseInterceptors,
+  Query,
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TrailsDto } from './dto/trails.dto';
+import { Response } from 'express';
 import { TrailsInfoDto } from './dto/trails_info.dio';
 
 @ApiTags('Trails')
@@ -50,7 +53,7 @@ export class TrailsController {
   }
 
   @Get('export/:type')
-  getExport(@Param('type') type: string) {
-    return this.trailsService.getExport(type);
+  getExport(@Res() res: Response, @Query('type') type: string) {
+    return this.trailsService.getExport(res, type);
   }
 }

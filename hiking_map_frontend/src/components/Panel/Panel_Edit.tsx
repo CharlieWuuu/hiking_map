@@ -1,7 +1,7 @@
 import styles from './Panel_Data_All.module.scss'; // 引入樣式
 import { usePolyline } from '../../context/PolylineContext';
 import { useTableContext } from '../../context/TableContext';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { useGeojson } from '../../context/GeojsonContext';
 import { useModal } from '../../context/ModalContext';
 import { usePatchData } from '../../context/PatchDataContext';

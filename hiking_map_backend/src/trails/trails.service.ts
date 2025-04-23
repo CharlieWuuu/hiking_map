@@ -1,13 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Trail } from './trail.entity';
-import { convertGpxToGeojson } from './utils/convert-gpx-to-geojson';
-import { convertShpToGeojson } from './utils/convert-shp-to-geojson';
-import { TrailsDto } from './dto/trails.dto';
+import {
+  convertGpxToGeojson,
+  convertShpToGeojson,
+  convertGeojsonToCsv,
+  convertGeojsonToGpx,
+} from './utils/covert.utils';
 import { TrailsInfoDto } from './dto/trails_info.dio';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid'; // 如果你使用 UUID
+import { Response } from 'express';
+import { FeatureCollection } from 'geojson';
 
 @Injectable()
 export class TrailsService {
@@ -39,7 +44,7 @@ export class TrailsService {
       ORDER BY trails_info.time ASC;
     `);
 
-    const geojson = {
+    const geojson: FeatureCollection = {
       type: 'FeatureCollection',
       features: rows.map((row) => ({
         type: 'Feature',
@@ -226,7 +231,31 @@ export class TrailsService {
     return { success: true, message: `uuid=${uuid} 資料已更新` };
   }
 
-  async getExport(type: string) {
-    return type;
+  async getExport(res: Response, type: string) {
+    const geojson: FeatureCollection = await this.getTrails();
+
+    if (type === 'geojson') {
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="trails.geojson"',
+      );
+      return res.json(geojson);
+    }
+
+    if (type === 'csv') {
+      const csv = convertGeojsonToCsv(geojson);
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename="trails.csv"');
+      return res.send(csv);
+    }
+
+    if (type === 'gpx') {
+      const gpx = await convertGeojsonToGpx(geojson); // 用 to-gpx 套件
+      res.setHeader('Content-Disposition', 'attachment; filename="trails.gpx"');
+      res.setHeader('Content-Type', 'application/gpx+xml');
+      return res.send(gpx);
+    }
+
+    throw new BadRequestException('不支援的格式');
   }
 }
