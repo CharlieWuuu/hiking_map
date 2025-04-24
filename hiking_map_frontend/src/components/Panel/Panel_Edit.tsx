@@ -1,7 +1,7 @@
 import styles from './Panel_Data_All.module.scss'; // 引入樣式
 import { usePolyline } from '../../context/PolylineContext';
 import { useTableContext } from '../../context/TableContext';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useGeojson } from '../../context/GeojsonContext';
 import { useModal } from '../../context/ModalContext';
 import { usePatchData } from '../../context/PatchDataContext';
@@ -70,6 +70,20 @@ export default function Panel_Edit() {
         }
     };
 
+    const [selectedFormat, setSelectedFormat] = useState('');
+    const handleExport = async (type: string) => {
+        setSelectedFormat('loading');
+        const res = await fetch(`http://localhost:3001/trails/export?type=${type}`);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `trails.${type}`;
+        a.click();
+        URL.revokeObjectURL(url);
+        setSelectedFormat('placeholder');
+    };
+
     return (
         <div className={`${styles.Panel_Data_All} ${styles.Panel_Edit}`}>
             <div className={styles.Table_Header}>
@@ -92,6 +106,22 @@ export default function Panel_Edit() {
                     }}>
                     新增
                 </button>
+                <select
+                    value={selectedFormat}
+                    onChange={(e) => {
+                        setSelectedFormat(e.target.value);
+                        handleExport(e.target.value);
+                    }}>
+                    <option value="placeholder" selected style={{ display: 'none' }}>
+                        下載
+                    </option>
+                    <option value="loading" style={{ display: 'none' }}>
+                        下載中...
+                    </option>
+                    <option value="geojson">GeoJSON</option>
+                    <option value="gpx">GPX</option>
+                    <option value="csv">CSV</option>
+                </select>
             </div>
             <div className={styles.Table_ScrollWrapper}>
                 <table cellSpacing="0">

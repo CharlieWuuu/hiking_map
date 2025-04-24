@@ -136,6 +136,14 @@
             height: 70%;
             background-color: colors.$panel_active;
         }
+        select {
+            border-radius: 1rem;
+            border: 0.5px solid colors.$background_contrary;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.9rem;
+            background-color: colors.$panel;
+            color: colors.$background_contrary;
+        }
     }
 }
 

@@ -52,7 +52,7 @@ export class TrailsController {
     return this.trailsService.patch(uuid, dto);
   }
 
-  @Get('export/:type')
+  @Get('export')
   getExport(@Res() res: Response, @Query('type') type: string) {
     return this.trailsService.getExport(res, type);
   }

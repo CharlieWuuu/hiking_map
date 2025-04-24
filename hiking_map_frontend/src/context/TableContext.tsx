@@ -1,5 +1,5 @@
 import type { FeatureCollection } from 'geojson';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useGeojson } from './GeojsonContext';
 
 type TableProviderProps = {
@@ -12,7 +12,7 @@ type TableContextType = {
     startIndex: number;
     currentPageData: any[];
     totalPages: number;
-    UuidToPage: (id: string | null) => void;
+    UuidToPage: (uuid: string | null) => void;
     setFeatures: (f: any[]) => void;
 };
 

@@ -85,7 +85,7 @@ export default function Navbar() {
             </div>
             <div className={styles.RightButton}>
                 <button onClick={toggleFullscreen}>{isFullscreen ? <img src={FullScreen_back} alt="全螢幕" /> : <img src={FullScreen} alt="關閉全螢幕" />}</button>
-                {uiPanels && setUIPanels && (
+                {uiPanels && setUIPanels && isLoggedIn && (
                     <button
                         className={`${uiPanels.edit ? 'active' : ''}`}
                         onClick={() =>

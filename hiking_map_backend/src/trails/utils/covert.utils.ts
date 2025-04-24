@@ -3,7 +3,20 @@ import * as Papa from 'papaparse';
 import { create as xmlCreate } from 'xmlbuilder2';
 
 export function convertGeojsonToCsv(geojson: FeatureCollection): string {
-  const rows = geojson.features.map((f) => f.properties);
+  const rows = geojson.features.map((f) => {
+    const props = { ...f.properties };
+
+    // 檢查 time 欄位是否存在並轉換格式
+    if (props.time) {
+      const date = new Date(props.time);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1; // 月份從 0 開始
+      const day = date.getDate();
+      props.time = `${year}年${month}月${day}日`;
+    }
+
+    return props;
+  });
   const csv = Papa.unparse(rows);
   const bom = '\uFEFF';
   return bom + csv;
@@ -18,7 +31,6 @@ export async function convertGeojsonToGpx(geojson: FeatureCollection) {
   geojson.features.forEach((feature) => {
     const trk = gpx.ele('trk');
     trk.ele('name').txt(feature.properties?.name || 'Unnamed');
-    console.log(feature.properties?.name);
 
     // 自訂屬性放 extensions
     const ext = trk.ele('extensions');
