@@ -1,5 +1,5 @@
 import type { FeatureCollection } from 'geojson';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import { useGeojson } from './GeojsonContext';
 
 type TableProviderProps = {

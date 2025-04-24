@@ -20,11 +20,14 @@
     .SearchBar {
         @include mixins.flex_center;
         justify-content: space-between;
-        border-radius: 3rem;
+        border-radius: 1rem;
         height: variables.$navbar_height;
         padding: 1rem;
         flex-grow: 1;
         background-color: colors.$panel;
+        &.active {
+            border-radius: 1rem 1rem 0 0;
+        }
         input {
             color: colors.$background_contrary;
             background-color: transparent;
@@ -32,6 +35,8 @@
             font-size: 1rem;
             flex-grow: 1;
             outline: none;
+            width: 100%;
+            padding: 6px 0px;
         }
         img {
             opacity: 0.5;

@@ -7,9 +7,9 @@
     opacity: 0;
     pointer-events: none;
     transition: all 0.3s ease;
-    z-index: 100000;
-
+    z-index: 10;
     @include mixins.flex_center;
+
     button {
         width: 2rem;
         height: 2rem;
