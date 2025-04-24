@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import type { FeatureCollection } from 'geojson';
+import axios from '../api/axios';
 
 type GeojsonContextType = {
     geojson: FeatureCollection | null;
@@ -9,17 +10,27 @@ type GeojsonContextType = {
 
 const GeojsonContext = createContext<GeojsonContextType | undefined>(undefined);
 
-export const GeojsonProvider = ({ children }: { children: ReactNode }) => {
+export const GeojsonProvider = ({ children }: { children: React.ReactNode }) => {
     const [geojson, setGeojson] = useState<FeatureCollection | null>(null);
-    const refreshGeojson = () => {
-        fetch('http://localhost:3001/trails')
-            .then((res) => res.json())
-            .then((data: FeatureCollection) => setGeojson(data));
+
+    const refreshGeojson = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            fetch('http://localhost:3001/trails', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((res) => res.json())
+                .then((data: FeatureCollection) => setGeojson(data));
+        } catch (error) {
+            console.error('取得 GeoJSON 失敗', error);
+        }
     };
+
     useEffect(() => {
-        fetch('http://localhost:3001/trails')
-            .then((res) => res.json())
-            .then((data: FeatureCollection) => setGeojson(data));
+        refreshGeojson();
     }, []);
 
     return <GeojsonContext.Provider value={{ geojson, setGeojson, refreshGeojson }}>{children}</GeojsonContext.Provider>;

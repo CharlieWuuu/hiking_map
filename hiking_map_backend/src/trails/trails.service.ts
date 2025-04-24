@@ -21,7 +21,9 @@ export class TrailsService {
     private readonly trailRepo: Repository<Trail>,
   ) {}
 
-  async getTrails() {
+  async getTrails(userId: string | null) {
+    const sqlWhere = userId === null ? 'WHERE trails_info.public = true' : '';
+    console.log(sqlWhere);
     const rows = await this.trailRepo.query(`
       SELECT
         trails.uuid,
@@ -33,7 +35,7 @@ export class TrailsService {
         trails_info.name,
         trails_info.county,
         trails_info.town,
-        trails_info.time ,
+        trails_info.time,
         trails_info.url,
         trails_info.note,
         trails_info.public,
@@ -41,6 +43,7 @@ export class TrailsService {
       FROM trails
       JOIN trails_info
         ON trails.uuid = trails_info.uuid
+      ${sqlWhere}
       ORDER BY trails_info.time ASC;
     `);
 
@@ -231,8 +234,8 @@ export class TrailsService {
     return { success: true, message: `uuid=${uuid} 資料已更新` };
   }
 
-  async getExport(res: Response, type: string) {
-    const geojson: FeatureCollection = await this.getTrails();
+  async getExport(res: Response, type: string, userId: string | null) {
+    const geojson: FeatureCollection = await this.getTrails(userId);
 
     if (type === 'geojson') {
       res.setHeader(

@@ -39,9 +39,9 @@ export default function Panel_Edit() {
     const { modalIsOpen, setModalIsOpen, setModalType } = useModal();
     const { patchData, setPatchData } = usePatchData();
 
-    useEffect(() => {
-        console.log(patchData);
-    }, [patchData]);
+    // useEffect(() => {
+    //     console.log(patchData);
+    // }, [patchData]);
 
     const patchProperties = async () => {
         try {
@@ -70,7 +70,7 @@ export default function Panel_Edit() {
         }
     };
 
-    const [selectedFormat, setSelectedFormat] = useState('');
+    const [selectedFormat, setSelectedFormat] = useState('下載');
     const handleExport = async (type: string) => {
         setSelectedFormat('loading');
         const res = await fetch(`http://localhost:3001/trails/export?type=${type}`);
@@ -112,7 +112,7 @@ export default function Panel_Edit() {
                         setSelectedFormat(e.target.value);
                         handleExport(e.target.value);
                     }}>
-                    <option value="placeholder" selected style={{ display: 'none' }}>
+                    <option value="placeholder" style={{ display: 'none' }}>
                         下載
                     </option>
                     <option value="loading" style={{ display: 'none' }}>

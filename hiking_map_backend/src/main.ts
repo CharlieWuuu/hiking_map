@@ -18,6 +18,7 @@ async function bootstrap() {
     .setTitle('Hiking Map API')
     .setDescription('登山地圖後端 API 文件')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
