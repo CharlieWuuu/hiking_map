@@ -15,7 +15,7 @@ export const GeojsonProvider = ({ children }: { children: React.ReactNode }) => 
     const refreshGeojson = async () => {
         const token = localStorage.getItem('token');
         try {
-            fetch('http://localhost:3001/trails', {
+            fetch('http://localhost:3000/trails', {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,

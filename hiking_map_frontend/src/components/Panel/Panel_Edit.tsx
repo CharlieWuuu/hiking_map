@@ -45,7 +45,7 @@ export default function Panel_Edit() {
 
     const patchProperties = async () => {
         try {
-            const res = await fetch(`http://localhost:3001/trails/${editFeatureUuid}/properties`, {
+            const res = await fetch(`http://localhost:3000/trails/${editFeatureUuid}/properties`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ export default function Panel_Edit() {
     const [selectedFormat, setSelectedFormat] = useState('下載');
     const handleExport = async (type: string) => {
         setSelectedFormat('loading');
-        const res = await fetch(`http://localhost:3001/trails/export?type=${type}`);
+        const res = await fetch(`http://localhost:3000/trails/export?type=${type}`);
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');

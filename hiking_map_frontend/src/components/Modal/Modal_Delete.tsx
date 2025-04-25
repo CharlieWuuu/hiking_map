@@ -13,7 +13,7 @@ export default function Modal_Delete() {
     const deleteByUuid = async () => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`http://localhost:3001/trails/${deleteFeatureUuid}`, {
+            const res = await fetch(`http://localhost:3000/trails/${deleteFeatureUuid}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

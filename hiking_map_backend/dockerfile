@@ -20,4 +20,5 @@ RUN npm run build
 CMD ["node", "dist/main"]
 
 # 7. 預設對外開啟的 port
-EXPOSE 3001
+ENV PORT=3000
+EXPOSE 3000

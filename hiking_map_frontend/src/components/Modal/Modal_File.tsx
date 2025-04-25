@@ -23,7 +23,7 @@ export default function Modal_File({ type }: Props) {
         }
         const formData = new FormData();
         formData.append('file', file);
-        const url = type === 'file_upload' ? 'http://localhost:3001/trails' : `http://localhost:3001/trails/${editFeature?.uuid}`;
+        const url = type === 'file_upload' ? 'http://localhost:3000/trails' : `http://localhost:3000/trails/${editFeature?.uuid}`;
 
         try {
             const res = await fetch(url, {

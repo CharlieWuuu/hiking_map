@@ -1,5 +1,3 @@
-console.log('DATABASE_URL in container:', process.env.DATABASE_URL);
-
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -28,6 +26,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
+
   console.log(`📘 Swagger docs: http://localhost:${port}/api-docs`);
 }
 bootstrap();
