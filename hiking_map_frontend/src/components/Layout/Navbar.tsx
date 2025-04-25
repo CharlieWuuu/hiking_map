@@ -113,7 +113,7 @@ export default function Navbar() {
                         }
                     }}
                     inputValue={inputValue}
-                    onInputChange={(event, newInputValue, reason) => {
+                    onInputChange={(_, newInputValue, reason) => {
                         if (reason !== 'reset') {
                             setInputValue(newInputValue); // 這就是「及時取得輸入內容」
                         }

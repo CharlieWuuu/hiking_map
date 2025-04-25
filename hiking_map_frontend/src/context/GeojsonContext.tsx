@@ -1,6 +1,5 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import type { FeatureCollection } from 'geojson';
-import axios from '../api/axios';
 
 type GeojsonContextType = {
     geojson: FeatureCollection | null;
