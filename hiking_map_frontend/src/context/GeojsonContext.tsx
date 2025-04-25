@@ -14,14 +14,19 @@ export const GeojsonProvider = ({ children }: { children: React.ReactNode }) => 
 
     const refreshGeojson = async () => {
         const token = localStorage.getItem('token');
+
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
         try {
             const baseURL = import.meta.env.VITE_API_URL;
             console.log('baseURL', baseURL);
             fetch(`${baseURL}/trails`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
+                headers,
             })
                 .then((res) => res.json())
                 .then((data: FeatureCollection) => setGeojson(data));

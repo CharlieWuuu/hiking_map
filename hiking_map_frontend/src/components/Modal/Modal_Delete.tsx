@@ -11,16 +11,22 @@ export default function Modal_Delete() {
     const [deleteComplete, setDeleteComplete] = useState(false);
 
     const deleteByUuid = async () => {
-        const token = localStorage.getItem('token');
         try {
+            const token = localStorage.getItem('token');
+
+            const headers: Record<string, string> = {
+                'Content-Type': 'application/json',
+            };
+
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
             const baseURL = import.meta.env.VITE_API_URL;
 
             const res = await fetch(`${baseURL}/trails/${deleteFeatureUuid}`, {
                 method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
+                headers,
             });
 
             const result = await res.json();
