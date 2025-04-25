@@ -9,7 +9,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: 'http://localhost:5173', // 👈 允許你的前端開發主機（Vite 預設是 5173）
+    origin: [
+      'http://localhost:5173', // 開發時本機
+      'https://hiking-map.vercel.app', // 正式部署後的前端網址
+    ],
     credentials: true,
   });
 
