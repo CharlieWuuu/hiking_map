@@ -59,7 +59,7 @@
         }
     }
 
-    @include media.media(lg) {
+    @include media.media(md) {
         justify-content: center;
         .Logo {
             img {

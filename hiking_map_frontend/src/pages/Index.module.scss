@@ -30,8 +30,9 @@
         max-width: 320px;
     }
 
-    @include media.media(lg) {
+    @include media.media(md) {
         flex-direction: column-reverse;
+        gap: 0;
 
         .leftPanelContainer {
             max-width: 100%;

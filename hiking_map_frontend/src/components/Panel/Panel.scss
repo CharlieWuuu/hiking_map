@@ -1,6 +1,7 @@
 @use '../../styles/colors' as colors;
 @use '../../styles/variables' as variables;
 @use '../../styles/mixins' as mixins;
+@use '../../styles/media' as media;
 
 .Panel {
     border-radius: variables.$border_radius;
@@ -33,5 +34,9 @@
             opacity: 0.5;
             pointer-events: all;
         }
+    }
+
+    @include media.media(md) {
+        border-radius: 0;
     }
 }

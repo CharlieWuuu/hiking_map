@@ -15,7 +15,8 @@
         accent-color: colors.$accent;
     }
 
-    @include media.media(lg) {
+    @include media.media(md) {
         gap: 0.5rem;
+        padding: 0;
     }
 }

@@ -1,6 +1,7 @@
 @use '../../styles/variables' as variables;
 @use '../../styles/colors' as colors;
 @use '../../styles/mixins' as mixins;
+@use '../../styles/media' as media;
 
 .Map {
     position: relative;
@@ -48,6 +49,10 @@
         overflow: hidden;
         background: white;
 
+        @include media.media(md) {
+            border-radius: 0;
+        }
+
         &:before {
             content: '';
             position: absolute;
@@ -58,6 +63,10 @@
             border-radius: variables.$border_radius;
             z-index: 5;
             pointer-events: none;
+
+            @include media.media(md) {
+                display: none;
+            }
         }
 
         .leaflet-control-container {
