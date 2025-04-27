@@ -61,6 +61,8 @@
 
     @include media.media(md) {
         justify-content: center;
+        height: fit-content;
+        padding: 0.5rem;
         .Logo {
             img {
                 height: 1.5rem;

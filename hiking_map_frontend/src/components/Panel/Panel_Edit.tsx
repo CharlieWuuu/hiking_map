@@ -31,18 +31,13 @@ export default function Panel_Edit() {
                 block: 'center',
             });
         }
-    }, [activeFeatureUuid]);
+    }, [currentPage, activeFeatureUuid]);
 
     const features = geojson?.features; // 取得 geojson 中的 features
     const pageIndexStart = startIndex + 1;
     const pageIndexEnd = Math.min(startIndex + itemsPerPage, features?.length ?? 0);
     const { modalIsOpen, setModalIsOpen, setModalType } = useModal();
     const { patchData, setPatchData } = usePatchData();
-
-    // useEffect(() => {
-    //     console.log(patchData);
-    // }, [patchData]);
-
     const patchProperties = async () => {
         try {
             const baseURL = import.meta.env.VITE_API_URL;

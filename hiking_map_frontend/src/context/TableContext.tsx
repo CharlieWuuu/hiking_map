@@ -1,6 +1,7 @@
 import type { FeatureCollection } from 'geojson';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useState, useEffect } from 'react';
 import { useGeojson } from './GeojsonContext';
+import { usePolyline } from './PolylineContext';
 
 type TableProviderProps = {
     children: React.ReactNode;
@@ -12,7 +13,6 @@ type TableContextType = {
     startIndex: number;
     currentPageData: any[];
     totalPages: number;
-    UuidToPage: (uuid: string | null) => void;
     setFeatures: (f: any[]) => void;
 };
 
@@ -27,16 +27,17 @@ export const TableProvider = ({ children }: TableProviderProps) => {
     const startIndex = useMemo(() => (currentPage - 1) * itemsPerPage, [currentPage]);
     const currentPageData = useMemo(() => features.slice(startIndex, startIndex + itemsPerPage), [features, startIndex]);
     const totalPages = useMemo(() => Math.ceil(features.length / itemsPerPage), [features]);
+    const { activeFeatureUuid } = usePolyline();
 
-    const UuidToPage = (uuid: string | null) => {
-        if (uuid === null) return;
-        const index = features.findIndex((f) => f.properties?.uuid === uuid);
+    useEffect(() => {
+        if (activeFeatureUuid === null) return;
+        const index = features.findIndex((f) => f.properties?.uuid === activeFeatureUuid);
         if (index === -1) return;
         const page = Math.floor(index / itemsPerPage) + 1;
         setCurrentPage(page);
-    };
+    }, [activeFeatureUuid]);
 
-    return <TableContext.Provider value={{ currentPage, setCurrentPage, startIndex, currentPageData, totalPages, UuidToPage, setFeatures }}>{children}</TableContext.Provider>;
+    return <TableContext.Provider value={{ currentPage, setCurrentPage, startIndex, currentPageData, totalPages, setFeatures }}>{children}</TableContext.Provider>;
 };
 
 export const useTableContext = () => {

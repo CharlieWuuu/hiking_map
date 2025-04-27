@@ -95,7 +95,7 @@ export default function Map() {
     useEffect(() => {
         activeRef.current = activeFeatureUuid;
     }, [activeFeatureUuid]);
-    const { UuidToPage, setFeatures } = useTableContext();
+    const { setFeatures } = useTableContext();
     useEffect(() => {
         if (geojson) setFeatures(geojson.features);
     }, [geojson]);
@@ -125,7 +125,6 @@ export default function Map() {
                                     click: () => {
                                         const currentActive = activeRef.current;
                                         setActiveFeatureUuid(currentActive === uuid ? null : uuid);
-                                        UuidToPage(currentActive === uuid ? null : uuid);
                                     },
                                 });
                             }}

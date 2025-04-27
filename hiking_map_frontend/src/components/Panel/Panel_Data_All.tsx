@@ -21,7 +21,7 @@ export default function Panel_Data_All() {
                 block: 'center',
             });
         }
-    }, [activeFeatureUuid]);
+    }, [currentPage, activeFeatureUuid]);
 
     if (!geojson) {
         return (

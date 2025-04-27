@@ -62,7 +62,6 @@ export default function Navbar() {
                 uuid: f.properties?.uuid,
             }))
             .sort((a, b) => a.label.localeCompare(b.label, 'zh-Hant')) || [];
-    const { UuidToPage } = useTableContext();
     const [inputValue, setInputValue] = useState('');
     const { setActiveFeatureUuid } = usePolyline();
 
@@ -72,7 +71,6 @@ export default function Navbar() {
     const handleSelectOption = (option: TrailOption) => {
         if (!option) return;
         setSelectedOption(option); // 選中它
-        UuidToPage(option.uuid); // 跳頁
         setActiveFeatureUuid(option.uuid); // 更新線段
         setUIPanels({ ...uiPanels, detail: true }); // 打開右欄
     };

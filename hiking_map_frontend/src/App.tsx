@@ -14,8 +14,8 @@ export default function App() {
         <div className={styles.App}>
             <GeojsonProvider>
                 <PanelProvider>
-                    <TableProvider>
-                        <PolylineProvider>
+                    <PolylineProvider>
+                        <TableProvider>
                             <ModalProvider>
                                 <PatchDataProvider>
                                     <Navbar />
@@ -23,8 +23,8 @@ export default function App() {
                                     <Modal />
                                 </PatchDataProvider>
                             </ModalProvider>
-                        </PolylineProvider>
-                    </TableProvider>
+                        </TableProvider>
+                    </PolylineProvider>
                 </PanelProvider>
             </GeojsonProvider>
         </div>
