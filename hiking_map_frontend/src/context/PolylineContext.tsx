@@ -1,5 +1,5 @@
 // 匯入 React 的核心 hook 和型別，ReactNode 是用來定義 children 的型別
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 
 // 定義這個 context 的資料格式，包含兩組 state（hover 和 active）與對應的 set 函式
 type PolylineContextType = {

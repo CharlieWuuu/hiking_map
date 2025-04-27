@@ -8,7 +8,6 @@ import FullScreen_back from '../../assets/FullScreen_back.svg';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { usePanel } from '../../context/PanelContext';
-import { useTableContext } from '../../context/TableContext';
 import { usePolyline } from '../../context/PolylineContext';
 import { useGeojson } from '../../context/GeojsonContext';
 import { Autocomplete } from '@mui/material';
