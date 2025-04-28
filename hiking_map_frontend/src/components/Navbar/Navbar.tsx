@@ -116,11 +116,16 @@ export default function Navbar({ setMenuIsOpen }: Props) {
                         <img src={InfoUrl} alt="網站介紹" />
                     </button>
                 )}
-                {uiPanels && setUIPanels && (
+                {/* {uiPanels && setUIPanels && (
                     <button className={`${styles.authBtn} ${uiPanels.auth ? 'active' : ''}`} onClick={() => setUIPanels({ ...uiPanels, auth: !uiPanels.auth })}>
                         {isLoggedIn ? '帳號' : '登入'}
                     </button>
-                )}
+                )} */}
+                <button className={`${styles.authBtn}`}>
+                    <a href="/login" style={{ color: 'white' }}>
+                        登入
+                    </a>
+                </button>
             </div>
             <div className={styles.Hamburger} onClick={() => setMenuIsOpen(true)}>
                 <img src={Hamburger} alt="更多" />

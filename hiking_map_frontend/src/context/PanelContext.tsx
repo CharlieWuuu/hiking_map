@@ -11,7 +11,6 @@ const PanelContext = createContext<PanelContextType | undefined>(undefined);
 export const PanelProvider = ({ children }: { children: ReactNode }) => {
     const [uiPanels, setUIPanels] = useState<UIPanels>({
         data: true,
-        detail: false,
         auth: false,
         info: false,
         edit: false,

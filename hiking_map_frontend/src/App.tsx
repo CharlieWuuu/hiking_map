@@ -9,31 +9,46 @@ import { PolylineProvider } from './context/PolylineContext';
 import { GeojsonProvider } from './context/GeojsonContext';
 import { ModalProvider } from './context/ModalContext';
 import { PatchDataProvider } from './context/PatchDataContext';
-import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useState } from 'react';
+// import UserPage from './pages/UserPage';
+import LoginPage from './pages/LoginPage';
+import './styles/main.scss';
 
 export default function App() {
     const [menuIsOpen, setMenuIsOpen] = useState(false);
-    useEffect(() => {
-        console.log('menuIsOpen', menuIsOpen);
-    }, [menuIsOpen]);
+
     return (
         <div className={styles.App}>
-            <GeojsonProvider>
-                <PanelProvider>
-                    <PolylineProvider>
-                        <TableProvider>
-                            <ModalProvider>
-                                <PatchDataProvider>
-                                    <Navbar setMenuIsOpen={setMenuIsOpen} />
-                                    <Index />
-                                    <Modal />
-                                    <Menu menuIsOpen={menuIsOpen} setMenuIsOpen={setMenuIsOpen} />
-                                </PatchDataProvider>
-                            </ModalProvider>
-                        </TableProvider>
-                    </PolylineProvider>
-                </PanelProvider>
-            </GeojsonProvider>
+            <BrowserRouter>
+                <GeojsonProvider>
+                    <PanelProvider>
+                        <PolylineProvider>
+                            <TableProvider>
+                                <ModalProvider>
+                                    <PatchDataProvider>
+                                        <Navbar setMenuIsOpen={() => {}} />
+                                        <Routes>
+                                            <Route path="/" element={<Navigate to="/user/charlie" replace />} />
+                                            <Route
+                                                path="/user/:username"
+                                                element={
+                                                    <>
+                                                        <Index />
+                                                        <Modal />
+                                                        <Menu menuIsOpen={menuIsOpen} setMenuIsOpen={setMenuIsOpen} />
+                                                    </>
+                                                }
+                                            />
+                                            <Route path="/login" element={<LoginPage />} />
+                                        </Routes>
+                                    </PatchDataProvider>
+                                </ModalProvider>
+                            </TableProvider>
+                        </PolylineProvider>
+                    </PanelProvider>
+                </GeojsonProvider>
+            </BrowserRouter>
         </div>
     );
 }

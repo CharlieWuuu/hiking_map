@@ -1,6 +1,5 @@
 import Map from '../components/Map/Map';
 import styles from './Index.module.scss';
-import '../styles/main.scss';
 import Panel from '../components/Panel/Panel';
 import { MapProvider } from '../context/MapContext';
 import { usePanel } from '../context/PanelContext';
