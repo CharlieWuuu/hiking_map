@@ -1,4 +1,4 @@
-import Navbar from './components/Layout/Navbar';
+import Navbar from './components/Navbar/Navbar';
 import Index from './pages/Index';
 import Modal from './components/Modal/Modal';
 import Menu from './components/Menu/Menu';
