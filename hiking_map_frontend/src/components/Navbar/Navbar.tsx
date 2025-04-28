@@ -94,81 +94,6 @@ export default function Navbar({ setMenuIsOpen }: Props) {
             <div className={styles.Logo}>
                 <img src={LogoUrl} alt="LOGO" />
             </div>
-            <div className={`${styles.SearchBar} ${showAutocomplete ? styles.active : ''}`} ref={searchBarRef}>
-                <Autocomplete
-                    options={nameList}
-                    getOptionLabel={(option) => option.label} // 只顯示 label，不串奇怪的值
-                    isOptionEqualToValue={(option, value) => option.uuid === value.uuid} // 用 uuid 判斷是否相等
-                    popupIcon={null}
-                    autoComplete={true}
-                    // open={true}
-                    // disableCloseOnSelect={true} // 不關閉選單
-                    onOpen={() => setShowAutocomplete(true)} // 不需要做任何事
-                    onClose={() => setShowAutocomplete(false)} // 防止關閉
-                    sx={{ width: '100%' }}
-                    value={selectedOption}
-                    onChange={(_, selected) => {
-                        if (selected) {
-                            setSelectedOption(selected);
-                            handleSelectOption(selected);
-                        }
-                    }}
-                    inputValue={inputValue}
-                    onInputChange={(_, newInputValue, reason) => {
-                        if (reason !== 'reset') {
-                            setInputValue(newInputValue); // 這就是「及時取得輸入內容」
-                        }
-                    }}
-                    renderInput={(params) => (
-                        <div ref={params.InputProps.ref} style={{ width: '100%' }}>
-                            <input
-                                {...params.inputProps}
-                                placeholder="請輸入步道或地名"
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        e.preventDefault();
-                                        const normalizedInput = inputValue.trim().toLowerCase();
-                                        const matched = nameList.find((option) => option.label.toLowerCase().includes(normalizedInput));
-                                        if (matched) {
-                                            handleSelectOption(matched);
-                                        }
-                                    }
-
-                                    params.inputProps.onKeyDown?.(e);
-                                }}
-                            />
-                        </div>
-                    )}
-                    renderOption={(props, option) => {
-                        const { key, ...rest } = props;
-                        return (
-                            <li key={option.uuid} {...rest}>
-                                <p>{option.label}</p>
-                                <span>
-                                    {option.county} {option.town} {option.time}
-                                </span>
-                            </li>
-                        );
-                    }}
-                    noOptionsText={<div>查無資料</div>}
-                    slots={{
-                        popper: (props) => (
-                            <Popper
-                                {...props}
-                                placement="bottom-start"
-                                modifiers={[
-                                    {
-                                        name: 'offset',
-                                        options: { offset: [-16, 0] }, // -16 = 1rem = 左邊的 padding
-                                    },
-                                ]}
-                            />
-                        ),
-                        paper: (props) => <div {...props} style={{ width: searchBarRef.current?.clientWidth ?? 300 }} />,
-                    }}
-                />
-                <img src={SearchUrl} alt="搜尋" onClick={() => handleSearchClick()} />
-            </div>
             <div className={styles.RightButton}>
                 <button onClick={toggleFullscreen}>{isFullscreen ? <img src={FullScreen_back} alt="全螢幕" /> : <img src={FullScreen} alt="關閉全螢幕" />}</button>
                 {uiPanels && setUIPanels && isLoggedIn && (
@@ -197,7 +122,7 @@ export default function Navbar({ setMenuIsOpen }: Props) {
                     </button>
                 )}
             </div>
-            <div className={styles.Hamburger} style={{ width: '36px', cursor: 'pointer' }} onClick={() => setMenuIsOpen(true)}>
+            <div className={styles.Hamburger} onClick={() => setMenuIsOpen(true)}>
                 <img src={Hamburger} alt="更多" />
             </div>
         </div>

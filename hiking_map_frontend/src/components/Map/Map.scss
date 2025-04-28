@@ -49,6 +49,12 @@
         overflow: hidden;
         background: white;
 
+        .onLoading {
+            height: 100%;
+            width: 100%;
+            @include mixins.loader;
+        }
+
         @include media.media(md) {
             border-radius: 0;
         }

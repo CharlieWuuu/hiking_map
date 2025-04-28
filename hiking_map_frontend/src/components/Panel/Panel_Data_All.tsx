@@ -4,6 +4,8 @@ import { usePanel } from '../../context/PanelContext';
 import { useTableContext } from '../../context/TableContext';
 import { useRef, useEffect } from 'react';
 import { useGeojson } from '../../context/GeojsonContext';
+import SearchData from '../SearchData/SearchData'; // 引入搜尋元件
+import Pagination from '../../assets/Table_Pagination.svg';
 
 // 定義元件
 export default function Panel_Data_All() {
@@ -39,15 +41,16 @@ export default function Panel_Data_All() {
             <div className={styles.Table_Header}>
                 <div className={styles.Table_Pagination}>
                     <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
-                        上一頁
+                        <img src={Pagination} alt="上一頁" style={{ transform: 'rotate(180deg)' }} />
                     </button>
                     <span>
-                        第 {pageIndexStart} - {pageIndexEnd} 筆
+                        {pageIndexStart} - {pageIndexEnd}
                     </span>
                     <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
-                        下一頁
+                        <img src={Pagination} alt="下一頁" />
                     </button>
                 </div>
+                <SearchData />
             </div>
             <div className={styles.Table_ScrollWrapper}>
                 <table cellSpacing="0">

@@ -116,6 +116,11 @@ export default function Map() {
                 <PanToEffect panToId={activeFeatureUuid} geojson={geojson} />
                 <ZoomControl position="bottomright" />
                 <ResizeEffect isResizing={isResizing} />
+                {!geojson && (
+                    <span className="onLoading">
+                        <div className="loader"></div>
+                    </span>
+                )}
                 {geojson && (
                     <div>
                         <GeoJSON

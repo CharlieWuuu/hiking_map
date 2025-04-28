@@ -3,6 +3,8 @@
 
 .Panel_Tab {
     @include mixins.flex_center;
+    height: fit-content;
+    gap: 0.8rem;
     button {
         background-color: colors.$panel_active_lighten;
         text-wrap: nowrap;

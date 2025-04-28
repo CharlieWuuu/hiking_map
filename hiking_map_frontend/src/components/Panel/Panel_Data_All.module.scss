@@ -123,11 +123,19 @@
         justify-content: center;
         align-items: center;
         width: 100%;
-        gap: 2rem;
+        gap: 1rem;
         .Table_Pagination {
             display: flex;
-            span {
-                margin: 0 1rem;
+            align-items: center;
+            gap: 0.5rem;
+            button {
+                @include mixins.flex_center;
+                width: 32px;
+                height: 32px;
+                img {
+                    width: 18px;
+                    height: 18px;
+                }
             }
         }
         hr {

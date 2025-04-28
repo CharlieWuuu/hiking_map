@@ -70,6 +70,11 @@
 }
 
 @mixin loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 400;
+    position: relative;
     .loader {
         width: 48px;
         height: 48px;
@@ -81,7 +86,7 @@
         position: absolute;
         inset: 0px;
         border-radius: 50%;
-        border: 5px solid #fff;
+        border: 5px solid colors.$panel_active_lighten;
         animation: prixClipFix 2s linear infinite;
     }
 }

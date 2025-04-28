@@ -6,18 +6,11 @@
     z-index: 401;
     top: 1rem;
     left: 1rem;
-    width: calc(100% - 2rem);
-    // max-width: 500px;
+    max-width: calc(100% - 2rem);
     padding: 1rem;
     border-radius: 1rem;
     background: colors.$panel;
     .Detail_Card {
-        // border-radius: 0.5rem;
-        // display: grid;
-        // gap: 1rem;
-        // grid-template-areas:
-        //     'Card_title Card_district Card_time Card_length'
-        //     'Card_title Card_url Card_note Card_note';
         display: flex;
         gap: 0.5rem;
         position: relative;
