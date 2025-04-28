@@ -36,16 +36,18 @@ export default function Panel_Data_All() {
 
     return (
         <div className={styles.Panel_Data_All}>
-            <div className={styles.Table_Pagination}>
-                <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
-                    上一頁
-                </button>
-                <span>
-                    第 {pageIndexStart} - {pageIndexEnd} 筆
-                </span>
-                <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
-                    下一頁
-                </button>
+            <div className={styles.Table_Header}>
+                <div className={styles.Table_Pagination}>
+                    <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
+                        上一頁
+                    </button>
+                    <span>
+                        第 {pageIndexStart} - {pageIndexEnd} 筆
+                    </span>
+                    <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
+                        下一頁
+                    </button>
+                </div>
             </div>
             <div className={styles.Table_ScrollWrapper}>
                 <table cellSpacing="0">

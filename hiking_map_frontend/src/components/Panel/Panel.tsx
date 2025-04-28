@@ -28,7 +28,6 @@ export default function Panel({ type, hasCloseButton = true, onClose }: Props) {
         <div className={`Panel ${IsZoomIn ? 'ZoomIn' : ''} Panel_${type}`}>
             <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={hasCloseButton} onClose={onClose} />
             {type === 'data' && <Panel_Data />}
-            {type === 'detail' && <Panel_Detail />}
             {type === 'info' && <Panel_Info />}
             {type === 'auth' && <Panel_Auth loginStatus={false} setLoginStatus={() => {}} />}
             {type === 'edit' && <Panel_Edit />}

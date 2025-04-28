@@ -9,6 +9,7 @@ export default function Panel_Data() {
     const [panelDataType, setPanelDataType] = useState<'All' | 'Chart' | 'Layer'>('All');
     return (
         <div className={styles.Panel_Data}>
+            <h2>Charlie 的健行軌跡</h2>
             <Panel_Tab panelDataType={panelDataType} setPanelDataType={setPanelDataType} />
             {panelDataType === 'All' && <Panel_Data_All />}
             {panelDataType === 'Chart' && <Panel_Chart />}

@@ -1,0 +1,142 @@
+@use '../../styles/colors' as colors;
+
+.Map_Detail {
+    height: fit-content;
+    position: absolute;
+    z-index: 401;
+    top: 1rem;
+    left: 1rem;
+    width: calc(100% - 2rem);
+    // max-width: 500px;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: colors.$panel;
+    .Detail_Card {
+        // border-radius: 0.5rem;
+        // display: grid;
+        // gap: 1rem;
+        // grid-template-areas:
+        //     'Card_title Card_district Card_time Card_length'
+        //     'Card_title Card_url Card_note Card_note';
+        display: flex;
+        gap: 0.5rem;
+        position: relative;
+        height: 100%;
+
+        button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            border-radius: 100%;
+            background-color: colors.$background_blue_lighten;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &:hover {
+                background-color: colors.$background_blue_darken_2;
+            }
+        }
+
+        div {
+            input {
+                display: none;
+            }
+
+            p {
+                display: block;
+            }
+        }
+
+        &.editing {
+            div {
+                input {
+                    display: block;
+                }
+
+                p {
+                    display: none;
+                }
+
+                &.Card_title {
+                    .Card_name {
+                        width: 50%;
+                        input {
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+
+        .Card_title {
+            display: flex;
+            gap: 0.5rem;
+            align-items: start;
+            text-wrap-mode: nowrap;
+            flex-direction: column;
+            .Card_name {
+                p,
+                input {
+                    padding: 0;
+                    margin: 0;
+
+                    color: colors.$background_contrary;
+
+                    font-size: 1.8rem;
+                    line-height: 2rem;
+                    font-weight: bold;
+                }
+            }
+            .Card_district {
+                font-size: 0.9rem;
+            }
+        }
+        hr {
+            border: none;
+            width: 2px;
+
+            background-color: colors.$panel_active;
+        }
+
+        .Card_properties {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: start;
+            gap: 1rem;
+
+            > div {
+                display: flex;
+                flex-direction: column;
+                align-items: start;
+                justify-content: end;
+
+                span {
+                    font-size: 0.6rem;
+                }
+                p,
+                a {
+                    font-size: 1.1rem;
+                    line-height: 1.1rem;
+                    font-weight: bold;
+                }
+            }
+
+            .Card_url {
+                div {
+                    display: flex;
+                    gap: 0.2rem;
+
+                    a {
+                        color: colors.$background_contrary;
+                        text-decoration: underline;
+                    }
+                }
+            }
+            .Card_note {
+                text-align: start;
+            }
+        }
+    }
+}

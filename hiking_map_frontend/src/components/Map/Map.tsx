@@ -12,6 +12,7 @@ import { useMapContext } from '../../context/MapContext';
 import { useTableContext } from '../../context/TableContext';
 import { useGeojson } from '../../context/GeojsonContext';
 import { usePanel } from '../../context/PanelContext';
+import Map_Detail from './Map_Detail';
 
 function TileEffect({ baseMap, setting }: { baseMap: BaseMapEn; setting: Record<BaseMapSettingEn, number> }) {
     const map = useMap();
@@ -38,7 +39,10 @@ function PanToEffect({ panToId, geojson }: { panToId: string | null; geojson: Fe
         // 取得四角座標
         const bounds = targetFeature.properties?.bounds as [number, number][] | undefined;
         if (bounds) {
-            map.fitBounds(L.latLngBounds(L.latLng(bounds[0][1], bounds[0][0]), L.latLng(bounds[2][1], bounds[2][0])), { padding: [100, 100] });
+            map.fitBounds(L.latLngBounds(L.latLng(bounds[0][1], bounds[0][0]), L.latLng(bounds[2][1], bounds[2][0])), {
+                paddingTopLeft: [200, 200],
+                paddingBottomRight: [200, 200],
+            });
         }
 
         const center = targetFeature.properties?.center as [number, number] | undefined;
@@ -105,6 +109,7 @@ export default function Map() {
     return (
         <div className={`Map ${IsZoomIn ? 'ZoomIn' : ''} ${uiPanels?.edit ? 'Editing' : ''}`} ref={mapWrapperRef}>
             <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={false} />
+            {activeFeatureUuid && <Map_Detail />}
             <MapContainer center={[25.047924, 121.517081]} zoom={12} scrollWheelZoom={true} zoomControl={false}>
                 <TileEffect baseMap={nowBaseMap} setting={baseMapSetting[nowBaseMap]} />
                 <TileLayer url={baseMapSetting[nowBaseMap].url} />

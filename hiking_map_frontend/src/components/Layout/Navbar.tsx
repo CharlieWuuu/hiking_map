@@ -5,6 +5,7 @@ import EditUrl from '../../assets/Navbar_Edit.svg';
 import InfoUrl from '../../assets/Navbar_Info.svg';
 import FullScreen from '../../assets/FullScreen.svg';
 import FullScreen_back from '../../assets/FullScreen_back.svg';
+import Hamburger from '../../assets/Navbar_Hamburger.svg';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { usePanel } from '../../context/PanelContext';
@@ -13,6 +14,10 @@ import { useGeojson } from '../../context/GeojsonContext';
 import { Autocomplete } from '@mui/material';
 import './Navbar.scss';
 import { Popper } from '@mui/material';
+
+type Props = {
+    setMenuIsOpen: (isOpen: boolean) => void;
+};
 
 type TrailOption = {
     label: string;
@@ -23,7 +28,7 @@ type TrailOption = {
     uuid: string;
 };
 
-export default function Navbar() {
+export default function Navbar({ setMenuIsOpen }: Props) {
     const { geojson } = useGeojson();
     const [isFullscreen, setIsFullscreen] = useState(false);
     const { isLoggedIn } = useAuth();
@@ -71,7 +76,6 @@ export default function Navbar() {
         if (!option) return;
         setSelectedOption(option); // 選中它
         setActiveFeatureUuid(option.uuid); // 更新線段
-        setUIPanels({ ...uiPanels, detail: true }); // 打開右欄
     };
 
     const handleSearchClick = () => {
@@ -174,7 +178,6 @@ export default function Navbar() {
                             setUIPanels({
                                 ...uiPanels,
                                 data: uiPanels.edit,
-                                detail: false,
                                 auth: false,
                                 info: false,
                                 edit: !uiPanels.edit,
@@ -193,6 +196,9 @@ export default function Navbar() {
                         {isLoggedIn ? '帳號' : '登入'}
                     </button>
                 )}
+            </div>
+            <div className={styles.Hamburger} style={{ width: '36px', cursor: 'pointer' }} onClick={() => setMenuIsOpen(true)}>
+                <img src={Hamburger} alt="更多" />
             </div>
         </div>
     );

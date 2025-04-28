@@ -13,7 +13,6 @@ export default function Index() {
             <MapProvider>
                 <div className={`${styles.leftPanelContainer} ${uiPanels?.edit ? styles.Editing : ''}`}>
                     {uiPanels?.data && <Panel type={'data'} hasCloseButton={false} />}
-                    {uiPanels?.detail && !uiPanels?.edit && setUIPanels && <Panel type={'detail'} onClose={() => setUIPanels((prev) => ({ ...prev, detail: false }))} />}
                     {uiPanels?.edit && setUIPanels && <Panel type={'edit'} onClose={() => setUIPanels((prev) => ({ ...prev, edit: false, data: true }))} />}
                 </div>
                 <Map />

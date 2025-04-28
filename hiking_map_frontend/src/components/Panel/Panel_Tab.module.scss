@@ -6,8 +6,9 @@
     button {
         background-color: colors.$panel_active_lighten;
         text-wrap: nowrap;
-        font-size: 1.2rem;
+        font-size: 0.9rem;
         opacity: 0.6;
+        padding: 0.2rem 0.6rem;
         color: colors.$panel;
         &:hover {
             background-color: colors.$background_contrary;

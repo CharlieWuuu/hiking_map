@@ -13,13 +13,6 @@
         @include mixins.loader;
     }
 
-    .Table_Pagination {
-        display: flex;
-        span {
-            margin: 0 1rem;
-        }
-    }
-
     .Table_ScrollWrapper {
         width: 100%;
         height: 100%;
@@ -127,9 +120,16 @@
     }
     .Table_Header {
         display: flex;
+        justify-content: center;
         align-items: center;
         width: 100%;
         gap: 2rem;
+        .Table_Pagination {
+            display: flex;
+            span {
+                margin: 0 1rem;
+            }
+        }
         hr {
             border: none;
             width: 2px;
