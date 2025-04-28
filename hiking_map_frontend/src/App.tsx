@@ -27,7 +27,7 @@ export default function App() {
                             <TableProvider>
                                 <ModalProvider>
                                     <PatchDataProvider>
-                                        <Navbar setMenuIsOpen={() => {}} />
+                                        <Navbar setMenuIsOpen={setMenuIsOpen} />
                                         <Routes>
                                             <Route path="/" element={<Navigate to="/user/charlie" replace />} />
                                             <Route

@@ -62,13 +62,18 @@
         display: none;
         width: 36px;
         cursor: pointer;
+        height: 24px;
+        img {
+            height: 24px;
+        }
     }
 
     @include media.media(md) {
         justify-content: space-between;
         height: fit-content;
-        padding: 0.5rem 1.5rem;
+        padding: 0.6rem 1.2rem;
         .Logo {
+            height: 24px;
             img {
                 height: 1.5rem;
             }
@@ -76,6 +81,9 @@
         .SearchBar,
         .RightButton {
             display: none;
+        }
+        .Hamburger {
+            display: block;
         }
     }
 }

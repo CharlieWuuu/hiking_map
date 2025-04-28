@@ -1,6 +1,5 @@
 import styles from './Navbar.module.scss';
 import LogoUrl from '../../assets/Navbar_Logo.svg';
-import SearchUrl from '../../assets/Navbar_Search.svg';
 import EditUrl from '../../assets/Navbar_Edit.svg';
 import InfoUrl from '../../assets/Navbar_Info.svg';
 import FullScreen from '../../assets/FullScreen.svg';
@@ -11,9 +10,7 @@ import { useAuth } from '../../context/AuthContext';
 import { usePanel } from '../../context/PanelContext';
 import { usePolyline } from '../../context/PolylineContext';
 import { useGeojson } from '../../context/GeojsonContext';
-import { Autocomplete } from '@mui/material';
 import './Navbar.scss';
-import { Popper } from '@mui/material';
 
 type Props = {
     setMenuIsOpen: (isOpen: boolean) => void;
