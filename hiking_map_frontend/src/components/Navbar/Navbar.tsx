@@ -1,10 +1,10 @@
 import styles from './Navbar.module.scss';
-import LogoUrl from '../../assets/Navbar_Logo.svg';
-import EditUrl from '../../assets/Navbar_Edit.svg';
-import InfoUrl from '../../assets/Navbar_Info.svg';
-import FullScreen from '../../assets/FullScreen.svg';
-import FullScreen_back from '../../assets/FullScreen_back.svg';
-import Hamburger from '../../assets/Navbar_Hamburger.svg';
+import LogoUrl from '../../assets/images/Navbar_Logo.svg';
+import EditUrl from '../../assets/images/Navbar_Edit.svg';
+import InfoUrl from '../../assets/images/Navbar_Info.svg';
+import FullScreen from '../../assets/images/FullScreen.svg';
+import FullScreen_back from '../../assets/images/FullScreen_back.svg';
+import Hamburger from '../../assets/images/Navbar_Hamburger.svg';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { usePanel } from '../../context/PanelContext';

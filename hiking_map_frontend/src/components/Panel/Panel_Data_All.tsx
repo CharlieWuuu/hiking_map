@@ -5,7 +5,7 @@ import { useTableContext } from '../../context/TableContext';
 import { useRef, useEffect } from 'react';
 import { useGeojson } from '../../context/GeojsonContext';
 import SearchData from '../SearchData/SearchData'; // 引入搜尋元件
-import Pagination from '../../assets/Table_Pagination.svg';
+import Pagination from '../../assets/images/Table_Pagination.svg';
 
 // 定義元件
 export default function Panel_Data_All() {

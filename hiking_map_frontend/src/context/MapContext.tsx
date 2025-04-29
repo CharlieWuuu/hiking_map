@@ -1,10 +1,10 @@
 import { createContext, useState, useContext, ReactNode } from 'react';
 import type { BaseMapEn } from '../types/baseMapSettings';
-import osmImgUrl from '../assets/Map_osm.png';
-import OpenTopoMapImgUrl from '../assets/Map_OpenTopoMap.png';
-import CartoLightImgUrl from '../assets/Map_carto_light.png';
-import CartoDarkImgUrl from '../assets/Map_carto_dark.png';
-import EsriTopoMapUrl from '../assets/Map_EsriTopoMap.png';
+import osmImgUrl from '../assets/images/Map_osm.png';
+import OpenTopoMapImgUrl from '../assets/images/Map_OpenTopoMap.png';
+import CartoLightImgUrl from '../assets/images/Map_carto_light.png';
+import CartoDarkImgUrl from '../assets/images/Map_carto_dark.png';
+import EsriTopoMapUrl from '../assets/images/Map_EsriTopoMap.png';
 
 type BaseMapSetting = {
     [key in BaseMapEn]: {

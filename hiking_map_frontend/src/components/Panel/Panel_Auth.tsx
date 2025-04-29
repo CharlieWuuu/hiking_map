@@ -1,7 +1,7 @@
 import styles from './Panel_Auth.module.scss';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import AvatarUrl from '../../assets/Panel_Avatar.svg';
+import AvatarUrl from '../../assets/images/Panel_Avatar.svg';
 
 type Props = {
     loginStatus: boolean;

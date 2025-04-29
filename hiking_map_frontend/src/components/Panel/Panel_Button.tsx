@@ -1,7 +1,7 @@
 import './Panel_Button.scss'; // 因為 Panel、Map 的 hover 行為影響到 Panel_Button 的樣式，所以不用 modules
-import ZoomInUrl from '../../assets/Panel_ZoomIn.svg';
-import ZoomOutUrl from '../../assets/Panel_ZoomOut.svg';
-import ClosePanel from '../../assets/Panel_ClosePanel.svg';
+import ZoomInUrl from '../../assets/images/Panel_ZoomIn.svg';
+import ZoomOutUrl from '../../assets/images/Panel_ZoomOut.svg';
+import ClosePanel from '../../assets/images/Panel_ClosePanel.svg';
 
 type Props = {
     IsZoomIn?: boolean;

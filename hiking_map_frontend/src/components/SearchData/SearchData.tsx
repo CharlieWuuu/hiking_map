@@ -1,4 +1,4 @@
-import SearchUrl from '../../assets/Navbar_Search.svg';
+import SearchUrl from '../../assets/images/Navbar_Search.svg';
 import { Autocomplete } from '@mui/material';
 import { Popper } from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
