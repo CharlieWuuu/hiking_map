@@ -1,50 +1,46 @@
 import SearchUrl from '../../assets/images/Navbar_Search.svg';
 import { Autocomplete } from '@mui/material';
 import { Popper } from '@mui/material';
-import { useState, useRef, useEffect } from 'react';
-import { useGeojson } from '../../context/GeojsonContext';
+import { useState, useRef } from 'react';
 import { usePolyline } from '../../context/PolylineContext';
-import './SearchData.scss';
-import styles from './SearchData.module.scss';
+import styles from './SearchUser.module.scss';
 
-type TrailOption = {
-    label: string;
-    county: string;
-    town: string;
-    time: string;
-    realtime: string;
+type fakeData = {
+    name: string;
+    name_zh: string;
+    type: string;
+    type_zh: string;
     uuid: string;
 };
 
-export default function SearchData() {
-    const { geojson } = useGeojson();
-    const [showAutocomplete, setShowAutocomplete] = useState(false);
+export default function SearchUser() {
+    const fakeData = [
+        { name: 'Charlie', name_zh: 'Charlie', type: 'user', type_zh: '用戶', uuid: 'uuid-charlie' },
+        { name: 'Dora', name_zh: 'Dora', type: 'user', type_zh: '用戶', uuid: 'uuid-dora' },
+        { name: 'Lawrence', name_zh: 'Lawrence', type: 'user', type_zh: '用戶', uuid: 'uuid-lawrence' },
+        { name: 'Hundred', name_zh: '百岳', type: 'layer', type_zh: '圖層', uuid: 'uuid-hundred' },
+        { name: 'SmallHundred', name_zh: '小百岳', type: 'Layer', type_zh: '圖層', uuid: 'uuid-smallHundred' },
+    ];
     const { setActiveFeatureUuid } = usePolyline();
 
-    const nameList =
-        geojson?.features
-            .map((f) => ({
-                label: f.properties?.name || '',
-                county: f.properties?.county || '',
-                town: f.properties?.town || '',
-                time: (() => {
-                    const date = new Date(f.properties?.time);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    return `${year}年${month}月`;
-                })(),
-                realtime: f.properties?.time,
-                uuid: f.properties?.uuid,
-            }))
-            .sort((a, b) => a.label.localeCompare(b.label, 'zh-Hant')) || [];
+    const [showAutocomplete, setShowAutocomplete] = useState(false);
+    const [selectedOption, setSelectedOption] = useState<fakeData | null>(null);
     const [inputValue, setInputValue] = useState('');
 
     const searchBarRef = useRef<HTMLDivElement | null>(null);
-    useEffect(() => {
-        console.log(searchBarRef.current?.getBoundingClientRect().width);
-    }, [searchBarRef.current?.clientWidth]);
 
-    const handleSelectOption = (option: TrailOption) => {
+    const nameList =
+        fakeData
+            .map((f) => ({
+                name: f.name || '',
+                name_zh: f.name_zh || '',
+                type: f.type || '',
+                type_zh: f.type_zh || '',
+                uuid: f.name || '',
+            }))
+            .sort((a, b) => a.name.localeCompare(b.name)) || [];
+
+    const handleSelectOption = (option: fakeData) => {
         if (!option) return;
         setSelectedOption(option); // 選中它
         setActiveFeatureUuid(option.uuid); // 更新線段
@@ -52,20 +48,16 @@ export default function SearchData() {
 
     const handleSearchClick = () => {
         const normalizedInput = inputValue.trim().toLowerCase();
-        const matched = nameList.find((option) => option.label.toLowerCase().includes(normalizedInput));
-
-        if (matched) {
-            handleSelectOption(matched);
-        } else {
-            console.warn('查無資料');
-        }
+        const matched = nameList.find((option) => option.name.toLowerCase().includes(normalizedInput));
+        if (matched) handleSelectOption(matched);
+        else console.warn('查無資料');
     };
-    const [selectedOption, setSelectedOption] = useState<TrailOption | null>(null);
+
     return (
         <div className={`${styles.SearchBar} ${showAutocomplete ? styles.active : ''}`} ref={searchBarRef}>
             <Autocomplete
                 options={nameList}
-                getOptionLabel={(option) => option.label} // 只顯示 label，不串奇怪的值
+                getOptionLabel={(option) => option.name} // 只顯示 label，不串奇怪的值
                 isOptionEqualToValue={(option, value) => option.uuid === value.uuid} // 用 uuid 判斷是否相等
                 popupIcon={null}
                 autoComplete={true}
@@ -91,12 +83,12 @@ export default function SearchData() {
                     <div ref={params.InputProps.ref} style={{ width: '100%' }}>
                         <input
                             {...params.inputProps}
-                            placeholder="請輸入步道或地名"
+                            placeholder="搜尋用戶或圖層（開發中）"
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     e.preventDefault();
                                     const normalizedInput = inputValue.trim().toLowerCase();
-                                    const matched = nameList.find((option) => option.label.toLowerCase().includes(normalizedInput));
+                                    const matched = nameList.find((option) => option.name.toLowerCase().includes(normalizedInput));
                                     if (matched) {
                                         handleSelectOption(matched);
                                     }
@@ -111,10 +103,8 @@ export default function SearchData() {
                     const { key, ...rest } = props;
                     return (
                         <li key={option.uuid} {...rest}>
-                            <p>{option.label}</p>
-                            <span>
-                                {option.county} {option.town} {option.time}
-                            </span>
+                            <p>{option.name_zh}</p>
+                            <span>{option.type_zh}</span>
                         </li>
                     );
                 }}
@@ -127,7 +117,7 @@ export default function SearchData() {
                             modifiers={[
                                 {
                                     name: 'offset',
-                                    options: { offset: [-17, 0] }, // -16 = 1rem = 左邊的 padding
+                                    options: { offset: [-17, 0] }, // -17 = 1rem + 1px = 左邊的 padding + border
                                 },
                             ]}
                         />

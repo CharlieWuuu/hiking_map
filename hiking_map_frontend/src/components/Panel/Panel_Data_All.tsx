@@ -4,7 +4,7 @@ import { usePanel } from '../../context/PanelContext';
 import { useTableContext } from '../../context/TableContext';
 import { useRef, useEffect } from 'react';
 import { useGeojson } from '../../context/GeojsonContext';
-import SearchData from '../SearchData/SearchData'; // 引入搜尋元件
+import SearchData from '../Search/SearchData'; // 引入搜尋元件
 import Pagination from '../../assets/images/Table_Pagination.svg';
 
 // 定義元件

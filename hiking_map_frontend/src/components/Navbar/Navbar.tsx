@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { usePanel } from '../../context/PanelContext';
 import './Navbar.scss';
+import SearchUser from '../Search/SearchUser';
 
 type Props = {
     setMenuIsOpen: (isOpen: boolean) => void;
@@ -40,6 +41,7 @@ export default function Navbar({ setMenuIsOpen }: Props) {
             <div className={styles.Logo}>
                 <img src={LogoUrl} alt="LOGO" />
             </div>
+            <SearchUser />
             <div className={styles.RightButton}>
                 <button onClick={toggleFullscreen}>{isFullscreen ? <img src={FullScreen_back} alt="全螢幕" /> : <img src={FullScreen} alt="關閉全螢幕" />}</button>
                 {uiPanels && setUIPanels && isLoggedIn && (
