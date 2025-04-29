@@ -3,7 +3,6 @@ import Panel_Button from './Panel_Button';
 import { useState, useEffect } from 'react';
 import type { PanelType } from '../../types/uiPanels';
 import Panel_Data from './Panel_Data';
-import Panel_Detail from './Panel_Detail';
 import Panel_Info from './Panel_Info';
 import Panel_Auth from './Panel_Auth';
 import Panel_Edit from './Panel_Edit';

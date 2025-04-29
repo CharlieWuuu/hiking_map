@@ -5,28 +5,16 @@ import InfoUrl from '../../assets/Navbar_Info.svg';
 import FullScreen from '../../assets/FullScreen.svg';
 import FullScreen_back from '../../assets/FullScreen_back.svg';
 import Hamburger from '../../assets/Navbar_Hamburger.svg';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { usePanel } from '../../context/PanelContext';
-import { usePolyline } from '../../context/PolylineContext';
-import { useGeojson } from '../../context/GeojsonContext';
 import './Navbar.scss';
 
 type Props = {
     setMenuIsOpen: (isOpen: boolean) => void;
 };
 
-type TrailOption = {
-    label: string;
-    county: string;
-    town: string;
-    time: string;
-    realtime: string;
-    uuid: string;
-};
-
 export default function Navbar({ setMenuIsOpen }: Props) {
-    const { geojson } = useGeojson();
     const [isFullscreen, setIsFullscreen] = useState(false);
     const { isLoggedIn } = useAuth();
     const { uiPanels, setUIPanels } = usePanel();
@@ -47,45 +35,6 @@ export default function Navbar({ setMenuIsOpen }: Props) {
         return () => document.removeEventListener('fullscreenchange', handleChange);
     }, []);
 
-    const nameList =
-        geojson?.features
-            .map((f) => ({
-                label: f.properties?.name || '',
-                county: f.properties?.county || '',
-                town: f.properties?.town || '',
-                time: (() => {
-                    const date = new Date(f.properties?.time);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    return `${year}年${month}月`;
-                })(),
-                realtime: f.properties?.time,
-                uuid: f.properties?.uuid,
-            }))
-            .sort((a, b) => a.label.localeCompare(b.label, 'zh-Hant')) || [];
-    const [inputValue, setInputValue] = useState('');
-    const { setActiveFeatureUuid } = usePolyline();
-
-    const searchBarRef = useRef<HTMLDivElement | null>(null);
-    const [showAutocomplete, setShowAutocomplete] = useState(false);
-
-    const handleSelectOption = (option: TrailOption) => {
-        if (!option) return;
-        setSelectedOption(option); // 選中它
-        setActiveFeatureUuid(option.uuid); // 更新線段
-    };
-
-    const handleSearchClick = () => {
-        const normalizedInput = inputValue.trim().toLowerCase();
-        const matched = nameList.find((option) => option.label.toLowerCase().includes(normalizedInput));
-
-        if (matched) {
-            handleSelectOption(matched);
-        } else {
-            console.warn('查無資料');
-        }
-    };
-    const [selectedOption, setSelectedOption] = useState<TrailOption | null>(null);
     return (
         <div className={styles.Navbar}>
             <div className={styles.Logo}>
