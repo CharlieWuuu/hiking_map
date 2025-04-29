@@ -5,14 +5,25 @@
 
 .Navbar {
     width: 100%;
-    height: variables.$navbar_height;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
-    color: colors.$background_contrary;
+    gap: 2rem;
+    padding: 1rem;
+    position: fixed;
+    z-index: 100;
+    background-color: colors.$background;
 
+    .Hamburger {
+        width: 36px;
+        cursor: pointer;
+        height: 24px;
+        img {
+            height: 24px;
+        }
+    }
     .Logo {
+        display: flex;
         img {
             height: variables.$navbar_height;
         }
@@ -56,15 +67,10 @@
             &.authBtn {
                 width: auto;
             }
-        }
-    }
-    .Hamburger {
-        display: none;
-        width: 36px;
-        cursor: pointer;
-        height: 24px;
-        img {
-            height: 24px;
+
+            a {
+                color: colors.$background_contrary;
+            }
         }
     }
 
@@ -83,7 +89,7 @@
             display: none;
         }
         .Hamburger {
-            display: block;
+            display: none;
         }
     }
 }

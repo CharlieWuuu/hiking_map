@@ -3,7 +3,7 @@ import { Autocomplete } from '@mui/material';
 import { Popper } from '@mui/material';
 import { useState, useRef } from 'react';
 import { usePolyline } from '../../context/PolylineContext';
-import styles from './SearchUser.module.scss';
+import styles from './Search.module.scss';
 
 type fakeData = {
     name: string;

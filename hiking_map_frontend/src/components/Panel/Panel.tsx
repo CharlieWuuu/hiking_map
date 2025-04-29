@@ -15,20 +15,20 @@ type Props = {
 
 export default function Panel({ type, hasCloseButton = true, onClose }: Props) {
     const [IsZoomIn, setIsZoomIn] = useState(false);
-    useEffect(() => {
-        if (type === 'edit') {
-            setIsZoomIn(true);
-        } else {
-            setIsZoomIn(false);
-        }
-    }, [type]);
+    // useEffect(() => {
+    //     if (type === 'edit') {
+    //         setIsZoomIn(true);
+    //     } else {
+    //         setIsZoomIn(false);
+    //     }
+    // }, [type]);
 
     return (
         <div className={`Panel ${IsZoomIn ? 'ZoomIn' : ''} Panel_${type}`}>
-            <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={hasCloseButton} onClose={onClose} />
+            {/* <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={hasCloseButton} onClose={onClose} /> */}
             {type === 'data' && <Panel_Data />}
             {type === 'info' && <Panel_Info />}
-            {type === 'auth' && <Panel_Auth loginStatus={false} setLoginStatus={() => {}} />}
+            {type === 'auth' && <Panel_Auth />}
             {type === 'edit' && <Panel_Edit />}
         </div>
     );

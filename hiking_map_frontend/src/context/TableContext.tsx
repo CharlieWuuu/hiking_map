@@ -30,6 +30,12 @@ export const TableProvider = ({ children }: TableProviderProps) => {
     const { activeFeatureUuid } = usePolyline();
 
     useEffect(() => {
+        if (geojson?.features) {
+            setFeatures(geojson.features);
+        }
+    }, [geojson?.features]);
+
+    useEffect(() => {
         if (activeFeatureUuid === null) return;
         const index = features.findIndex((f) => f.properties?.uuid === activeFeatureUuid);
         if (index === -1) return;

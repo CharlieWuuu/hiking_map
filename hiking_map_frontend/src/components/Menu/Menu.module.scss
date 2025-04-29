@@ -1,22 +1,65 @@
 @use '../../styles/colors' as colors;
+@use '../../styles/mixins' as mixins;
 
 .Menu {
     position: absolute;
     top: 0;
-    right: -200px;
-    width: 200px;
+    left: -200px;
+    width: fit-content;
     height: 100%;
+    padding: 1rem 0;
     background-color: colors.$panel;
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: start;
+    align-items: start;
+    gap: 2rem;
 
-    z-index: 10;
+    z-index: 1000;
     transition: all 0.3s ease;
     &.active {
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-        right: 0px;
+        left: 0px;
+        padding: 1rem;
+    }
+
+    .Hamburger {
+        @include mixins.flex_center;
+        width: 36px;
+        height: 32px;
+        cursor: pointer;
+
+        img {
+            height: 24px;
+        }
+    }
+    ul {
+        list-style-type: none;
+        @include mixins.flex_center;
+
+        flex-direction: column;
+        gap: 1.5rem;
+        min-width: 200px;
+
+        a {
+            @include mixins.flex_center;
+            justify-content: start;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+            img {
+                width: 24px;
+            }
+
+            span {
+                color: colors.$background_contrary;
+            }
+
+            &:hover {
+                background-color: colors.$panel_active;
+            }
+        }
     }
 }

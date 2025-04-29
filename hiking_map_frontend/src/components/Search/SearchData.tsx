@@ -4,8 +4,8 @@ import { Popper } from '@mui/material';
 import { useState, useRef } from 'react';
 import { useGeojson } from '../../context/GeojsonContext';
 import { usePolyline } from '../../context/PolylineContext';
-import styles from './SearchData.module.scss';
-import './Search.scss'; // 引入樣式
+import styles from './Search.module.scss';
+import './Search.scss';
 
 type TrailOption = {
     label: string;

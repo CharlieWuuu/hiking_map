@@ -10,6 +10,7 @@ import { useAuth } from '../../context/AuthContext';
 import { usePanel } from '../../context/PanelContext';
 import './Navbar.scss';
 import SearchUser from '../Search/SearchUser';
+import { Link } from 'react-router-dom';
 
 type Props = {
     setMenuIsOpen: (isOpen: boolean) => void;
@@ -38,13 +39,16 @@ export default function Navbar({ setMenuIsOpen }: Props) {
 
     return (
         <div className={styles.Navbar}>
-            <div className={styles.Logo}>
-                <img src={LogoUrl} alt="LOGO" />
+            <div className={styles.Hamburger} onClick={() => setMenuIsOpen(true)}>
+                <img src={Hamburger} alt="更多" />
             </div>
+            <a className={styles.Logo} href="/">
+                <img src={LogoUrl} alt="LOGO" />
+            </a>
             <SearchUser />
             <div className={styles.RightButton}>
                 <button onClick={toggleFullscreen}>{isFullscreen ? <img src={FullScreen_back} alt="全螢幕" /> : <img src={FullScreen} alt="關閉全螢幕" />}</button>
-                {uiPanels && setUIPanels && isLoggedIn && (
+                {/* {uiPanels && setUIPanels && isLoggedIn && (
                     <button
                         className={`${uiPanels.edit ? 'active' : ''}`}
                         onClick={() =>
@@ -58,7 +62,7 @@ export default function Navbar({ setMenuIsOpen }: Props) {
                         }>
                         <img src={EditUrl} alt="編輯" />
                     </button>
-                )}
+                )} */}
                 {uiPanels && setUIPanels && (
                     <button className={`${uiPanels.info ? 'active' : ''}`} onClick={() => setUIPanels({ ...uiPanels, info: !uiPanels.info })}>
                         <img src={InfoUrl} alt="網站介紹" />
@@ -70,14 +74,12 @@ export default function Navbar({ setMenuIsOpen }: Props) {
                     </button>
                 )} */}
                 <button className={`${styles.authBtn}`}>
-                    <a href="/login" style={{ color: 'white' }}>
-                        登入
-                    </a>
+                    <Link to="/login">登入</Link>
                 </button>
             </div>
-            <div className={styles.Hamburger} onClick={() => setMenuIsOpen(true)}>
+            {/* <div className={styles.Hamburger} onClick={() => setMenuIsOpen(true)}>
                 <img src={Hamburger} alt="更多" />
-            </div>
+            </div> */}
         </div>
     );
 }

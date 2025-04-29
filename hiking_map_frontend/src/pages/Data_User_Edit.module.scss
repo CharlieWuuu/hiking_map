@@ -1,0 +1,291 @@
+@use '../styles/colors' as colors;
+@use '../styles/mixins' as mixins;
+
+.Data_User_Edit {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    @include mixins.flex_center;
+    flex-direction: column;
+    gap: 0rem;
+
+    &.onLoading {
+        @include mixins.loader;
+    }
+
+    .Table_ScrollWrapper {
+        width: 100%;
+        height: 100%;
+        @include mixins.scrollbar;
+
+        table {
+            width: 100%;
+            overflow: auto;
+            thead {
+                background-color: colors.$background;
+                position: sticky;
+                top: 0;
+                tr {
+                    th {
+                        border-bottom: 1px solid colors.$accent;
+                        padding: 0.5rem;
+                        text-wrap: nowrap;
+                        text-align: left;
+                        font-weight: normal;
+                        color: colors.$panel_active;
+                        &.Table_id {
+                            text-align: right;
+                            width: 0;
+                        }
+                    }
+                }
+            }
+
+            tbody {
+                tr {
+                    cursor: pointer;
+                    &:hover {
+                        background-color: colors.$panel_active;
+                    }
+                    &.active {
+                        background-color: colors.$accent;
+                        color: colors.$panel;
+                        cursor: pointer;
+                        .Table_url {
+                            a {
+                                color: colors.$panel;
+                            }
+                        }
+                    }
+                    td {
+                        padding: 0.5rem;
+                        text-wrap: nowrap;
+                        &.Table_id {
+                            text-align: right;
+                            width: 0;
+                        }
+                        &.Table_name {
+                            text-align: left;
+                            width: 100%;
+                        }
+                        &.Table_county {
+                            text-align: left;
+                        }
+                        &.Table_town {
+                            text-align: left;
+                        }
+                        &.Table_time {
+                            text-align: left;
+                        }
+                        &.Table_length {
+                            text-align: right;
+                        }
+                        &.Table_url {
+                            a {
+                                text-decoration: underline;
+                                color: colors.$background_contrary;
+                                font-weight: normal;
+                            }
+                        }
+                        &.Table_note {
+                            text-wrap: auto;
+                            text-align: left;
+                            max-width: 100px;
+                        }
+                    }
+                    &:last-child {
+                        td {
+                            padding-bottom: 0.75rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .Table_Header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        gap: 1rem;
+        .Table_Pagination {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            button {
+                @include mixins.flex_center;
+                width: 32px;
+                height: 32px;
+                img {
+                    width: 18px;
+                    height: 18px;
+                }
+            }
+        }
+        hr {
+            border: none;
+            width: 2px;
+            height: 70%;
+            background-color: colors.$panel_active;
+        }
+        select {
+            border-radius: 1rem;
+            border: 0.5px solid colors.$background_contrary;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.9rem;
+            background-color: colors.$panel;
+            color: colors.$background_contrary;
+        }
+    }
+}
+
+.Panel_Edit {
+    .Table_ScrollWrapper {
+        table {
+            tbody {
+                tr {
+                    &:hover {
+                        td {
+                            &.Table_public {
+                                input {
+                                    &.disabled {
+                                        accent-color: colors.$panel_active;
+                                    }
+                                }
+                            }
+                            &.Table_edit {
+                                > div {
+                                    button {
+                                        opacity: 1;
+                                        background-color: colors.$panel_active;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    &.active {
+                        cursor: auto;
+                        td {
+                            &.Table_edit {
+                                > div {
+                                    button {
+                                        opacity: 1;
+                                        color: colors.$panel;
+                                        border: 1px solid colors.$panel;
+                                        background-color: colors.$accent;
+                                        &:hover {
+                                            background-color: colors.$panel;
+                                            color: colors.$accent;
+                                            border: 1px solid colors.$panel;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    td {
+                        width: 1%;
+
+                        input {
+                            border-radius: 0.25rem;
+                            border: 0.5px solid colors.$panel;
+                            padding: 0.1rem 0.2rem;
+                            font-size: 0.9rem;
+                            color: colors.$panel;
+                        }
+
+                        &.Table_name {
+                            width: 1%;
+                        }
+                        &.Table_length {
+                            min-width: 80px;
+                        }
+
+                        &.Table_time {
+                            input {
+                                width: 120px;
+                            }
+                        }
+
+                        &.Table_url {
+                            > div {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                gap: 0.3rem;
+
+                                input {
+                                    width: 100%;
+                                }
+                                button {
+                                    width: fit-content;
+                                    height: fit-content;
+                                    color: colors.$panel;
+                                    border: 1px solid colors.$panel;
+                                    background-color: colors.$accent;
+                                    font-size: 0.6rem;
+                                    padding: 0rem 0.4rem;
+                                    &:hover {
+                                        background-color: colors.$panel;
+                                        color: colors.$accent;
+                                        border: 1px solid colors.$panel;
+                                    }
+                                }
+                            }
+                        }
+                        &.Table_note {
+                            width: 100%;
+                        }
+                        &.Table_public {
+                            input {
+                                accent-color: colors.$panel;
+                                &.disabled {
+                                    pointer-events: none;
+                                }
+                            }
+                        }
+                        &.Table_file {
+                            button {
+                                font-size: 0.75rem;
+                                padding: 0.125rem 0.5rem;
+                                color: colors.$panel;
+                                border: 1px solid colors.$panel;
+                                background-color: colors.$accent;
+                                &:hover {
+                                    background-color: colors.$panel;
+                                    color: colors.$accent;
+                                    border: 1px solid colors.$panel;
+                                }
+                            }
+                        }
+                        &.Table_edit {
+                            > div {
+                                height: 100%;
+                                display: flex;
+                                align-items: center;
+                                gap: 0.5rem;
+                                button {
+                                    transition: none;
+                                    opacity: 0;
+                                    border: 1px solid colors.$background_contrary;
+                                    font-size: 0.75rem;
+                                    padding: 0.125rem 0.5rem;
+                                    background-color: colors.$panel_active;
+                                    &:hover {
+                                        background-color: colors.$background_contrary;
+                                        color: colors.$panel_active;
+                                        border: 1px solid colors.$background_contrary;
+                                    }
+                                }
+                            }
+                        }
+
+                        input {
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

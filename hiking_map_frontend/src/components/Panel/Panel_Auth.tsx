@@ -3,12 +3,7 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import AvatarUrl from '../../assets/images/Panel_Avatar.svg';
 
-type Props = {
-    loginStatus: boolean;
-    setLoginStatus: (loginStatus: boolean) => void;
-};
-
-export default function Panel_Auth(_: Props) {
+export default function Panel_Auth() {
     const { isLoggedIn, user, login, logout } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');

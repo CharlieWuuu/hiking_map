@@ -1,12 +1,33 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 import { AuthProvider } from './context/AuthContext';
+import { PanelProvider } from './context/PanelContext';
+import { TableProvider } from './context/TableContext';
+import { PolylineProvider } from './context/PolylineContext';
+import { GeojsonProvider } from './context/GeojsonContext';
+import { ModalProvider } from './context/ModalContext';
+import { PatchDataProvider } from './context/PatchDataContext';
+import { MapProvider } from './context/MapContext';
 
 createRoot(document.getElementById('root')!).render(
-    <AuthProvider>
-        <StrictMode>
-            <App />
-        </StrictMode>
-    </AuthProvider>,
+    <React.StrictMode>
+        <AuthProvider>
+            <GeojsonProvider>
+                <PanelProvider>
+                    <PolylineProvider>
+                        <TableProvider>
+                            <ModalProvider>
+                                <MapProvider>
+                                    <PatchDataProvider>
+                                        <App />
+                                    </PatchDataProvider>
+                                </MapProvider>
+                            </ModalProvider>
+                        </TableProvider>
+                    </PolylineProvider>
+                </PanelProvider>
+            </GeojsonProvider>
+        </AuthProvider>
+    </React.StrictMode>,
 );

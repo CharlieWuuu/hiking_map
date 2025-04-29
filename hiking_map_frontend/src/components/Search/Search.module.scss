@@ -1,0 +1,32 @@
+@use '../../styles/colors' as colors;
+@use '../../styles/mixins' as mixins;
+@use '../../styles/variables' as variables;
+@use '../../styles/media' as media;
+
+.SearchBar {
+    @include mixins.flex_center;
+    justify-content: space-between;
+    border-radius: 1rem;
+    height: variables.$navbar_height;
+    padding: 0 1rem;
+    flex-grow: 1;
+    background-color: colors.$panel;
+    border: 1px solid colors.$panel_active;
+    &.active {
+        border-radius: 1rem 1rem 0 0;
+    }
+    input {
+        color: colors.$background_contrary;
+        background-color: transparent;
+        border: none;
+        font-size: 1rem;
+        flex-grow: 1;
+        outline: none;
+        width: 100%;
+        padding: 6px 0px;
+    }
+    img {
+        opacity: 0.5;
+        cursor: pointer;
+    }
+}

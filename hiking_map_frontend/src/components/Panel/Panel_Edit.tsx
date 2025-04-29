@@ -5,6 +5,7 @@ import { useRef, useEffect, useState } from 'react';
 import { useGeojson } from '../../context/GeojsonContext';
 import { useModal } from '../../context/ModalContext';
 import { usePatchData } from '../../context/PatchDataContext';
+import Pagination from '../../assets/images/Table_Pagination.svg';
 
 type patchData = {
     name: string;
@@ -86,13 +87,13 @@ export default function Panel_Edit() {
             <div className={styles.Table_Header}>
                 <div className={styles.Table_Pagination}>
                     <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
-                        上一頁
+                        <img src={Pagination} alt="上一頁" style={{ transform: 'rotate(180deg)' }} />
                     </button>
                     <span>
-                        第 {pageIndexStart} - {pageIndexEnd} 筆
+                        {pageIndexStart} - {pageIndexEnd}
                     </span>
                     <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
-                        下一頁
+                        <img src={Pagination} alt="下一頁" />
                     </button>
                 </div>
                 <hr />
