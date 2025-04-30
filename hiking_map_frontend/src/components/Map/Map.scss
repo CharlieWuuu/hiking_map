@@ -148,3 +148,14 @@
 .LineHover {
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
 }
+
+.line-tooltip {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    font-weight: bold;
+    color: #222;
+    text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white;
+    pointer-events: none; // 避免 hover 觸發問題
+}

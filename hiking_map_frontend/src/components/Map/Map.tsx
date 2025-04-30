@@ -118,6 +118,7 @@ export default function Map() {
                 <ZoomControl position="bottomright" />
                 <ResizeEffect isResizing={isResizing} />
                 <Map_Layer />
+
                 {!geojson && (
                     <span className="onLoading">
                         <div className="loader"></div>
@@ -131,6 +132,22 @@ export default function Map() {
                             onEachFeature={(feature, layer) => {
                                 const pathLayer = layer as L.Path;
                                 const uuid = feature.properties?.uuid;
+                                const name = feature.properties?.name;
+                                const map = useMap();
+                                if (name) {
+                                    layer.bindTooltip(name, { permanent: false, direction: 'center', className: 'line-tooltip', opacity: 1 });
+
+                                    map.on('zoomend', () => {
+                                        const zoom = map.getZoom();
+
+                                        if (zoom >= 12) {
+                                            layer.bindTooltip(name, { permanent: true, direction: 'center', className: 'line-tooltip', opacity: 1 });
+                                        } else {
+                                            layer.bindTooltip(name, { permanent: false, direction: 'center', className: 'line-tooltip', opacity: 1 });
+                                        }
+                                    });
+                                }
+
                                 pathLayer.on({
                                     mouseover: () => setHoverFeatureUuid(uuid),
                                     mouseout: () => setHoverFeatureUuid(null),
