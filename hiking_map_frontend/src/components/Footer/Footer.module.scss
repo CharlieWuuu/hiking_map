@@ -1,10 +1,11 @@
 @use '../../styles/mixins' as mixins;
 @use '../../styles/colors' as colors;
+@use '../../styles/media' as media;
 
 .Footer {
     width: 100%;
     background-color: colors.$panel;
-    padding: 2rem 0;
+    padding: 4rem 0;
     .Footer_Content {
         max-width: 1280px;
         display: flex;
@@ -31,6 +32,25 @@
             margin: 0 2rem;
             a {
                 color: colors.$background_contrary;
+            }
+            span {
+                color: colors.$panel_active;
+            }
+        }
+    }
+
+    @include media.media(md) {
+        margin-bottom: var(--bottomBar_height);
+        .Footer_Content {
+            flex-direction: column-reverse;
+            gap: 2rem;
+            hr {
+                display: none;
+            }
+            .Footer_links {
+                flex-direction: row;
+                gap: 2rem;
+                margin: 0;
             }
         }
     }

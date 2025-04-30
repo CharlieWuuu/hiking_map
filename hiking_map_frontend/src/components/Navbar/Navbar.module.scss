@@ -25,41 +25,19 @@
     .Logo {
         display: flex;
         img {
-            height: variables.$navbar_inner_height;
+            height: var(--navbar_inner_height);
         }
     }
     .SearchBar {
-        @include mixins.flex_center;
-        justify-content: space-between;
-        border-radius: 1rem;
-        height: variables.$navbar_inner_height;
-        padding: 1rem;
         flex-grow: 1;
-        background-color: colors.$panel;
-        &.active {
-            border-radius: 1rem 1rem 0 0;
-        }
-        input {
-            color: colors.$background_contrary;
-            background-color: transparent;
-            border: none;
-            font-size: 1rem;
-            flex-grow: 1;
-            outline: none;
-            width: 100%;
-            padding: 6px 0px;
-        }
-        img {
-            opacity: 0.5;
-            cursor: pointer;
-        }
     }
+
     .RightButton {
         @include mixins.flex_center;
         gap: 0.5rem;
         button {
             width: 2rem;
-            height: variables.$navbar_inner_height;
+            height: var(--navbar_inner_height);
 
             img {
                 height: 1rem;
@@ -77,19 +55,31 @@
     @include media.media(md) {
         justify-content: space-between;
         height: fit-content;
-        padding: 0.6rem 1.2rem;
-        .Logo {
-            height: 24px;
-            img {
-                height: 1.5rem;
-            }
-        }
-        .SearchBar,
-        .RightButton {
-            display: none;
-        }
+        padding: 0.8rem 1.2rem;
         .Hamburger {
             display: none;
+        }
+        .Logo {
+            height: var(--navbar_inner_height);
+            img {
+                height: var(--navbar_inner_height);
+            }
+        }
+        .SearchBar {
+            display: none;
+        }
+        .RightButton {
+            button {
+                height: var(--navbar_inner_height);
+                font-size: 0.8rem;
+                padding: 0rem 0.6rem;
+                img {
+                    height: 1rem;
+                }
+                &.fullscreenBtn {
+                    display: none;
+                }
+            }
         }
     }
 }

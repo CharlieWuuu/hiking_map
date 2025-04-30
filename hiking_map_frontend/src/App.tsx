@@ -5,6 +5,7 @@ import Data_User from './pages/Data_User';
 import Login from './pages/Login';
 import Data_User_Edit from './pages/Data_User_Edit';
 import Intro from './pages/Intro';
+import BottomBar from './components/BottomBar/BottomBar';
 
 // component
 import Navbar from './components/Navbar/Navbar';
@@ -66,6 +67,7 @@ export default function App() {
                     </main>
                 )}
                 {!shouldHideFooter && <Footer />}
+                <BottomBar setMenuIsOpen={setMenuIsOpen} />
             </div>
         </>
     );

@@ -1,0 +1,37 @@
+@use '../../styles/colors' as colors;
+@use '../../styles/media' as media;
+
+.BottomBar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--bottomBar_height);
+    background-color: colors.$panel_active_lighten;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    div,
+    a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
+        cursor: pointer;
+        img {
+            width: 20px;
+            height: 20px;
+        }
+        span {
+            font-size: 12px;
+            color: colors.$background_contrary;
+        }
+    }
+
+    @include media.media(md) {
+        display: flex;
+    }
+}

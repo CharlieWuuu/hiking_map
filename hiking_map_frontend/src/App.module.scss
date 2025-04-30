@@ -5,11 +5,12 @@
 .App {
     margin: 0 auto;
     width: 100%;
-    min-height: calc(100% - variables.$navbar_outer_height);
+    min-height: calc(100% - var(--navbar_outer_height));
     display: flex;
     flex-direction: column;
 
-    margin-top: variables.$navbar_outer_height;
+    margin-top: var(--navbar_outer_height);
+
     gap: 1rem;
     background-color: colors.$background;
     * {
@@ -17,7 +18,7 @@
     }
 
     .HundredVH {
-        max-height: calc(100% - variables.$navbar_outer_height);
+        max-height: calc(100% - var(--navbar_outer_height));
         padding: 1rem;
     }
 
@@ -35,5 +36,8 @@
     @include media.media(md) {
         gap: 0;
         padding: 0;
+        main {
+            width: 100%;
+        }
     }
 }

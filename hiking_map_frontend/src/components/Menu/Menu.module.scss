@@ -1,5 +1,6 @@
 @use '../../styles/colors' as colors;
 @use '../../styles/mixins' as mixins;
+@use '../../styles/media' as media;
 
 .Menu_Backdrop {
     position: fixed;
@@ -20,7 +21,8 @@
     .Menu {
         position: fixed;
         top: 0;
-        left: -200px;
+        left: 0;
+        transform: translateX(-100%);
         width: fit-content;
         height: 100%;
         padding: 1rem 0;
@@ -35,7 +37,7 @@
         transition: all 0.3s ease;
         &.active {
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-            left: 0px;
+            transform: translateX(0%);
             padding: 1rem;
         }
 
@@ -75,6 +77,16 @@
                 &:hover {
                     background-color: colors.$panel_active;
                 }
+            }
+        }
+        @include media.media(md) {
+            left: 100%;
+            transform: translateX(0%);
+            .Hamburger {
+                display: none;
+            }
+            &.active {
+                transform: translateX(-100%);
             }
         }
     }

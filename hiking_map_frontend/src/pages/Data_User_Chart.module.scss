@@ -24,12 +24,15 @@
     &::-webkit-scrollbar-corner {
         background-color: colors.$panel;
     }
-
+    h2 {
+        font-size: 2.4rem;
+        text-align: start;
+    }
     > div {
         @include mixins.flex_center;
         flex-direction: column;
         gap: 0rem;
-        h2 {
+        h3 {
             text-align: start;
         }
     }

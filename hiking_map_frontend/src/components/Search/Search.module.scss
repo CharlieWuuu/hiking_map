@@ -7,7 +7,7 @@
     @include mixins.flex_center;
     justify-content: space-between;
     border-radius: 1rem;
-    height: variables.$navbar_inner_height;
+    height: var(--navbar_inner_height);
     padding: 0 1rem;
     flex-grow: 1;
     background-color: colors.$panel;

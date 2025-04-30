@@ -41,41 +41,17 @@ export default function Navbar({ setMenuIsOpen }: Props) {
             <a className={styles.Logo} href="/">
                 <img src={LogoUrl} alt="LOGO" />
             </a>
-            <SearchUser />
+            <div className={styles.SearchBar}>
+                <SearchUser />
+            </div>
             <div className={styles.RightButton}>
-                <button onClick={toggleFullscreen}>{isFullscreen ? <img src={FullScreen_back} alt="全螢幕" /> : <img src={FullScreen} alt="關閉全螢幕" />}</button>
-                {/* {uiPanels && setUIPanels && isLoggedIn && (
-                    <button
-                        className={`${uiPanels.edit ? 'active' : ''}`}
-                        onClick={() =>
-                            setUIPanels({
-                                ...uiPanels,
-                                data: uiPanels.edit,
-                                auth: false,
-                                info: false,
-                                edit: !uiPanels.edit,
-                            })
-                        }>
-                        <img src={EditUrl} alt="編輯" />
-                    </button>
-                )} */}
-                {/* {uiPanels && setUIPanels && (
-                    <button className={`${uiPanels.info ? 'active' : ''}`} onClick={() => setUIPanels({ ...uiPanels, info: !uiPanels.info })}>
-                        <img src={InfoUrl} alt="網站介紹" />
-                    </button>
-                )} */}
-                {/* {uiPanels && setUIPanels && (
-                    <button className={`${styles.authBtn} ${uiPanels.auth ? 'active' : ''}`} onClick={() => setUIPanels({ ...uiPanels, auth: !uiPanels.auth })}>
-                        {isLoggedIn ? '帳號' : '登入'}
-                    </button>
-                )} */}
+                <button className={`${styles.fullscreenBtn}`} onClick={toggleFullscreen}>
+                    {isFullscreen ? <img src={FullScreen_back} alt="全螢幕" /> : <img src={FullScreen} alt="關閉全螢幕" />}
+                </button>
                 <button className={`${styles.authBtn}`}>
                     <Link to="/login">{isLoggedIn ? '帳號' : '登入'}</Link>
                 </button>
             </div>
-            {/* <div className={styles.Hamburger} onClick={() => setMenuIsOpen(true)}>
-                <img src={Hamburger} alt="更多" />
-            </div> */}
         </div>
     );
 }
