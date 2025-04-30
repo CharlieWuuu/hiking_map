@@ -1,0 +1,113 @@
+@use '../../styles/mixins' as mixins;
+@use '../../styles/variables' as variables;
+@use '../../styles/colors' as colors;
+@use '../../styles/media' as media;
+.Map_Layer {
+    position: absolute;
+    width: 100%;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 401;
+    &.open {
+        .Map_Layer_Button {
+            display: none;
+        }
+        .Map_Layer_Panel {
+            display: block;
+        }
+    }
+    .Map_Layer_Button {
+        background-color: transparent;
+        opacity: 0;
+        transition: all 0.3s ease;
+        width: 32px;
+        height: 32px;
+        @include mixins.flex_center;
+        background-color: colors.$panel_active_lighten;
+        border-radius: variables.$border_radius;
+        cursor: pointer;
+        &:hover {
+            background-color: colors.$panel;
+        }
+        @include media.media(lg) {
+            opacity: 1;
+        }
+    }
+    .Map_Layer_Panel {
+        display: none;
+        height: fit-content;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: fit-content;
+        max-width: calc(100% - 2rem);
+        padding: 1rem;
+        border-radius: 1rem;
+        background: colors.$panel;
+        .Map_Layer_Button_Close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            @include mixins.flex_center;
+            background-color: colors.$panel_active;
+            border-radius: variables.$border_radius;
+            opacity: 0.5;
+            &:hover {
+                opacity: 1;
+            }
+        }
+        fieldset {
+            width: 100%;
+            @include mixins.flex_center;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: start;
+            border: none;
+            > p {
+                font-size: 1.2rem;
+                font-weight: bold;
+            }
+            > div {
+                width: 100%;
+                @include mixins.flex_center;
+                gap: 0.5rem;
+                justify-content: space-between;
+                flex-wrap: wrap;
+
+                label {
+                    width: fit-content;
+                    cursor: pointer;
+                    @include mixins.flex_center;
+                    gap: 0.5rem;
+                    &.layerLabel {
+                        flex-direction: column;
+                        img {
+                            border-radius: 0.5rem;
+                            width: 4rem;
+                            &.active {
+                                border: 4px solid colors.$accent;
+                            }
+                        }
+                    }
+                }
+
+                &.layerSetting {
+                    .layerSettingItem {
+                        @include mixins.flex_center;
+                        width: 100%;
+                        gap: 0.5rem;
+                        label {
+                            text-wrap: nowrap;
+                        }
+                        input {
+                            flex-grow: 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

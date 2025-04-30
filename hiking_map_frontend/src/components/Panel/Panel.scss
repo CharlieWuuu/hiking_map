@@ -37,7 +37,8 @@
         }
     }
 
-    @include media.media(md) {
+    @include media.media(lg) {
         border-radius: 0;
+        height: 100%;
     }
 }

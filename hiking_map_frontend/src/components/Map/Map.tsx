@@ -13,6 +13,7 @@ import { useTableContext } from '../../context/TableContext';
 import { useGeojson } from '../../context/GeojsonContext';
 import { usePanel } from '../../context/PanelContext';
 import Map_Detail from './Map_Detail';
+import Map_Layer from './Map_Layer';
 
 function TileEffect({ baseMap, setting }: { baseMap: BaseMapEn; setting: Record<BaseMapSettingEn, number> }) {
     const map = useMap();
@@ -116,6 +117,7 @@ export default function Map() {
                 <PanToEffect panToId={activeFeatureUuid} geojson={geojson} />
                 <ZoomControl position="bottomright" />
                 <ResizeEffect isResizing={isResizing} />
+                <Map_Layer />
                 {!geojson && (
                     <span className="onLoading">
                         <div className="loader"></div>

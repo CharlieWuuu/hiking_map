@@ -7,13 +7,11 @@
     @include mixins.flex_center;
     width: 100%;
     height: calc(100vh - var(--navbar_outer_height) - 2rem);
-
     position: relative;
 
     .leftPanelContainer,
     .rightPanelContainer {
         width: 100%;
-
         height: 100%;
         @include mixins.flex_center;
         justify-content: start;
@@ -30,12 +28,20 @@
         max-width: 320px;
     }
 
-    @include media.media(md) {
+    @include media.media(lg) {
         flex-direction: column-reverse;
         gap: 0;
-
+        height: calc(100vh - var(--navbar_outer_height) - var(--bottomBar_height));
+        margin-bottom: var(--bottomBar_height);
         .leftPanelContainer {
             max-width: 100%;
+            display: none;
+            &.ZoomIn {
+                display: block;
+                position: absolute;
+                max-height: calc(100vh - var(--navbar_outer_height) - var(--bottomBar_height));
+                z-index: 10;
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ export default function App() {
     const [menuIsOpen, setMenuIsOpen] = useState(false);
     const { user } = useAuth();
     const location = useLocation();
-    const hiddenFooterPaths = ['/user', '/layer'];
+    const hiddenFooterPaths = ['/user', '/layer', '/edit'];
     const shouldHideFooter = hiddenFooterPaths.some((path) => location.pathname.startsWith(path));
 
     return (

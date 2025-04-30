@@ -39,7 +39,7 @@
         }
     }
 
-    @include media.media(md) {
+    @include media.media(lg) {
         margin-bottom: var(--bottomBar_height);
         .Footer_Content {
             flex-direction: column-reverse;

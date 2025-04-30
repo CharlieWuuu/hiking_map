@@ -79,7 +79,7 @@
                 }
             }
         }
-        @include media.media(md) {
+        @include media.media(lg) {
             left: 100%;
             transform: translateX(0%);
             .Hamburger {

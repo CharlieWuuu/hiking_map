@@ -52,7 +52,7 @@
         }
     }
 
-    @include media.media(md) {
+    @include media.media(lg) {
         justify-content: space-between;
         height: fit-content;
         padding: 0.8rem 1.2rem;

@@ -15,9 +15,9 @@ export default function Panel_Tab({ panelDataType, setPanelDataType }: Props) {
                 資料
             </button>
             <Link to={`/user/${userName}/chart`}>圖表</Link>
-            <button className={panelDataType === 'Layer' ? styles.active : ''} onClick={() => setPanelDataType('Layer')}>
+            {/* <button className={panelDataType === 'Layer' ? styles.active : ''} onClick={() => setPanelDataType('Layer')}>
                 圖層
-            </button>
+            </button> */}
         </div>
     );
 }

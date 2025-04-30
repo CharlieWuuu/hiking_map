@@ -1,7 +1,9 @@
 @use '../styles/mixins' as mixins;
 @use '../styles/colors' as colors;
+@use '../styles/media' as media;
 .Data_User_Chart {
     width: 100%;
+    height: calc(100vh - var(--navbar_outer_height) - 2rem);
     @include mixins.flex_center;
     justify-content: start;
     flex-direction: column;
@@ -35,5 +37,9 @@
         h3 {
             text-align: start;
         }
+    }
+    @include media.media(lg) {
+        height: calc(100vh - var(--navbar_outer_height) - var(--bottomBar_height));
+        margin-bottom: var(--bottomBar_height);
     }
 }

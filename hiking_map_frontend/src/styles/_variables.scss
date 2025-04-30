@@ -7,9 +7,9 @@ $border_radius: 1rem;
     --bottomBar_height: 60px;
 }
 
-@include media.media(md) {
+@include media.media(lg) {
     :root {
         --navbar_inner_height: 1.8rem;
-        --navbar_outer_height: 2.8rem;
+        --navbar_outer_height: 3.4rem;
     }
 }
