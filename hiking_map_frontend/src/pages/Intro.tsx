@@ -1,7 +1,7 @@
-// 網站介紹
+import styles from './Intro.module.scss';
 export default function Intro() {
     return (
-        <div>
+        <div className={styles.Intro}>
             <h2>網站介紹</h2>
             <p>本網站是用以呈現個人的登山紀錄，並作為網頁技術練習。過去習慣用 QGIS 記錄路線，但在資料整理與分享上並不方便，因此藉由網頁技術建立一個更視覺化、可互動的地圖平台。</p>
 

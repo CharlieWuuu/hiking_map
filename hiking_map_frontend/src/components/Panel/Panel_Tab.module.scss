@@ -5,10 +5,13 @@
     @include mixins.flex_center;
     height: fit-content;
     gap: 0.8rem;
+    a,
     button {
         background-color: colors.$panel_active_lighten;
+        border-radius: 1rem;
         text-wrap: nowrap;
         font-size: 0.9rem;
+        line-height: 1rem;
         opacity: 0.6;
         padding: 0.2rem 0.6rem;
         color: colors.$panel;

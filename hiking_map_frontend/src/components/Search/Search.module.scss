@@ -12,8 +12,10 @@
     flex-grow: 1;
     background-color: colors.$panel;
     border: 1px solid colors.$panel_active;
+
     &.active {
         border-radius: 1rem 1rem 0 0;
+        border-bottom: none;
     }
     input {
         color: colors.$background_contrary;

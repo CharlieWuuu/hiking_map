@@ -9,6 +9,7 @@ import { GeojsonProvider } from './context/GeojsonContext';
 import { ModalProvider } from './context/ModalContext';
 import { PatchDataProvider } from './context/PatchDataContext';
 import { MapProvider } from './context/MapContext';
+import { BrowserRouter } from 'react-router-dom';
 
 createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
@@ -20,7 +21,9 @@ createRoot(document.getElementById('root')!).render(
                             <ModalProvider>
                                 <MapProvider>
                                     <PatchDataProvider>
-                                        <App />
+                                        <BrowserRouter>
+                                            <App />
+                                        </BrowserRouter>
                                     </PatchDataProvider>
                                 </MapProvider>
                             </ModalProvider>

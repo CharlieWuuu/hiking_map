@@ -2,7 +2,7 @@ import SearchUrl from '../../assets/images/Navbar_Search.svg';
 import { Autocomplete } from '@mui/material';
 import { Popper } from '@mui/material';
 import { useState, useRef } from 'react';
-import { usePolyline } from '../../context/PolylineContext';
+import { Link } from 'react-router-dom';
 import styles from './Search.module.scss';
 
 type fakeData = {
@@ -19,9 +19,9 @@ export default function SearchUser() {
         { name: 'Dora', name_zh: 'Dora', type: 'user', type_zh: '用戶', uuid: 'uuid-dora' },
         { name: 'Lawrence', name_zh: 'Lawrence', type: 'user', type_zh: '用戶', uuid: 'uuid-lawrence' },
         { name: 'Hundred', name_zh: '百岳', type: 'layer', type_zh: '圖層', uuid: 'uuid-hundred' },
-        { name: 'SmallHundred', name_zh: '小百岳', type: 'Layer', type_zh: '圖層', uuid: 'uuid-smallHundred' },
+        { name: 'SmallHundred', name_zh: '小百岳', type: 'layer', type_zh: '圖層', uuid: 'uuid-smallHundred' },
+        { name: 'HundredTrails', name_zh: '百大必訪步道', type: 'layer', type_zh: '圖層', uuid: 'uuid-hundredTrails' },
     ];
-    const { setActiveFeatureUuid } = usePolyline();
 
     const [showAutocomplete, setShowAutocomplete] = useState(false);
     const [selectedOption, setSelectedOption] = useState<fakeData | null>(null);
@@ -40,16 +40,10 @@ export default function SearchUser() {
             }))
             .sort((a, b) => a.name.localeCompare(b.name)) || [];
 
-    const handleSelectOption = (option: fakeData) => {
-        if (!option) return;
-        setSelectedOption(option); // 選中它
-        setActiveFeatureUuid(option.uuid); // 更新線段
-    };
-
     const handleSearchClick = () => {
         const normalizedInput = inputValue.trim().toLowerCase();
         const matched = nameList.find((option) => option.name.toLowerCase().includes(normalizedInput));
-        if (matched) handleSelectOption(matched);
+        if (matched) return;
         else console.warn('查無資料');
     };
 
@@ -57,7 +51,7 @@ export default function SearchUser() {
         <div className={`${styles.SearchBar} ${showAutocomplete ? styles.active : ''}`} ref={searchBarRef}>
             <Autocomplete
                 options={nameList}
-                getOptionLabel={(option) => option.name} // 只顯示 label，不串奇怪的值
+                getOptionLabel={(option) => option.name_zh} // 只顯示 label，不串奇怪的值
                 isOptionEqualToValue={(option, value) => option.uuid === value.uuid} // 用 uuid 判斷是否相等
                 popupIcon={null}
                 autoComplete={true}
@@ -70,7 +64,6 @@ export default function SearchUser() {
                 onChange={(_, selected) => {
                     if (selected) {
                         setSelectedOption(selected);
-                        handleSelectOption(selected);
                     }
                 }}
                 inputValue={inputValue}
@@ -90,7 +83,6 @@ export default function SearchUser() {
                                     const normalizedInput = inputValue.trim().toLowerCase();
                                     const matched = nameList.find((option) => option.name.toLowerCase().includes(normalizedInput));
                                     if (matched) {
-                                        handleSelectOption(matched);
                                     }
                                 }
 
@@ -103,8 +95,10 @@ export default function SearchUser() {
                     const { key, ...rest } = props;
                     return (
                         <li key={option.uuid} {...rest}>
-                            <p>{option.name_zh}</p>
-                            <span>{option.type_zh}</span>
+                            <Link to={`/${option.type}/${option.name}`}>
+                                <p>{option.name_zh}</p>
+                                <span>{option.type_zh}</span>
+                            </Link>
                         </li>
                     );
                 }}

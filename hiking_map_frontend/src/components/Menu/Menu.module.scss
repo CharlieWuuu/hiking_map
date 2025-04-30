@@ -1,64 +1,80 @@
 @use '../../styles/colors' as colors;
 @use '../../styles/mixins' as mixins;
 
-.Menu {
+.Menu_Backdrop {
     position: fixed;
-    top: 0;
-    left: -200px;
-    width: fit-content;
-    height: 100%;
-    padding: 1rem 0;
-    background-color: colors.$panel;
-
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: start;
-    gap: 2rem;
-
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
     z-index: 1000;
-    transition: all 0.3s ease;
-    &.active {
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-        left: 0px;
-        padding: 1rem;
+    &.open {
+        pointer-events: all;
+        opacity: 1;
     }
 
-    .Hamburger {
-        @include mixins.flex_center;
-        width: 36px;
-        height: 32px;
-        cursor: pointer;
+    .Menu {
+        position: fixed;
+        top: 0;
+        left: -200px;
+        width: fit-content;
+        height: 100%;
+        padding: 1rem 0;
+        background-color: colors.$panel;
 
-        img {
-            height: 24px;
-        }
-    }
-    ul {
-        list-style-type: none;
-        @include mixins.flex_center;
-
+        display: flex;
         flex-direction: column;
-        gap: 1.5rem;
-        min-width: 200px;
+        justify-content: start;
+        align-items: start;
+        gap: 2rem;
 
-        a {
+        transition: all 0.3s ease;
+        &.active {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            left: 0px;
+            padding: 1rem;
+        }
+
+        .Hamburger {
             @include mixins.flex_center;
-            justify-content: start;
-            width: 100%;
-            padding: 0.5rem 1rem;
-            transition: all 0.3s ease;
-            border-radius: 0.5rem;
+            width: 36px;
+            height: 32px;
+            cursor: pointer;
+
             img {
-                width: 24px;
+                height: 24px;
             }
+        }
+        ul {
+            list-style-type: none;
+            @include mixins.flex_center;
 
-            span {
-                color: colors.$background_contrary;
-            }
+            flex-direction: column;
+            gap: 1.5rem;
+            min-width: 200px;
 
-            &:hover {
-                background-color: colors.$panel_active;
+            a {
+                @include mixins.flex_center;
+                justify-content: start;
+                width: 100%;
+                padding: 0.5rem 1rem;
+                transition: all 0.3s ease;
+                border-radius: 0.5rem;
+                img {
+                    width: 24px;
+                }
+
+                span {
+                    color: colors.$background_contrary;
+                }
+
+                &:hover {
+                    background-color: colors.$panel_active;
+                }
             }
         }
     }
