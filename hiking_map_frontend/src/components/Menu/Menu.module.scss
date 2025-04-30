@@ -2,7 +2,7 @@
 @use '../../styles/mixins' as mixins;
 
 .Menu {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: -200px;
     width: fit-content;

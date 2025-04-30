@@ -1,14 +1,13 @@
 import styles from './Navbar.module.scss';
 import LogoUrl from '../../assets/images/Navbar_Logo.svg';
-import InfoUrl from '../../assets/images/Navbar_Info.svg';
 import FullScreen from '../../assets/images/FullScreen.svg';
 import FullScreen_back from '../../assets/images/FullScreen_back.svg';
 import Hamburger from '../../assets/images/Navbar_Hamburger.svg';
 import { useState, useEffect } from 'react';
-import { usePanel } from '../../context/PanelContext';
 import './Navbar.scss';
 import SearchUser from '../Search/SearchUser';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 type Props = {
     setMenuIsOpen: (isOpen: boolean) => void;
@@ -16,7 +15,7 @@ type Props = {
 
 export default function Navbar({ setMenuIsOpen }: Props) {
     const [isFullscreen, setIsFullscreen] = useState(false);
-    const { uiPanels, setUIPanels } = usePanel();
+    const { isLoggedIn } = useAuth();
 
     const toggleFullscreen = () => {
         if (!document.fullscreenElement) {
@@ -60,18 +59,18 @@ export default function Navbar({ setMenuIsOpen }: Props) {
                         <img src={EditUrl} alt="編輯" />
                     </button>
                 )} */}
-                {uiPanels && setUIPanels && (
+                {/* {uiPanels && setUIPanels && (
                     <button className={`${uiPanels.info ? 'active' : ''}`} onClick={() => setUIPanels({ ...uiPanels, info: !uiPanels.info })}>
                         <img src={InfoUrl} alt="網站介紹" />
                     </button>
-                )}
+                )} */}
                 {/* {uiPanels && setUIPanels && (
                     <button className={`${styles.authBtn} ${uiPanels.auth ? 'active' : ''}`} onClick={() => setUIPanels({ ...uiPanels, auth: !uiPanels.auth })}>
                         {isLoggedIn ? '帳號' : '登入'}
                     </button>
                 )} */}
                 <button className={`${styles.authBtn}`}>
-                    <Link to="/login">登入</Link>
+                    <Link to="/login">{isLoggedIn ? '帳號' : '登入'}</Link>
                 </button>
             </div>
             {/* <div className={styles.Hamburger} onClick={() => setMenuIsOpen(true)}>

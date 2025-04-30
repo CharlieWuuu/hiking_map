@@ -40,6 +40,7 @@ export default function Index() {
                         </div>
                     </div>
                 </section>
+                <footer>完蛋了看起來好像要做 footer</footer>
             </div>
         </div>
     );

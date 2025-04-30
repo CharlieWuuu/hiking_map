@@ -5,20 +5,24 @@
 .App {
     margin: 0 auto;
     width: 100%;
-    height: calc(100% - variables.$navbar_height - 1rem);
-    max-height: 100vh;
+    min-height: calc(100% - variables.$navbar_outer_height);
+
     display: flex;
     flex-direction: column;
     padding: 1rem;
-    margin-top: variables.$navbar_height + 2rem;
+    margin-top: variables.$navbar_outer_height;
     gap: 1rem;
     background-color: colors.$background;
     * {
         accent-color: colors.$accent;
     }
 
+    &.hundredVh {
+        max-height: calc(100% - variables.$navbar_outer_height);
+    }
+
     main {
-        height: calc(100% - variables.$navbar_height - 1rem);
+        height: 100%;
     }
 
     @include media.media(md) {
