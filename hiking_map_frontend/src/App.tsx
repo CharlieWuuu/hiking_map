@@ -1,7 +1,7 @@
 // page
 import Index from './pages/Index';
 import Data_User from './pages/Data_User';
-import Data_Layer from './pages/Data_Layer';
+// import Data_Layer from './pages/Data_Layer';
 import Login from './pages/Login';
 import Data_User_Edit from './pages/Data_User_Edit';
 import Intro from './pages/Intro';
