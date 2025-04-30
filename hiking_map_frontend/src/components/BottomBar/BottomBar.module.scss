@@ -8,11 +8,11 @@
     left: 0;
     right: 0;
     height: var(--bottomBar_height);
-    background-color: colors.$panel_active_lighten;
+    background-color: colors.$panel;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
     align-items: center;
     justify-content: space-between;
     padding: 0 3rem;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
     div,
     a {
         display: flex;

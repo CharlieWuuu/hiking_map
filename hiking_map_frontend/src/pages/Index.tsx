@@ -23,22 +23,22 @@ export default function Index() {
                         <div className={styles.Card}>
                             <img src={Layer_Hundred} alt="" />
                             <div>
-                                <h4>百岳（製作中）</h4>
-                                <p>征服台灣最壯麗的高峰，感受海拔三千公尺以上的震撼美景。（內容製作中）</p>
+                                <h4>百岳</h4>
+                                <p>征服台灣最壯麗的高峰，感受海拔三千公尺以上的震撼美景。（製作中）</p>
                             </div>
                         </div>
                         <div className={styles.Card}>
                             <img src={Layer_SmallHundred} alt="" />
                             <div>
-                                <h4>小百岳（製作中）</h4>
-                                <p>親近自然的絕佳選擇，適合入門者與全家大小共同踏青。</p>
+                                <h4>小百岳</h4>
+                                <p>親近自然的絕佳選擇，適合入門者與全家大小共同踏青。（製作中）</p>
                             </div>
                         </div>
                         <div className={styles.Card}>
                             <img src={Layer_HundredTrails} alt="" />
                             <div>
-                                <h4>百大必訪步道（製作中）</h4>
-                                <p>由民眾的各縣市經典路線，結合臺灣各地絕景，走過就不會忘。</p>
+                                <h4>百大必訪步道</h4>
+                                <p>由民眾的各縣市經典路線，結合臺灣各地絕景，走過就不會忘。（製作中）</p>
                             </div>
                         </div>
                     </div>
