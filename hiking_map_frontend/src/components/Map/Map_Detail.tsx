@@ -45,7 +45,11 @@ export default function Map_Detail() {
                             <div>
                                 {Array.isArray(detailCard.url) && detailCard.url.length > 0 ? (
                                     detailCard.url.map((element: string, index: number) => (
-                                        <a href={element} target="_blank" rel="noopener noreferrer">
+                                        <a
+                                            key={element || index} // 用網址作為 key，若為空備援用 index
+                                            href={element}
+                                            target="_blank"
+                                            rel="noopener noreferrer">
                                             連結-{index + 1}
                                         </a>
                                     ))

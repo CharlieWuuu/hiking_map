@@ -29,7 +29,7 @@ export default function App() {
     const [menuIsOpen, setMenuIsOpen] = useState(false);
     const { user } = useAuth();
     const location = useLocation();
-    const hiddenFooterPaths = ['/user', '/layer', '/edit'];
+    const hiddenFooterPaths = ['/user', '/layer'];
     const shouldHideFooter = hiddenFooterPaths.some((path) => location.pathname.startsWith(path));
 
     return (
@@ -67,7 +67,7 @@ export default function App() {
                     </main>
                 )}
                 {!shouldHideFooter && <Footer />}
-                <BottomBar setMenuIsOpen={setMenuIsOpen} />
+                <BottomBar setMenuIsOpen={setMenuIsOpen} type={shouldHideFooter ? 'data' : null} />
             </div>
         </>
     );
