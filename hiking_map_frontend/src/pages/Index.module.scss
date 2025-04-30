@@ -61,7 +61,7 @@
                     min-width: 250px;
 
                     &.Card_small {
-                        width: 45%;
+                        width: fit-content;
                         img {
                             width: 100px;
                             min-height: 100px;
