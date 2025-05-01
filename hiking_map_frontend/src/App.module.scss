@@ -40,7 +40,7 @@
         padding: 0;
         &.NoScroll {
             margin-top: 0;
-            min-height: calc(100svh - var(--navbar_outer_height) - var(--bottomBar_height));
+            max-height: calc(100svh - var(--navbar_outer_height));
             main {
                 padding: 0;
             }
