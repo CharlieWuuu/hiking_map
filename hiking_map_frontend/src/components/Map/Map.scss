@@ -91,7 +91,7 @@
 
         .leaflet-control-container {
             .leaflet-bottom.leaflet-right {
-                border-radius: 0 0 variables.$border_radius 0;
+                z-index: 401;
 
                 .leaflet-control-zoom.leaflet-bar.leaflet-control {
                     margin: none;
