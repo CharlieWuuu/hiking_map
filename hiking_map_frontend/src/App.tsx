@@ -59,7 +59,7 @@ export default function App() {
                     </Routes>
                 </main>
                 {!isFullScreen && <Footer />}
-                <BottomBar setMenuIsOpen={setMenuIsOpen} type={isFullScreen ? 'data' : null} />
+                <BottomBar setMenuIsOpen={setMenuIsOpen} />
             </div>
         </>
     );

@@ -40,5 +40,6 @@
     @include media.media(lg) {
         border-radius: 0;
         height: 100%;
+        max-height: calc(100dvh - var(--navbar_outer_height) - var(--bottomBar_height));
     }
 }

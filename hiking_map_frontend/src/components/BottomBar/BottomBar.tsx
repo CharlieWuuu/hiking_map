@@ -13,15 +13,16 @@ import { useFullScreenContext } from '../../context/FullScreenContext';
 
 type Props = {
     setMenuIsOpen: (isOpen: boolean) => void;
-    type: string | null;
 };
-export default function BottomBar({ setMenuIsOpen, type }: Props) {
+export default function BottomBar({ setMenuIsOpen }: Props) {
     const { isFullScreen } = useFullScreenContext();
     const { user } = useAuth();
     const location = useLocation();
+    const dataPage = ['user', 'layer'];
+    const isDataPage = dataPage.some((path) => location.pathname.includes(path));
     const hasChart = location.pathname.includes('chart');
     const { ZoomIn, setZoomIn } = usePanel();
-    if (type === 'data') {
+    if (isDataPage) {
         return (
             <div className={`${styles.BottomBar} ${isFullScreen ? styles.fullscreen : ''}`}>
                 <Link to="/" onClick={() => setMenuIsOpen(false)}>
