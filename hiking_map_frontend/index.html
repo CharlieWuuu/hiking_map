@@ -25,11 +25,22 @@
       background-color: red !important;
     }
   </style>
+
 </head>
 
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
+<script>
+  document.body.addEventListener('click', function (e) {
+    e.preventDefault(); // 防止連結跳轉
+    e.stopPropagation(); // 防止冒泡
+    const tag = e.target.tagName;
+    const className = e.target.className || '(no class)';
+    alert(`Tag: ${tag}\nClass: ${className}`);
+  });
+
+</script>
 
 </html>
