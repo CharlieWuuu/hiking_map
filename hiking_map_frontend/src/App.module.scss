@@ -38,6 +38,9 @@
     @include media.media(lg) {
         gap: 0;
         padding: 0;
+        &.NoScroll {
+            min-height: calc(100svh - var(--navbar_outer_height) - 10rem);
+        }
         main {
             width: 100%;
         }
