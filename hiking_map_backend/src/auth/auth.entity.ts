@@ -1,5 +1,20 @@
-// src/logs/users-log.entity.ts
+// src/users/user.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
+  username: string;
+
+  @Column()
+  password: string;
+
+  @Column({ unique: true })
+  uuid: string;
+}
 
 @Entity('users_log')
 export class UsersLog {
@@ -12,9 +27,12 @@ export class UsersLog {
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   login_time: Date;
 
-  @Column({ nullable: true })
+  @Column()
   ip_address: string;
 
-  @Column({ nullable: true })
+  @Column()
   user_agent: string;
+
+  @Column()
+  uuid: string;
 }
