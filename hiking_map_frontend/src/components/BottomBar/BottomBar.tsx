@@ -9,19 +9,21 @@ import Data from '../../assets/images/Menu_Data.svg';
 import Map from '../../assets/images/Menu_Map.svg';
 import { useLocation } from 'react-router-dom';
 import { usePanel } from '../../context/PanelContext';
+import { useFullScreenContext } from '../../context/FullScreenContext';
 
 type Props = {
     setMenuIsOpen: (isOpen: boolean) => void;
     type: string | null;
 };
 export default function BottomBar({ setMenuIsOpen, type }: Props) {
+    const { isFullScreen } = useFullScreenContext();
     const { user } = useAuth();
     const location = useLocation();
     const hasChart = location.pathname.includes('chart');
     const { ZoomIn, setZoomIn } = usePanel();
     if (type === 'data') {
         return (
-            <div className={styles.BottomBar}>
+            <div className={`${styles.BottomBar} ${isFullScreen ? styles.fullscreen : ''}`}>
                 <Link to="/" onClick={() => setMenuIsOpen(false)}>
                     <img src={Index} alt="Icon" />
                     <span>首頁</span>

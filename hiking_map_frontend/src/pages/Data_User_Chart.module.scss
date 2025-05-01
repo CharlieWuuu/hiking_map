@@ -40,6 +40,5 @@
     }
     @include media.media(lg) {
         height: calc(100vh - var(--navbar_outer_height) - var(--bottomBar_height));
-        margin-bottom: var(--bottomBar_height);
     }
 }

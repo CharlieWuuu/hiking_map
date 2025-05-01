@@ -15,6 +15,10 @@
     z-index: 100;
     background-color: colors.$background;
 
+    &.fullscreen {
+        position: relative;
+    }
+
     .Hamburger {
         width: 36px;
         cursor: pointer;

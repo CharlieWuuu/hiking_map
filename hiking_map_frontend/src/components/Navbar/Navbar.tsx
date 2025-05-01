@@ -8,6 +8,7 @@ import './Navbar.scss';
 import SearchUser from '../Search/SearchUser';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useFullScreenContext } from '../../context/FullScreenContext';
 
 type Props = {
     setMenuIsOpen: (isOpen: boolean) => void;
@@ -16,6 +17,7 @@ type Props = {
 export default function Navbar({ setMenuIsOpen }: Props) {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const { isLoggedIn } = useAuth();
+    const { isFullScreen } = useFullScreenContext();
 
     const toggleFullscreen = () => {
         if (!document.fullscreenElement) {
@@ -34,7 +36,7 @@ export default function Navbar({ setMenuIsOpen }: Props) {
     }, []);
 
     return (
-        <div className={styles.Navbar}>
+        <div className={`${styles.Navbar} ${isFullScreen ? styles.fullscreen : ''}`}>
             <div className={styles.Hamburger} onClick={() => setMenuIsOpen(true)}>
                 <img src={Hamburger} alt="更多" />
             </div>

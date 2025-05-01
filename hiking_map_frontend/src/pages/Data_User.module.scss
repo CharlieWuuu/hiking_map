@@ -32,7 +32,7 @@
         flex-direction: column-reverse;
         gap: 0;
         height: calc(100svh - var(--navbar_outer_height) - var(--bottomBar_height));
-        margin-bottom: var(--bottomBar_height);
+
         .leftPanelContainer {
             max-width: 100%;
             display: none;

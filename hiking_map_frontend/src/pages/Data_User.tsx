@@ -6,7 +6,7 @@ import { usePanel } from '../context/PanelContext';
 export default function Data_User() {
     const { ZoomIn } = usePanel();
     return (
-        <div className={styles.Data_User}>
+        <div className={`${styles.Data_User}`}>
             <div className={`${styles.leftPanelContainer} ${ZoomIn ? styles.ZoomIn : ''}`}>
                 <Panel type={'data'} />
             </div>

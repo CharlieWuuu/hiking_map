@@ -18,10 +18,10 @@
     }
     &.NoScroll {
         overflow: hidden;
-    }
-    .HundredVH {
-        max-height: calc(100svh - var(--navbar_outer_height));
-        padding: 0 1rem 1rem 1rem;
+        main {
+            max-height: calc(100svh - var(--navbar_outer_height));
+            padding: 0 1rem 1rem 1rem;
+        }
     }
 
     main {
@@ -40,13 +40,13 @@
         padding: 0;
         &.NoScroll {
             margin-top: 0;
-            min-height: calc(100svh - var(--navbar_outer_height) - 10rem);
+            min-height: calc(100svh - var(--navbar_outer_height) - var(--bottomBar_height));
+            main {
+                padding: 0;
+            }
         }
         main {
             width: 100%;
-        }
-        .HundredVH {
-            padding: 0;
         }
     }
 }

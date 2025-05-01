@@ -9,6 +9,7 @@ import { GeojsonProvider } from './context/GeojsonContext';
 import { ModalProvider } from './context/ModalContext';
 import { PatchDataProvider } from './context/PatchDataContext';
 import { MapProvider } from './context/MapContext';
+import { FullScreenProvider } from './context/FullScreenContext.tsx';
 import { BrowserRouter } from 'react-router-dom';
 
 createRoot(document.getElementById('root')!).render(
@@ -22,7 +23,9 @@ createRoot(document.getElementById('root')!).render(
                                 <MapProvider>
                                     <PatchDataProvider>
                                         <BrowserRouter>
-                                            <App />
+                                            <FullScreenProvider>
+                                                <App />
+                                            </FullScreenProvider>
                                         </BrowserRouter>
                                     </PatchDataProvider>
                                 </MapProvider>
