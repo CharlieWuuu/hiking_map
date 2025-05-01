@@ -35,7 +35,7 @@ export default function App() {
     return (
         <>
             <Navbar setMenuIsOpen={setMenuIsOpen} />
-            <div className={styles.App}>
+            <div className={`${styles.App} ${shouldHideFooter ? styles.NoScroll : ''}`}>
                 <Modal />
                 <Menu menuIsOpen={menuIsOpen} setMenuIsOpen={setMenuIsOpen} />
                 {shouldHideFooter && (

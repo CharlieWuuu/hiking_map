@@ -16,7 +16,9 @@
     * {
         accent-color: colors.$accent;
     }
-
+    &.NoScroll {
+        overflow: hidden;
+    }
     .HundredVH {
         max-height: calc(100svh - var(--navbar_outer_height));
         padding: 1rem;
