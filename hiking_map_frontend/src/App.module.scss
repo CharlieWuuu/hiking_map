@@ -18,9 +18,11 @@
     }
     &.NoScroll {
         overflow: hidden;
+        margin-top: 0;
         main {
             max-height: calc(100dvh - var(--navbar_outer_height));
             padding: 0 1rem 1rem 1rem;
+            width: 100%;
         }
     }
 
@@ -40,7 +42,6 @@
         padding: 0;
         &.NoScroll {
             margin-top: 0;
-
             max-height: calc(100dvh - var(--navbar_outer_height));
             main {
                 padding: 0;

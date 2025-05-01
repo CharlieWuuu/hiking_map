@@ -14,6 +14,9 @@ import { useGeojson } from '../../context/GeojsonContext';
 import { usePanel } from '../../context/PanelContext';
 import Map_Detail from './Map_Detail';
 import Map_Layer from './Map_Layer';
+import { useLocation } from 'react-router-dom';
+import DataUserChart from '../../assets/images/Menu_Data_User_Chart.svg';
+import { Link } from 'react-router-dom';
 
 function TileEffect({ baseMap, setting }: { baseMap: BaseMapEn; setting: Record<BaseMapSettingEn, number> }) {
     const map = useMap();
@@ -106,6 +109,9 @@ export default function Map() {
     }, [geojson]);
 
     const { uiPanels } = usePanel();
+    const location = useLocation();
+    const type = location.pathname.split('/')[1];
+    const name = location.pathname.split('/')[2];
 
     return (
         <div className={`Map ${IsZoomIn ? 'ZoomIn' : ''} ${uiPanels?.edit ? 'Editing' : ''}`} ref={mapWrapperRef}>
@@ -118,6 +124,11 @@ export default function Map() {
                 <ZoomControl position="bottomright" />
                 <ResizeEffect isResizing={isResizing} />
                 <Map_Layer />
+                <div className="ChartButton">
+                    <Link to={`/${type}/${name}/chart`}>
+                        <img src={DataUserChart} alt="Icon" />
+                    </Link>
+                </div>
 
                 {!geojson && (
                     <span className="onLoading">

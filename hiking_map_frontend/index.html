@@ -11,24 +11,11 @@
   <meta property="og:title" content="健行軌跡 Hiking Track" />
   <meta property="og:description" content="上傳你的 GPX，一起建立你的健行軌跡。" />
   <meta property="og:image" content="https://hiking-map.vercel.app/OG_Image.png" />
-  <style>
-  </style>
-
 </head>
 
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
-<script>
-  document.body.addEventListener('click', function (e) {
-    e.preventDefault(); // 防止連結跳轉
-    e.stopPropagation(); // 防止冒泡
-    const tag = e.target.tagName;
-    const className = e.target.className || '(no class)';
-    alert(`Tag: ${tag}\nClass: ${className}`);
-  });
-
-</script>
 
 </html>

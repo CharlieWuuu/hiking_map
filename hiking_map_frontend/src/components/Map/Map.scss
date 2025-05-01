@@ -143,6 +143,38 @@
             }
         }
     }
+    .ChartButton {
+        position: absolute;
+        bottom: 4rem;
+        left: 1rem;
+        z-index: 401;
+        background-color: transparent;
+        opacity: 0;
+        transition: all 0.3s ease;
+        width: 32px;
+        height: 32px;
+        @include mixins.flex_center;
+        display: none;
+        background-color: colors.$panel_active_lighten;
+        border-radius: variables.$border_radius;
+        cursor: pointer;
+        &:hover {
+            background-color: colors.$panel;
+        }
+        @include media.media(lg) {
+            opacity: 1;
+        }
+        a {
+            @include mixins.flex_center;
+            img {
+                width: 16px;
+                height: 16px;
+            }
+        }
+        @include media.media(lg) {
+            display: flex;
+        }
+    }
 }
 
 .LineHover {

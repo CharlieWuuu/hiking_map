@@ -149,7 +149,7 @@ export default function Data_User_Chart() {
 
     return (
         <div className={styles.Data_User_Chart}>
-            <h2>Charlie 的健行軌跡統計</h2>
+            <h2>Charlie 的統計</h2>
             <div>
                 <h3>頻率</h3>
                 <div ref={chartRef_index}></div>
