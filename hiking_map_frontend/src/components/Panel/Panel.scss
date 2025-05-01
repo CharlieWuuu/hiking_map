@@ -16,7 +16,7 @@
     position: relative;
     min-height: 70%;
     height: fit-content;
-    max-height: calc(100svh - var(--navbar_outer_height) - 1rem);
+    max-height: calc(100dvh - var(--navbar_outer_height) - 1rem);
     &.Panel_detail {
         min-height: auto;
     }
