@@ -39,6 +39,7 @@
         }
     }
     @include media.media(lg) {
-        height: calc(100vh - var(--navbar_outer_height) - var(--bottomBar_height));
+        max-height: calc(100vh - var(--navbar_outer_height) - var(--bottomBar_height));
+        overflow: hidden;
     }
 }

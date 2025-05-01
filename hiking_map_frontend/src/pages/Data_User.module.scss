@@ -31,7 +31,8 @@
     @include media.media(lg) {
         flex-direction: column-reverse;
         gap: 0;
-        height: calc(100svh - var(--navbar_outer_height) - var(--bottomBar_height));
+        max-height: calc(100svh - var(--navbar_outer_height) - var(--bottomBar_height));
+        overflow: hidden;
 
         .leftPanelContainer {
             max-width: 100%;
