@@ -4,7 +4,6 @@ import Index from '../../assets/images/Menu_Index.svg';
 import DataUser from '../../assets/images/Menu_Data_User.svg';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import DataUserChart from '../../assets/images/Menu_Data_User_Chart.svg';
 import Data from '../../assets/images/Menu_Data.svg';
 import Map from '../../assets/images/Menu_Map.svg';
 import { useLocation } from 'react-router-dom';
