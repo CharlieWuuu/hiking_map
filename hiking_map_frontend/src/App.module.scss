@@ -5,7 +5,7 @@
 .App {
     margin: 0 auto;
     width: 100%;
-    min-height: calc(100% - var(--navbar_outer_height));
+    min-height: calc(100svh - var(--navbar_outer_height));
     display: flex;
     flex-direction: column;
 
@@ -18,7 +18,7 @@
     }
 
     .HundredVH {
-        max-height: calc(100% - var(--navbar_outer_height));
+        max-height: calc(100svh - var(--navbar_outer_height));
         padding: 1rem;
     }
 
