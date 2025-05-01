@@ -191,3 +191,7 @@
     text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white;
     pointer-events: none; // 避免 hover 觸發問題
 }
+
+.leaflet-interactive:focus {
+    outline: none;
+}

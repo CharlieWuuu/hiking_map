@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, GeoJSON, useMap, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMap, ZoomControl, useMapEvent } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useRef, useState } from 'react';
@@ -44,8 +44,8 @@ function PanToEffect({ panToId, geojson }: { panToId: string | null; geojson: Fe
         const bounds = targetFeature.properties?.bounds as [number, number][] | undefined;
         if (bounds) {
             map.fitBounds(L.latLngBounds(L.latLng(bounds[0][1], bounds[0][0]), L.latLng(bounds[2][1], bounds[2][0])), {
-                paddingTopLeft: [200, 200],
-                paddingBottomRight: [200, 200],
+                paddingTopLeft: [20, 20],
+                paddingBottomRight: [20, 20],
             });
         }
 
@@ -88,6 +88,16 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
     return null;
 }
 
+function MapClickHandler({ setActiveFeatureUuid }: { setActiveFeatureUuid: (id: string | null) => void }) {
+    useMapEvent('click', (e) => {
+        const isGeoJsonLayer = (e.originalEvent?.target as HTMLElement)?.closest('.leaflet-interactive');
+        if (isGeoJsonLayer) return;
+        setActiveFeatureUuid(null);
+    });
+
+    return null; // 不 render UI，只處理事件
+}
+
 export default function Map() {
     const { geojson } = useGeojson();
     const [IsZoomIn, setIsZoomIn] = useState(false);
@@ -123,6 +133,7 @@ export default function Map() {
                 <PanToEffect panToId={activeFeatureUuid} geojson={geojson} />
                 <ZoomControl position="bottomright" />
                 <ResizeEffect isResizing={isResizing} />
+                <MapClickHandler setActiveFeatureUuid={setActiveFeatureUuid} />
                 <Map_Layer />
                 <div className="ChartButton">
                     <Link to={`/${type}/${name}/chart`}>
@@ -169,20 +180,20 @@ export default function Map() {
                                 });
                             }}
                         />
-                        <GeoJSON data={geojson} style={{ color: '#ffffff', weight: 4, interactive: false }} />
-                        <GeoJSON data={geojson} style={{ color: '#747009', weight: 2, interactive: false }} />
+                        <GeoJSON data={geojson} style={{ color: '#ffffff', weight: 6, interactive: false }} />
+                        <GeoJSON data={geojson} style={{ color: '#747009', weight: 3, interactive: false }} />
                     </div>
                 )}
                 {hoverFeature && hoverFeature !== activeFeature && (
                     <div>
-                        <GeoJSON key={`highlight-white-${hoverFeature.properties?.uuid}`} data={hoverFeature} style={{ color: '#ffffff', weight: 6, interactive: false }} />
-                        <GeoJSON key={`highlight-yellow-${hoverFeature.properties?.uuid}`} data={hoverFeature} style={{ color: '#CFCF13', weight: 3, interactive: false }} />
+                        <GeoJSON key={`highlight-white-${hoverFeature.properties?.uuid}`} data={hoverFeature} style={{ color: '#ffffff', weight: 8, interactive: false }} />
+                        <GeoJSON key={`highlight-yellow-${hoverFeature.properties?.uuid}`} data={hoverFeature} style={{ color: '#CFCF13', weight: 4, interactive: false }} />
                     </div>
                 )}
                 {activeFeature && (
                     <div>
-                        <GeoJSON key={`highlight-white-${activeFeature.properties?.uuid}`} data={activeFeature} style={{ color: '#000000', weight: 6, interactive: false }} />
-                        <GeoJSON key={`highlight-orange-${activeFeature.properties?.uuid}`} data={activeFeature} style={{ color: '#FFFF3C', weight: 3, interactive: false }} />
+                        <GeoJSON key={`highlight-white-${activeFeature.properties?.uuid}`} data={activeFeature} style={{ color: '#000000', weight: 8, interactive: false }} />
+                        <GeoJSON key={`highlight-orange-${activeFeature.properties?.uuid}`} data={activeFeature} style={{ color: '#FFFF3C', weight: 4, interactive: false }} />
                     </div>
                 )}
             </MapContainer>

@@ -41,11 +41,6 @@ export default function BottomBar({ setMenuIsOpen }: Props) {
                     </div>
                 )}
 
-                {/* <Link to={user ? `/user/${user?.username}/chart` : '/login'} onClick={() => setMenuIsOpen(false)}>
-                    <img src={DataUserChart} alt="Icon" />
-                    <span>我的統計</span>
-                </Link> */}
-
                 <div onClick={() => setMenuIsOpen(true)}>
                     <img src={Hamburger} alt="收合" />
                     <span>更多</span>
@@ -65,11 +60,6 @@ export default function BottomBar({ setMenuIsOpen }: Props) {
                 <img src={DataUser} alt="Icon" />
                 <span>我的軌跡</span>
             </Link>
-
-            {/* <Link to={user ? `/user/${user?.username}/chart` : '/login'} onClick={() => setMenuIsOpen(false)}>
-                <img src={DataUserChart} alt="Icon" />
-                <span>我的統計</span>
-            </Link> */}
 
             <div onClick={() => setMenuIsOpen(true)}>
                 <img src={Hamburger} alt="收合" />

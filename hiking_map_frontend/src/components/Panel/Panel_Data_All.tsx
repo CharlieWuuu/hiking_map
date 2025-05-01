@@ -12,7 +12,7 @@ export default function Panel_Data_All() {
     const { geojson } = useGeojson();
     const itemsPerPage = 50; // 每頁顯示的項目數
     const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid } = usePolyline();
-    const { setUIPanels } = usePanel();
+    const { setUIPanels, setZoomIn } = usePanel();
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
     const rowRefs = useRef<Record<string, HTMLTableRowElement | null>>({});
 
@@ -32,6 +32,7 @@ export default function Panel_Data_All() {
             </div>
         );
     }
+
     const features = geojson?.features; // 取得 geojson 中的 features
     const pageIndexStart = startIndex + 1;
     const pageIndexEnd = Math.min(startIndex + itemsPerPage, features.length);
@@ -81,6 +82,7 @@ export default function Panel_Data_All() {
                                 onClick={() => {
                                     activeFeatureUuid !== feature.properties?.uuid && setActiveFeatureUuid(feature.properties?.uuid);
                                     activeFeatureUuid !== feature.properties?.uuid && setUIPanels((prev) => ({ ...prev, detail: true }));
+                                    activeFeatureUuid !== feature.properties?.uuid && setZoomIn(false);
 
                                     activeFeatureUuid === feature.properties?.uuid && setActiveFeatureUuid(null);
                                     activeFeatureUuid === feature.properties?.uuid && setUIPanels((prev) => ({ ...prev, detail: false }));
