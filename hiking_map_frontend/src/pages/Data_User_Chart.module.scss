@@ -41,5 +41,12 @@
     @include media.media(lg) {
         max-height: calc(100dvh - var(--navbar_outer_height) - var(--bottomBar_height));
         overflow: hidden;
+        h2 {
+            font-size: 2rem;
+        }
+        > div {
+            width: 80%;
+            margin: 0 auto;
+        }
     }
 }
