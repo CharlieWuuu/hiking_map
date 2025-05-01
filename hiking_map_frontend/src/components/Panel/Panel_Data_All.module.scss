@@ -137,6 +137,9 @@
                     height: 18px;
                 }
             }
+            span {
+                text-wrap: nowrap;
+            }
         }
         hr {
             border: none;
