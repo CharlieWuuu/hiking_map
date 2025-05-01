@@ -1,7 +1,8 @@
 @use '../../styles/colors' as colors;
+@use '../../styles/media' as media;
 
 .Map_Detail {
-    height: fit-content;
+    // height: fit-content;
     position: absolute;
     z-index: 401;
     top: 1rem;
@@ -32,37 +33,6 @@
             }
         }
 
-        div {
-            input {
-                display: none;
-            }
-
-            p {
-                display: block;
-            }
-        }
-
-        &.editing {
-            div {
-                input {
-                    display: block;
-                }
-
-                p {
-                    display: none;
-                }
-
-                &.Card_title {
-                    .Card_name {
-                        width: 50%;
-                        input {
-                            width: 100%;
-                        }
-                    }
-                }
-            }
-        }
-
         .Card_title {
             display: flex;
             gap: 0.5rem;
@@ -70,8 +40,7 @@
             text-wrap-mode: nowrap;
             flex-direction: column;
             .Card_name {
-                p,
-                input {
+                p {
                     padding: 0;
                     margin: 0;
 
@@ -129,6 +98,35 @@
             }
             .Card_note {
                 text-align: start;
+            }
+        }
+    }
+    @include media.media(lg) {
+        padding: 0.8rem;
+        .Detail_Card {
+            .Card_title {
+                .Card_name {
+                    p {
+                        font-size: 1.5rem;
+                        line-height: 1.5rem;
+                    }
+                }
+                .Card_district {
+                    font-size: 0.9rem;
+                }
+            }
+            .Card_properties {
+                gap: 0.5rem;
+                > div {
+                    span {
+                        font-size: 0.6rem;
+                    }
+                    p,
+                    a {
+                        font-size: 0.9rem;
+                        line-height: 0.9rem;
+                    }
+                }
             }
         }
     }
