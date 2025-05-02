@@ -23,6 +23,7 @@ export default function Modal_File({ type }: Props) {
         }
         const formData = new FormData();
         formData.append('file', file);
+        alert(file.name);
 
         const baseURL = import.meta.env.VITE_API_URL;
         const url = type === 'file_upload' ? `${baseURL}/trails` : `${baseURL}/trails/${editFeature?.uuid}`;
