@@ -80,6 +80,20 @@ export default function Modal_File({ type }: Props) {
                     accept=".geojson,.gpx"
                     style={{ display: 'none' }}
                     onChange={(e) => {
+                        alert(e.target.files?.[0].name);
+                        const files = Array.from(e.target.files || []);
+                        alert(
+                            JSON.stringify(
+                                files.map((f) => ({
+                                    name: f.name,
+                                    size: f.size,
+                                    type: f.type,
+                                })),
+                                null,
+                                2,
+                            ),
+                        );
+                        console.log(e.target.files?.[0]);
                         setFile(e.target.files?.[0] || null);
                         setFileName(e.target.files?.[0]?.name || '請選擇檔案（.gpx / .geojson）');
                     }}
