@@ -1,5 +1,7 @@
 @use '../../styles/colors' as colors;
 @use '../../styles/mixins' as mixins;
+@use '../../styles/variables' as variables;
+@use '../../styles/media' as media;
 
 .Panel_Data_All {
     width: 100%;
@@ -295,6 +297,11 @@
                                         background-color: colors.$background_contrary;
                                         color: colors.$panel_active;
                                         border: 1px solid colors.$background_contrary;
+                                    }
+
+                                    @include media.media(lg) {
+                                        opacity: 1;
+                                        background-color: colors.$panel;
                                     }
                                 }
                             }
