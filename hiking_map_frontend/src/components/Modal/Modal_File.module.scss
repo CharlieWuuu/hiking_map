@@ -2,11 +2,9 @@
 @use '../../styles/colors' as colors;
 @use '../../styles/variables' as variables;
 .Modal_File {
-    display: flex;
+    @include mixins.flex_center;
+    gap: 3rem;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
     padding: 1rem;
     input {
         &::file-selector-button {
@@ -21,6 +19,16 @@
                 background-color: colors.$panel_active_lighten;
                 cursor: pointer;
             }
+        }
+    }
+    .Modal_File_input {
+        @include mixins.flex_center;
+        flex-wrap: wrap;
+        button {
+            text-wrap: nowrap;
+        }
+        p {
+            text-wrap: nowrap;
         }
     }
 

@@ -23,7 +23,6 @@ export default function Modal_File({ type }: Props) {
         }
         const formData = new FormData();
         formData.append('file', file);
-        alert(file.name);
 
         const baseURL = import.meta.env.VITE_API_URL;
         const url = type === 'file_upload' ? `${baseURL}/trails` : `${baseURL}/trails/${editFeature?.uuid}`;
@@ -77,6 +76,7 @@ export default function Modal_File({ type }: Props) {
                     ref={fileInputRef}
                     type="file"
                     id="fileInput"
+                    accept=".geojson,.gpx"
                     style={{ display: 'none' }}
                     onChange={(e) => {
                         setFile(e.target.files?.[0] || null);
@@ -85,11 +85,11 @@ export default function Modal_File({ type }: Props) {
                 />
             )}
             {!uploadComplete && (
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button type="button" onClick={triggerFileInput} style={{ whiteSpace: 'nowrap' }}>
+                <div className={styles.Modal_File_input}>
+                    <button type="button" onClick={triggerFileInput}>
                         選擇檔案
                     </button>
-                    <p style={{ whiteSpace: 'nowrap' }}>{fileName}</p>
+                    <p>{fileName}</p>
                 </div>
             )}
             {!uploadComplete && <button onClick={handleUpload}>上傳</button>}
