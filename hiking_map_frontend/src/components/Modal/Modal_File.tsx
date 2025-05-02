@@ -47,6 +47,7 @@ export default function Modal_File({ type }: Props) {
                 alert('上傳失敗');
             }
         } catch (err) {
+            alert(err);
             console.error(err);
             alert('錯誤：無法上傳');
         }
