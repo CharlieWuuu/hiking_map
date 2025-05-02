@@ -154,6 +154,7 @@ export class TrailsService {
   async put(uuid: string, file: Express.Multer.File) {
     console.log(file);
     const ext = path.extname(file.originalname).toLowerCase();
+    console.log(ext);
     let geojson;
 
     if (ext === '.geojson' || ext === '.json') {

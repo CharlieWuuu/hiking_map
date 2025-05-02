@@ -87,6 +87,7 @@ export class TrailsController {
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async post(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
     return this.trailsService.post(file);
   }
 
