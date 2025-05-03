@@ -90,6 +90,7 @@ export class TrailsController {
     @Query('owner_uuid') owner_uuid: string,
     @Res() res: Response,
   ) {
+    console.log(owner_uuid);
     let isLogin: boolean = false;
 
     const authHeader = req.headers.authorization;

@@ -56,7 +56,6 @@ export default function SearchUser({ ownerList }: Props) {
         if (!option) return;
         setSelectedOption(option); // 選中它
         navigate(`/owner/${option.type}/${option.name}`, { state: option });
-        console.log(option);
     };
 
     const autoCompleteWidth = searchBarRef.current ? searchBarRef.current.getBoundingClientRect().width - 2 : 'auto';

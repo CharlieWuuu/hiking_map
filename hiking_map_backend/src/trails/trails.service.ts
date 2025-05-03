@@ -55,7 +55,6 @@ export class TrailsService {
         [ownerUuid],
       );
     } else if (type === 'layer') {
-      console.log(ownerUuid);
       rows = await this.trailRepo.query(
         `
       SELECT
@@ -131,7 +130,7 @@ export class TrailsService {
       WHERE users_trails.owner_uuid = $1
       GROUP BY users_trails_info.county
       ORDER BY county_count DESC
-      LIMIT 5;
+      LIMIT 6;
       `,
         [owner_uuid],
       );
@@ -141,6 +140,7 @@ export class TrailsService {
 
   async getTrailsMonthData(owner_uuid: string, type: string) {
     let rows: any;
+    console.log(owner_uuid);
     if (type === 'user') {
       rows = await this.trailRepo.query(
         `

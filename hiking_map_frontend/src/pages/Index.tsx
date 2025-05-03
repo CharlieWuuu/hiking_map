@@ -49,7 +49,7 @@ export default function Index({ ownerList }: Props) {
                         {ownerList.map((owner, index) => {
                             if (owner.type !== 'user') return null;
                             return (
-                                <Link key={index} state={owner} to={`/owner/${owner.type}/${owner.name}`} className={`${styles.Card} ${styles.Card_small}`}>
+                                <Link key={index} to={`/owner/${owner.type}/${owner.name}`} className={`${styles.Card} ${styles.Card_small}`}>
                                     <img src={owner.avatar} alt="頭像" />
                                     <div>
                                         <h4>{owner.name}</h4>

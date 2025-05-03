@@ -1,15 +1,16 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { MapContainer, TileLayer, GeoJSON, useMap, ZoomControl } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useRef } from 'react';
 import '../components/Map/Map.scss'; // 1. 因為要改 Leaflet 的樣式而不能用 modules 2. 因為 Panel、Map 的 hover 行為影響到 Panel_Button 的樣式，所以不用 modules
 import { useIsResizing } from '../hooks/useIsResizing';
-import { usePolyline } from '../context/PolylineContext';
-import { useTableContext } from '../context/TableContext';
-import { useGeojson } from '../context/GeojsonContext';
+// import { usePolyline } from '../context/PolylineContext';
+// import { useTableContext } from '../context/TableContext';
+// import { useGeojson } from '../context/GeojsonContext';
 import styles from './Owner_Trail.module.scss';
 import GoBack from '../components/GoBack/GoBack';
+import { useOwner } from '../hooks/useOwner';
 
 function TileEffect() {
     const map = useMap();
@@ -52,31 +53,50 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
     return null;
 }
 
-export default function Owner_Trail() {
-    const location = useLocation();
-    const props = location.state?.features.properties;
-    const { name, type } = useParams();
+type Owner = {
+    name: string;
+    name_zh: string;
+    id: string;
+    uuid: string;
+    avatar: string;
+    level: string;
+    description: string;
+    type: string;
+};
 
-    const { geojson } = useGeojson();
-    const { activeFeatureUuid } = usePolyline();
+export default function Owner_Trail() {
+    const { name, type, uuid } = useParams();
+    const { user, trails } = useOwner();
+    // const { geojson } = useGeojson();
+    // const { activeFeatureUuid } = usePolyline();
 
     const mapWrapperRef = useRef<HTMLDivElement>(null);
     const isResizing = useIsResizing(mapWrapperRef as React.RefObject<HTMLElement>, 600); // 600ms：你的動畫時間
 
-    const activeRef = useRef<string | null>(null);
-    useEffect(() => {
-        activeRef.current = activeFeatureUuid;
-    }, [activeFeatureUuid]);
-    const { setFeatures } = useTableContext();
-    useEffect(() => {
-        if (geojson) setFeatures(geojson.features);
-    }, [geojson]);
+    // const activeRef = useRef<string | null>(null);
+    // useEffect(() => {
+    //     activeRef.current = activeFeatureUuid;
+    // }, [activeFeatureUuid]);
+    // const { setFeatures } = useTableContext();
+    // useEffect(() => {
+    //     if (geojson) setFeatures(geojson.features);
+    // }, [geojson]);
 
+    if (!trails || !trails.features[0].properties)
+        return (
+            <div className={`${styles.Owner_Trail} ${styles.onLoading}`}>
+                <span className={styles.loader}></span>
+            </div>
+        );
+
+    const features = trails.features.find((f) => f.properties?.uuid === uuid)!;
+    const props = features.properties!;
     return (
         <div className={styles.Owner_Trail}>
-            <div className={styles.Owner_Trail_GoBack}></div>
+            <div className={styles.Owner_Trail_GoBack}>
+                <GoBack url={`/owner/${type}/${name}`} owner={user as Owner} />
+            </div>
             <div className={styles.Owner_Trail_Title}>
-                <GoBack url={`/owner/${type}/${name}`} />
                 <div className={styles.Card_title}>
                     <h1>{props.name}</h1>
                     <p>
@@ -137,8 +157,8 @@ export default function Owner_Trail() {
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     <ZoomControl position="bottomright" />
                     <ResizeEffect isResizing={isResizing} />
-                    <GeoJSON key={`highlight-white-${props.uuid}`} data={location.state.features} style={{ color: '#000000', weight: 8, interactive: false }} />
-                    <GeoJSON key={`highlight-orange-${props.uuid}`} data={location.state.features} style={{ color: '#FFFF3C', weight: 4, interactive: false }} />
+                    <GeoJSON key={`highlight-white-${props.uuid}`} data={features} style={{ color: '#000000', weight: 8, interactive: false }} />
+                    <GeoJSON key={`highlight-orange-${props.uuid}`} data={features} style={{ color: '#FFFF3C', weight: 4, interactive: false }} />
                 </MapContainer>
             </section>
         </div>

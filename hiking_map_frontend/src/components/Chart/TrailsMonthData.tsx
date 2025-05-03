@@ -20,8 +20,8 @@ export default function TrailsMonthData({ data, mode = 'year' }: Props) {
 
         const svg = d3.select(chartRef.current);
         const width = mode === 'year' ? 400 : 900;
-        const height = mode === 'year' ? 200 : 400;
-        const margin = { top: 5, right: 5, bottom: 20, left: 0 };
+        const height = mode === 'year' ? 180 : 400;
+        const margin = { top: 10, right: 5, bottom: 20, left: 0 };
 
         const sorted = [...data].sort((a, b) => a.month.localeCompare(b.month));
 
@@ -41,17 +41,16 @@ export default function TrailsMonthData({ data, mode = 'year' }: Props) {
 
         const shownData = data.length < 6 ? fullRecent6Months : mode === 'year' ? sorted.slice(-12) : sorted;
 
-        console.log(shownData);
-
         const x = d3
             .scaleBand()
             .domain(shownData.map((d) => d.month))
             .range([margin.left, width - margin.right])
             .padding(0.1);
 
+        const maxValue = d3.max(data, (d) => +d.total_distance_km)!;
         const y = d3
             .scaleLinear()
-            .domain([0, d3.max(shownData, (d) => +d.total_distance_km)!])
+            .domain([0, Math.max(maxValue, 5)]) // 至少顯示到 5
             .nice()
             .range([height - margin.bottom, margin.top]);
 
@@ -76,26 +75,28 @@ export default function TrailsMonthData({ data, mode = 'year' }: Props) {
             .axisBottom(x)
             .tickFormat((d) => {
                 const [year, month] = String(d).split('/');
+                const shortYear = "'" + year.slice(-2);
                 const index = shownData.findIndex((v) => v.month === d);
-                const isFirst = index === 0;
+                // const isFirst = index === 0;
                 const isJanuary = month === '01';
-                const isEveryThird = index % 3 === 0;
+                // const isEveryThird = index % 3 === 0;
                 if (mode === 'zoomIn') {
-                    if (index === 0) return `${year}`;
-                    if (data.length > 24 && isJanuary) return `${year}`;
+                    if (index === 0) return `${shortYear}`;
+                    if (data.length > 24 && isJanuary) return `${shortYear}`;
                 }
                 if (mode === 'year') {
-                    if (isFirst || isJanuary) {
-                        return `${year}/${month}`;
-                    } else if (!isEveryThird && data.length > 6) {
-                        return '';
-                    } else {
-                        return `${month}`;
-                    }
+                    return `${month}`;
+                    // if (isFirst || isJanuary) {
+                    //     return `${shortYear}/${month}`;
+                    // } else if (!isEveryThird && data.length > 6) {
+                    //     return '';
+                    // } else {
+                    //     return `${month}`;
+                    // }
                 }
                 return '';
             })
-            .tickSizeInner(-6)
+            .tickSizeInner(0)
             .tickSizeOuter(0);
 
         svg.append('g')
@@ -103,9 +104,14 @@ export default function TrailsMonthData({ data, mode = 'year' }: Props) {
             .call(xAxis)
             .selectAll('text')
             .style('text-anchor', 'middle')
+            .style('font-size', '14px')
             .attr('dy', '1.2em');
 
-        svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).ticks(6).tickSizeInner(-6).tickSizeOuter(0));
+        svg.append('g')
+            .attr('transform', `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y).ticks(5).tickSizeInner(0).tickSizeOuter(0))
+            .style('font-size', '14px')
+            .call((g) => g.select('.domain').remove()); // 移除 y 軸主線;
     }, [data, mode]);
 
     return <svg ref={chartRef} width="100%" height="100%" />;

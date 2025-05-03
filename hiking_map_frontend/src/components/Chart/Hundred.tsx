@@ -2,13 +2,12 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
 type Props = {
-    title?: string;
     value: number;
     size?: number;
     strokeWidth?: number;
 };
 
-export default function Hundred({ title = '標題', value, size = 300, strokeWidth = 15 }: Props) {
+export default function Hundred({ value, size = 300, strokeWidth = 15 }: Props) {
     const ref = useRef<SVGSVGElement>(null);
 
     useEffect(() => {
@@ -30,24 +29,15 @@ export default function Hundred({ title = '標題', value, size = 300, strokeWid
             .duration(1000)
             .attr('stroke-dashoffset', circumference * (1 - value / 100));
 
-        // title（小字在上）
-        group
-            .append('text')
-            .text(title)
-            .attr('text-anchor', 'middle')
-            .attr('dy', '-1.4em') // 上移
-            .attr('font-size', size * 0.09)
-            .attr('fill', '#f0f0f0');
-
         // 中央數字
         group
             .append('text')
             .text(`${value}`)
             .attr('text-anchor', 'middle')
-            .attr('dy', '0.5em')
+            .attr('dy', '0.35em')
             .attr('font-size', size * 0.35)
             .attr('fill', '#ffff3c');
-    }, [value, size, strokeWidth, title]);
+    }, [value, size, strokeWidth]);
 
     return <svg ref={ref} width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} />;
 }

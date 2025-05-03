@@ -17,6 +17,7 @@ import Map_Detail from './Map_Detail';
 import Map_Layer from './Map_Layer';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useGeojson } from '../../context/GeojsonContext';
 
 import DataUserChart from '../../assets/images/Menu_Data_User_Chart.svg';
 
@@ -104,9 +105,8 @@ export default function Map() {
     const location = useLocation();
     const type = location.pathname.split('/')[1];
     const name = location.pathname.split('/')[2];
-    const geojson: FeatureCollection = location.state;
-    console.log(geojson);
-    // const { geojson } = useGeojson();
+    // const geojson: FeatureCollection = location.state;
+    const { geojson } = useGeojson();
     const [IsZoomIn, setIsZoomIn] = useState(false);
     const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid } = usePolyline();
     const { nowBaseMap, baseMapSetting } = useMapContext();

@@ -13,7 +13,7 @@ export default function Panel({ type }: Props) {
 
     return (
         <div className={`Panel ${IsZoomIn ? 'ZoomIn' : ''} Panel_${type}`}>
-            {type === 'data' && <Panel_Data />}
+            {/* {type === 'data' && <Panel_Data />} */}
             {type === 'edit' && <Panel_Edit />}
         </div>
     );

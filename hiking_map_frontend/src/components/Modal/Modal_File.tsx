@@ -25,7 +25,6 @@ export default function Modal_File({ type }: Props) {
         }
         const formData = new FormData();
         formData.append('file', file);
-        console.log(user?.uuid);
         formData.append('owner_uuid', user?.uuid || '');
         formData.append('uuid', editFeature?.uuid || '');
 

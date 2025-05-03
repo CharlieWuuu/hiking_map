@@ -15,6 +15,7 @@ import Navbar from './components/Navbar/Navbar';
 import Modal from './components/Modal/Modal';
 import Menu from './components/Menu/Menu';
 import Footer from './components/Footer/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 // css
 import styles from './App.module.scss';
@@ -54,6 +55,7 @@ export default function App() {
 
     return (
         <>
+            <ScrollToTop />
             <Navbar setMenuIsOpen={setMenuIsOpen} ownerList={ownerList} />
             <div className={`${styles.App}`}>
                 {/* <div className={`${styles.App} ${isFullScreen ? styles.NoScroll : ''}`}> */}

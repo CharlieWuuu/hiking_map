@@ -19,7 +19,6 @@ export class JwtOptionalMiddleware implements NestMiddleware {
           userId: payload.sub,
           username: payload.username,
         };
-        console.log(token, req.user);
       } catch {
         // 無效 token 就跳過
       }
