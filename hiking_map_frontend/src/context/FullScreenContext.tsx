@@ -15,8 +15,8 @@ const FullScreenContext = createContext<FullScreenContextType | undefined>(undef
 export const FullScreenProvider = ({ children }: FullScreenProviderProps) => {
     const [isFullScreen, setFullScreen] = useState(false);
     const location = useLocation();
-    const FullScreenPaths = ['/user', '/layer', '/edit'];
-    const hasFullScreenPaths = FullScreenPaths.some((path) => location.pathname.startsWith(path));
+    const FullScreenPaths = ['/data'];
+    const hasFullScreenPaths = FullScreenPaths.some((path) => location.pathname.includes(path));
     useEffect(() => {
         setFullScreen(hasFullScreenPaths);
     }, [location]);
