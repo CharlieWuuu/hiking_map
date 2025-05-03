@@ -54,7 +54,6 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
 
 export default function Owner_Trail() {
     const location = useLocation();
-    const geometry = location.state?.features.geometry;
     const props = location.state?.features.properties;
     const { name, type } = useParams();
 

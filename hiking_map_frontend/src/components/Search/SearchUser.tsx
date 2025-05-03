@@ -103,7 +103,7 @@ export default function SearchUser({ ownerList }: Props) {
                 renderOption={(props, option) => {
                     const { key, ...rest } = props;
                     return (
-                        <li key={option.uuid} {...rest} onClick={(e) => handleSelectOption(option)}>
+                        <li key={option.uuid} {...rest} onClick={() => handleSelectOption(option)}>
                             <p>{option.name_zh}</p>
                             <span>{option.type_zh}</span>
                         </li>
