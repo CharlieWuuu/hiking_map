@@ -1,22 +1,24 @@
+import './Map.scss'; // 1. 因為要改 Leaflet 的樣式而不能用 modules 2. 因為 Panel、Map 的 hover 行為影響到 Panel_Button 的樣式，所以不用 modules
+import 'leaflet/dist/leaflet.css';
+
 import { MapContainer, TileLayer, GeoJSON, useMap, ZoomControl, useMapEvent } from 'react-leaflet';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+
 import { useEffect, useRef, useState } from 'react';
 import { BaseMapEn, BaseMapSettingEn } from '../../types/baseMapSettings';
 import type { FeatureCollection } from 'geojson';
-import './Map.scss'; // 1. 因為要改 Leaflet 的樣式而不能用 modules 2. 因為 Panel、Map 的 hover 行為影響到 Panel_Button 的樣式，所以不用 modules
 import { useIsResizing } from '../../hooks/useIsResizing';
 import Panel_Button from '../Panel/Panel_Button';
 import { usePolyline } from '../../context/PolylineContext';
 import { useMapContext } from '../../context/MapContext';
 import { useTableContext } from '../../context/TableContext';
-import { useGeojson } from '../../context/GeojsonContext';
 import { usePanel } from '../../context/PanelContext';
 import Map_Detail from './Map_Detail';
 import Map_Layer from './Map_Layer';
 import { useLocation } from 'react-router-dom';
-import DataUserChart from '../../assets/images/Menu_Data_User_Chart.svg';
 import { Link } from 'react-router-dom';
+
+import DataUserChart from '../../assets/images/Menu_Data_User_Chart.svg';
 
 function TileEffect({ baseMap, setting }: { baseMap: BaseMapEn; setting: Record<BaseMapSettingEn, number> }) {
     const map = useMap();
@@ -99,7 +101,12 @@ function MapClickHandler({ setActiveFeatureUuid }: { setActiveFeatureUuid: (id: 
 }
 
 export default function Map() {
-    const { geojson } = useGeojson();
+    const location = useLocation();
+    const type = location.pathname.split('/')[1];
+    const name = location.pathname.split('/')[2];
+    const geojson: FeatureCollection = location.state;
+    console.log(geojson);
+    // const { geojson } = useGeojson();
     const [IsZoomIn, setIsZoomIn] = useState(false);
     const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid } = usePolyline();
     const { nowBaseMap, baseMapSetting } = useMapContext();
@@ -119,9 +126,6 @@ export default function Map() {
     }, [geojson]);
 
     const { uiPanels } = usePanel();
-    const location = useLocation();
-    const type = location.pathname.split('/')[1];
-    const name = location.pathname.split('/')[2];
 
     return (
         <div className={`Map ${IsZoomIn ? 'ZoomIn' : ''} ${uiPanels?.edit ? 'Editing' : ''}`} ref={mapWrapperRef}>

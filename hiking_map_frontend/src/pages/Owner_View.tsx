@@ -1,15 +1,24 @@
-import { useParams } from 'react-router-dom';
-import { useOwner } from '../hooks/useOwner';
-import Panel_Detail from '../components/Panel/Panel_Detail';
+// styles
 import styles from './Owner_View.module.scss';
+
+// react
+import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+
+// components
+import Panel_Detail from '../components/Panel/Panel_Detail';
 import TrailsMonthData from '../components/Chart/TrailsMonthData';
 import Hundred from '../components/Chart/Hundred';
 import CountyOrder from '../components/Chart/CountyOrder';
+
+// image
 import Menu_Map from '../assets/images/Menu_Map.svg';
 import Menu_Data from '../assets/images/Menu_Data.svg';
 import Navbar_Edit from '../assets/images/Navbar_Edit.svg';
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+
+// hooks
+import { useOwner } from '../hooks/useOwner';
 
 type TrailProperties = {
     uuid: string;
@@ -24,15 +33,17 @@ type TrailProperties = {
 };
 
 export default function Owner_View() {
-    const { name, type } = useParams();
-    const { user, trails, countyOrder, trailsMonthData, loading } = useOwner(name as string, type as string);
-    useEffect(() => {
-        console.log(loading);
-    }, [loading]);
+    let owner = useLocation().state; // 從 Link 的 state 傳入的資料，如果沒有就 fetch
+    if (owner == null) {
+        const { name, type } = useParams();
+        fetch(`${import.meta.env.VITE_API_URL}/owners/detail?name=${name}&type=${type}`)
+            .then((res) => res.json())
+            .then((data) => (owner = data));
+    }
+    const type = owner.type;
+    const { trails, countyOrder, trailsMonthData, loading } = useOwner(owner);
     const isUser = type === 'user';
     const isLayer = type === 'layer';
-
-    // 🔧 Hooks 一定都寫在條件外面，不管資料有沒有來
     const [displayCount, setDisplayCount] = useState(10);
     const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -44,19 +55,14 @@ export default function Owner_View() {
     };
 
     useEffect(() => {
-        const observer = new IntersectionObserver(handleObserver, {
-            root: null,
-            rootMargin: '100px',
-            threshold: 0.1,
-        });
-
+        const observer = new IntersectionObserver(handleObserver, { root: null, rootMargin: '100px', threshold: 0.1 });
         if (observerRef.current) observer.observe(observerRef.current);
         return () => {
             if (observerRef.current) observer.unobserve(observerRef.current);
         };
     }, [trails?.features.length, displayCount]);
 
-    if (loading || !user || !trails) {
+    if (loading || !owner || !trails) {
         return (
             <div className={`${styles.Owner_View} ${styles.onLoading}`}>
                 <span className={styles.loader}></span>
@@ -73,28 +79,22 @@ export default function Owner_View() {
             if (props.hundred_trail_id) acc.hundredTrailCount += 1;
             return acc;
         },
-        {
-            totalDistance: 0,
-            hundredCount: 0,
-            smallHundredCount: 0,
-            hundredTrailCount: 0,
-        },
+        { totalDistance: 0, hundredCount: 0, smallHundredCount: 0, hundredTrailCount: 0 },
     );
-
     const roundedDistance = Math.round(totalDistance * 100) / 100;
 
     return (
         <div className={styles.Owner_View}>
             <section className={styles.Owner_Info}>
                 <div className={styles.Owner_Avatar}>
-                    <img src={user[0].avatar} alt="頭像" />
+                    <img src={owner.avatar} alt="頭像" />
                 </div>
                 <div className={styles.Owner_Name}>
-                    {isUser && <h1>{user[0].name}</h1>}
-                    {isLayer && <h1>{user[0].name_zh}</h1>}
+                    {isUser && <h1>{owner.name}</h1>}
+                    {isLayer && <h1>{owner.name_zh}</h1>}
                     <div className={styles.Owner_Description}>
-                        {isLayer && <p>{user[0].description}</p>}
-                        {isUser && <p>{user[0].level}</p>}
+                        {isLayer && <p>{owner.description}</p>}
+                        {isUser && <p>{owner.level}</p>}
                         {isUser && <p>{roundedDistance} 公里</p>}
                         {isUser && <p>{trails?.features.length} 次健行</p>}
                     </div>
@@ -129,19 +129,21 @@ export default function Owner_View() {
             <section className={styles.Owner_Navigation}>
                 <h2>資料</h2>
                 <div>
-                    <button>
+                    <Link to={`/owner/${type}/${owner.name}/data/map`} state={trails}>
                         <img src={Menu_Map} alt="" />
                         <span>地圖</span>
-                    </button>
-                    <button>
+                    </Link>
+
+                    <Link to={`/owner/${type}/${owner.name}/data/map`} state={trails}>
                         <img src={Menu_Data} alt="" />
                         <span>資料</span>
-                    </button>
+                    </Link>
+
                     {isUser && (
-                        <button>
+                        <Link to={`/owner/${type}/${owner.name}/data/map`} state={trails}>
                             <img src={Navbar_Edit} alt="" />
                             <span>編輯</span>
-                        </button>
+                        </Link>
                     )}
                 </div>
             </section>
@@ -150,9 +152,8 @@ export default function Owner_View() {
                 <h2>軌跡</h2>
                 <div>
                     {trails.features.slice(0, displayCount).map((f, index) => (
-                        <Link to={`/owner/${type}/${user[0].name}/trail/${f.properties?.uuid}`} key={f.properties?.uuid ?? `trail-${index}`} className={styles.Owner_Trail} state={{ features: f }}>
+                        <Link to={`/owner/${type}/${owner.name}/trail/${f.properties?.uuid}`} key={f.properties?.uuid ?? `trail-${index}`} className={styles.Owner_Trail} state={{ features: f }}>
                             <Panel_Detail properties={f.properties as TrailProperties} />
-                            {/* <p>{JSON.stringify(f)}</p> */}
                         </Link>
                     ))}
 

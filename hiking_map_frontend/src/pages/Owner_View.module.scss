@@ -115,9 +115,18 @@
         div {
             @include mixins.flex_center;
             width: 100%;
-            button {
+            a {
+                @include mixins.flex_center;
                 flex-grow: 1;
                 padding: 1rem 3rem;
+                color: colors.$background_contrary;
+                background-color: colors.$panel;
+                border-radius: 1rem;
+                font-size: 1.2rem;
+                transition: all 0.3s ease;
+                &:hover {
+                    background-color: colors.$panel_active;
+                }
                 img {
                     width: 32px;
                     height: 32px;
@@ -125,7 +134,7 @@
             }
             @include media.media(lg) {
                 flex-direction: column;
-                button {
+                a {
                     width: 100%;
                 }
             }

@@ -1,18 +1,27 @@
 import styles from './Panel_Data_All.module.scss'; // 引入樣式
 import { usePolyline } from '../../context/PolylineContext';
-import { usePanel } from '../../context/PanelContext';
 import { useTableContext } from '../../context/TableContext';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useGeojson } from '../../context/GeojsonContext';
-import SearchData from '../Search/SearchData'; // 引入搜尋元件
+import { useModal } from '../../context/ModalContext';
+import { usePatchData } from '../../context/PatchDataContext';
 import Pagination from '../../assets/images/Table_Pagination.svg';
 
+type patchData = {
+    name: string;
+    county: string;
+    town: string;
+    time: string;
+    url: string[];
+    note: string;
+    public: boolean;
+};
+
 // 定義元件
-export default function Panel_Data_All() {
-    const { geojson } = useGeojson();
+export default function Panel_Edit() {
+    const { geojson, refreshGeojson } = useGeojson();
     const itemsPerPage = 50; // 每頁顯示的項目數
-    const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid } = usePolyline();
-    const { setUIPanels, setZoomIn } = usePanel();
+    const { setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid, editFeatureUuid, setEditFeatureUuid, setDeleteFeatureUuid } = usePolyline();
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
     const rowRefs = useRef<Record<string, HTMLTableRowElement | null>>({});
 
@@ -25,20 +34,56 @@ export default function Panel_Data_All() {
         }
     }, [currentPage, activeFeatureUuid]);
 
-    if (!geojson) {
-        return (
-            <div className={`${styles.Panel_Data_All} ${styles.onLoading}`}>
-                <span className={styles.loader}></span>
-            </div>
-        );
-    }
-
     const features = geojson?.features; // 取得 geojson 中的 features
     const pageIndexStart = startIndex + 1;
-    const pageIndexEnd = Math.min(startIndex + itemsPerPage, features.length);
+    const pageIndexEnd = Math.min(startIndex + itemsPerPage, features?.length ?? 0);
+    const { modalIsOpen, setModalIsOpen, setModalType } = useModal();
+    const { patchData, setPatchData } = usePatchData();
+    const patchProperties = async () => {
+        try {
+            const baseURL = import.meta.env.VITE_API_URL;
+            const res = await fetch(`${baseURL}/trails/${editFeatureUuid}/properties`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(patchData),
+            });
+
+            const result = await res.json();
+            if (result.success) {
+                setModalType('complete');
+                setModalIsOpen(true);
+                setActiveFeatureUuid(null);
+                setEditFeatureUuid(null);
+                refreshGeojson();
+                setPatchData(null);
+            } else {
+                alert('上傳失敗');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('錯誤：無法上傳');
+        }
+    };
+
+    const [selectedFormat, setSelectedFormat] = useState('下載');
+    const handleExport = async (type: string) => {
+        setSelectedFormat('loading');
+        const baseURL = import.meta.env.VITE_API_URL;
+        const res = await fetch(`${baseURL}/trails/export?type=${type}`);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `trails.${type}`;
+        a.click();
+        URL.revokeObjectURL(url);
+        setSelectedFormat('placeholder');
+    };
 
     return (
-        <div className={styles.Panel_Data_All}>
+        <div className={`${styles.Panel_Data_All} ${styles.Panel_Edit}`}>
             <div className={styles.Table_Header}>
                 <div className={styles.Table_Pagination}>
                     <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
@@ -51,7 +96,30 @@ export default function Panel_Data_All() {
                         <img src={Pagination} alt="下一頁" />
                     </button>
                 </div>
-                <SearchData />
+                <hr />
+                <button
+                    onClick={() => {
+                        setModalIsOpen(!modalIsOpen);
+                        setModalType('file_upload');
+                    }}>
+                    新增
+                </button>
+                <select
+                    value={selectedFormat}
+                    onChange={(e) => {
+                        setSelectedFormat(e.target.value);
+                        handleExport(e.target.value);
+                    }}>
+                    <option value="placeholder" style={{ display: 'none' }}>
+                        下載
+                    </option>
+                    <option value="loading" style={{ display: 'none' }}>
+                        下載中...
+                    </option>
+                    <option value="geojson">GeoJSON</option>
+                    <option value="gpx">GPX</option>
+                    <option value="csv">CSV</option>
+                </select>
             </div>
             <div className={styles.Table_ScrollWrapper}>
                 <table cellSpacing="0">
@@ -60,9 +128,15 @@ export default function Panel_Data_All() {
                         <tr>
                             <th className={styles.Table_id}>#</th>
                             <th>名稱</th>
+                            <th>長度</th>
                             <th>縣市</th>
                             <th>鄉鎮</th>
                             <th>時間</th>
+                            <th>網址</th>
+                            <th>公開</th>
+                            <th>備註</th>
+                            <th>{editFeatureUuid && '檔案'}</th>
+                            <th>{editFeatureUuid && '操作'}</th>
                         </tr>
                     </thead>
                     {/* 表身 */}
@@ -75,29 +149,128 @@ export default function Panel_Data_All() {
                                         rowRefs.current[feature.properties.uuid] = el;
                                     }
                                 }}
-                                className={`${hoverFeatureUuid === feature.properties?.uuid ? styles.hover : ''} ${activeFeatureUuid === feature.properties?.uuid ? styles.active : ''}`.trim()}
+                                className={`${activeFeatureUuid === feature.properties?.uuid ? styles.active : ''}`.trim()}
                                 key={index}
                                 onMouseEnter={() => setHoverFeatureUuid(feature.properties?.uuid)}
-                                onMouseLeave={() => setHoverFeatureUuid(null)}
-                                onClick={() => {
-                                    activeFeatureUuid !== feature.properties?.uuid && setActiveFeatureUuid(feature.properties?.uuid);
-                                    activeFeatureUuid !== feature.properties?.uuid && setUIPanels((prev) => ({ ...prev, detail: true }));
-                                    activeFeatureUuid !== feature.properties?.uuid && setZoomIn(false);
-
-                                    activeFeatureUuid === feature.properties?.uuid && setActiveFeatureUuid(null);
-                                    activeFeatureUuid === feature.properties?.uuid && setUIPanels((prev) => ({ ...prev, detail: false }));
-                                }}>
+                                onMouseLeave={() => setHoverFeatureUuid(null)}>
                                 <td className={styles.Table_id}>{feature.properties?.id}</td>
-                                <td className={styles.Table_name}>{feature.properties?.name}</td>
-                                <td className={styles.Table_county}>{feature.properties?.county ?? '-'}</td>
-                                <td className={styles.Table_town}>{feature.properties?.town ?? '-'} </td>
+                                <td className={styles.Table_name}>
+                                    {editFeatureUuid !== feature.properties?.uuid && feature.properties?.name}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.name} onChange={(e) => setPatchData({ ...(patchData as patchData), name: e.target.value as string })} />}
+                                </td>
+                                <td className={styles.Table_length}>{feature.properties?.uuid && feature.properties?.length}</td>
+                                <td className={styles.Table_county}>
+                                    {editFeatureUuid !== feature.properties?.uuid && (feature.properties?.county || '-')}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.county} onChange={(e) => setPatchData({ ...(patchData as patchData), county: e.target.value as string })} />}
+                                </td>
+                                <td className={styles.Table_town}>
+                                    {editFeatureUuid !== feature.properties?.uuid && (feature.properties?.town || '-')}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.town} onChange={(e) => setPatchData({ ...(patchData as patchData), town: e.target.value as string })} />}
+                                </td>
                                 <td className={styles.Table_time}>
-                                    {(() => {
-                                        const date = new Date(feature.properties?.time);
-                                        const year = date.getFullYear();
-                                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                                        return `${year}年${month}月`;
-                                    })()}
+                                    {editFeatureUuid !== feature.properties?.uuid &&
+                                        (() => {
+                                            const date = new Date(feature.properties?.time);
+                                            const year = date.getFullYear();
+                                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                                            const day = String(date.getDate()).padStart(2, '0');
+                                            return `${year}年${month}月${day}日`;
+                                        })()}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="date" defaultValue={new Date(feature.properties?.time).toISOString().split('T')[0]} onChange={(e) => setPatchData({ ...(patchData as patchData), time: new Date(e.target.value).toISOString() as string })} />}
+                                </td>
+                                <td className={styles.Table_url}>
+                                    {editFeatureUuid !== feature.properties?.uuid &&
+                                        (Array.isArray(feature.properties?.url) && feature.properties?.url.length > 0 ? (
+                                            feature.properties?.url.map((element: string, index: number) => (
+                                                <div key={index}>
+                                                    <a href={element} target="_blank" rel="noopener noreferrer">
+                                                        連結({index + 1})
+                                                    </a>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p>-</p>
+                                        ))}
+
+                                    {editFeatureUuid === feature.properties?.uuid && (
+                                        <div>
+                                            <button
+                                                onClick={() => {
+                                                    setModalType('editUrl');
+                                                    setModalIsOpen(true);
+                                                    setPatchData({
+                                                        ...(patchData as patchData),
+                                                        url: feature.properties?.url,
+                                                    });
+                                                }}>
+                                                編輯
+                                            </button>
+                                        </div>
+                                    )}
+                                </td>
+                                <td className={styles.Table_public}>
+                                    {editFeatureUuid !== feature.properties?.uuid && feature.properties?.public && <input type="checkbox" defaultChecked={feature.properties?.public} className={styles.disabled} />}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="checkbox" defaultChecked={feature.properties?.public} onChange={(e) => setPatchData({ ...(patchData as patchData), public: e.target.checked as boolean })} />}
+                                </td>
+                                <td className={styles.Table_note}>
+                                    {editFeatureUuid !== feature.properties?.uuid && (feature.properties?.note || '-')}
+                                    {editFeatureUuid === feature.properties?.uuid && <input type="text" defaultValue={feature.properties?.note} onChange={(e) => setPatchData({ ...(patchData as patchData), note: e.target.value as string })} />}
+                                </td>
+                                <td className={styles.Table_file}>
+                                    {editFeatureUuid === feature.properties?.uuid && (
+                                        <button
+                                            onClick={() => {
+                                                setModalType('file_update');
+                                                setModalIsOpen(true);
+                                            }}>
+                                            檔案
+                                        </button>
+                                    )}
+                                </td>
+                                <td className={styles.Table_edit}>
+                                    {editFeatureUuid !== feature.properties?.uuid && (
+                                        <div>
+                                            <button
+                                                onClick={() => {
+                                                    setActiveFeatureUuid(feature.properties?.uuid);
+                                                    setEditFeatureUuid(feature.properties?.uuid);
+                                                    editFeatureUuid !== feature.properties?.uuid && setActiveFeatureUuid(feature.properties?.uuid);
+                                                    editFeatureUuid === feature.properties?.uuid && setActiveFeatureUuid(null);
+                                                }}>
+                                                編輯
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setDeleteFeatureUuid(feature.properties?.uuid);
+                                                    setModalIsOpen(true);
+                                                    setModalType('delete');
+                                                }}>
+                                                刪除
+                                            </button>
+                                        </div>
+                                    )}
+                                    {editFeatureUuid === feature.properties?.uuid && (
+                                        <div>
+                                            <button
+                                                className={styles.cancel}
+                                                onClick={(e) => {
+                                                    setActiveFeatureUuid(null);
+                                                    setEditFeatureUuid(null);
+                                                    e.stopPropagation();
+                                                }}>
+                                                取消
+                                            </button>
+                                            <button
+                                                className={styles.save}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    patchProperties();
+                                                }}>
+                                                儲存
+                                            </button>
+                                        </div>
+                                    )}
                                 </td>
                             </tr>
                         ))}

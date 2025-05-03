@@ -8,7 +8,7 @@ export default function Panel_Data() {
     return (
         <div className={styles.Panel_Data}>
             <div className={styles.Panel_Header}>
-                <h2>Charlie 的健行軌跡</h2>
+                <h2>軌跡</h2>
                 <Panel_Tab panelDataType={panelDataType} setPanelDataType={setPanelDataType} />
             </div>
             {panelDataType === 'All' && <Panel_Data_All />}

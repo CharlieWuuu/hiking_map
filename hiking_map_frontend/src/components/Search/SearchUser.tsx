@@ -17,21 +17,13 @@ type Owner = {
     type_zh?: string;
 };
 
-type SearchOption = {
-    name: string;
-    name_zh: string;
-    type: string;
-    type_zh: string;
-    uuid: string;
-};
-
 type Props = {
     ownerList: Owner[];
 };
 
 export default function SearchUser({ ownerList }: Props) {
     const [showAutocomplete, setShowAutocomplete] = useState(false);
-    const [selectedOption, setSelectedOption] = useState<SearchOption | null>(null);
+    const [selectedOption, setSelectedOption] = useState<Owner | null>(null);
     const [inputValue, setInputValue] = useState('');
     const searchBarRef = useRef<HTMLDivElement | null>(null);
     const ownerListWithType = ownerList.map((o) => ({
@@ -41,12 +33,16 @@ export default function SearchUser({ ownerList }: Props) {
     }));
     const navigate = useNavigate();
 
-    const nameList: SearchOption[] = ownerListWithType.map((o) => ({
+    const nameList: Owner[] = ownerListWithType.map((o) => ({
         name: o.name,
         name_zh: o.name_zh,
         type: o.type,
         type_zh: o.type_zh,
         uuid: o.uuid,
+        avatar: o.avatar,
+        level: o.level,
+        description: o.description,
+        id: o.id,
     }));
 
     const handleSearchClick = () => {
@@ -56,11 +52,14 @@ export default function SearchUser({ ownerList }: Props) {
         else console.warn('查無資料');
     };
 
-    const handleSelectOption = (option: SearchOption) => {
+    const handleSelectOption = (option: Owner) => {
         if (!option) return;
         setSelectedOption(option); // 選中它
-        navigate(`/owner/${option.type}/${option.name}`);
+        navigate(`/owner/${option.type}/${option.name}`, { state: option });
+        console.log(option);
     };
+
+    const autoCompleteWidth = searchBarRef.current ? searchBarRef.current.getBoundingClientRect().width - 2 : 'auto';
 
     return (
         <div className={`${styles.SearchBar} ${showAutocomplete ? styles.active : ''}`} ref={searchBarRef}>
@@ -73,7 +72,7 @@ export default function SearchUser({ ownerList }: Props) {
                 // open={true}
                 // disableCloseOnSelect={true} // 不關閉選單
                 sx={{ width: '100%' }}
-                getOptionLabel={(option) => option.name_zh} // 只顯示 label，不串奇怪的值
+                getOptionLabel={(option) => option.name_zh || option.name} // 只顯示 label，不串奇怪的值
                 isOptionEqualToValue={(option, value) => option.uuid === value.uuid} // 用 uuid 判斷是否相等
                 onOpen={() => setShowAutocomplete(true)} // 不需要做任何事
                 onClose={() => setShowAutocomplete(false)} // 防止關閉
@@ -111,26 +110,9 @@ export default function SearchUser({ ownerList }: Props) {
                 }}
                 noOptionsText={<div>查無資料</div>}
                 slots={{
-                    popper: (props) => (
-                        <Popper
-                            {...props}
-                            placement="bottom-start"
-                            modifiers={[
-                                {
-                                    name: 'offset',
-                                    options: { offset: [-17, -2] }, // -17 = 1rem + 1px = 左邊的 padding + border
-                                },
-                            ]}
-                        />
-                    ),
-                    paper: (props) => (
-                        <div
-                            {...props}
-                            style={{
-                                width: searchBarRef.current ? searchBarRef.current.getBoundingClientRect().width - 2 : 'auto',
-                            }}
-                        />
-                    ),
+                    // -17 = 1rem + 1px = 左邊的 padding + border
+                    popper: (props) => <Popper {...props} placement="bottom-start" modifiers={[{ name: 'offset', options: { offset: [-17, -2] } }]} />,
+                    paper: (props) => <div {...props} style={{ width: autoCompleteWidth }} />,
                 }}
             />
             <img src={SearchUrl} alt="搜尋" onClick={() => handleSearchClick()} />
