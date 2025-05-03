@@ -2,14 +2,15 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 type JwtPayload = {
-    sub: string;
-    username?: string;
+    id: string;
+    username: string;
+    uuid: string;
     exp: number;
 };
 
 type AuthContextType = {
     isLoggedIn: boolean;
-    user: { id: string; username?: string } | null;
+    user: { id: string; username: string; uuid: string } | null;
     login: (token: string) => void;
     logout: () => void;
 };
@@ -26,7 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 const decoded = jwtDecode<JwtPayload>(token);
                 const now = Date.now() / 1000;
                 if (decoded.exp > now) {
-                    setUser({ id: decoded.sub, username: decoded.username });
+                    setUser({ id: decoded.id, username: decoded.username, uuid: decoded.uuid });
                 } else {
                     localStorage.removeItem('token');
                 }
@@ -41,7 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const decoded = jwtDecode<JwtPayload>(token);
             const now = Date.now() / 1000;
             if (decoded.exp > now) {
-                setUser({ id: decoded.sub, username: decoded.username });
+                setUser({ id: decoded.id, username: decoded.username, uuid: decoded.uuid });
                 localStorage.setItem('token', token);
             }
         } catch {

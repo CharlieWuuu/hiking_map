@@ -60,7 +60,7 @@
                     min-width: 250px;
 
                     &.Card_small {
-                        width: fit-content;
+                        max-width: 400px;
                         img {
                             width: 100px;
                             min-height: 100px;
@@ -116,6 +116,9 @@
                             width: 100px;
                             min-height: 100px;
                             height: 100%;
+                        }
+                        &.Card_small {
+                            max-width: none;
                         }
                     }
                 }

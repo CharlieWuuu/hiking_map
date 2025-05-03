@@ -35,35 +35,13 @@ export class TrailsController {
 
   @ApiBearerAuth()
   @Get()
-  @ApiOkResponse({
-    description: '取得 GeoJSON 步道資料',
-    schema: {
-      example: {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'LineString',
-              coordinates: [
-                [121.5, 25.0],
-                [121.51, 25.01],
-              ],
-            },
-            properties: {
-              name: '範例步道',
-              county: '臺北市',
-              town: '信義區',
-              time: '2025年04月',
-            },
-          },
-        ],
-      },
-    },
-  })
   @Header('Cache-Control', 'no-store') // 防止 Swagger 快取 304
-  async getTrails(@Req() req: Request): Promise<FeatureCollection> {
-    let userId: string | null = null;
+  async getTrails(
+    @Req() req: Request,
+    @Query('owner_uuid') ownerUuid: string,
+    @Query('type') type: string,
+  ): Promise<FeatureCollection> {
+    let isLogin: boolean = false;
 
     const authHeader = req.headers.authorization;
     if (authHeader?.startsWith('Bearer ')) {
@@ -72,23 +50,85 @@ export class TrailsController {
         const payload = this.jwtService.verify(token, {
           secret: process.env.JWT_SECRET || 'your-secret-key',
         });
-        userId = payload.sub;
+
+        isLogin = true;
       } catch (err) {
         console.warn('JWT 驗證失敗');
       }
     }
-    console.log(userId);
-    const data: FeatureCollection = await this.trailsService.getTrails(userId);
-
+    const data: FeatureCollection = await this.trailsService.getTrails(
+      isLogin,
+      ownerUuid,
+      type,
+    );
     return data;
+  }
+
+  @ApiBearerAuth()
+  @Get('county_order')
+  async getCountyOrder(
+    @Query('owner_uuid') owner_uuid: string,
+    @Query('type') type: string,
+  ) {
+    return this.trailsService.getCountyOrder(owner_uuid, type);
+  }
+
+  @ApiBearerAuth()
+  @Get('trails_month_data')
+  async getTrailsMonthData(
+    @Query('owner_uuid') owner_uuid: string,
+    @Query('type') type: string,
+  ) {
+    return this.trailsService.getTrailsMonthData(owner_uuid, type);
+  }
+
+  @ApiBearerAuth()
+  @Get('export')
+  async getExport(
+    @Req() req: Request,
+    @Query('type') type: string,
+    @Query('owner_uuid') owner_uuid: string,
+    @Res() res: Response,
+  ) {
+    let isLogin: boolean = false;
+
+    const authHeader = req.headers.authorization;
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.slice(7);
+      try {
+        const payload = this.jwtService.verify(token, {
+          secret: process.env.JWT_SECRET || 'your-secret-key',
+        });
+        isLogin = true;
+      } catch (err) {
+        console.warn('JWT 驗證失敗');
+      }
+    }
+
+    return this.trailsService.getExport(res, type, isLogin, owner_uuid);
   }
 
   @ApiBearerAuth()
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  async post(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-    return this.trailsService.post(file);
+  async post(
+    @Body('owner_uuid') owner_uuid: string,
+
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.trailsService.post(owner_uuid, file);
+  }
+
+  @ApiBearerAuth()
+  @Put(':uuid')
+  @UseInterceptors(FileInterceptor('file'))
+  put(
+    @Body('uuid') uuid: string,
+    @Body('owner_uuid') owner_uuid: string,
+
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.trailsService.put(uuid, owner_uuid, file);
   }
 
   @ApiBearerAuth()
@@ -99,40 +139,8 @@ export class TrailsController {
   }
 
   @ApiBearerAuth()
-  @Put(':uuid')
-  @UseInterceptors(FileInterceptor('file'))
-  put(@Param('uuid') uuid: string, @UploadedFile() file: Express.Multer.File) {
-    return this.trailsService.put(uuid, file);
-  }
-
-  @ApiBearerAuth()
   @Patch(':uuid/properties')
   patch(@Param('uuid') uuid: string, @Body() dto: TrailsInfoDto) {
     return this.trailsService.patch(uuid, dto);
-  }
-
-  @ApiBearerAuth()
-  @Get('export')
-  async getExport(
-    @Req() req: Request,
-    @Query('type') type: string,
-    @Res() res: Response,
-  ) {
-    let userId: string | null = null;
-
-    const authHeader = req.headers.authorization;
-    if (authHeader?.startsWith('Bearer ')) {
-      const token = authHeader.slice(7);
-      try {
-        const payload = this.jwtService.verify(token, {
-          secret: process.env.JWT_SECRET || 'your-secret-key',
-        });
-        userId = payload.sub;
-      } catch (err) {
-        console.warn('JWT 驗證失敗');
-      }
-    }
-
-    return this.trailsService.getExport(res, type, userId);
   }
 }

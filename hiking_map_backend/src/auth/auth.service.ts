@@ -23,15 +23,13 @@ export class AuthService {
       [username, password],
     );
 
-    const user = result[0]; // 因為 query() 回傳 array
-
-    console.log(user); // 你要的 uuid
+    const user = result[0];
     return user ?? null;
   }
 
   async login(user: User, ip: string, ua: string, uuid: string) {
     console.log(user);
-    const payload = { username: user.username, sub: user.id };
+    const payload = { id: user.id, username: user.username, uuid: user.uuid };
     const token = this.jwtService.sign(payload);
 
     await this.logRepo.insert({

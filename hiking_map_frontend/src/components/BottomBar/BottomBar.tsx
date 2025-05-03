@@ -1,13 +1,9 @@
 import styles from './BottomBar.module.scss';
 import Hamburger from '../../assets/images/Navbar_Hamburger.svg';
 import Index from '../../assets/images/Menu_Index.svg';
-import DataUser from '../../assets/images/Menu_Data_User.svg';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import Data from '../../assets/images/Menu_Data.svg';
-import Map from '../../assets/images/Menu_Map.svg';
+import search from '../../assets/images/Navbar_Search.svg';
 import { useLocation } from 'react-router-dom';
-import { usePanel } from '../../context/PanelContext';
 import { useFullScreenContext } from '../../context/FullScreenContext';
 
 type Props = {
@@ -15,12 +11,10 @@ type Props = {
 };
 export default function BottomBar({ setMenuIsOpen }: Props) {
     const { isFullScreen } = useFullScreenContext();
-    const { user } = useAuth();
     const location = useLocation();
     const dataPage = ['user', 'layer'];
     const isDataPage = dataPage.some((path) => location.pathname.includes(path));
-    const hasChart = location.pathname.includes('chart');
-    const { ZoomIn, setZoomIn } = usePanel();
+
     if (isDataPage) {
         return (
             <div className={`${styles.BottomBar} ${isFullScreen ? styles.fullscreen : ''}`}>
@@ -29,6 +23,11 @@ export default function BottomBar({ setMenuIsOpen }: Props) {
                     <span>首頁</span>
                 </Link>
 
+                <Link to="/search" onClick={() => setMenuIsOpen(false)}>
+                    <img src={search} alt="Icon" />
+                    <span>搜尋</span>
+                </Link>
+                {/*
                 {hasChart ? (
                     <Link to={user ? `/user/${user?.username}` : '/login'} onClick={() => setMenuIsOpen(false)}>
                         <img src={Map} alt="Icon" />
@@ -39,7 +38,7 @@ export default function BottomBar({ setMenuIsOpen }: Props) {
                         <img src={ZoomIn ? Map : Data} alt="Icon" />
                         <span>{ZoomIn ? '地圖' : '資料'}</span>
                     </div>
-                )}
+                )} */}
 
                 <div onClick={() => setMenuIsOpen(true)}>
                     <img src={Hamburger} alt="收合" />
@@ -56,9 +55,9 @@ export default function BottomBar({ setMenuIsOpen }: Props) {
                 <span>首頁</span>
             </Link>
 
-            <Link to={user ? `/user/${user?.username}` : '/login'} onClick={() => setMenuIsOpen(false)}>
-                <img src={DataUser} alt="Icon" />
-                <span>我的軌跡</span>
+            <Link to="/search" onClick={() => setMenuIsOpen(false)}>
+                <img src={search} alt="Icon" />
+                <span>搜尋</span>
             </Link>
 
             <div onClick={() => setMenuIsOpen(true)}>

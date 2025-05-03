@@ -78,7 +78,6 @@ export async function convertGpxToGeojson(file: Express.Multer.File) {
 
     // 將字串解析為 DOM 結構
     const gpxDom = new DOMParser().parseFromString(xmlText, 'text/xml');
-
     // 驗證是否有 <gpx> 標籤
     if (
       !gpxDom ||

@@ -10,11 +10,23 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useFullScreenContext } from '../../context/FullScreenContext';
 
-type Props = {
-    setMenuIsOpen: (isOpen: boolean) => void;
+type Owner = {
+    name: string;
+    name_zh: string;
+    id: string;
+    uuid: string;
+    avatar: string;
+    level: string;
+    description: string;
+    type: string;
 };
 
-export default function Navbar({ setMenuIsOpen }: Props) {
+type Props = {
+    setMenuIsOpen: (isOpen: boolean) => void;
+    ownerList: Owner[];
+};
+
+export default function Navbar({ setMenuIsOpen, ownerList }: Props) {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const { isLoggedIn } = useAuth();
     const { isFullScreen } = useFullScreenContext();
@@ -44,7 +56,7 @@ export default function Navbar({ setMenuIsOpen }: Props) {
                 <img src={LogoUrl} alt="LOGO" />
             </a>
             <div className={styles.SearchBar}>
-                <SearchUser />
+                <SearchUser ownerList={ownerList} />
             </div>
             <div className={styles.RightButton}>
                 <button className={`${styles.fullscreenBtn}`} onClick={toggleFullscreen}>

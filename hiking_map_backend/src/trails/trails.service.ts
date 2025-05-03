@@ -21,31 +21,67 @@ export class TrailsService {
     private readonly trailRepo: Repository<Trail>,
   ) {}
 
-  async getTrails(userId: string | null) {
-    const sqlWhere = userId === null ? 'WHERE trails_info.public = true' : '';
-    console.log(sqlWhere);
-    const rows = await this.trailRepo.query(`
+  async getTrails(isLogin: boolean, ownerUuid: string, type: string) {
+    let rows: any;
+    if (type === 'user') {
+      const sqlWhere = isLogin ? '' : `AND users_trails_info.public = true`;
+      rows = await this.trailRepo.query(
+        `
       SELECT
-        trails.uuid,
-        ROW_NUMBER() OVER (ORDER BY trails_info.time ASC) AS id,
-        trails.length,
-        ST_AsGeoJSON(trails.geom) AS geometry,
-        ST_AsGeoJSON(trails.center) AS center,
-        ST_AsGeoJSON(trails.bounds) AS bounds,
-        trails_info.name,
-        trails_info.county,
-        trails_info.town,
-        trails_info.time,
-        trails_info.url,
-        trails_info.note,
-        trails_info.public,
-        trails.name AS filename
-      FROM trails
-      JOIN trails_info
-        ON trails.uuid = trails_info.uuid
+        users_trails.uuid,
+        ROW_NUMBER() OVER (ORDER BY users_trails_info.time ASC) AS id,
+        users_trails.length,
+        ST_AsGeoJSON(users_trails.geom) AS geometry,
+        ST_AsGeoJSON(users_trails.center) AS center,
+        ST_AsGeoJSON(users_trails.bounds) AS bounds,
+        users_trails_info.name,
+        users_trails_info.county,
+        users_trails_info.town,
+        users_trails_info.time,
+        users_trails_info.url,
+        users_trails_info.note,
+        users_trails_info.public,
+        users_trails_info.hundred_id,
+        users_trails_info.small_hundred_id,
+        users_trails_info.hundred_trail_id,
+        users_trails.name AS filename
+      from users_trails
+      JOIN users_trails_info
+        ON users_trails.uuid = users_trails_info.uuid
+      WHERE users_trails.owner_uuid = $1
       ${sqlWhere}
-      ORDER BY trails_info.time ASC;
-    `);
+      ORDER BY users_trails_info.time ASC;
+    `,
+        [ownerUuid],
+      );
+    } else if (type === 'layer') {
+      console.log(ownerUuid);
+      rows = await this.trailRepo.query(
+        `
+      SELECT
+        layers_trails.id AS uuid,
+        ROW_NUMBER() OVER (ORDER BY layers_trails_info.time ASC) AS id,
+        layers_trails.length,
+        ST_AsGeoJSON(layers_trails.geom) AS geometry,
+        ST_AsGeoJSON(layers_trails.center) AS center,
+        ST_AsGeoJSON(layers_trails.bounds) AS bounds,
+        layers_trails_info.name,
+        layers_trails_info.county,
+        layers_trails_info.town,
+        layers_trails_info.time,
+        layers_trails_info.url,
+        layers_trails_info.note,
+        layers_trails_info.public,
+        layers_trails.name AS filename
+      from layers_trails
+      JOIN layers_trails_info
+        ON layers_trails.id = layers_trails_info.id
+      WHERE layers_trails.owner_uuid = $1
+      ORDER BY layers_trails_info.time ASC;
+    `,
+        [ownerUuid],
+      );
+    }
 
     const geojson: FeatureCollection = {
       type: 'FeatureCollection',
@@ -69,6 +105,9 @@ export class TrailsService {
           note: row.note,
           public: row.public,
           filename: row.filename,
+          hundred_id: row.hundred_id,
+          small_hundred_id: row.small_hundred_id,
+          hundred_trail_id: row.hundred_trail_id,
         },
       })),
     };
@@ -77,8 +116,69 @@ export class TrailsService {
 
     return geojson;
   }
-  async post(file: Express.Multer.File) {
-    console.log(file);
+
+  async getCountyOrder(owner_uuid: string, type: string) {
+    let rows: any;
+    if (type === 'user') {
+      rows = await this.trailRepo.query(
+        `
+      SELECT
+        County,
+        COUNT(users_trails_info.county) as county_count
+      from users_trails
+      JOIN users_trails_info
+        ON users_trails.uuid = users_trails_info.uuid
+      WHERE users_trails.owner_uuid = $1
+      GROUP BY users_trails_info.county
+      ORDER BY county_count DESC
+      LIMIT 5;
+      `,
+        [owner_uuid],
+      );
+    }
+    return rows;
+  }
+
+  async getTrailsMonthData(owner_uuid: string, type: string) {
+    let rows: any;
+    if (type === 'user') {
+      rows = await this.trailRepo.query(
+        `
+        WITH date_range AS (
+          SELECT
+            DATE_TRUNC('month', MIN(users_trails_info.time)) AS start_month,
+            DATE_TRUNC('month', CURRENT_DATE) AS end_month
+          FROM users_trails_info
+          JOIN users_trails ON users_trails.uuid = users_trails_info.uuid
+          WHERE users_trails.owner_uuid = $1
+        ),
+        months AS (
+          SELECT generate_series(start_month, end_month, interval '1 month') AS month
+          FROM date_range
+        ),
+        monthly_sum AS (
+          SELECT
+            DATE_TRUNC('month', users_trails_info.time) AS month,
+            SUM(users_trails.length) AS total_distance_km
+          FROM users_trails
+          JOIN users_trails_info ON users_trails.uuid = users_trails_info.uuid
+          WHERE users_trails.owner_uuid = $1
+          GROUP BY DATE_TRUNC('month', users_trails_info.time)
+        )
+        SELECT
+          TO_CHAR(m.month, 'YYYY/MM') AS month,
+          ROUND(COALESCE(ms.total_distance_km, 0)::numeric, 2) AS total_distance_km
+        FROM months m
+        LEFT JOIN monthly_sum ms ON m.month = ms.month
+        ORDER BY m.month ASC;
+      `,
+        [owner_uuid],
+      );
+    }
+    return rows;
+  }
+
+  async post(owner_uuid: string, file: Express.Multer.File) {
     const ext = path.extname(file.originalname).toLowerCase();
     let geojson;
 
@@ -91,26 +191,29 @@ export class TrailsService {
     } else {
       throw new Error('不支援的檔案格式');
     }
-    console.log(geojson);
+
     // 寫入資料庫
     for (const feature of geojson.features) {
-      const geomJSON = JSON.stringify(feature.geometry);
+      if (
+        feature.geometry.type === 'LineString' ||
+        feature.geometry.type === 'MultiLineString'
+      ) {
+        const geomJSON = JSON.stringify(feature.geometry);
 
-      // 1. 去除副檔名
-      const nameNoExt = Buffer.from(
-        path.basename(file.originalname, path.extname(file.originalname)),
-        'binary',
-      ).toString('utf-8');
+        // 1. 去除副檔名
+        const nameNoExt = Buffer.from(
+          path.basename(file.originalname, path.extname(file.originalname)),
+          'binary',
+        ).toString('utf-8');
 
-      // 2. 中文不要亂碼：通常 multer 已經是 UTF-8，如果還有亂碼，可能是編碼問題，但你可以明確轉換成 UTF-8 試試
-      const name = Buffer.from(file.originalname, 'binary').toString('utf-8');
+        // 2. 中文不要亂碼：通常 multer 已經是 UTF-8，如果還有亂碼，可能是編碼問題，但你可以明確轉換成 UTF-8 試試
+        const name = Buffer.from(file.originalname, 'binary').toString('utf-8');
+        const uuid = uuidv4(); // 每一筆新資料產生一個 uuid
 
-      const uuid = uuidv4(); // 每一筆新資料產生一個 uuid
-
-      // 1. 新增 trails
-      await this.trailRepo.query(
-        `
-        INSERT INTO trails (uuid, geom, length, center, bounds, name)
+        // 1. 新增 trails
+        await this.trailRepo.query(
+          `
+        INSERT INTO users_trails (uuid, geom, length, center, bounds, name, owner_uuid)
         VALUES (
           $1,
           ST_Force2D(ST_GeomFromGeoJSON($2)),
@@ -120,19 +223,69 @@ export class TrailsService {
           ),
           ST_Centroid(ST_Force2D(ST_GeomFromGeoJSON($2))),
           ST_Envelope(ST_Force2D(ST_GeomFromGeoJSON($2))),
-          $3
+          $3,
+          $4
         )
         `,
-        [uuid, geomJSON, name],
-      );
-      console.log(name);
-      // 2. 同時新增 trails_info，只填 uuid 與 name
-      await this.trailRepo.query(
-        `
-        INSERT INTO trails_info (uuid, name, time)
+          [uuid, geomJSON, name, owner_uuid],
+        );
+
+        // 2. 同時新增 trails_info，只填 uuid 與 name
+        await this.trailRepo.query(
+          `
+        INSERT INTO users_trails_info (uuid, name, time)
         VALUES ($1, $2, CURRENT_DATE::timestamp)
         `,
-        [uuid, nameNoExt],
+          [uuid, nameNoExt],
+        );
+      }
+    }
+
+    return {
+      success: true,
+      savedCount: geojson.features.length,
+    };
+  }
+
+  async put(uuid: string, owner_uuid: string, file: Express.Multer.File) {
+    const ext = path.extname(file.originalname).toLowerCase();
+
+    let geojson;
+
+    if (ext === '.geojson' || ext === '.json') {
+      geojson = JSON.parse(file.buffer.toString());
+    } else if (ext === '.zip') {
+      geojson = await convertShpToGeojson(file);
+    } else if (ext === '.gpx') {
+      geojson = await convertGpxToGeojson(file);
+    } else {
+      throw new Error('不支援的檔案格式');
+    }
+
+    // 寫入資料庫
+    for (const feature of geojson.features) {
+      const geomJSON = JSON.stringify(feature.geometry);
+
+      // 中文不要亂碼：通常 multer 已經是 UTF-8，如果還有亂碼，可能是編碼問題，但你可以明確轉換成 UTF-8 試試
+      const name = Buffer.from(file.originalname, 'binary').toString('utf-8');
+
+      // 更新 trails（空間資料）
+      await this.trailRepo.query(
+        `
+        UPDATE users_trails
+        SET
+          geom = ST_Force2D(ST_GeomFromGeoJSON($1)),
+          length = ROUND(
+            ST_Length(ST_Transform(ST_Force2D(ST_GeomFromGeoJSON($1)), 3826))::numeric / 1000,
+            3
+          ),
+          center = ST_Centroid(ST_Force2D(ST_GeomFromGeoJSON($1))),
+          bounds = ST_Envelope(ST_Force2D(ST_GeomFromGeoJSON($1))),
+          name = $2,
+          owner_uuid = $3
+        WHERE uuid = $4
+        `,
+        [geomJSON, name, owner_uuid, uuid],
       );
     }
 
@@ -143,66 +296,14 @@ export class TrailsService {
   }
 
   async delete(uuid: string) {
-    await this.trailRepo.query(`DELETE FROM trails_info WHERE uuid = $1`, [
+    await this.trailRepo.query(
+      `DELETE from users_trails_info WHERE uuid = $1`,
+      [uuid],
+    );
+    await this.trailRepo.query(`DELETE from users_trails WHERE uuid = $1`, [
       uuid,
     ]);
-
-    await this.trailRepo.query(`DELETE FROM trails WHERE uuid = $1`, [uuid]);
-
     return { success: true, message: `資料 uuid=${uuid} 已刪除` };
-  }
-  async put(uuid: string, file: Express.Multer.File) {
-    console.log(file);
-    const ext = path.extname(file.originalname).toLowerCase();
-    console.log(ext);
-    let geojson;
-
-    if (ext === '.geojson' || ext === '.json') {
-      geojson = JSON.parse(file.buffer.toString());
-    } else if (ext === '.zip') {
-      geojson = await convertShpToGeojson(file);
-    } else if (ext === '.gpx') {
-      geojson = await convertGpxToGeojson(file);
-    } else {
-      throw new Error('不支援的檔案格式');
-    }
-
-    // 寫入資料庫
-    for (const feature of geojson.features) {
-      const geomJSON = JSON.stringify(feature.geometry);
-
-      // 1. 去除副檔名
-      // const rawName = path.basename(
-      //   file.originalname,
-      //   path.extname(file.originalname),
-      // );
-
-      // 2. 中文不要亂碼：通常 multer 已經是 UTF-8，如果還有亂碼，可能是編碼問題，但你可以明確轉換成 UTF-8 試試
-      const name = Buffer.from(file.originalname, 'binary').toString('utf-8');
-
-      // 更新 trails（空間資料）
-      await this.trailRepo.query(
-        `
-        UPDATE trails
-        SET
-          geom = ST_Force2D(ST_GeomFromGeoJSON($1)),
-          length = ROUND(
-            ST_Length(ST_Transform(ST_Force2D(ST_GeomFromGeoJSON($1)), 3826))::numeric / 1000,
-            3
-          ),
-          center = ST_Centroid(ST_Force2D(ST_GeomFromGeoJSON($1))),
-          bounds = ST_Envelope(ST_Force2D(ST_GeomFromGeoJSON($1))),
-          name = $2
-        WHERE uuid = $3
-        `,
-        [geomJSON, name, uuid],
-      );
-    }
-
-    return {
-      success: true,
-      savedCount: geojson.features.length,
-    };
   }
 
   async patch(uuid: string, dto: TrailsInfoDto) {
@@ -229,14 +330,23 @@ export class TrailsService {
     }
 
     values.push(uuid);
-    const sql = `UPDATE trails_info SET ${fields.join(', ')} WHERE uuid = $${i}`;
+    const sql = `UPDATE users_trails_info SET ${fields.join(', ')} WHERE uuid = $${i}`;
     await this.trailRepo.query(sql, values);
 
     return { success: true, message: `uuid=${uuid} 資料已更新` };
   }
 
-  async getExport(res: Response, type: string, userId: string | null) {
-    const geojson: FeatureCollection = await this.getTrails(userId);
+  async getExport(
+    res: Response,
+    type: string,
+    isLogin: boolean,
+    owner_uuid: string,
+  ) {
+    const geojson: FeatureCollection = await this.getTrails(
+      isLogin,
+      owner_uuid,
+      type,
+    );
 
     if (type === 'geojson') {
       res.setHeader(

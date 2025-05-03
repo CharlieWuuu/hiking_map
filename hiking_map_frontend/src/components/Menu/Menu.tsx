@@ -41,7 +41,7 @@ export default function Menu({ menuIsOpen, setMenuIsOpen }: Props) {
                     </Link>
 
                     {isLoggedIn && (
-                        <Link to="/edit" onClick={() => setMenuIsOpen(false)}>
+                        <Link to={`/user/${user?.username}/edit`} onClick={() => setMenuIsOpen(false)}>
                             <img src={DataUserEdit} alt="Icon" />
                             <span>編輯資料</span>
                         </Link>

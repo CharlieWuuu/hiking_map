@@ -1,25 +1,77 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Geometry } from 'geojson';
 
-@Entity({ name: 'hiking_map' })
+@Entity()
 export class Trail {
-  @PrimaryGeneratedColumn()
-  gid: number;
+  @PrimaryColumn('uuid')
+  uuid: string;
 
-  @Column('float', { nullable: true })
-  id: number;
+  @Column('text')
+  name: string;
 
-  @Column('float', { nullable: true })
+  @Column('double precision')
   length: number;
 
-  @Column('geometry', { spatialFeatureType: 'MultiLineString', srid: 4326 })
+  @Column({
+    type: 'geometry',
+    spatialFeatureType: 'MultiLineString',
+    srid: 4326,
+  })
   geom: object;
 
-  @Column()
-  filename: string;
+  @Column({
+    type: 'geometry',
+    spatialFeatureType: 'Point',
+    srid: 4326,
+  })
+  center: object;
 
-  @Column({ type: 'jsonb' })
-  geojson: any;
+  @Column({
+    type: 'geometry',
+    spatialFeatureType: 'Polygon',
+    srid: 4326,
+  })
+  bounds: object;
 
-  @Column({ type: 'jsonb', default: {} })
-  properties: Record<string, any>;
+  @Column('text')
+  owner_uuid: string;
+}
+
+@Entity()
+export class TrailInfo {
+  @PrimaryColumn('uuid')
+  uuid: string;
+
+  @Column('text')
+  name: string;
+
+  @Column('text')
+  county: string;
+
+  @Column('text')
+  town: string;
+
+  @Column({ type: 'timestamptz' }) // 等同 TIMESTAMP WITH TIME ZONE
+  time: Date;
+
+  @Column('double precision')
+  length: number;
+
+  @Column('text')
+  url: string;
+
+  @Column('text')
+  note: string;
+
+  @Column('boolean')
+  public: boolean;
+
+  @Column('varchar')
+  hundred_id: string;
+
+  @Column('varchar')
+  small_hundred_id: string;
+
+  @Column('varchar')
+  hundred_trail_id: string;
 }

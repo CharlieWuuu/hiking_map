@@ -3,6 +3,7 @@ import { useGeojson } from '../../context/GeojsonContext';
 import { useState, useRef, useEffect } from 'react';
 import { useModal } from '../../context/ModalContext';
 import { usePolyline } from '../../context/PolylineContext';
+import { useAuth } from '../../context/AuthContext';
 
 type Props = {
     type: string;
@@ -15,6 +16,7 @@ export default function Modal_File({ type }: Props) {
     const [uploadComplete, setUploadComplete] = useState(false);
     const { editFeatureUuid } = usePolyline();
     const editFeature = geojson?.features.find((f) => f.properties?.uuid === editFeatureUuid)?.properties;
+    const { user } = useAuth();
 
     const handleUpload = async () => {
         if (file === null) {
@@ -23,9 +25,12 @@ export default function Modal_File({ type }: Props) {
         }
         const formData = new FormData();
         formData.append('file', file);
+        console.log(user?.uuid);
+        formData.append('owner_uuid', user?.uuid || '');
+        formData.append('uuid', editFeature?.uuid || '');
 
         const baseURL = import.meta.env.VITE_API_URL;
-        const url = type === 'file_upload' ? `${baseURL}/trails` : `${baseURL}/trails/${editFeature?.uuid}`;
+        const url = `${baseURL}/trails`;
 
         try {
             const res = await fetch(url, {
@@ -47,7 +52,6 @@ export default function Modal_File({ type }: Props) {
                 alert('上傳失敗');
             }
         } catch (err) {
-            alert(JSON.stringify(err, Object.getOwnPropertyNames(err)));
             console.error(err);
             alert('錯誤：無法上傳');
         }
@@ -80,20 +84,6 @@ export default function Modal_File({ type }: Props) {
                     accept=".geojson,.gpx"
                     style={{ display: 'none' }}
                     onChange={(e) => {
-                        alert(e.target.files?.[0].name);
-                        const files = Array.from(e.target.files || []);
-                        alert(
-                            JSON.stringify(
-                                files.map((f) => ({
-                                    name: f.name,
-                                    size: f.size,
-                                    type: f.type,
-                                })),
-                                null,
-                                2,
-                            ),
-                        );
-                        console.log(e.target.files?.[0]);
                         setFile(e.target.files?.[0] || null);
                         setFileName(e.target.files?.[0]?.name || '請選擇檔案（.gpx / .geojson）');
                     }}
