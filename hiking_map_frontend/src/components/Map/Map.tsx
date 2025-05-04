@@ -13,20 +13,20 @@ import { useTableContext } from '../../context/TableContext';
 import { usePanel } from '../../context/PanelContext';
 import Map_Detail from './Map_Detail';
 import Map_Layer from './Map_Layer';
-import { useTrails } from '../../hooks/useTrails';
-import { useParams } from 'react-router-dom';
+// import { useTrails } from '../../hooks/useTrails';
+// import { useParams } from 'react-router-dom';
 
 import _MapClickHandler from './_MapClickHandler';
 import _PanToEffect from './_PanToEffect';
 import _ResizeEffect from './_ResizeEffect';
 import _TileEffect from './_TileEffect';
+import { FeatureCollection } from 'geojson';
 
-export default function Map() {
-    const { uuid, type } = useParams<{ uuid: string; type: string }>();
-    const { trails } = useTrails({
-        uuid: uuid!,
-        type: type!,
-    });
+type Props = {
+    trails: FeatureCollection | null;
+};
+
+export default function Map({ trails }: Props) {
     const geojson = trails;
     const [IsZoomIn, setIsZoomIn] = useState(false);
     const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid } = usePolyline();

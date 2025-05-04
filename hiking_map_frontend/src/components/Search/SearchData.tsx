@@ -5,8 +5,7 @@ import { useState, useRef } from 'react';
 import { usePolyline } from '../../context/PolylineContext';
 import styles from './Search.module.scss';
 import './Search.scss';
-import { useParams } from 'react-router-dom';
-import { useTrails } from '../../hooks/useTrails';
+import { FeatureCollection } from 'geojson';
 
 type TrailOption = {
     label: string;
@@ -17,12 +16,11 @@ type TrailOption = {
     uuid: string;
 };
 
-export default function SearchData() {
-    const { uuid, type } = useParams<{ uuid: string; type: string }>();
-    const { trails } = useTrails({
-        uuid: uuid!,
-        type: type!,
-    });
+type Props = {
+    trails: FeatureCollection | null;
+};
+
+export default function SearchData({ trails }: Props) {
     const geojson = trails;
     const { setActiveFeatureUuid } = usePolyline();
 

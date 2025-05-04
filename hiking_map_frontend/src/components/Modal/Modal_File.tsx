@@ -1,21 +1,25 @@
 import styles from './Modal_File.module.scss';
-import { useGeojson } from '../../context/GeojsonContext';
 import { useState, useRef, useEffect } from 'react';
 import { useModal } from '../../context/ModalContext';
-import { usePolyline } from '../../context/PolylineContext';
+
 import { useAuth } from '../../context/AuthContext';
+import { Feature } from 'geojson';
+import { useParams } from 'react-router-dom';
+import { useOwnerDetail } from '../../hooks/useOwnerDetail';
+import { useTrails } from '../../hooks/useTrails';
 
 type Props = {
-    type: string;
+    properties: Feature['properties'] | null;
 };
 
-export default function Modal_File({ type }: Props) {
-    const { geojson, refreshGeojson } = useGeojson();
+export default function Modal_File({ properties }: Props) {
     const [file, setFile] = useState<File | null>(null);
     const { setModalIsOpen } = useModal();
     const [uploadComplete, setUploadComplete] = useState(false);
-    const { editFeatureUuid } = usePolyline();
-    const editFeature = geojson?.features.find((f) => f.properties?.uuid === editFeatureUuid)?.properties;
+    const editFeature = properties;
+    const { name, type } = useParams<{ name: string; type: string; mode: string }>();
+    const { owner } = useOwnerDetail({ name: name!, type: type! });
+    const { fetchTrails } = useTrails({ uuid: owner?.uuid ?? '', type: type! });
     const { user } = useAuth();
 
     const handleUpload = async () => {
@@ -40,7 +44,7 @@ export default function Modal_File({ type }: Props) {
             const result = await res.json();
             if (result.success) {
                 setUploadComplete(true);
-                refreshGeojson();
+                fetchTrails();
                 setTimeout(() => {
                     setModalIsOpen(false);
                     setTimeout(() => {

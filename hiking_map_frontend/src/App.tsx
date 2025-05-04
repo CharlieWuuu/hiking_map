@@ -25,21 +25,10 @@ import { useFullScreenContext } from './context/FullScreenContext';
 
 // react
 import { Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 // hook
 import { useOwnerList } from './hooks/useOwnerList';
-
-type Owner = {
-    name: string;
-    name_zh: string;
-    id: string;
-    uuid: string;
-    avatar: string;
-    level: string;
-    description: string;
-    type: string;
-};
 
 export default function App() {
     const [menuIsOpen, setMenuIsOpen] = useState(false);

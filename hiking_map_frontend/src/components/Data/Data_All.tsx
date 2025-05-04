@@ -2,12 +2,14 @@ import styles from './Data_All.module.scss'; // 引入樣式
 import { usePolyline } from '../../context/PolylineContext';
 import { useTableContext } from '../../context/TableContext';
 import { useRef, useEffect, useState } from 'react';
-import { useGeojson } from '../../context/GeojsonContext';
 import { useModal } from '../../context/ModalContext';
 import { usePatchData } from '../../context/PatchDataContext';
 import Pagination from '../../assets/images/Table_Pagination.svg';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Data_Detail from './Data_Detail';
+import { useOwnerDetail } from '../../hooks/useOwnerDetail';
+import { useTrails } from '../../hooks/useTrails';
+import { FeatureCollection } from 'geojson';
 
 type patchData = {
     name: string;
@@ -19,16 +21,19 @@ type patchData = {
     public: boolean;
 };
 
+type Props = {
+    trails: FeatureCollection | null;
+};
 // 定義元件
-export default function Panel_Edit() {
-    const location = useLocation();
-    const params = new URLSearchParams(location.search);
-    const mode = params.get('mode');
-    const { geojson, refreshGeojson } = useGeojson();
-    const itemsPerPage = 50; // 每頁顯示的項目數
+export default function Data_All({ trails }: Props) {
     const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid, editFeatureUuid, setEditFeatureUuid, setDeleteFeatureUuid } = usePolyline();
-
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
+
+    const { name, type, mode } = useParams<{ name: string; type: string; mode: string }>();
+    const { owner } = useOwnerDetail({ name: name!, type: type! });
+    const { fetchTrails } = useTrails({ uuid: owner?.uuid ?? '', type: type! });
+    const itemsPerPage = 50; // 每頁顯示的項目數
+
     const rowRefs = useRef<Record<string, HTMLTableRowElement | null>>({});
 
     useEffect(() => {
@@ -40,7 +45,7 @@ export default function Panel_Edit() {
         }
     }, [currentPage, activeFeatureUuid]);
 
-    const features = geojson?.features; // 取得 geojson 中的 features
+    const features = trails?.features; // 取得 geojson 中的 features
     const pageIndexStart = startIndex + 1;
     const pageIndexEnd = Math.min(startIndex + itemsPerPage, features?.length ?? 0);
     const { modalIsOpen, setModalIsOpen, setModalType } = useModal();
@@ -62,7 +67,7 @@ export default function Panel_Edit() {
                 setModalIsOpen(true);
                 setActiveFeatureUuid(null);
                 setEditFeatureUuid(null);
-                refreshGeojson();
+                fetchTrails();
                 setPatchData(null);
             } else {
                 alert('上傳失敗');
