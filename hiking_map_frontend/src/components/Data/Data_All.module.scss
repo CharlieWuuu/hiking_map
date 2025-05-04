@@ -19,23 +19,6 @@
         width: 100%;
         height: 100%;
         @include mixins.scrollbar;
-        // &::-webkit-scrollbar {
-        //     background-color: colors.$panel;
-        // }
-
-        // &::-webkit-scrollbar-thumb {
-        //     background-color: colors.$panel_active;
-
-        //     border: 4px solid colors.$panel;
-
-        //     &:hover {
-        //         background-color: colors.$panel_active_lighten;
-        //     }
-        // }
-
-        // &::-webkit-scrollbar-corner {
-        //     background-color: colors.$panel;
-        // }
         table {
             width: 100%;
             overflow: auto;
@@ -76,11 +59,14 @@
                                 color: colors.$panel;
                             }
                         }
+                    }
+
+                    &.edit {
                         td:not(.Table_detail) {
                             display: none;
                         }
                         .Table_detail {
-                            display: block;
+                            display: table-cell;
                         }
                     }
                     td {
@@ -121,19 +107,6 @@
                         &.Table_detail {
                             display: none;
                             padding: 0;
-                            &.active {
-                                display: flex;
-                                // position: absolute;
-                                z-index: 1000;
-                                top: 0;
-                                left: 0;
-                                width: 100%;
-
-                                div {
-                                    width: 100%;
-                                    background-color: colors.$accent;
-                                }
-                            }
                         }
                     }
                     &:last-child {
@@ -191,159 +164,159 @@
     }
 }
 
-.Panel_Edit {
-    .Table_ScrollWrapper {
-        table {
-            tbody {
-                tr {
-                    &:hover {
-                        td {
-                            &.Table_public {
-                                input {
-                                    &.disabled {
-                                        accent-color: colors.$panel_active;
-                                    }
-                                }
-                            }
-                            &.Table_edit {
-                                > div {
-                                    button {
-                                        opacity: 1;
-                                        background-color: colors.$panel_active;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    &.active {
-                        cursor: auto;
-                        td {
-                            &.Table_edit {
-                                > div {
-                                    button {
-                                        opacity: 1;
-                                        color: colors.$panel;
-                                        border: 1px solid colors.$panel;
-                                        background-color: colors.$accent;
-                                        &:hover {
-                                            background-color: colors.$panel;
-                                            color: colors.$accent;
-                                            border: 1px solid colors.$panel;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    td {
-                        width: 1%;
+// .Panel_Edit {
+//     .Table_ScrollWrapper {
+//         table {
+//             tbody {
+//                 tr {
+//                     &:hover {
+//                         td {
+//                             &.Table_public {
+//                                 input {
+//                                     &.disabled {
+//                                         accent-color: colors.$panel_active;
+//                                     }
+//                                 }
+//                             }
+//                             &.Table_edit {
+//                                 > div {
+//                                     button {
+//                                         opacity: 1;
+//                                         background-color: colors.$panel_active;
+//                                     }
+//                                 }
+//                             }
+//                         }
+//                     }
+//                     &.active {
+//                         cursor: auto;
+//                         td {
+//                             &.Table_edit {
+//                                 > div {
+//                                     button {
+//                                         opacity: 1;
+//                                         color: colors.$panel;
+//                                         border: 1px solid colors.$panel;
+//                                         background-color: colors.$accent;
+//                                         &:hover {
+//                                             background-color: colors.$panel;
+//                                             color: colors.$accent;
+//                                             border: 1px solid colors.$panel;
+//                                         }
+//                                     }
+//                                 }
+//                             }
+//                         }
+//                     }
+//                     td {
+//                         width: 1%;
 
-                        input {
-                            border-radius: 0.25rem;
-                            border: 0.5px solid colors.$panel;
-                            padding: 0.1rem 0.2rem;
-                            font-size: 0.9rem;
-                            color: colors.$panel;
-                        }
+//                         input {
+//                             border-radius: 0.25rem;
+//                             border: 0.5px solid colors.$panel;
+//                             padding: 0.1rem 0.2rem;
+//                             font-size: 0.9rem;
+//                             color: colors.$panel;
+//                         }
 
-                        // &.Table_name {
-                        //     width: 1%;
-                        // }
-                        &.Table_length {
-                            min-width: 80px;
-                        }
+//                         // &.Table_name {
+//                         //     width: 1%;
+//                         // }
+//                         &.Table_length {
+//                             min-width: 80px;
+//                         }
 
-                        &.Table_time {
-                            input {
-                                width: 120px;
-                            }
-                        }
+//                         &.Table_time {
+//                             input {
+//                                 width: 120px;
+//                             }
+//                         }
 
-                        &.Table_url {
-                            > div {
-                                display: flex;
-                                flex-direction: column;
-                                align-items: center;
-                                gap: 0.3rem;
+//                         &.Table_url {
+//                             > div {
+//                                 display: flex;
+//                                 flex-direction: column;
+//                                 align-items: center;
+//                                 gap: 0.3rem;
 
-                                input {
-                                    width: 100%;
-                                }
-                                button {
-                                    width: fit-content;
-                                    height: fit-content;
-                                    color: colors.$panel;
-                                    border: 1px solid colors.$panel;
-                                    background-color: colors.$accent;
-                                    font-size: 0.6rem;
-                                    padding: 0rem 0.4rem;
-                                    &:hover {
-                                        background-color: colors.$panel;
-                                        color: colors.$accent;
-                                        border: 1px solid colors.$panel;
-                                    }
-                                }
-                            }
-                        }
-                        &.Table_note {
-                            min-width: 200px;
-                            width: 100%;
-                        }
-                        &.Table_public {
-                            input {
-                                accent-color: colors.$panel;
-                                &.disabled {
-                                    pointer-events: none;
-                                }
-                            }
-                        }
-                        &.Table_file {
-                            button {
-                                font-size: 0.75rem;
-                                padding: 0.125rem 0.5rem;
-                                color: colors.$panel;
-                                border: 1px solid colors.$panel;
-                                background-color: colors.$accent;
-                                &:hover {
-                                    background-color: colors.$panel;
-                                    color: colors.$accent;
-                                    border: 1px solid colors.$panel;
-                                }
-                            }
-                        }
-                        &.Table_edit {
-                            > div {
-                                height: 100%;
-                                display: flex;
-                                align-items: center;
-                                gap: 0.5rem;
-                                button {
-                                    transition: none;
-                                    opacity: 0;
-                                    border: 1px solid colors.$background_contrary;
-                                    font-size: 0.75rem;
-                                    padding: 0.125rem 0.5rem;
-                                    background-color: colors.$panel_active;
-                                    &:hover {
-                                        background-color: colors.$background_contrary;
-                                        color: colors.$panel_active;
-                                        border: 1px solid colors.$background_contrary;
-                                    }
+//                                 input {
+//                                     width: 100%;
+//                                 }
+//                                 button {
+//                                     width: fit-content;
+//                                     height: fit-content;
+//                                     color: colors.$panel;
+//                                     border: 1px solid colors.$panel;
+//                                     background-color: colors.$accent;
+//                                     font-size: 0.6rem;
+//                                     padding: 0rem 0.4rem;
+//                                     &:hover {
+//                                         background-color: colors.$panel;
+//                                         color: colors.$accent;
+//                                         border: 1px solid colors.$panel;
+//                                     }
+//                                 }
+//                             }
+//                         }
+//                         &.Table_note {
+//                             min-width: 200px;
+//                             width: 100%;
+//                         }
+//                         &.Table_public {
+//                             input {
+//                                 accent-color: colors.$panel;
+//                                 &.disabled {
+//                                     pointer-events: none;
+//                                 }
+//                             }
+//                         }
+//                         &.Table_file {
+//                             button {
+//                                 font-size: 0.75rem;
+//                                 padding: 0.125rem 0.5rem;
+//                                 color: colors.$panel;
+//                                 border: 1px solid colors.$panel;
+//                                 background-color: colors.$accent;
+//                                 &:hover {
+//                                     background-color: colors.$panel;
+//                                     color: colors.$accent;
+//                                     border: 1px solid colors.$panel;
+//                                 }
+//                             }
+//                         }
+//                         &.Table_edit {
+//                             > div {
+//                                 height: 100%;
+//                                 display: flex;
+//                                 align-items: center;
+//                                 gap: 0.5rem;
+//                                 button {
+//                                     transition: none;
+//                                     opacity: 0;
+//                                     border: 1px solid colors.$background_contrary;
+//                                     font-size: 0.75rem;
+//                                     padding: 0.125rem 0.5rem;
+//                                     background-color: colors.$panel_active;
+//                                     &:hover {
+//                                         background-color: colors.$background_contrary;
+//                                         color: colors.$panel_active;
+//                                         border: 1px solid colors.$background_contrary;
+//                                     }
 
-                                    @include media.media(lg) {
-                                        opacity: 1;
-                                        background-color: colors.$panel;
-                                    }
-                                }
-                            }
-                        }
+//                                     @include media.media(lg) {
+//                                         opacity: 1;
+//                                         background-color: colors.$panel;
+//                                     }
+//                                 }
+//                             }
+//                         }
 
-                        input {
-                            width: 100%;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+//                         input {
+//                             width: 100%;
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }

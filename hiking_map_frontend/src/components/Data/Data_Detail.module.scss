@@ -2,35 +2,29 @@
 @use '../../styles/media' as media;
 
 .Data_Detail {
-    // padding: 1rem;
-    // border-radius: 1rem;
-    // background: colors.$panel;
+    padding: 1rem;
+    width: 100%;
+    background-color: colors.$accent;
+    color: colors.$background;
+
+    input {
+        border-radius: 0.25rem;
+        border: 0.5px solid colors.$panel;
+        padding: 0.1rem 0.2rem;
+        font-size: 0.9rem;
+        color: colors.$panel;
+    }
+
     .Detail_Card {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 1.5rem;
         position: relative;
         height: 100%;
 
-        // button {
-        //     position: absolute;
-        //     top: 1rem;
-        //     right: 1rem;
-        //     border-radius: 100%;
-        //     background-color: colors.$background_blue_lighten;
-        //     width: 2rem;
-        //     height: 2rem;
-        //     display: flex;
-        //     justify-content: center;
-        //     align-items: center;
-        //     &:hover {
-        //         background-color: colors.$background_blue_darken_2;
-        //     }
-        // }
-
         .Card_title {
             display: flex;
-            gap: 0.5rem;
+            gap: 1rem;
             align-items: start;
             justify-content: space-between;
             text-wrap-mode: nowrap;
@@ -73,6 +67,7 @@
                 }
             }
         }
+
         hr {
             border: none;
             width: 2px;

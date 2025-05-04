@@ -1,25 +1,15 @@
 import styles from './Data_All.module.scss'; // 引入樣式
 import { usePolyline } from '../../context/PolylineContext';
 import { useTableContext } from '../../context/TableContext';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, Fragment } from 'react';
 import { useModal } from '../../context/ModalContext';
 import { usePatchData } from '../../context/PatchDataContext';
 import Pagination from '../../assets/images/Table_Pagination.svg';
-import { useParams } from 'react-router-dom';
+import { useSearchParams, useParams } from 'react-router-dom';
 import Data_Detail from './Data_Detail';
 import { useOwnerDetail } from '../../hooks/useOwnerDetail';
 import { useTrails } from '../../hooks/useTrails';
 import { FeatureCollection } from 'geojson';
-
-type patchData = {
-    name: string;
-    county: string;
-    town: string;
-    time: string;
-    url: string[];
-    note: string;
-    public: boolean;
-};
 
 type Props = {
     trails: FeatureCollection | null;
@@ -29,7 +19,9 @@ export default function Data_All({ trails }: Props) {
     const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid, editFeatureUuid, setEditFeatureUuid, setDeleteFeatureUuid } = usePolyline();
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
 
-    const { name, type, mode } = useParams<{ name: string; type: string; mode: string }>();
+    const [searchParams] = useSearchParams();
+    const mode = searchParams.get('mode');
+    const { name, type } = useParams<{ name: string; type: string }>();
     const { owner } = useOwnerDetail({ name: name!, type: type! });
     const { fetchTrails } = useTrails({ uuid: owner?.uuid ?? '', type: type! });
     const itemsPerPage = 50; // 每頁顯示的項目數
@@ -158,32 +150,43 @@ export default function Data_All({ trails }: Props) {
                     <tbody>
                         {/* 更新時沒反應 */}
                         {currentPageData.map((feature, index) => (
-                            <>
-                                {activeFeatureUuid !== feature.properties?.uuid && (
-                                    <tr key={index} onClick={() => setActiveFeatureUuid(activeFeatureUuid === feature.properties?.uuid ? null : feature.properties?.uuid)}>
-                                        <td>{feature.properties?.id}</td>
-                                        <td>{feature.properties?.name}</td>
-                                        <td>{feature.properties?.county ?? '-'}</td>
-                                        <td>{feature.properties?.town ?? '-'}</td>
-                                        <td>
+                            <Fragment key={feature.properties?.uuid ?? index}>
+                                {((mode === 'edit' && activeFeatureUuid !== feature.properties?.uuid) || mode !== 'edit') && (
+                                    <tr className={`${activeFeatureUuid === feature.properties?.uuid ? styles.active : ''}`} onClick={() => setActiveFeatureUuid(activeFeatureUuid === feature.properties?.uuid ? null : feature.properties?.uuid)}>
+                                        <td className={styles.Table_id}>{feature.properties?.id}</td>
+                                        <td className={styles.Table_name}>{feature.properties?.name}</td>
+                                        <td className={styles.Table_county}>{feature.properties?.county ?? '-'}</td>
+                                        <td className={styles.Table_town}>{feature.properties?.town ?? '-'}</td>
+                                        <td className={styles.Table_time}>
                                             {(() => {
                                                 const date = new Date(feature.properties?.time);
                                                 const year = date.getFullYear();
                                                 const month = String(date.getMonth() + 1).padStart(2, '0');
-                                                return `${year}年${month}月`;
+                                                const day = String(date.getDate()).padStart(2, '0');
+                                                return `${year}年${month}月${day}日`;
                                             })()}
                                         </td>
                                     </tr>
                                 )}
 
-                                {activeFeatureUuid === feature.properties?.uuid && (
-                                    <tr className={`${styles.Table_detail} ${activeFeatureUuid === feature.properties?.uuid ? styles.active : ''}`}>
-                                        <td colSpan={5}>
+                                {mode === 'edit' && activeFeatureUuid === feature.properties?.uuid && (
+                                    <tr
+                                        className={`${activeFeatureUuid === feature.properties?.uuid ? styles.edit : ''}`}
+                                        onClick={(e) => {
+                                            const target = e.target as HTMLElement;
+                                            const tag = target.tagName.toLowerCase();
+                                            console.log(tag);
+                                            // 如果點擊的是 button、input、a 等，就不要執行展開
+                                            if (['button', 'input', 'a', 'select', 'textarea'].includes(tag)) return;
+
+                                            setActiveFeatureUuid(null); // 展開或其他父層邏輯
+                                        }}>
+                                        <td className={styles.Table_detail} colSpan={5}>
                                             <Data_Detail trails={activeFeatureUuid === feature.properties?.uuid ? feature.properties : null} />
                                         </td>
                                     </tr>
                                 )}
-                            </>
+                            </Fragment>
                         ))}
                     </tbody>
                 </table>

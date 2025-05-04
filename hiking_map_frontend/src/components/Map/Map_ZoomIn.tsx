@@ -2,6 +2,7 @@ import './Map_ZoomIn.scss'; // 因為 Panel、Map 的 hover 行為影響到 Pane
 import ZoomInUrl from '../../assets/images/Panel_ZoomIn.svg';
 import ZoomOutUrl from '../../assets/images/Panel_ZoomOut.svg';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
 
 type Props = {
     IsZoomIn?: boolean;
@@ -11,21 +12,28 @@ export default function Map_ZoomIn({ IsZoomIn, setIsZoomIn }: Props) {
     const { name, type } = useParams();
     const location = useLocation();
     const params = new URLSearchParams(location.search);
-    const mode = params.get('mode');
+    const mode = params.get('mode') || 'map'; // 預設值
     const navigate = useNavigate();
-    const handleMode = () => {
-        if (mode === 'map') {
-            navigate(`/owner/${type}/${name}/data?mode=${mode}`, { replace: true });
-        } else {
-            navigate(`/owner/${type}/${name}/data?mode=map`, { replace: true });
+
+    // 用 useRef 記住「非 map」的上一次 mode（data 或 edit）
+    const lastNonMapModeRef = useRef<string>('data'); // 預設值是 data
+
+    useEffect(() => {
+        if (mode && mode !== 'map') {
+            lastNonMapModeRef.current = mode;
         }
+    }, [mode]);
+
+    const handleMode = () => {
+        const nextMode = mode === 'map' ? lastNonMapModeRef.current : 'map';
+        navigate(`/owner/${type}/${name}/data?mode=${nextMode}`, { replace: true });
     };
     return (
         <div className="Map_ZoomIn">
             <button>
                 <img
-                    src={IsZoomIn ? ZoomOutUrl : ZoomInUrl}
-                    alt="放大"
+                    src={mode === 'map' ? ZoomOutUrl : ZoomInUrl}
+                    alt={mode === 'map' ? '縮小' : '放大'}
                     onClick={() => {
                         setIsZoomIn(!IsZoomIn);
                         handleMode();

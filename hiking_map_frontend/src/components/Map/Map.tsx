@@ -13,8 +13,7 @@ import { useTableContext } from '../../context/TableContext';
 import { usePanel } from '../../context/PanelContext';
 import Map_Detail from './Map_Detail';
 import Map_Layer from './Map_Layer';
-// import { useTrails } from '../../hooks/useTrails';
-// import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import _MapClickHandler from './_MapClickHandler';
 import _PanToEffect from './_PanToEffect';
@@ -28,7 +27,7 @@ type Props = {
 
 export default function Map({ trails }: Props) {
     const geojson = trails;
-    const [IsZoomIn, setIsZoomIn] = useState(false);
+
     const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid } = usePolyline();
     const { nowBaseMap, baseMapSetting } = useMapContext();
 
@@ -50,8 +49,13 @@ export default function Map({ trails }: Props) {
 
     const { uiPanels } = usePanel();
 
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const mode = params.get('mode');
+    const [IsZoomIn, setIsZoomIn] = useState(mode === 'map');
+
     return (
-        <div className={`Map ${IsZoomIn ? 'ZoomIn' : ''} ${uiPanels?.edit ? 'Editing' : ''}`} ref={mapWrapperRef}>
+        <div className={`Map ${mode === 'map' ? 'ZoomIn' : ''} ${uiPanels?.edit ? 'Editing' : ''}`} ref={mapWrapperRef}>
             <Map_ZoomIn IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} />
             {activeFeatureUuid && <Map_Detail trails={activeFeature} />}
             <MapContainer center={[25.047924, 121.517081]} zoom={12} scrollWheelZoom={true} zoomControl={false}>
