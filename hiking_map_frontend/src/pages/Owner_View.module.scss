@@ -160,10 +160,17 @@
 
                 > div {
                     transition: all 0.3s ease;
+                    hr {
+                        transition: all 0.3s ease;
+                    }
                 }
+
                 &:hover {
                     > div {
                         background-color: colors.$panel_active;
+                        hr {
+                            background-color: colors.$panel_active_lighten;
+                        }
                     }
                 }
             }

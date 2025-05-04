@@ -21,12 +21,14 @@ import styles from './App.module.scss';
 import './styles/main.scss';
 
 // context
-import { useAuth } from './context/AuthContext';
 import { useFullScreenContext } from './context/FullScreenContext';
 
 // react
 import { Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+
+// hook
+import { useOwnerList } from './hooks/useOwnerList';
 
 type Owner = {
     name: string;
@@ -42,19 +44,12 @@ type Owner = {
 export default function App() {
     const [menuIsOpen, setMenuIsOpen] = useState(false);
     const { isFullScreen } = useFullScreenContext();
-    const [ownerList, setOwnerList] = useState<Owner[]>([]);
-
-    useEffect(() => {
-        fetch(import.meta.env.VITE_API_URL + '/owners/list')
-            .then((res) => res.json())
-            .then((data) => setOwnerList(data));
-    }, []);
+    const { ownerList } = useOwnerList();
 
     return (
         <>
             <ScrollToTop />
             <Navbar setMenuIsOpen={setMenuIsOpen} ownerList={ownerList} />
-            {/* <div className={`${styles.App}`}> */}
             <div className={`${styles.App} ${isFullScreen ? styles.NoScroll : ''}`}>
                 <Modal />
                 <Menu menuIsOpen={menuIsOpen} setMenuIsOpen={setMenuIsOpen} />
@@ -64,7 +59,7 @@ export default function App() {
                         <Route path="/search" element={<Search_Owner ownerList={ownerList} />} />
                         <Route path="/owner/:type/:name" element={<Owner_View />} />
                         <Route path="/owner/:type/:name/trail/:uuid" element={<Owner_Trail />} />
-                        <Route path="/owner/:type/:name/data/:status" element={<Owner_Data />} />
+                        <Route path="/owner/:type/:name/data" element={<Owner_Data />} />
                         <Route path="/intro" element={<Intro />} />
                         <Route path="/login" element={<Login />} />
                     </Routes>

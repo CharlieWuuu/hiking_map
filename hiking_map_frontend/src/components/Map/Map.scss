@@ -24,7 +24,7 @@
     }
 
     &:hover {
-        .Panel_Button {
+        .Map_ZoomIn {
             opacity: 1;
             pointer-events: all;
             button {
@@ -41,18 +41,8 @@
         }
     }
     @include media.media(lg) {
-        .Panel_Button {
+        .Map_ZoomIn {
             display: none;
-        }
-    }
-
-    .Panel_Button {
-        z-index: 401;
-        background-color: transparent;
-        button {
-            &:hover {
-                background-color: colors.$panel;
-            }
         }
     }
 

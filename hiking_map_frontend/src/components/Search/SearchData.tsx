@@ -2,10 +2,11 @@ import SearchUrl from '../../assets/images/Navbar_Search.svg';
 import { Autocomplete } from '@mui/material';
 import { Popper } from '@mui/material';
 import { useState, useRef } from 'react';
-import { useGeojson } from '../../context/GeojsonContext';
 import { usePolyline } from '../../context/PolylineContext';
 import styles from './Search.module.scss';
 import './Search.scss';
+import { useParams } from 'react-router-dom';
+import { useTrails } from '../../hooks/useTrails';
 
 type TrailOption = {
     label: string;
@@ -17,7 +18,12 @@ type TrailOption = {
 };
 
 export default function SearchData() {
-    const { geojson } = useGeojson();
+    const { uuid, type } = useParams<{ uuid: string; type: string }>();
+    const { trails } = useTrails({
+        uuid: uuid!,
+        type: type!,
+    });
+    const geojson = trails;
     const { setActiveFeatureUuid } = usePolyline();
 
     const [showAutocomplete, setShowAutocomplete] = useState(false);

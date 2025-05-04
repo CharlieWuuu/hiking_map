@@ -1,112 +1,33 @@
+// styles
 import './Map.scss'; // 1. 因為要改 Leaflet 的樣式而不能用 modules 2. 因為 Panel、Map 的 hover 行為影響到 Panel_Button 的樣式，所以不用 modules
 import 'leaflet/dist/leaflet.css';
 
-import { MapContainer, TileLayer, GeoJSON, useMap, ZoomControl, useMapEvent } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMap, ZoomControl } from 'react-leaflet';
 import L from 'leaflet';
-
 import { useEffect, useRef, useState } from 'react';
-import { BaseMapEn, BaseMapSettingEn } from '../../types/baseMapSettings';
-import type { FeatureCollection } from 'geojson';
 import { useIsResizing } from '../../hooks/useIsResizing';
-import Panel_Button from '../Panel/Panel_Button';
+import Map_ZoomIn from './Map_ZoomIn';
 import { usePolyline } from '../../context/PolylineContext';
 import { useMapContext } from '../../context/MapContext';
 import { useTableContext } from '../../context/TableContext';
 import { usePanel } from '../../context/PanelContext';
 import Map_Detail from './Map_Detail';
 import Map_Layer from './Map_Layer';
-import { useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import { useGeojson } from '../../context/GeojsonContext';
+import { useTrails } from '../../hooks/useTrails';
+import { useParams } from 'react-router-dom';
 
-import DataUserChart from '../../assets/images/Menu_Data_User_Chart.svg';
-
-function TileEffect({ baseMap, setting }: { baseMap: BaseMapEn; setting: Record<BaseMapSettingEn, number> }) {
-    const map = useMap();
-    useEffect(() => {
-        const tilePane = map.getPanes().tilePane;
-        if (tilePane) {
-            tilePane.style.filter = `saturate(${setting.saturate})`;
-            tilePane.style.opacity = `${setting.opacity}`;
-        }
-    }, [baseMap, setting, map]);
-
-    return null;
-}
-
-function PanToEffect({ panToId, geojson }: { panToId: string | null; geojson: FeatureCollection | null }) {
-    const map = useMap();
-
-    useEffect(() => {
-        if (!panToId || !geojson) return;
-
-        const targetFeature = geojson.features.find((f) => f.properties?.uuid === panToId);
-        if (!targetFeature) return;
-
-        // 取得四角座標
-        const bounds = targetFeature.properties?.bounds as [number, number][] | undefined;
-        if (bounds) {
-            map.fitBounds(L.latLngBounds(L.latLng(bounds[0][1], bounds[0][0]), L.latLng(bounds[2][1], bounds[2][0])), {
-                paddingTopLeft: [20, 20],
-                paddingBottomRight: [20, 20],
-            });
-        }
-
-        const center = targetFeature.properties?.center as [number, number] | undefined;
-        if (!center) return;
-        if (center.length > 0) {
-            const latlng = L.latLng(center[1], center[0]);
-            map.panTo(latlng);
-        }
-    }, [panToId, geojson, map]);
-
-    return null;
-}
-
-// 保持地圖中心點
-function ResizeEffect({ isResizing }: { isResizing: boolean }) {
-    const map = useMap();
-    const intervalRef = useRef<number | null>(null);
-
-    useEffect(() => {
-        if (isResizing) {
-            intervalRef.current = window.setInterval(() => {
-                map.invalidateSize();
-                map.panTo(L.latLng(map.getCenter().lat, map.getCenter().lng), { animate: false });
-            }, 10); // 每 10ms 更新一次
-        } else {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-                intervalRef.current = null;
-            }
-        }
-
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-        };
-    }, [isResizing, map]);
-
-    return null;
-}
-
-function MapClickHandler({ setActiveFeatureUuid }: { setActiveFeatureUuid: (id: string | null) => void }) {
-    useMapEvent('click', (e) => {
-        const isGeoJsonLayer = (e.originalEvent?.target as HTMLElement)?.closest('.leaflet-interactive');
-        if (isGeoJsonLayer) return;
-        setActiveFeatureUuid(null);
-    });
-
-    return null; // 不 render UI，只處理事件
-}
+import _MapClickHandler from './_MapClickHandler';
+import _PanToEffect from './_PanToEffect';
+import _ResizeEffect from './_ResizeEffect';
+import _TileEffect from './_TileEffect';
 
 export default function Map() {
-    const location = useLocation();
-    const type = location.pathname.split('/')[1];
-    const name = location.pathname.split('/')[2];
-    // const geojson: FeatureCollection = location.state;
-    const { geojson } = useGeojson();
+    const { uuid, type } = useParams<{ uuid: string; type: string }>();
+    const { trails } = useTrails({
+        uuid: uuid!,
+        type: type!,
+    });
+    const geojson = trails;
     const [IsZoomIn, setIsZoomIn] = useState(false);
     const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid } = usePolyline();
     const { nowBaseMap, baseMapSetting } = useMapContext();
@@ -117,10 +38,12 @@ export default function Map() {
     const activeFeature = geojson?.features.find((f) => f.properties?.uuid === activeFeatureUuid) ?? null;
 
     const activeRef = useRef<string | null>(null);
+
     useEffect(() => {
         activeRef.current = activeFeatureUuid;
     }, [activeFeatureUuid]);
     const { setFeatures } = useTableContext();
+
     useEffect(() => {
         if (geojson) setFeatures(geojson.features);
     }, [geojson]);
@@ -129,27 +52,24 @@ export default function Map() {
 
     return (
         <div className={`Map ${IsZoomIn ? 'ZoomIn' : ''} ${uiPanels?.edit ? 'Editing' : ''}`} ref={mapWrapperRef}>
-            <Panel_Button IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} hasCloseButton={false} />
-            {activeFeatureUuid && <Map_Detail />}
+            <Map_ZoomIn IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} />
+            {activeFeatureUuid && <Map_Detail trails={activeFeature} />}
             <MapContainer center={[25.047924, 121.517081]} zoom={12} scrollWheelZoom={true} zoomControl={false}>
-                <TileEffect baseMap={nowBaseMap} setting={baseMapSetting[nowBaseMap]} />
+                <_TileEffect baseMap={nowBaseMap} setting={baseMapSetting[nowBaseMap]} />
+                <_PanToEffect panToId={activeFeatureUuid} geojson={geojson} />
+                <_ResizeEffect isResizing={isResizing} />
+                <_MapClickHandler setActiveFeatureUuid={setActiveFeatureUuid} />
+
                 <TileLayer url={baseMapSetting[nowBaseMap].url} />
-                <PanToEffect panToId={activeFeatureUuid} geojson={geojson} />
                 <ZoomControl position="bottomright" />
-                <ResizeEffect isResizing={isResizing} />
-                <MapClickHandler setActiveFeatureUuid={setActiveFeatureUuid} />
                 <Map_Layer />
-                <div className="ChartButton">
-                    <Link to={`/${type}/${name}/chart`}>
-                        <img src={DataUserChart} alt="Icon" />
-                    </Link>
-                </div>
 
                 {!geojson && (
                     <span className="onLoading">
                         <div className="loader"></div>
                     </span>
                 )}
+
                 {geojson && (
                     <div>
                         <GeoJSON

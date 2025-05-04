@@ -1,4 +1,5 @@
 export type TrailProperties = {
+    id: string;
     uuid: string;
     name: string;
     length: number;

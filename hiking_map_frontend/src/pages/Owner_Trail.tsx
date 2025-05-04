@@ -10,7 +10,8 @@ import { useIsResizing } from '../hooks/useIsResizing';
 // import { useGeojson } from '../context/GeojsonContext';
 import styles from './Owner_Trail.module.scss';
 import GoBack from '../components/GoBack/GoBack';
-import { useOwner } from '../hooks/useOwner';
+import { useTrails } from '../hooks/useTrails';
+import { useOwnerDetail } from '../hooks/useOwnerDetail';
 
 function TileEffect() {
     const map = useMap();
@@ -53,48 +54,27 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
     return null;
 }
 
-type Owner = {
-    name: string;
-    name_zh: string;
-    id: string;
-    uuid: string;
-    avatar: string;
-    level: string;
-    description: string;
-    type: string;
-};
-
 export default function Owner_Trail() {
-    const { name, type, uuid } = useParams();
-    const { user, trails } = useOwner();
-    // const { geojson } = useGeojson();
-    // const { activeFeatureUuid } = usePolyline();
+    const { name, uuid, type } = useParams<{ name: string; uuid: string; type: string }>();
+    const { owner } = useOwnerDetail({ name: name!, type: type! });
+    const { trails } = useTrails({ uuid: owner?.uuid ?? '', type: type!, trail_uuid: uuid! });
 
     const mapWrapperRef = useRef<HTMLDivElement>(null);
     const isResizing = useIsResizing(mapWrapperRef as React.RefObject<HTMLElement>, 600); // 600ms：你的動畫時間
 
-    // const activeRef = useRef<string | null>(null);
-    // useEffect(() => {
-    //     activeRef.current = activeFeatureUuid;
-    // }, [activeFeatureUuid]);
-    // const { setFeatures } = useTableContext();
-    // useEffect(() => {
-    //     if (geojson) setFeatures(geojson.features);
-    // }, [geojson]);
-
-    if (!trails || !trails.features[0].properties)
+    if (!trails)
         return (
             <div className={`${styles.Owner_Trail} ${styles.onLoading}`}>
                 <span className={styles.loader}></span>
             </div>
         );
-
+    console.log(trails);
     const features = trails.features.find((f) => f.properties?.uuid === uuid)!;
     const props = features.properties!;
     return (
         <div className={styles.Owner_Trail}>
             <div className={styles.Owner_Trail_GoBack}>
-                <GoBack url={`/owner/${type}/${name}`} owner={user as Owner} />
+                <GoBack url={`/owner/${type}/${name}`} />
             </div>
             <div className={styles.Owner_Trail_Title}>
                 <div className={styles.Card_title}>

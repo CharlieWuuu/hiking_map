@@ -21,12 +21,29 @@ export class TrailsService {
     private readonly trailRepo: Repository<Trail>,
   ) {}
 
-  async getTrails(isLogin: boolean, ownerUuid: string, type: string) {
+  async getTrails(
+    isLogin: boolean,
+    ownerUuid: string,
+    type: string,
+    uuid?: string,
+  ) {
     let rows: any;
     if (type === 'user') {
-      const sqlWhere = isLogin ? '' : `AND users_trails_info.public = true`;
-      rows = await this.trailRepo.query(
-        `
+      const whereClauses = ['users_trails.owner_uuid = $1'];
+      const params: any[] = [ownerUuid];
+
+      if (!isLogin) {
+        whereClauses.push('users_trails_info.public = true');
+      }
+
+      if (uuid) {
+        whereClauses.push('users_trails.uuid = $2');
+        params.push(uuid);
+      }
+
+      const where = whereClauses.join(' AND ');
+
+      const sql = `
       SELECT
         users_trails.uuid,
         ROW_NUMBER() OVER (ORDER BY users_trails_info.time ASC) AS id,
@@ -45,18 +62,25 @@ export class TrailsService {
         users_trails_info.small_hundred_id,
         users_trails_info.hundred_trail_id,
         users_trails.name AS filename
-      from users_trails
+      FROM users_trails
       JOIN users_trails_info
         ON users_trails.uuid = users_trails_info.uuid
-      WHERE users_trails.owner_uuid = $1
-      ${sqlWhere}
+      WHERE ${where}
       ORDER BY users_trails_info.time ASC;
-    `,
-        [ownerUuid],
-      );
+    `;
+      rows = await this.trailRepo.query(sql, params);
     } else if (type === 'layer') {
-      rows = await this.trailRepo.query(
-        `
+      const whereClauses = ['layers_trails.owner_uuid = $1'];
+      const params: any[] = [ownerUuid];
+
+      if (uuid) {
+        whereClauses.push('layers_trails.id = $2');
+        params.push(uuid);
+      }
+
+      const where = whereClauses.join(' AND ');
+
+      const sql = `
       SELECT
         layers_trails.id AS uuid,
         ROW_NUMBER() OVER (ORDER BY layers_trails_info.time ASC) AS id,
@@ -72,14 +96,14 @@ export class TrailsService {
         layers_trails_info.note,
         layers_trails_info.public,
         layers_trails.name AS filename
-      from layers_trails
+      FROM layers_trails
       JOIN layers_trails_info
         ON layers_trails.id = layers_trails_info.id
-      WHERE layers_trails.owner_uuid = $1
+      WHERE ${where}
       ORDER BY layers_trails_info.time ASC;
-    `,
-        [ownerUuid],
-      );
+    `;
+
+      rows = await this.trailRepo.query(sql, params);
     }
 
     const geojson: FeatureCollection = {

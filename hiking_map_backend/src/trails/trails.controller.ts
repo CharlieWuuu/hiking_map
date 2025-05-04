@@ -40,6 +40,7 @@ export class TrailsController {
     @Req() req: Request,
     @Query('owner_uuid') ownerUuid: string,
     @Query('type') type: string,
+    @Query('uuid') uuid?: string,
   ): Promise<FeatureCollection> {
     let isLogin: boolean = false;
 
@@ -60,6 +61,7 @@ export class TrailsController {
       isLogin,
       ownerUuid,
       type,
+      uuid,
     );
     return data;
   }
