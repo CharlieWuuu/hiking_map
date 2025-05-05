@@ -63,7 +63,7 @@ export default function countyOrder({ data }: Props) {
         // 自訂 X 軸刻度格式
         const xAxis = d3
             .axisBottom(x)
-            .tickFormat((label) => (label.includes('空值') ? '-' : label))
+            .tickFormat((label) => (label?.includes('空值') ? '-' : label))
             .tickSizeInner(0)
             .tickSizeOuter(0);
 

@@ -4,6 +4,7 @@ import { Popper } from '@mui/material';
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Search.module.scss';
+import styleUser from './SearchUser.module.scss';
 
 type Owner = {
     name: string;
@@ -61,7 +62,7 @@ export default function SearchUser({ ownerList }: Props) {
     const autoCompleteWidth = searchBarRef.current ? searchBarRef.current.getBoundingClientRect().width - 2 : 'auto';
 
     return (
-        <div className={`${styles.SearchBar} ${showAutocomplete ? styles.active : ''}`} ref={searchBarRef}>
+        <div className={`${styles.SearchBar} ${showAutocomplete ? styles.active : ''} ${styleUser.SearchBar}`} ref={searchBarRef}>
             <Autocomplete
                 options={nameList}
                 value={selectedOption}

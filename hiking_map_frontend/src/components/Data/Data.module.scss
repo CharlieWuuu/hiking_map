@@ -1,3 +1,8 @@
+@use '../../styles/mixins' as mixins;
+@use '../../styles/media' as media;
+@use '../../styles/variables' as variables;
+@use '../../styles/colors' as colors;
+
 .Data {
     display: flex;
     flex-direction: column;
@@ -16,5 +21,10 @@
         h2 {
             line-height: 1;
         }
+    }
+
+    @include media.media(lg) {
+        max-width: none;
+        padding: 0 1rem;
     }
 }

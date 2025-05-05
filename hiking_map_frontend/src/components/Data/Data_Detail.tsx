@@ -110,14 +110,16 @@ export default function Data_Detail({ trails }: Props) {
                         )}
                         <span>#{trails.id}</span>
                     </div>
-                    {mode === 'edit' && (
-                        <div className={styles.Card_edit}>
-                            {!isEditing && (
+                    <div className={styles.Card_btn}>
+                        {mode === 'edit' && !isEditing && (
+                            <>
                                 <button onClick={() => setIsEditing(true)}>
                                     <img src={Navbar_Edit} alt="編輯" />
-                                </button>
-                            )}
-                            {isEditing && (
+                                </button>{' '}
+                            </>
+                        )}
+                        {mode === 'edit' && isEditing && (
+                            <>
                                 <button
                                     style={patchData ? {} : { opacity: '0.2', pointerEvents: 'none' }}
                                     onClick={() => {
@@ -126,8 +128,7 @@ export default function Data_Detail({ trails }: Props) {
                                     }}>
                                     <img src={Save} alt="儲存" />
                                 </button>
-                            )}
-                            {isEditing && (
+
                                 <button
                                     onClick={() => {
                                         setModalIsOpen(true);
@@ -135,9 +136,7 @@ export default function Data_Detail({ trails }: Props) {
                                     }}>
                                     <img src={Upload} alt="更新軌跡" />
                                 </button>
-                            )}
 
-                            {isEditing && (
                                 <button
                                     onClick={() => {
                                         setDeleteFeatureUuid(trails?.uuid);
@@ -146,19 +145,12 @@ export default function Data_Detail({ trails }: Props) {
                                     }}>
                                     <img src={Delete} alt="刪除" />
                                 </button>
-                            )}
-                        </div>
-                    )}
-
-                    {mode === 'data' && (
-                        <div className={styles.Card_edit}>
-                            {!isEditing && (
-                                <button onClick={() => handleMode()}>
-                                    <img src={Menu_Map} alt="地圖" />
-                                </button>
-                            )}
-                        </div>
-                    )}
+                            </>
+                        )}
+                        <button className={styles.Card_Btn_map} onClick={() => handleMode()}>
+                            <img src={Menu_Map} alt="地圖" />
+                        </button>
+                    </div>
                 </div>
 
                 <div className={styles.Card_properties}>

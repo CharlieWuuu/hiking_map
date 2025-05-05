@@ -1,0 +1,23 @@
+@use '../../styles/mixins' as mixins;
+@use '../../styles/variables' as variables;
+@use '../../styles/colors' as colors;
+@use '../../styles/media' as media;
+
+.Map_Button {
+    background-color: transparent;
+    opacity: 0;
+    transition: all 0.3s ease;
+    width: 32px;
+    height: 32px;
+    @include mixins.flex_center;
+    background-color: colors.$panel_active_lighten;
+    border-radius: variables.$border_radius;
+    cursor: pointer;
+    z-index: 401;
+    &:hover {
+        background-color: colors.$panel;
+    }
+    @include media.media(lg) {
+        opacity: 1;
+    }
+}

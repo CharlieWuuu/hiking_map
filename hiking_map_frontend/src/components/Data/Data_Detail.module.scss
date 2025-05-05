@@ -53,7 +53,7 @@
                     width: 100%;
                 }
             }
-            .Card_edit {
+            .Card_btn {
                 display: flex;
                 gap: 0.5rem;
                 button {
@@ -80,10 +80,12 @@
                         }
                     }
 
-                    // @include media.media(lg) {
-                    //     opacity: 1;
-                    //     background-color: colors.$panel;
-                    // }
+                    .Card_btn_map {
+                        display: none;
+                        @include media.media(lg) {
+                            display: block;
+                        }
+                    }
                 }
             }
         }
@@ -102,7 +104,7 @@
             gap: 1rem;
 
             > div {
-                width: 45%;
+                width: 48%;
                 display: flex;
                 flex-direction: column;
                 align-items: start;

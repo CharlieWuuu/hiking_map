@@ -165,11 +165,14 @@ export default function Owner_View() {
             <section className={styles.Owner_Trails}>
                 <h2>軌跡</h2>
                 <div>
-                    {trails.features.slice(0, displayCount).map((f, index) => (
-                        <Link to={`/owner/${type}/${owner.name}/trail/${f.properties?.uuid}`} key={f.properties?.uuid ?? `trail-${index}`} className={styles.Owner_Trail}>
-                            <Card_Detail properties={f.properties as TrailProperties} />
-                        </Link>
-                    ))}
+                    {trails.features
+                        .filter((f) => f.properties?.public)
+                        .slice(0, displayCount)
+                        .map((f, index) => (
+                            <Link to={`/owner/${type}/${owner.name}/trail/${f.properties?.uuid}`} key={f.properties?.uuid ?? `trail-${index}`} className={styles.Owner_Trail}>
+                                <Card_Detail properties={f.properties as TrailProperties} />
+                            </Link>
+                        ))}
 
                     {displayCount < trails.features.length && (
                         <div className={styles.LoadMoreWrapper}>

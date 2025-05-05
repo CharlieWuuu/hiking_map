@@ -4,13 +4,12 @@ import 'leaflet/dist/leaflet.css';
 
 import { MapContainer, TileLayer, GeoJSON, useMap, ZoomControl } from 'react-leaflet';
 import L from 'leaflet';
-import { use, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useIsResizing } from '../../hooks/useIsResizing';
 import Map_ZoomIn from './Map_ZoomIn';
 import { usePolyline } from '../../context/PolylineContext';
 import { useMapContext } from '../../context/MapContext';
 import { useTableContext } from '../../context/TableContext';
-import { usePanel } from '../../context/PanelContext';
 import Map_Detail from './Map_Detail';
 import Map_Layer from './Map_Layer';
 import { useLocation } from 'react-router-dom';
@@ -19,6 +18,11 @@ import _MapClickHandler from './_MapClickHandler';
 import _PanToEffect from './_PanToEffect';
 import _ResizeEffect from './_ResizeEffect';
 import _TileEffect from './_TileEffect';
+
+import { useParams, useNavigate } from 'react-router-dom';
+import DataUserEdit from '../../assets/images/Menu_Data_User_Edit.svg';
+import Menu_Data from '../../assets/images/Menu_Data.svg';
+import './Map_Button.scss';
 
 export default function Map() {
     const { trails, version, loading } = usePolyline();
@@ -43,19 +47,26 @@ export default function Map() {
     const { setFeatures } = useTableContext();
 
     useEffect(() => {
-        console.log(version, trails);
         setFeatures(trails?.features ?? []);
     }, [trails, version]);
-
-    const { uiPanels } = usePanel();
 
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const mode = params.get('mode');
     const [IsZoomIn, setIsZoomIn] = useState(mode === 'map');
 
+    const { name, type } = useParams<{ name: string; type: string; mode: string }>();
+    const navigate = useNavigate();
+    const handleMode = () => {
+        if (mode === 'edit') {
+            navigate(`/owner/${type}/${name}/data?mode=data`, { replace: true });
+        } else {
+            navigate(`/owner/${type}/${name}/data?mode=edit`, { replace: true });
+        }
+    };
+
     return (
-        <div className={`Map ${mode === 'map' ? 'ZoomIn' : ''} ${uiPanels?.edit ? 'Editing' : ''}`} ref={mapWrapperRef}>
+        <div className={`Map ${mode === 'map' ? 'ZoomIn' : ''} ${mode !== 'map' ? 'ZoomOut' : ''}`} ref={mapWrapperRef}>
             <Map_ZoomIn IsZoomIn={IsZoomIn} setIsZoomIn={setIsZoomIn} />
             {activeFeatureUuid && <Map_Detail trails={activeFeature} />}
             <MapContainer center={[23.7, 120.9]} zoom={7} scrollWheelZoom={true} zoomControl={false}>
@@ -73,6 +84,10 @@ export default function Map() {
                         <div className="loader"></div>
                     </span>
                 )}
+
+                <button className="Map_Button" onClick={() => handleMode()} style={{ bottom: '4rem', left: '1rem', position: 'absolute' }}>
+                    <img src={mode === 'edit' ? Menu_Data : DataUserEdit} alt={mode === 'edit' ? '資料' : '編輯'} width={16} />
+                </button>
 
                 {trails && (
                     <div>

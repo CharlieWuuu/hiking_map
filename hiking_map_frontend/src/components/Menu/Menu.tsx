@@ -9,6 +9,7 @@ import DataUserChart from '../../assets/images/Menu_Data_User_Chart.svg';
 import DataUserEdit from '../../assets/images/Menu_Data_User_Edit.svg';
 import Intro from '../../assets/images/Menu_Intro.svg';
 import Login from '../../assets/images/Menu_Login.svg';
+import search from '../../assets/images/Navbar_Search.svg';
 
 type Props = {
     menuIsOpen: boolean;
@@ -30,15 +31,24 @@ export default function Menu({ menuIsOpen, setMenuIsOpen }: Props) {
                         <span>首頁</span>
                     </Link>
 
-                    <Link to={user ? `/user/${user?.username}` : '/login'} onClick={() => setMenuIsOpen(false)}>
-                        <img src={DataUser} alt="Icon" />
-                        <span>我的軌跡</span>
+                    <Link to="/search" onClick={() => setMenuIsOpen(false)}>
+                        <img src={search} alt="Icon" />
+                        <span>搜尋</span>
                     </Link>
 
-                    <Link to={user ? `/user/${user?.username}/chart` : '/login'} onClick={() => setMenuIsOpen(false)}>
-                        <img src={DataUserChart} alt="Icon" />
-                        <span>我的統計</span>
-                    </Link>
+                    {isLoggedIn && (
+                        <Link to={user ? `/user/${user?.username}` : '/login'} onClick={() => setMenuIsOpen(false)}>
+                            <img src={DataUser} alt="Icon" />
+                            <span>我的軌跡</span>
+                        </Link>
+                    )}
+
+                    {isLoggedIn && (
+                        <Link to={user ? `/user/${user?.username}/chart` : '/login'} onClick={() => setMenuIsOpen(false)}>
+                            <img src={DataUserChart} alt="Icon" />
+                            <span>我的統計</span>
+                        </Link>
+                    )}
 
                     {isLoggedIn && (
                         <Link to={`/user/${user?.username}/edit`} onClick={() => setMenuIsOpen(false)}>

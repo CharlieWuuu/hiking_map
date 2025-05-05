@@ -7,30 +7,14 @@
     width: 100%;
     left: 1rem;
     bottom: 1rem;
-    z-index: 402;
+    z-index: 1001;
+    pointer-events: auto;
     &.open {
         .Map_Layer_Button {
             display: none;
         }
         .Map_Layer_Panel {
             display: block;
-        }
-    }
-    .Map_Layer_Button {
-        background-color: transparent;
-        opacity: 0;
-        transition: all 0.3s ease;
-        width: 32px;
-        height: 32px;
-        @include mixins.flex_center;
-        background-color: colors.$panel_active_lighten;
-        border-radius: variables.$border_radius;
-        cursor: pointer;
-        &:hover {
-            background-color: colors.$panel;
-        }
-        @include media.media(lg) {
-            opacity: 1;
         }
     }
     .Map_Layer_Panel {
