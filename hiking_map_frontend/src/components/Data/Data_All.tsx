@@ -11,7 +11,7 @@ import { usePatchData } from '../../context/PatchDataContext';
 
 // 定義元件
 export default function Data_All() {
-    const { loading, trails, fetchTrails } = usePolyline();
+    const { loading, trails } = usePolyline();
     const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid, setActiveFeature, version } = usePolyline();
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
     const { setPatchData } = usePatchData();
