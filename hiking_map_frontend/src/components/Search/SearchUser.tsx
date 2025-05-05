@@ -59,7 +59,7 @@ export default function SearchUser({ ownerList }: Props) {
         navigate(`/owner/${option.type}/${option.name}`, { state: option });
     };
 
-    const autoCompleteWidth = searchBarRef.current ? searchBarRef.current.getBoundingClientRect().width - 2 : 'auto';
+    const autoCompleteWidth = searchBarRef.current ? searchBarRef.current.getBoundingClientRect().width : 'auto';
 
     return (
         <div className={`${styles.SearchBar} ${showAutocomplete ? styles.active : ''} ${styleUser.SearchBar}`} ref={searchBarRef}>
@@ -111,7 +111,7 @@ export default function SearchUser({ ownerList }: Props) {
                 noOptionsText={<div>查無資料</div>}
                 slots={{
                     // -17 = 1rem + 1px = 左邊的 padding + border
-                    popper: (props) => <Popper {...props} placement="bottom-start" modifiers={[{ name: 'offset', options: { offset: [-17, -2] } }]} />,
+                    popper: (props) => <Popper {...props} placement="bottom-start" modifiers={[{ name: 'offset', options: { offset: [-16, -2] } }]} />,
                     paper: (props) => <div {...props} style={{ width: autoCompleteWidth }} />,
                 }}
             />

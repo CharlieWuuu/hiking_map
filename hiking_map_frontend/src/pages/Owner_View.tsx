@@ -99,9 +99,9 @@ export default function Owner_View() {
             </section>
 
             {type === 'user' && (
-                <section className={styles.Owner_Chart}>
-                    <h2>統計</h2>
-                    <div className={styles.Owner_Chart_Content}>
+                <section className={styles.Owner_Achievement}>
+                    <h2>成就</h2>
+                    <div className={styles.Owner_Achievement_Content}>
                         {isUser && (
                             <div>
                                 <span>百岳</span>
@@ -122,17 +122,24 @@ export default function Owner_View() {
                                 <Hundred value={hundredTrailCount} />
                             </div>
                         )}
+                    </div>
+                </section>
+            )}
 
+            {type === 'user' && (
+                <section className={styles.Owner_Chart}>
+                    <h2>統計</h2>
+                    <div className={styles.Owner_Chart_Content}>
                         {trailsMonthData.length > 0 && (
                             <div className={styles.Owner_Chart_Trails}>
-                                <span>每月距離</span>
+                                <span>每月里程</span>
                                 {isUser && <TrailsMonthData data={trailsMonthData} mode="year" />}
                             </div>
                         )}
 
                         {countyOrder.length > 0 && (
                             <div>
-                                <span>縣市排行</span>
+                                <span>縣市統計</span>
                                 {isUser && <CountyOrder data={countyOrder} />}
                             </div>
                         )}
@@ -141,7 +148,7 @@ export default function Owner_View() {
             )}
 
             <section className={styles.Owner_Navigation}>
-                <h2>資料</h2>
+                <h2>全部軌跡</h2>
                 <div>
                     <Link to={`/owner/${type}/${owner.name}/data?mode=map`} state={{ trails, owner }}>
                         <img src={Menu_Map} alt="" />
@@ -150,20 +157,20 @@ export default function Owner_View() {
 
                     <Link to={`/owner/${type}/${owner.name}/data?mode=data`} state={{ trails, owner }}>
                         <img src={Menu_Data} alt="" />
-                        <span>資料</span>
+                        <span>表格</span>
                     </Link>
 
-                    {isUser && (
+                    {/* {isUser && (
                         <Link to={`/owner/${type}/${owner.name}/data?mode=edit`} state={{ trails, owner }}>
                             <img src={Navbar_Edit} alt="" />
                             <span>編輯</span>
                         </Link>
-                    )}
+                    )} */}
                 </div>
             </section>
 
             <section className={styles.Owner_Trails}>
-                <h2>軌跡</h2>
+                <h2>歷次軌跡</h2>
                 <div>
                     {trails.features
                         .filter((f) => f.properties?.public)

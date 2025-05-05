@@ -25,6 +25,14 @@
         }
     }
 
+    .GoBack {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        z-index: 401;
+        pointer-events: auto;
+    }
+
     &:hover {
         .Map_ZoomIn {
             opacity: 1;

@@ -6,7 +6,7 @@
     width: auto !important;
     background-color: colors.$panel;
     border-radius: 0 0 variables.$border_radius variables.$border_radius;
-    border: 1px solid colors.$panel_active;
+    // border: 1px solid colors.$panel_active;
     border-top: none;
     * {
         color: colors.$background_contrary !important;

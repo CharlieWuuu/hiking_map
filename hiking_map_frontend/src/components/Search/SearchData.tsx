@@ -122,7 +122,7 @@ export default function SearchData() {
                             modifiers={[
                                 {
                                     name: 'offset',
-                                    options: { offset: [-17, 0] }, // -17 = 1rem + 1px = 左邊的 padding + border
+                                    options: { offset: [-16, -4] }, // -17 = 1rem + 1px = 左邊的 padding + border
                                 },
                             ]}
                         />
@@ -131,7 +131,7 @@ export default function SearchData() {
                         <div
                             {...props}
                             style={{
-                                width: searchBarRef.current ? searchBarRef.current.getBoundingClientRect().width - 2 : 'auto',
+                                width: searchBarRef.current ? searchBarRef.current.getBoundingClientRect().width : 'auto',
                             }}
                         />
                     ),

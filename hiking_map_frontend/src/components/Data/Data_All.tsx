@@ -10,6 +10,10 @@ import Close from '../../assets/images/Panel_ClosePanel.svg';
 import { usePatchData } from '../../context/PatchDataContext';
 import { useParams } from 'react-router-dom';
 import { useOwnerDetail } from '../../hooks/useOwnerDetail';
+import { useNavigate } from 'react-router-dom';
+import DataUserEdit from '../../assets/images/Menu_Data_User_Edit.svg';
+import Menu_Data from '../../assets/images/Menu_Data.svg';
+import { useAuth } from '../../context/AuthContext';
 
 // 定義元件
 export default function Data_All() {
@@ -60,6 +64,18 @@ export default function Data_All() {
         }
     }, [trails, version, loading]);
 
+    const navigate = useNavigate();
+    const handleMode = () => {
+        if (mode === 'edit') {
+            navigate(`/owner/${type}/${name}/data?mode=data`, { replace: true });
+        } else {
+            navigate(`/owner/${type}/${name}/data?mode=edit`, { replace: true });
+        }
+    };
+
+    const { user } = useAuth();
+    const isLoggedIn = user?.username === name;
+
     return (
         <div className={`${styles.Panel_Data_All} ${onLoading ? styles.onLoading : ''}`}>
             <div className={styles.loader}></div>
@@ -75,8 +91,8 @@ export default function Data_All() {
                         <img src={Pagination} alt="下一頁" />
                     </button>
                 </div>
-                {mode === 'edit' && <hr />}
-                {mode === 'edit' && (
+                {isLoggedIn && mode === 'edit' && <hr />}
+                {isLoggedIn && mode === 'edit' && (
                     <button
                         onClick={() => {
                             setModalIsOpen(true);
@@ -85,7 +101,7 @@ export default function Data_All() {
                         <img src={Close} alt="新增" style={{ transform: 'rotate(45deg)' }} />
                     </button>
                 )}
-                {mode === 'edit' && (
+                {isLoggedIn && mode === 'edit' && (
                     <select
                         value={selectedFormat}
                         onChange={(e) => {
@@ -102,6 +118,13 @@ export default function Data_All() {
                         <option value="gpx">GPX</option>
                         <option value="csv">CSV</option>
                     </select>
+                )}
+                {isLoggedIn && (
+                    <div style={{ flexGrow: '1', display: 'flex', justifyContent: 'flex-end' }}>
+                        <button onClick={() => handleMode()} style={{ width: '32px', height: '32px' }}>
+                            <img src={mode === 'edit' ? Menu_Data : DataUserEdit} alt={mode === 'edit' ? '資料' : '編輯'} width={16} />
+                        </button>
+                    </div>
                 )}
             </div>
             <div className={styles.Table_ScrollWrapper}>

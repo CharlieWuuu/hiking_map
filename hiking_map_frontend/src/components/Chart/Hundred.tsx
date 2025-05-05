@@ -34,9 +34,27 @@ export default function Hundred({ value, size = 300, strokeWidth = 15 }: Props) 
             .append('text')
             .text(`${value}`)
             .attr('text-anchor', 'middle')
-            .attr('dy', '0.35em')
+            .attr('dy', '0.15em')
             .attr('font-size', size * 0.35)
             .attr('fill', '#ffff3c');
+
+        group
+            .append('text')
+            .text(`／`)
+            .attr('text-anchor', 'middle')
+            .attr('dx', '0.7em')
+            .attr('dy', '2.2em')
+            .attr('font-size', size * 0.1)
+            .attr('fill', '#f0f0f0');
+
+        group
+            .append('text')
+            .text(`100`)
+            .attr('text-anchor', 'middle')
+            .attr('dx', '1.8em')
+            .attr('dy', '2.7em')
+            .attr('font-size', size * 0.1)
+            .attr('fill', '#f0f0f0');
     }, [value, size, strokeWidth]);
 
     return <svg ref={ref} width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} />;

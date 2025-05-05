@@ -147,7 +147,7 @@ export default function Data_Detail({ trails }: Props) {
                                 </button>
                             </>
                         )}
-                        <button className={styles.Card_Btn_map} onClick={() => handleMode()}>
+                        <button className={styles.Card_btn_map} onClick={() => handleMode()}>
                             <img src={Menu_Map} alt="地圖" />
                         </button>
                     </div>

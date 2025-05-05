@@ -23,6 +23,28 @@ import { useParams, useNavigate } from 'react-router-dom';
 import DataUserEdit from '../../assets/images/Menu_Data_User_Edit.svg';
 import Menu_Data from '../../assets/images/Menu_Data.svg';
 import './Map_Button.scss';
+import GoBack from '../GoBack/GoBack';
+
+function CreateCustomPanes() {
+    const map = useMap();
+
+    useEffect(() => {
+        if (!map.getPane('baseTrails')) {
+            map.createPane('baseTrails');
+            map.getPane('baseTrails')!.style.zIndex = '400';
+        }
+        if (!map.getPane('hoverTrails')) {
+            map.createPane('hoverTrails');
+            map.getPane('hoverTrails')!.style.zIndex = '600';
+        }
+        if (!map.getPane('activeTrails')) {
+            map.createPane('activeTrails');
+            map.getPane('activeTrails')!.style.zIndex = '800';
+        }
+    }, [map]);
+
+    return null;
+}
 
 export default function Map() {
     const { trails, version, loading } = usePolyline();
@@ -76,6 +98,8 @@ export default function Map() {
                 <_MapClickHandler setActiveFeatureUuid={setActiveFeatureUuid} />
 
                 <TileLayer url={baseMapSetting[nowBaseMap].url} />
+
+                <GoBack url={`/owner/${type}/${name}`} />
                 <ZoomControl position="bottomright" />
                 <Map_Layer />
 
@@ -86,12 +110,14 @@ export default function Map() {
                 )}
 
                 <button className="Map_Button" onClick={() => handleMode()} style={{ bottom: '4rem', left: '1rem', position: 'absolute' }}>
-                    <img src={mode === 'edit' ? Menu_Data : DataUserEdit} alt={mode === 'edit' ? '資料' : '編輯'} width={16} />
+                    <img src={Menu_Data} alt="資料" width={16} />
                 </button>
 
+                <CreateCustomPanes />
                 {trails && (
                     <div>
                         <GeoJSON
+                            pane="baseTrails"
                             key={Math.random()}
                             data={trails}
                             style={{ color: 'transparent', weight: 10 }}
@@ -124,20 +150,20 @@ export default function Map() {
                                 });
                             }}
                         />
-                        <GeoJSON key={Math.random()} data={trails} style={{ color: '#ffffff', weight: 6, interactive: false }} />
-                        <GeoJSON key={Math.random()} data={trails} style={{ color: '#747009', weight: 3, interactive: false }} />
+                        <GeoJSON pane="baseTrails" key={Math.random()} data={trails} style={{ color: '#ffffff', weight: 6, interactive: false }} />
+                        <GeoJSON pane="baseTrails" key={Math.random()} data={trails} style={{ color: '#747009', weight: 3, interactive: false }} />
                     </div>
                 )}
                 {hoverFeature && hoverFeature !== activeFeature && (
                     <div>
-                        <GeoJSON key={`white-${hoverFeature.properties?.uuid}`} data={hoverFeature} style={{ color: '#ffffff', weight: 8, interactive: false }} />
-                        <GeoJSON key={`yellow-${hoverFeature.properties?.uuid}`} data={hoverFeature} style={{ color: '#CFCF13', weight: 4, interactive: false }} />
+                        <GeoJSON pane="hoverTrails" key={`white-${hoverFeature.properties?.uuid}`} data={hoverFeature} style={{ color: '#ffffff', weight: 8, interactive: false }} />
+                        <GeoJSON pane="hoverTrails" key={`yellow-${hoverFeature.properties?.uuid}`} data={hoverFeature} style={{ color: '#CFCF13', weight: 4, interactive: false }} />
                     </div>
                 )}
                 {activeFeature && (
                     <div>
-                        <GeoJSON key={`white-${activeFeature.properties?.uuid}`} data={activeFeature} style={{ color: '#000000', weight: 8, interactive: false }} />
-                        <GeoJSON key={`orange-${activeFeature.properties?.uuid}`} data={activeFeature} style={{ color: '#FFFF3C', weight: 4, interactive: false }} />
+                        <GeoJSON pane="activeTrails" key={`white-${activeFeature.properties?.uuid}`} data={activeFeature} style={{ color: '#000000', weight: 8, interactive: false }} />
+                        <GeoJSON pane="activeTrails" key={`orange-${activeFeature.properties?.uuid}`} data={activeFeature} style={{ color: '#FFFF3C', weight: 4, interactive: false }} />
                     </div>
                 )}
             </MapContainer>
