@@ -20,7 +20,7 @@ import _ResizeEffect from './_ResizeEffect';
 import _TileEffect from './_TileEffect';
 
 import { useParams, useNavigate } from 'react-router-dom';
-import DataUserEdit from '../../assets/images/Menu_Data_User_Edit.svg';
+// import DataUserEdit from '../../assets/images/Menu_Data_User_Edit.svg';
 import Menu_Data from '../../assets/images/Menu_Data.svg';
 import './Map_Button.scss';
 import GoBack from '../GoBack/GoBack';

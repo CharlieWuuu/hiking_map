@@ -22,7 +22,6 @@ import './styles/main.scss';
 
 // context
 import { useFullScreenContext } from './context/FullScreenContext';
-import { useAuth } from './context/AuthContext';
 
 // react
 import { Routes, Route } from 'react-router-dom';
@@ -35,7 +34,6 @@ export default function App() {
     const [menuIsOpen, setMenuIsOpen] = useState(false);
     const { isFullScreen } = useFullScreenContext();
     const { ownerList } = useOwnerList();
-    const { isLoggedIn } = useAuth();
 
     return (
         <>
