@@ -3,53 +3,45 @@ import { useState, useRef, useEffect } from 'react';
 import { useModal } from '../../context/ModalContext';
 
 import { useAuth } from '../../context/AuthContext';
-import { Feature } from 'geojson';
-import { useParams } from 'react-router-dom';
-import { useOwnerDetail } from '../../hooks/useOwnerDetail';
-import { useTrails } from '../../hooks/useTrails';
+import { usePolyline } from '../../context/PolylineContext';
 
-type Props = {
-    properties: Feature['properties'] | null;
-};
-
-export default function Modal_File({ properties }: Props) {
-    const [file, setFile] = useState<File | null>(null);
-    const { setModalIsOpen } = useModal();
-    const [uploadComplete, setUploadComplete] = useState(false);
-    const editFeature = properties;
-    const { name, type } = useParams<{ name: string; type: string; mode: string }>();
-    const { owner } = useOwnerDetail({ name: name!, type: type! });
-    const { fetchTrails } = useTrails({ uuid: owner?.uuid ?? '', type: type! });
+export default function Modal_File() {
     const { user } = useAuth();
+    const [file, setFile] = useState<File | null>(null);
+    const { modalType, setModalIsOpen } = useModal();
+    const [uploadComplete, setUploadComplete] = useState(false);
+    const { activeFeature } = usePolyline();
+    const { version, setVersion } = usePolyline();
 
     const handleUpload = async () => {
         if (file === null) {
             alert('請選擇檔案');
             return;
         }
+
+        const owner_uuid = user?.uuid || '';
+        const uuid = activeFeature?.properties?.uuid || '';
+
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('owner_uuid', user?.uuid || '');
-        formData.append('uuid', editFeature?.uuid || '');
-
-        const baseURL = import.meta.env.VITE_API_URL;
-        const url = `${baseURL}/trails`;
+        formData.append('owner_uuid', owner_uuid);
+        formData.append('uuid', uuid);
 
         try {
-            const res = await fetch(url, {
-                method: type === 'file_upload' ? 'POST' : 'PUT',
-                body: formData,
-            });
+            const url = `${import.meta.env.VITE_API_URL}/trails${uuid !== '' ? `/${uuid}` : ''}`;
+            const method = modalType === 'file_upload' ? 'POST' : 'PUT';
+            const token = localStorage.getItem('token');
 
+            const requestOptions = { method: method, Authorization: `Bearer ${token}`, body: formData };
+            const res = await fetch(url, requestOptions);
             const result = await res.json();
+
             if (result.success) {
                 setUploadComplete(true);
-                fetchTrails();
+                setVersion(version + 1);
                 setTimeout(() => {
                     setModalIsOpen(false);
-                    setTimeout(() => {
-                        setUploadComplete(false);
-                    }, 2000);
+                    setTimeout(() => setUploadComplete(false), 2000);
                 }, 2000);
             } else {
                 alert('上傳失敗');
@@ -66,17 +58,17 @@ export default function Modal_File({ properties }: Props) {
             fileInputRef.current.click();
         }
     };
+
     const [fileName, setFileName] = useState('請選擇檔案（.gpx / .geojson）');
     useEffect(() => {
-        if (type === 'file_update') {
-            setFileName(editFeature?.filename);
-        }
-    }, [type, editFeature]);
+        if (modalType === 'file_update') setFileName(activeFeature?.properties?.filename);
+    }, [activeFeature]);
+
     return (
         <div className={styles.Modal_File}>
             <h2>
-                {type === 'file_upload' && '上傳'}
-                {type === 'file_update' && '更新'}
+                {modalType === 'file_upload' && '上傳'}
+                {modalType === 'file_update' && '更新'}
                 {uploadComplete ? '完成' : '檔案'}
             </h2>
             {!uploadComplete && (

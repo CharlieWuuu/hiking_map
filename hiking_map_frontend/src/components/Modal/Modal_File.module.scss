@@ -3,9 +3,12 @@
 @use '../../styles/variables' as variables;
 .Modal_File {
     @include mixins.flex_center;
-    gap: 3rem;
+    gap: 1rem;
     flex-direction: column;
     padding: 1rem;
+    h2 {
+        font-size: 2rem;
+    }
     input {
         &::file-selector-button {
             font-weight: bold;

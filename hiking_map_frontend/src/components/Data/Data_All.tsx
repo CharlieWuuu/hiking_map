@@ -3,72 +3,33 @@ import { usePolyline } from '../../context/PolylineContext';
 import { useTableContext } from '../../context/TableContext';
 import { useRef, useEffect, useState, Fragment } from 'react';
 import { useModal } from '../../context/ModalContext';
-import { usePatchData } from '../../context/PatchDataContext';
 import Pagination from '../../assets/images/Table_Pagination.svg';
-import { useSearchParams, useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import Data_Detail from './Data_Detail';
-import { useOwnerDetail } from '../../hooks/useOwnerDetail';
-import { useTrails } from '../../hooks/useTrails';
-import { FeatureCollection } from 'geojson';
+import Close from '../../assets/images/Panel_ClosePanel.svg';
+import { usePatchData } from '../../context/PatchDataContext';
 
-type Props = {
-    trails: FeatureCollection | null;
-};
 // 定義元件
-export default function Data_All({ trails }: Props) {
-    const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid, editFeatureUuid, setEditFeatureUuid, setDeleteFeatureUuid } = usePolyline();
+export default function Data_All() {
+    const { loading, trails, fetchTrails } = usePolyline();
+    const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid, setActiveFeature, version } = usePolyline();
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
-
+    const { setPatchData } = usePatchData();
     const [searchParams] = useSearchParams();
     const mode = searchParams.get('mode');
-    const { name, type } = useParams<{ name: string; type: string }>();
-    const { owner } = useOwnerDetail({ name: name!, type: type! });
-    const { fetchTrails } = useTrails({ uuid: owner?.uuid ?? '', type: type! });
     const itemsPerPage = 50; // 每頁顯示的項目數
 
     const rowRefs = useRef<Record<string, HTMLTableRowElement | null>>({});
-
     useEffect(() => {
         if (activeFeatureUuid !== null && rowRefs.current[activeFeatureUuid]) {
-            rowRefs.current[activeFeatureUuid]?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-            });
+            rowRefs.current[activeFeatureUuid]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }, [currentPage, activeFeatureUuid]);
 
     const features = trails?.features; // 取得 geojson 中的 features
     const pageIndexStart = startIndex + 1;
     const pageIndexEnd = Math.min(startIndex + itemsPerPage, features?.length ?? 0);
-    const { modalIsOpen, setModalIsOpen, setModalType } = useModal();
-    const { patchData, setPatchData } = usePatchData();
-    const patchProperties = async () => {
-        try {
-            const baseURL = import.meta.env.VITE_API_URL;
-            const res = await fetch(`${baseURL}/trails/${editFeatureUuid}/properties`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(patchData),
-            });
-
-            const result = await res.json();
-            if (result.success) {
-                setModalType('complete');
-                setModalIsOpen(true);
-                setActiveFeatureUuid(null);
-                setEditFeatureUuid(null);
-                fetchTrails();
-                setPatchData(null);
-            } else {
-                alert('上傳失敗');
-            }
-        } catch (err) {
-            console.error(err);
-            alert('錯誤：無法上傳');
-        }
-    };
+    const { setModalIsOpen, setModalType } = useModal();
 
     const [selectedFormat, setSelectedFormat] = useState('下載');
     const handleExport = async (type: string) => {
@@ -85,8 +46,19 @@ export default function Data_All({ trails }: Props) {
         setSelectedFormat('placeholder');
     };
 
+    const [onLoading, setOnLoading] = useState(false);
+    useEffect(() => {
+        if (trails === null || loading) {
+            setOnLoading(true);
+        } else {
+            setOnLoading(false);
+            setModalIsOpen(false);
+        }
+    }, [trails, version, loading]);
+
     return (
-        <div className={`${styles.Panel_Data_All} ${styles.Panel_Edit}`}>
+        <div className={`${styles.Panel_Data_All} ${onLoading ? styles.onLoading : ''}`}>
+            <div className={styles.loader}></div>
             <div className={styles.Table_Header}>
                 <div className={styles.Table_Pagination}>
                     <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
@@ -103,10 +75,10 @@ export default function Data_All({ trails }: Props) {
                 {mode === 'edit' && (
                     <button
                         onClick={() => {
-                            setModalIsOpen(!modalIsOpen);
+                            setModalIsOpen(true);
                             setModalType('file_upload');
                         }}>
-                        新增
+                        <img src={Close} alt="新增" style={{ transform: 'rotate(45deg)' }} />
                     </button>
                 )}
                 {mode === 'edit' && (
@@ -148,11 +120,24 @@ export default function Data_All({ trails }: Props) {
                     </thead>
                     {/* 表身 */}
                     <tbody>
-                        {/* 更新時沒反應 */}
                         {currentPageData.map((feature, index) => (
                             <Fragment key={feature.properties?.uuid ?? index}>
-                                {((mode === 'edit' && activeFeatureUuid !== feature.properties?.uuid) || mode !== 'edit') && (
-                                    <tr className={`${activeFeatureUuid === feature.properties?.uuid ? styles.active : ''}`} onClick={() => setActiveFeatureUuid(activeFeatureUuid === feature.properties?.uuid ? null : feature.properties?.uuid)}>
+                                {activeFeatureUuid !== feature.properties?.uuid && (
+                                    <tr
+                                        ref={(el) => {
+                                            if (feature.properties?.uuid) {
+                                                rowRefs.current[feature.properties.uuid] = el;
+                                            }
+                                        }}
+                                        className={`${hoverFeatureUuid === feature.properties?.uuid ? styles.hover : ''} ${activeFeatureUuid === feature.properties?.uuid ? styles.active : ''} ${feature.properties?.public ? '' : styles.private}`}
+                                        onMouseEnter={() => setHoverFeatureUuid(feature.properties?.uuid)}
+                                        onMouseLeave={() => setHoverFeatureUuid(null)}
+                                        onClick={() => {
+                                            setActiveFeature(feature);
+                                            const uuid = activeFeatureUuid === feature.properties?.uuid ? null : feature.properties?.uuid;
+                                            setActiveFeatureUuid(uuid);
+                                            setPatchData(null);
+                                        }}>
                                         <td className={styles.Table_id}>{feature.properties?.id}</td>
                                         <td className={styles.Table_name}>{feature.properties?.name}</td>
                                         <td className={styles.Table_county}>{feature.properties?.county ?? '-'}</td>
@@ -163,22 +148,24 @@ export default function Data_All({ trails }: Props) {
                                                 const year = date.getFullYear();
                                                 const month = String(date.getMonth() + 1).padStart(2, '0');
                                                 const day = String(date.getDate()).padStart(2, '0');
-                                                return `${year}年${month}月${day}日`;
+                                                return `${year}/${month}/${day}`;
                                             })()}
                                         </td>
                                     </tr>
                                 )}
 
-                                {mode === 'edit' && activeFeatureUuid === feature.properties?.uuid && (
+                                {activeFeatureUuid === feature.properties?.uuid && (
                                     <tr
+                                        ref={(el) => {
+                                            if (feature.properties?.uuid) {
+                                                rowRefs.current[feature.properties.uuid] = el;
+                                            }
+                                        }}
                                         className={`${activeFeatureUuid === feature.properties?.uuid ? styles.edit : ''}`}
                                         onClick={(e) => {
                                             const target = e.target as HTMLElement;
                                             const tag = target.tagName.toLowerCase();
-                                            console.log(tag);
-                                            // 如果點擊的是 button、input、a 等，就不要執行展開
-                                            if (['button', 'input', 'a', 'select', 'textarea'].includes(tag)) return;
-
+                                            if (['button', 'input', 'a', 'select', 'textarea', 'img'].includes(tag)) return;
                                             setActiveFeatureUuid(null); // 展開或其他父層邏輯
                                         }}>
                                         <td className={styles.Table_detail} colSpan={5}>

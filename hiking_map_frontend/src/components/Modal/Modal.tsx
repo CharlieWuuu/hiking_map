@@ -11,8 +11,8 @@ export default function Modal() {
     return (
         <div className={`${styles.Modal_Backdrop} ${modalIsOpen ? styles.open : ''}`} onClick={() => setModalIsOpen(false)}>
             <div className={styles.Modal_Content} onClick={(e) => e.stopPropagation()}>
-                {modalType === 'file_upload' && <Modal_File type={modalType} />}
-                {modalType === 'file_update' && <Modal_File type={modalType} />}
+                {modalType === 'file_upload' && <Modal_File />}
+                {modalType === 'file_update' && <Modal_File />}
                 {modalType === 'delete' && <Modal_Delete />}
                 {modalType === 'complete' && <Modal_Complete />}
                 {modalType === 'editUrl' && <Modal_EditUrl />}

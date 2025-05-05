@@ -69,6 +69,7 @@ export class TrailsService {
       ORDER BY users_trails_info.time ASC;
     `;
       rows = await this.trailRepo.query(sql, params);
+      console.log(where);
     } else if (type === 'layer') {
       const whereClauses = ['layers_trails.owner_uuid = $1'];
       const params: any[] = [ownerUuid];
@@ -203,6 +204,7 @@ export class TrailsService {
   }
 
   async post(owner_uuid: string, file: Express.Multer.File) {
+    console.log(owner_uuid);
     const ext = path.extname(file.originalname).toLowerCase();
     let geojson;
 
@@ -250,6 +252,7 @@ export class TrailsService {
           $3,
           $4
         )
+
         `,
           [uuid, geomJSON, name, owner_uuid],
         );
@@ -272,8 +275,8 @@ export class TrailsService {
   }
 
   async put(uuid: string, owner_uuid: string, file: Express.Multer.File) {
+    console.log(owner_uuid);
     const ext = path.extname(file.originalname).toLowerCase();
-
     let geojson;
 
     if (ext === '.geojson' || ext === '.json') {

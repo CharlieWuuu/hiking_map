@@ -5,12 +5,13 @@
     align-items: start;
     gap: 1rem;
     width: 100%;
+    max-width: 450px;
     height: 100%;
     .Panel_Header {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 1rem;
+        gap: 0.5rem;
         width: 100%;
         h2 {
             line-height: 1;

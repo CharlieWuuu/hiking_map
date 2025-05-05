@@ -3,15 +3,10 @@ import styles from './Data.module.scss';
 import GoBack from '../GoBack/GoBack';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import SearchData from '../Search/SearchData';
-import { FeatureCollection } from 'geojson';
 import DataUserEdit from '../../assets/images/Menu_Data_User_Edit.svg';
 import Menu_Data from '../../assets/images/Menu_Data.svg';
 
-type Props = {
-    trails: FeatureCollection | null;
-};
-
-export default function Data({ trails }: Props) {
+export default function Data() {
     const { name, type } = useParams<{ name: string; type: string; mode: string }>();
     const location = useLocation();
     const params = new URLSearchParams(location.search);
@@ -29,22 +24,15 @@ export default function Data({ trails }: Props) {
         <div className={styles.Data}>
             <div className={styles.Panel_Header}>
                 <GoBack url={`/owner/${type}/${name}`} />
-                <SearchData trails={trails} />
+                <SearchData />
                 <div>
-                    {mode !== 'edit' && (
-                        <button onClick={() => handleMode()}>
-                            <img src={DataUserEdit} alt="編輯" width={20} />
-                        </button>
-                    )}
-                    {mode === 'edit' && (
-                        <button onClick={() => handleMode()}>
-                            <img src={Menu_Data} alt="資料" width={20} />
-                        </button>
-                    )}
+                    <button onClick={() => handleMode()} style={{ width: '32px', height: '32px' }}>
+                        <img src={mode === 'edit' ? Menu_Data : DataUserEdit} alt={mode === 'edit' ? '資料' : '編輯'} width={16} />
+                    </button>
                 </div>
             </div>
 
-            <Data_All trails={trails} />
+            <Data_All />
         </div>
     );
 }

@@ -3,19 +3,24 @@ import styles from './Owner_Data.module.scss';
 import Data from '../components/Data/Data';
 import { useParams } from 'react-router-dom';
 import { useOwnerDetail } from '../hooks/useOwnerDetail';
-import { useTrails } from '../hooks/useTrails';
 import { TableProvider } from '../context/TableContext';
+import { usePolyline } from '../context/PolylineContext';
+import { useEffect } from 'react';
 
 export default function Owner_Data() {
     const { name, type } = useParams<{ name: string; type: string; mode: string }>();
     const { owner } = useOwnerDetail({ name: name!, type: type! });
-    const { trails } = useTrails({ uuid: owner?.uuid ?? '', type: type! });
+    const { setOwnerUuid, setType } = usePolyline();
+    useEffect(() => {
+        setOwnerUuid(owner?.uuid ?? '');
+        setType(type || '');
+    }, [owner, type]);
 
     return (
-        <TableProvider features={trails?.features}>
+        <TableProvider>
             <div className={`${styles.Owner_Data}`}>
-                <Data trails={trails} />
-                <Map trails={trails} />
+                <Data />
+                <Map />
             </div>
         </TableProvider>
     );

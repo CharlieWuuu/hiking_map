@@ -2,15 +2,9 @@ import { usePolyline } from '../../context/PolylineContext';
 import { useModal } from '../../context/ModalContext';
 import { useState } from 'react';
 import styles from './Modal_Delete.module.scss';
-import { useOwnerDetail } from '../../hooks/useOwnerDetail';
-import { useTrails } from '../../hooks/useTrails';
-import { useParams } from 'react-router-dom';
 
 export default function Modal_Delete() {
-    // const { refreshGeojson } = useGeojson();
-    const { name, type } = useParams<{ name: string; type: string; mode: string }>();
-    const { owner } = useOwnerDetail({ name: name!, type: type! });
-    const { fetchTrails } = useTrails({ uuid: owner?.uuid ?? '', type: type! });
+    const { version, setVersion, setActiveFeatureUuid } = usePolyline();
     const { deleteFeatureUuid } = usePolyline();
     const { setModalIsOpen } = useModal();
     const [deleteComplete, setDeleteComplete] = useState(false);
@@ -37,7 +31,8 @@ export default function Modal_Delete() {
             const result = await res.json();
             if (result.success) {
                 setDeleteComplete(true);
-                fetchTrails();
+                setVersion(version + 1);
+                setActiveFeatureUuid(null);
                 setTimeout(() => {
                     setModalIsOpen(false);
                     setTimeout(() => {

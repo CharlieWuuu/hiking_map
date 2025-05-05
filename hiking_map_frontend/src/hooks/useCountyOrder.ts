@@ -16,7 +16,6 @@ export function useCountyOrder({ uuid, type }: Props) {
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
-        console.log(uuid, type);
         if (!uuid || !type) return;
         if (type === 'layer') return;
 

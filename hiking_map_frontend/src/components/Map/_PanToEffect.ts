@@ -5,16 +5,16 @@ import type { FeatureCollection } from 'geojson';
 
 type Props = {
     panToId: string | null;
-    geojson: FeatureCollection | null;
+    trails: FeatureCollection | null;
 };
 
-export default function _PanToEffect({ panToId, geojson }: Props) {
+export default function _PanToEffect({ panToId, trails }: Props) {
     const map = useMap();
 
     useEffect(() => {
-        if (!panToId || !geojson) return;
+        if (!panToId || !trails) return;
 
-        const targetFeature = geojson.features.find((f) => f.properties?.uuid === panToId);
+        const targetFeature = trails.features.find((f) => f.properties?.uuid === panToId);
         if (!targetFeature) return;
 
         // 取得四角座標
@@ -32,7 +32,7 @@ export default function _PanToEffect({ panToId, geojson }: Props) {
             const latlng = L.latLng(center[1], center[0]);
             map.panTo(latlng);
         }
-    }, [panToId, geojson, map]);
+    }, [panToId, trails, map]);
 
     return null;
 }

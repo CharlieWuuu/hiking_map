@@ -9,4 +9,7 @@ export type TrailProperties = {
     url: string[];
     note: string;
     public: boolean;
+    hundred_id?: string;
+    small_hundred_id?: string;
+    hundred_trail_id?: string;
 };

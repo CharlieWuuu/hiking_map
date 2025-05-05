@@ -76,6 +76,7 @@
     z-index: 400;
     position: relative;
     .loader {
+        position: absolute;
         width: 48px;
         height: 48px;
         animation: rotate 1s linear infinite;

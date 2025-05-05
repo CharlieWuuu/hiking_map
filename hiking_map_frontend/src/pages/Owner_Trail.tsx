@@ -10,7 +10,7 @@ import { useIsResizing } from '../hooks/useIsResizing';
 // import { useGeojson } from '../context/GeojsonContext';
 import styles from './Owner_Trail.module.scss';
 import GoBack from '../components/GoBack/GoBack';
-import { useTrails } from '../hooks/useTrails';
+import { usePolyline } from '../context/PolylineContext';
 import { useOwnerDetail } from '../hooks/useOwnerDetail';
 
 function TileEffect() {
@@ -57,7 +57,11 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
 export default function Owner_Trail() {
     const { name, uuid, type } = useParams<{ name: string; uuid: string; type: string }>();
     const { owner } = useOwnerDetail({ name: name!, type: type! });
-    const { trails } = useTrails({ uuid: owner?.uuid ?? '', type: type!, trail_uuid: uuid! });
+    const { setOwnerUuid, setType, trails } = usePolyline();
+    useEffect(() => {
+        setOwnerUuid(owner?.uuid ?? '');
+        setType(type || '');
+    }, [owner, type]);
 
     const mapWrapperRef = useRef<HTMLDivElement>(null);
     const isResizing = useIsResizing(mapWrapperRef as React.RefObject<HTMLElement>, 600); // 600ms：你的動畫時間
@@ -68,7 +72,7 @@ export default function Owner_Trail() {
                 <span className={styles.loader}></span>
             </div>
         );
-    console.log(trails);
+
     const features = trails.features.find((f) => f.properties?.uuid === uuid)!;
     const props = features.properties!;
     return (

@@ -20,7 +20,7 @@ import Navbar_Edit from '../assets/images/Navbar_Edit.svg';
 // hooks
 // import { useOwner } from '../hooks/useOwner';
 import { useOwnerDetail } from '../hooks/useOwnerDetail';
-import { useTrails } from '../hooks/useTrails';
+import { usePolyline } from '../context/PolylineContext';
 import { useTrailsMonthData } from '../hooks/useTrailsMonthData';
 import { useCountyOrder } from '../hooks/useCountyOrder';
 
@@ -35,7 +35,11 @@ export default function Owner_View() {
     const observerRef = useRef<HTMLDivElement | null>(null);
 
     const { owner } = useOwnerDetail({ name: name!, type: type! });
-    const { trails } = useTrails({ uuid: owner?.uuid ?? '', type: type! });
+    const { setOwnerUuid, setType, trails } = usePolyline();
+    useEffect(() => {
+        setOwnerUuid(owner?.uuid ?? '');
+        setType(type || '');
+    }, [owner, type]);
     const { countyOrder } = useCountyOrder({ uuid: owner?.uuid ?? '', type: type! });
     const { trailsMonthData } = useTrailsMonthData({ uuid: owner?.uuid ?? '', type: type! });
 

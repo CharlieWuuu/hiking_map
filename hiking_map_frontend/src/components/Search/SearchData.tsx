@@ -5,7 +5,6 @@ import { useState, useRef } from 'react';
 import { usePolyline } from '../../context/PolylineContext';
 import styles from './Search.module.scss';
 import './Search.scss';
-import { FeatureCollection } from 'geojson';
 
 type TrailOption = {
     label: string;
@@ -16,13 +15,8 @@ type TrailOption = {
     uuid: string;
 };
 
-type Props = {
-    trails: FeatureCollection | null;
-};
-
-export default function SearchData({ trails }: Props) {
-    const geojson = trails;
-    const { setActiveFeatureUuid } = usePolyline();
+export default function SearchData() {
+    const { setActiveFeatureUuid, trails } = usePolyline();
 
     const [showAutocomplete, setShowAutocomplete] = useState(false);
     const [selectedOption, setSelectedOption] = useState<TrailOption | null>(null);
@@ -31,7 +25,7 @@ export default function SearchData({ trails }: Props) {
     const searchBarRef = useRef<HTMLDivElement | null>(null);
 
     const nameList =
-        geojson?.features
+        trails?.features
             .map((f) => ({
                 label: f.properties?.name || '',
                 county: f.properties?.county || '',
@@ -40,7 +34,8 @@ export default function SearchData({ trails }: Props) {
                     const date = new Date(f.properties?.time);
                     const year = date.getFullYear();
                     const month = String(date.getMonth() + 1).padStart(2, '0');
-                    return `${year}年${month}月`;
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}/${month}/${day}`;
                 })(),
                 realtime: f.properties?.time,
                 uuid: f.properties?.uuid,
@@ -112,7 +107,8 @@ export default function SearchData({ trails }: Props) {
                         <li key={option.uuid} {...rest}>
                             <p>{option.label}</p>
                             <span>
-                                {option.county} {option.town} {option.time}
+                                {option.county}
+                                {option.town} {option.time}
                             </span>
                         </li>
                     );

@@ -8,6 +8,9 @@ type patchData = {
     url: string[];
     note: string;
     public: boolean;
+    hundred_id: string | null;
+    small_hundred_id: string | null;
+    hundred_trail_id: string | null;
 };
 
 type PatchDataContextType = {

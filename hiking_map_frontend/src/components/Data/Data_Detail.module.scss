@@ -1,5 +1,6 @@
 @use '../../styles/colors' as colors;
 @use '../../styles/media' as media;
+@use '../../styles/mixins' as mixins;
 
 .Data_Detail {
     padding: 1rem;
@@ -9,10 +10,11 @@
 
     input {
         border-radius: 0.25rem;
-        border: 0.5px solid colors.$panel;
+        border: 0.5px solid colors.$background;
         padding: 0.1rem 0.2rem;
-        font-size: 0.9rem;
-        color: colors.$panel;
+        font-size: 1rem;
+        color: colors.$background;
+        width: 100%;
     }
 
     .Detail_Card {
@@ -34,6 +36,7 @@
                 display: flex;
                 gap: 0.5rem;
                 align-items: end;
+                flex-grow: 1;
                 p {
                     padding: 0;
                     margin: 0;
@@ -42,7 +45,12 @@
                     font-weight: bold;
                 }
                 span {
-                    font-size: 0.6rem;
+                    font-size: 0.9rem;
+                }
+                input {
+                    height: 2rem;
+                    font-size: 1.5rem;
+                    width: 100%;
                 }
             }
             .Card_edit {
@@ -52,18 +60,30 @@
                     border: 1px solid colors.$background;
                     color: colors.$background;
                     font-size: 0.75rem;
-                    padding: 0.125rem 0.5rem;
+                    @include mixins.flex_center;
                     background-color: colors.$accent;
                     transition: all 0.3s ease;
+                    width: 32px;
+                    height: 32px;
+                    cursor: pointer;
+                    img {
+                        width: 16px;
+                        filter: invert(1);
+                        transition: all 0.3s ease;
+                    }
+
                     &:hover {
                         background-color: colors.$background;
                         color: colors.$accent;
+                        img {
+                            filter: brightness(0) saturate(100%) invert(99%) sepia(64%) saturate(1816%) hue-rotate(345deg) brightness(106%) contrast(106%);
+                        }
                     }
 
-                    @include media.media(lg) {
-                        opacity: 1;
-                        background-color: colors.$panel;
-                    }
+                    // @include media.media(lg) {
+                    //     opacity: 1;
+                    //     background-color: colors.$panel;
+                    // }
                 }
             }
         }
@@ -78,39 +98,86 @@
         .Card_properties {
             display: flex;
             flex-wrap: wrap;
-            align-items: start;
+            justify-content: space-between;
             gap: 1rem;
 
             > div {
+                width: 45%;
                 display: flex;
                 flex-direction: column;
                 align-items: start;
                 justify-content: end;
 
                 span {
-                    font-size: 0.6rem;
+                    font-size: 0.9rem;
+                    text-align: start;
                 }
                 p,
                 a {
+                    text-align: start;
                     font-size: 1.1rem;
                     line-height: 1.1rem;
                     font-weight: bold;
+                    min-height: 1.1rem;
                 }
             }
-
+            .Card_check {
+                width: fit-content;
+                img {
+                    height: 1.2rem;
+                    filter: invert(1);
+                }
+                input[type='checkbox'] {
+                    width: 24px;
+                    height: 24px;
+                    accent-color: colors.$panel; /* 這是改顏色的關鍵 */
+                }
+            }
             .Card_url {
                 div {
                     display: flex;
-                    gap: 0.2rem;
+                    align-items: center;
+                    gap: 0.5rem;
 
                     a {
                         color: colors.$background;
                         text-decoration: underline;
+                        text-wrap: nowrap;
+                    }
+                    button {
+                        border: 1px solid colors.$background;
+                        color: colors.$background;
+                        font-size: 0.75rem;
+                        @include mixins.flex_center;
+                        background-color: colors.$accent;
+                        transition: all 0.3s ease;
+                        width: 32px;
+                        height: 32px;
+                        cursor: pointer;
+                        img {
+                            width: 16px;
+                            filter: invert(1);
+                            transition: all 0.3s ease;
+                        }
+
+                        &:hover {
+                            background-color: colors.$background;
+                            color: colors.$accent;
+                            img {
+                                filter: brightness(0) saturate(100%) invert(99%) sepia(64%) saturate(1816%) hue-rotate(345deg) brightness(106%) contrast(106%);
+                            }
+                        }
                     }
                 }
             }
             .Card_note {
                 text-align: start;
+                width: 100%;
+                textarea {
+                    padding: 4px;
+                    width: 100%;
+                    height: 4rem;
+                }
             }
         }
     }

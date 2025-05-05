@@ -26,7 +26,6 @@ export class AuthController {
     const ip = req.ip;
     const ua = req.headers['user-agent'];
     const uuid = user.uuid;
-
     return this.authService.login(user, ip, ua, uuid);
   }
 }

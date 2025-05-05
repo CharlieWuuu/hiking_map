@@ -19,22 +19,18 @@ import _MapClickHandler from './_MapClickHandler';
 import _PanToEffect from './_PanToEffect';
 import _ResizeEffect from './_ResizeEffect';
 import _TileEffect from './_TileEffect';
-import { FeatureCollection } from 'geojson';
+// import { FeatureCollection } from 'trails';
 
-type Props = {
-    trails: FeatureCollection | null;
-};
-
-export default function Map({ trails }: Props) {
-    const geojson = trails;
+export default function Map() {
+    const { trails } = usePolyline();
 
     const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid } = usePolyline();
     const { nowBaseMap, baseMapSetting } = useMapContext();
 
     const mapWrapperRef = useRef<HTMLDivElement>(null);
     const isResizing = useIsResizing(mapWrapperRef as React.RefObject<HTMLElement>, 600); // 600ms：你的動畫時間
-    const hoverFeature = geojson?.features.find((f) => f.properties?.uuid === hoverFeatureUuid) ?? null;
-    const activeFeature = geojson?.features.find((f) => f.properties?.uuid === activeFeatureUuid) ?? null;
+    const hoverFeature = trails?.features.find((f) => f.properties?.uuid === hoverFeatureUuid) ?? null;
+    const activeFeature = trails?.features.find((f) => f.properties?.uuid === activeFeatureUuid) ?? null;
 
     const activeRef = useRef<string | null>(null);
 
@@ -44,8 +40,8 @@ export default function Map({ trails }: Props) {
     const { setFeatures } = useTableContext();
 
     useEffect(() => {
-        if (geojson) setFeatures(geojson.features);
-    }, [geojson]);
+        if (trails) setFeatures(trails.features);
+    }, [trails]);
 
     const { uiPanels } = usePanel();
 
@@ -60,7 +56,7 @@ export default function Map({ trails }: Props) {
             {activeFeatureUuid && <Map_Detail trails={activeFeature} />}
             <MapContainer center={[25.047924, 121.517081]} zoom={12} scrollWheelZoom={true} zoomControl={false}>
                 <_TileEffect baseMap={nowBaseMap} setting={baseMapSetting[nowBaseMap]} />
-                <_PanToEffect panToId={activeFeatureUuid} geojson={geojson} />
+                <_PanToEffect panToId={activeFeatureUuid} trails={trails} />
                 <_ResizeEffect isResizing={isResizing} />
                 <_MapClickHandler setActiveFeatureUuid={setActiveFeatureUuid} />
 
@@ -68,16 +64,16 @@ export default function Map({ trails }: Props) {
                 <ZoomControl position="bottomright" />
                 <Map_Layer />
 
-                {!geojson && (
+                {!trails && (
                     <span className="onLoading">
                         <div className="loader"></div>
                     </span>
                 )}
 
-                {geojson && (
+                {trails && (
                     <div>
                         <GeoJSON
-                            data={geojson}
+                            data={trails}
                             style={{ color: 'transparent', weight: 10 }}
                             onEachFeature={(feature, layer) => {
                                 const pathLayer = layer as L.Path;
@@ -108,8 +104,8 @@ export default function Map({ trails }: Props) {
                                 });
                             }}
                         />
-                        <GeoJSON data={geojson} style={{ color: '#ffffff', weight: 6, interactive: false }} />
-                        <GeoJSON data={geojson} style={{ color: '#747009', weight: 3, interactive: false }} />
+                        <GeoJSON data={trails} style={{ color: '#ffffff', weight: 6, interactive: false }} />
+                        <GeoJSON data={trails} style={{ color: '#747009', weight: 3, interactive: false }} />
                     </div>
                 )}
                 {hoverFeature && hoverFeature !== activeFeature && (
