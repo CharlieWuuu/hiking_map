@@ -8,6 +8,8 @@ import { useSearchParams } from 'react-router-dom';
 import Data_Detail from './Data_Detail';
 import Close from '../../assets/images/Panel_ClosePanel.svg';
 import { usePatchData } from '../../context/PatchDataContext';
+import { useParams } from 'react-router-dom';
+import { useOwnerDetail } from '../../hooks/useOwnerDetail';
 
 // 定義元件
 export default function Data_All() {
@@ -32,10 +34,12 @@ export default function Data_All() {
     const { setModalIsOpen, setModalType } = useModal();
 
     const [selectedFormat, setSelectedFormat] = useState('下載');
+    const { name, type } = useParams<{ name: string; type: string }>();
+    const { owner } = useOwnerDetail({ name: name!, type: type! });
     const handleExport = async (type: string) => {
         setSelectedFormat('loading');
         const baseURL = import.meta.env.VITE_API_URL;
-        const res = await fetch(`${baseURL}/trails/export?type=${type}`);
+        const res = await fetch(`${baseURL}/trails/export?type=${type}&owner_uuid=${owner?.uuid}`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');

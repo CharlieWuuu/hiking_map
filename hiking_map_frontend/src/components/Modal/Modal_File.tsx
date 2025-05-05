@@ -21,6 +21,7 @@ export default function Modal_File() {
 
         const owner_uuid = user?.uuid || '';
         const uuid = activeFeature?.properties?.uuid || '';
+        console.log(owner_uuid, uuid);
 
         const formData = new FormData();
         formData.append('file', file);
@@ -28,6 +29,7 @@ export default function Modal_File() {
         formData.append('uuid', uuid);
 
         try {
+            console.log(uuid);
             const url = `${import.meta.env.VITE_API_URL}/trails${uuid !== '' ? `/${uuid}` : ''}`;
             const method = modalType === 'file_upload' ? 'POST' : 'PUT';
             const token = localStorage.getItem('token');

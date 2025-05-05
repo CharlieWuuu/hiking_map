@@ -31,7 +31,6 @@ export class TrailsService {
     if (type === 'user') {
       const whereClauses = ['users_trails.owner_uuid = $1'];
       const params: any[] = [ownerUuid];
-
       if (!isLogin) {
         whereClauses.push('users_trails_info.public = true');
       }
@@ -69,7 +68,6 @@ export class TrailsService {
       ORDER BY users_trails_info.time ASC;
     `;
       rows = await this.trailRepo.query(sql, params);
-      console.log(where);
     } else if (type === 'layer') {
       const whereClauses = ['layers_trails.owner_uuid = $1'];
       const params: any[] = [ownerUuid];
@@ -165,7 +163,6 @@ export class TrailsService {
 
   async getTrailsMonthData(owner_uuid: string, type: string) {
     let rows: any;
-    console.log(owner_uuid);
     if (type === 'user') {
       rows = await this.trailRepo.query(
         `
@@ -204,7 +201,6 @@ export class TrailsService {
   }
 
   async post(owner_uuid: string, file: Express.Multer.File) {
-    console.log(owner_uuid);
     const ext = path.extname(file.originalname).toLowerCase();
     let geojson;
 
@@ -275,7 +271,6 @@ export class TrailsService {
   }
 
   async put(uuid: string, owner_uuid: string, file: Express.Multer.File) {
-    console.log(owner_uuid);
     const ext = path.extname(file.originalname).toLowerCase();
     let geojson;
 
@@ -372,7 +367,7 @@ export class TrailsService {
     const geojson: FeatureCollection = await this.getTrails(
       isLogin,
       owner_uuid,
-      type,
+      'user',
     );
 
     if (type === 'geojson') {

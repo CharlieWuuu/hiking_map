@@ -52,9 +52,7 @@ export const PolylineProvider = ({ children }: { children: ReactNode }) => {
 
     const fetchTrails = async () => {
         if (!owner_uuid || !type) return;
-        console.log(owner_uuid, type, trail_uuid);
         const key = `${owner_uuid}_${type}_${trail_uuid || 'all'}_${version}`;
-        console.log(key);
         if (lastKeyRef.current === key) return; // 資料沒變就不再 fetch
         lastKeyRef.current = key; // 記住這次的 key
 

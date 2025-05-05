@@ -4,7 +4,7 @@ import { useState } from 'react';
 import styles from './Modal_Delete.module.scss';
 
 export default function Modal_Delete() {
-    const { version, setVersion, setActiveFeatureUuid } = usePolyline();
+    const { version, setVersion, setActiveFeatureUuid, setActiveFeature } = usePolyline();
     const { deleteFeatureUuid } = usePolyline();
     const { setModalIsOpen } = useModal();
     const [deleteComplete, setDeleteComplete] = useState(false);
@@ -22,7 +22,6 @@ export default function Modal_Delete() {
             }
 
             const baseURL = import.meta.env.VITE_API_URL;
-
             const res = await fetch(`${baseURL}/trails/${deleteFeatureUuid}`, {
                 method: 'DELETE',
                 headers,
@@ -33,6 +32,8 @@ export default function Modal_Delete() {
                 setDeleteComplete(true);
                 setVersion(version + 1);
                 setActiveFeatureUuid(null);
+                setActiveFeature(null);
+
                 setTimeout(() => {
                     setModalIsOpen(false);
                     setTimeout(() => {

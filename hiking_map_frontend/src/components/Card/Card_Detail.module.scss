@@ -1,0 +1,130 @@
+@use '../../styles/colors' as colors;
+@use '../../styles/media' as media;
+
+.Panel_Detail {
+    top: 1rem;
+    left: 1rem;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: colors.$panel;
+    .Detail_Card {
+        display: flex;
+        gap: 0.5rem;
+        position: relative;
+        height: 100%;
+
+        button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            border-radius: 100%;
+            background-color: colors.$background_blue_lighten;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &:hover {
+                background-color: colors.$background_blue_darken_2;
+            }
+        }
+
+        .Card_title {
+            display: flex;
+            gap: 0.5rem;
+            align-items: start;
+            text-wrap-mode: nowrap;
+            flex-direction: column;
+            .Card_name {
+                p {
+                    padding: 0;
+                    margin: 0;
+
+                    color: colors.$background_contrary;
+
+                    font-size: 1.8rem;
+                    line-height: 2rem;
+                    font-weight: bold;
+                }
+            }
+            .Card_district {
+                font-size: 0.9rem;
+            }
+        }
+        hr {
+            border: none;
+            width: 2px;
+
+            background-color: colors.$panel_active;
+        }
+
+        .Card_properties {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: start;
+            gap: 1rem;
+
+            > div {
+                display: flex;
+                flex-direction: column;
+                align-items: start;
+                justify-content: end;
+
+                span {
+                    font-size: 0.6rem;
+                }
+                p,
+                a {
+                    font-size: 1.1rem;
+                    line-height: 1.1rem;
+                    font-weight: bold;
+                }
+            }
+
+            .Card_url {
+                div {
+                    display: flex;
+                    gap: 0.2rem;
+
+                    a {
+                        color: colors.$background_contrary;
+                        text-decoration: underline;
+                    }
+                }
+            }
+            .Card_note {
+                text-align: start;
+            }
+        }
+    }
+    @include media.media(lg) {
+        padding: 0.8rem;
+        .Detail_Card {
+            .Card_title {
+                .Card_name {
+                    p {
+                        font-size: 1.5rem;
+                        line-height: 1.5rem;
+                    }
+                }
+                .Card_district {
+                    font-size: 0.9rem;
+                }
+            }
+            .Card_properties {
+                gap: 0.5rem;
+                > div {
+                    span {
+                        font-size: 0.6rem;
+                    }
+                    p,
+                    a {
+                        font-size: 0.9rem;
+                        line-height: 0.9rem;
+                    }
+                }
+            }
+        }
+    }
+}

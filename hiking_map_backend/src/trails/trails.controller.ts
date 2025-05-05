@@ -47,12 +47,10 @@ export class TrailsController {
     const authHeader = req.headers.authorization;
     if (authHeader?.startsWith('Bearer ')) {
       const token = authHeader.slice(7);
-      console.log(token);
       try {
         const payload = this.jwtService.verify(token, {
           secret: process.env.JWT_SECRET || 'your-secret-key',
         });
-        console.log(payload);
         isLogin = true;
       } catch (err) {
         console.warn('JWT 驗證失敗');
@@ -93,7 +91,6 @@ export class TrailsController {
     @Query('owner_uuid') owner_uuid: string,
     @Res() res: Response,
   ) {
-    console.log(owner_uuid);
     let isLogin: boolean = false;
 
     const authHeader = req.headers.authorization;
@@ -103,6 +100,7 @@ export class TrailsController {
         const payload = this.jwtService.verify(token, {
           secret: process.env.JWT_SECRET || 'your-secret-key',
         });
+
         isLogin = true;
       } catch (err) {
         console.warn('JWT 驗證失敗');
@@ -119,7 +117,6 @@ export class TrailsController {
     @Body('owner_uuid') owner_uuid: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log(owner_uuid);
     return this.trailsService.post(owner_uuid, file);
   }
 
@@ -131,7 +128,6 @@ export class TrailsController {
     @Body('owner_uuid') owner_uuid: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log(owner_uuid, uuid);
     return this.trailsService.put(uuid, owner_uuid, file);
   }
 

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 // components
-import Panel_Detail from '../components/Panel/Panel_Detail';
+import Card_Detail from '../components/Card/Card_Detail';
 import TrailsMonthData from '../components/Chart/TrailsMonthData';
 import Hundred from '../components/Chart/Hundred';
 import CountyOrder from '../components/Chart/CountyOrder';
@@ -167,7 +167,7 @@ export default function Owner_View() {
                 <div>
                     {trails.features.slice(0, displayCount).map((f, index) => (
                         <Link to={`/owner/${type}/${owner.name}/trail/${f.properties?.uuid}`} key={f.properties?.uuid ?? `trail-${index}`} className={styles.Owner_Trail}>
-                            <Panel_Detail properties={f.properties as TrailProperties} />
+                            <Card_Detail properties={f.properties as TrailProperties} />
                         </Link>
                     ))}
 
