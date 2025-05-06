@@ -26,12 +26,14 @@ export class TrailsService {
     ownerUuid: string,
     type: string,
     uuid?: string,
+    share?: string,
   ) {
     let rows: any;
     if (type === 'user') {
       const whereClauses = ['users_trails.owner_uuid = $1'];
       const params: any[] = [ownerUuid];
-      if (!isLogin) {
+
+      if (!isLogin && !(share && share === 'true')) {
         whereClauses.push('users_trails_info.public = true');
       }
 

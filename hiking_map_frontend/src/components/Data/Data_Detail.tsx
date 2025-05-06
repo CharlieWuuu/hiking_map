@@ -43,10 +43,6 @@ export default function Data_Detail({ trails }: Props) {
     const { version, setVersion } = usePolyline();
     const [isUrlEdited, setIsUrlEdited] = useState(false);
 
-    useEffect(() => {
-        console.log(patchData);
-    }, [patchData]);
-
     const patchProperties = async () => {
         try {
             const baseURL = import.meta.env.VITE_API_URL;

@@ -6,7 +6,6 @@ type Props = {
 
 export default function _MapClickHandler({ setActiveFeatureUuid }: Props) {
     useMapEvent('click', (e) => {
-        console.log(e);
         const isGeoJsonLayer = (e.originalEvent?.target as HTMLElement)?.closest('.leaflet-interactive');
         if (isGeoJsonLayer) return;
         setActiveFeatureUuid(null);

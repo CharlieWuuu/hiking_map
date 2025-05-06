@@ -76,6 +76,9 @@ export default function Data_All() {
     const { user } = useAuth();
     const isLoggedIn = user?.username === name;
 
+    const params = new URLSearchParams(window.location.search);
+    const share = params.get('share');
+
     return (
         <div className={`${styles.Panel_Data_All} ${onLoading ? styles.onLoading : ''}`}>
             <div className={styles.loader}></div>
@@ -156,7 +159,7 @@ export default function Data_All() {
                                                 rowRefs.current[feature.properties.uuid] = el;
                                             }
                                         }}
-                                        className={`${hoverFeatureUuid === feature.properties?.uuid ? styles.hover : ''} ${activeFeatureUuid === feature.properties?.uuid ? styles.active : ''} ${feature.properties?.public ? '' : styles.private}`}
+                                        className={`${hoverFeatureUuid === feature.properties?.uuid ? styles.hover : ''} ${activeFeatureUuid === feature.properties?.uuid ? styles.active : ''} ${share === 'true' || (!share && feature.properties?.public) ? '' : styles.private}`}
                                         onMouseEnter={() => setHoverFeatureUuid(feature.properties?.uuid)}
                                         onMouseLeave={() => setHoverFeatureUuid(null)}
                                         onClick={() => {

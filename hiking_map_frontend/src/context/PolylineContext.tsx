@@ -27,6 +27,8 @@ type PolylineContextType = {
     setTrailUuid: (uuid: string | null) => void;
     version: number;
     setVersion: (index: number) => void;
+    share: string | null;
+    setShare: (friend: string) => void;
 };
 
 // 創建一個 Context，初始值為 undefined（因為會在 Provider 裡面真正提供值）
@@ -46,9 +48,12 @@ export const PolylineProvider = ({ children }: { children: ReactNode }) => {
     const [error, setError] = useState<Error | null>(null);
     const [owner_uuid, setOwnerUuid] = useState<string | null>(null);
     const [type, setType] = useState<string | null>(null);
+
     const [trail_uuid, setTrailUuid] = useState<string | null>(null);
     const [version, setVersion] = useState(0);
     const lastKeyRef = useRef<string | null>(null);
+
+    const [share, setShare] = useState<string | null>(null);
 
     const fetchTrails = async () => {
         if (!owner_uuid || !type) return;
@@ -61,6 +66,7 @@ export const PolylineProvider = ({ children }: { children: ReactNode }) => {
 
         let url = `${import.meta.env.VITE_API_URL}/trails?owner_uuid=${owner_uuid}&type=${type}`;
         if (trail_uuid) url += `&uuid=${trail_uuid}`;
+        if (share) url += `&share=${share}`;
 
         try {
             const res = await fetch(url, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
@@ -105,6 +111,8 @@ export const PolylineProvider = ({ children }: { children: ReactNode }) => {
                 setTrailUuid,
                 version,
                 setVersion,
+                share,
+                setShare,
             }}>
             {children}
         </PolylineContext.Provider>

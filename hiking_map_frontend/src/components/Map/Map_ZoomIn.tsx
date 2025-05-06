@@ -30,15 +30,12 @@ export default function Map_ZoomIn({ IsZoomIn, setIsZoomIn }: Props) {
     };
     return (
         <div className="Map_ZoomIn">
-            <button>
-                <img
-                    src={mode === 'map' ? ZoomOutUrl : ZoomInUrl}
-                    alt={mode === 'map' ? '縮小' : '放大'}
-                    onClick={() => {
-                        setIsZoomIn(!IsZoomIn);
-                        handleMode();
-                    }}
-                />
+            <button
+                onClick={() => {
+                    setIsZoomIn(!IsZoomIn);
+                    handleMode();
+                }}>
+                <img src={mode === 'map' ? ZoomOutUrl : ZoomInUrl} alt={mode === 'map' ? '縮小' : '放大'} />
             </button>
         </div>
     );

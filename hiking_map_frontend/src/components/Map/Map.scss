@@ -27,10 +27,14 @@
 
     .GoBack {
         position: absolute;
+        display: none;
         top: 1rem;
         left: 1rem;
         z-index: 401;
         pointer-events: auto;
+        @include media.media(lg) {
+            display: flex;
+        }
     }
 
     &:hover {

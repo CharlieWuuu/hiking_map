@@ -83,7 +83,7 @@
                     &.Card_btn_map {
                         display: none;
                         @include media.media(lg) {
-                            display: block;
+                            display: flex;
                         }
                     }
                 }

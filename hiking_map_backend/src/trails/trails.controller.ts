@@ -41,9 +41,9 @@ export class TrailsController {
     @Query('owner_uuid') ownerUuid: string,
     @Query('type') type: string,
     @Query('uuid') uuid?: string,
+    @Query('share') share?: string,
   ): Promise<FeatureCollection> {
     let isLogin: boolean = false;
-
     const authHeader = req.headers.authorization;
     if (authHeader?.startsWith('Bearer ')) {
       const token = authHeader.slice(7);
@@ -61,6 +61,7 @@ export class TrailsController {
       ownerUuid,
       type,
       uuid,
+      share,
     );
     return data;
   }
