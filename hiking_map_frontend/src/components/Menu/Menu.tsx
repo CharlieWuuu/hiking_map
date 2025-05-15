@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 import Index from '../../assets/images/Menu_Index.svg';
 import DataUser from '../../assets/images/Menu_Data_User.svg';
-import DataUserChart from '../../assets/images/Menu_Data_User_Chart.svg';
 import DataUserEdit from '../../assets/images/Menu_Data_User_Edit.svg';
 import Intro from '../../assets/images/Menu_Intro.svg';
 import Login from '../../assets/images/Menu_Login.svg';
