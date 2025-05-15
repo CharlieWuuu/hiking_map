@@ -75,15 +75,20 @@ export default function Map() {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const mode = params.get('mode');
+    const [lastMode, setLastMode] = useState('');
+
     const [IsZoomIn, setIsZoomIn] = useState(mode === 'map');
 
     const { name, type } = useParams<{ name: string; type: string; mode: string }>();
     const navigate = useNavigate();
     const handleMode = () => {
-        if (mode === 'edit') {
-            navigate(`/owner/${type}/${name}/data?mode=data`, { replace: true });
-        } else {
+        console.log(mode);
+        if (lastMode === 'edit') {
             navigate(`/owner/${type}/${name}/data?mode=edit`, { replace: true });
+            setLastMode('edit');
+        } else {
+            navigate(`/owner/${type}/${name}/data?mode=data`, { replace: true });
+            setLastMode('data');
         }
     };
 

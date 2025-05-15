@@ -79,6 +79,13 @@ export default function Data_All() {
     const params = new URLSearchParams(window.location.search);
     const share = params.get('share');
 
+    const { setOwnerUuid, setType, setShare } = usePolyline();
+    useEffect(() => {
+        setOwnerUuid(owner?.uuid ?? '');
+        setType(type || '');
+        if (share) setShare(share);
+    }, [owner, type, share]);
+
     return (
         <div className={`${styles.Panel_Data_All} ${onLoading ? styles.onLoading : ''}`}>
             <div className={styles.loader}></div>

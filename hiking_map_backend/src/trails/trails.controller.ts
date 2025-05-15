@@ -51,7 +51,8 @@ export class TrailsController {
         const payload = this.jwtService.verify(token, {
           secret: process.env.JWT_SECRET || 'your-secret-key',
         });
-        isLogin = true;
+
+        payload.uuid === ownerUuid && (isLogin = true);
       } catch (err) {
         console.warn('JWT 驗證失敗');
       }
