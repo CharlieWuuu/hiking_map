@@ -6,25 +6,63 @@ export default function Intro() {
         <div className={styles.Intro}>
             <h2>網站介紹</h2>
 
-            <h3>網站目的</h3>
-            <p>《原子習慣》提到，具體、量化的紀錄方式，可助於建立習慣。</p>
-            <p>如果爬山也可以視覺化地把路線記錄下來，那會多有成就感？本網站便是以此想法發想而成。</p>
-            <br />
+            <section>
+                <h3>網站目的</h3>
+                <p>
+                    本網站用於<strong>視覺化呈現登山記錄</strong>，可作為個人成就的紀錄工具，也能作為與他人交流的平台。具體功能如下：
+                </p>
+                <ul>
+                    <li>登山路線的新增、瀏覽、編輯與刪除（需登入）</li>
+                    <li>使用者登入系統，保障資料管理權限</li>
+                    <li>成就統計頁面，展示個人活動累積與總覽</li>
+                    <li>搜尋其他使用者資料</li>
+                    <li>支援手機瀏覽與 PWA 安裝使用</li>
+                </ul>
+                <p>最初設計時參考 Spotify 的風格，希望使用者感覺一切都在同一個頁面中完成。後來為了讓功能與導覽更清楚，改為多頁式結構，並加入模擬多用戶使用的流程設計。</p>{' '}
+            </section>
 
-            <h3>背景</h3>
-            <p>開發技術上採用 React 作為前端框架，NestJS 搭配 PostgreSQL（Neon）作為後端與資料庫，界面設計則以 Figma 規劃。Icon、Logo、HeroBanner 皆是自行繪製</p>
-            <img src={Figma} alt="Figma" />
-            <p>Logo 發想自登山者常說的「再一個彎就到山頂了」的激勵話語，雖然我們常知道還不止一個彎，但以此激勵自己已經離目標不遠。配色與使用流程發想自 Spotify、Youtube、Hevy 等網站。</p>
-            <br />
+            <section>
+                <h3>開發技術</h3>
+                <p>本專案使用以下技術實作：</p>
+                <ul>
+                    <li>
+                        <strong>前端框架</strong>：React
+                    </li>
+                    <li>
+                        <strong>後端與資料庫</strong>：NestJS + PostgreSQL（Neon 雲端託管）
+                    </li>
+                    <li>
+                        <strong>介面設計</strong>：Figma
+                    </li>
+                    <li>
+                        <strong>視覺設計</strong>：Icon、Logo 與 Hero Banner 皆為自繪設計
+                    </li>
+                </ul>
 
-            <h3>如何解決過去問題？</h3>
-            <p>本人有記錄登山路線的習慣，然而路徑資料的產製、彙整到展示並不太方便。</p>
-            <p>
-                我常用的路徑繪方式有以下幾種：(1) 使用 <a href="https://classic-maps.openrouteservice.org/">Openrouteservice Maps</a> 此網站的繪圖功能輸出 gpx、(2) 登山時沿途開啟 GPS，結束後輸出 gpx、(3) 自行在 GIS 軟體手繪路線。
-            </p>
-            <img src={GIS} alt="GIS 操作示意圖" />
-            <p>如果要展示，直接截圖的效果通常不太理想。雖然可以用 Google Maps 展示，但有圖層數量的限制，如果要把大量的路線都展示出來，得將多筆路線整合成一個檔案，避免圖層數不夠。但如果要更新圖層，就不能只上傳一筆資料，要把原本的資料更新後重新上傳，並不太方便。</p>
-            <p>此外，如果想要展示資料、圖表分析，在 Google Maps 上也無法做到。因此把此概念發想成一個網站，並模擬成不同用戶都可以上傳自己資料的平台，將來也保留各種擴充可能。</p>
+                <img src={Figma} alt="Figma" />
+                <p>Logo 發想自登山時常說的激勵語「再一個彎就到山頂了」，象徵離目標不遠、持續前行的精神。整體配色與操作流程靈感來自 Spotify、YouTube 與 Hevy 等應用服務。</p>
+            </section>
+
+            <section>
+                <h3>解決的問題</h3>
+                <p>我本身有記錄登山路線的習慣，但現有工具在「資料產製、彙整、展示」上都有些不便：</p>
+                <p>常見的路線記錄方式如下：</p>
+                <ol>
+                    <li>
+                        使用 <a href="https://classic-maps.openrouteservice.org/">Openrouteservice Maps</a> 畫線並匯出 GPX
+                    </li>
+                    <li>實地登山時以 GPS 紀錄軌跡後匯出 GPX</li>
+                    <li>使用 QGIS、ArcGIS 等 GIS 軟體自行繪製路線</li>
+                </ol>
+                <img src={GIS} alt="GIS 操作示意圖" />
+                <p>然而展示這些資料時，我常遇到幾個問題：</p>
+                <ul>
+                    <li>QGIS 匯出靜態圖片不易互動，無法讓他人自行縮放與查詢</li>
+                    <li>Google Maps 雖可用於展示，但圖層數量有限，需合併所有路線為一檔，更新時也需整體覆寫</li>
+                    <li>缺乏彈性與擴充性，難以進一步做圖表分析或多使用者共享</li>
+                </ul>
+                <p>因此，我將此需求延伸發展為一個網站應用，並模擬成開放平台架構，支援多用戶資料上傳、互動查詢、成就視覺化等功能。</p>
+            </section>
         </div>
     );
 }

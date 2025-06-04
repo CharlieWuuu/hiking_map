@@ -11,7 +11,7 @@ export default function Footer() {
                 <hr />
                 <div className={styles.Footer_links}>
                     <Link to="/intro">關於我們</Link>
-                    <span>聯絡我們（製作中）</span>
+                    {/* <span>聯絡我們（製作中）</span> */}
                 </div>
             </div>
         </footer>

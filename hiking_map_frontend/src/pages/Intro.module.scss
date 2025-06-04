@@ -9,18 +9,35 @@
     gap: 1rem;
     height: 100%;
     margin-bottom: 150px;
-
-    p {
-        text-align: left;
-    }
-    a {
-        color: colors.$background_contrary;
-        text-decoration: underline;
-    }
-    img {
+    section {
+        margin-bottom: 2rem;
         width: 100%;
-        max-width: 600px;
-        margin: auto;
+        * {
+            line-height: 2.4rem;
+        }
+        p,
+        h3 {
+            text-align: left;
+        }
+        a {
+            color: colors.$background_contrary;
+            text-decoration: underline;
+        }
+        ol,
+        ul {
+            margin-left: 2rem;
+            li {
+                text-align: start;
+                &::marker {
+                    margin-right: 1rem;
+                }
+            }
+        }
+        img {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+        }
     }
     @include media.media(lg) {
         width: calc(100% - 2rem);
