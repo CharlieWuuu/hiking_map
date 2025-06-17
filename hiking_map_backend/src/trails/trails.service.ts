@@ -217,26 +217,39 @@ export class TrailsService {
     }
 
     // 寫入資料庫
-    for (const feature of geojson.features) {
-      if (
-        feature.geometry.type === 'LineString' ||
-        feature.geometry.type === 'MultiLineString'
-      ) {
-        const geomJSON = JSON.stringify(feature.geometry);
+    // for (const feature of geojson.features) {
+    const allLineStrings = geojson.features
+      .filter(
+        (f) =>
+          f.geometry.type === 'LineString' ||
+          f.geometry.type === 'MultiLineString',
+      )
+      .flatMap((f) =>
+        f.geometry.type === 'LineString'
+          ? [f.geometry.coordinates]
+          : f.geometry.coordinates,
+      );
 
-        // 1. 去除副檔名
-        const nameNoExt = Buffer.from(
-          path.basename(file.originalname, path.extname(file.originalname)),
-          'binary',
-        ).toString('utf-8');
+    // 2. 組成一個 MultiLineString
+    const multiLine = {
+      type: 'MultiLineString',
+      coordinates: allLineStrings,
+    };
+    const geomJSON = JSON.stringify(multiLine);
 
-        // 2. 中文不要亂碼：通常 multer 已經是 UTF-8，如果還有亂碼，可能是編碼問題，但你可以明確轉換成 UTF-8 試試
-        const name = Buffer.from(file.originalname, 'binary').toString('utf-8');
-        const uuid = uuidv4(); // 每一筆新資料產生一個 uuid
+    // 1. 去除副檔名
+    const nameNoExt = Buffer.from(
+      path.basename(file.originalname, path.extname(file.originalname)),
+      'binary',
+    ).toString('utf-8');
 
-        // 1. 新增 trails
-        await this.trailRepo.query(
-          `
+    // 2. 中文不要亂碼：通常 multer 已經是 UTF-8，如果還有亂碼，可能是編碼問題，但你可以明確轉換成 UTF-8 試試
+    const name = Buffer.from(file.originalname, 'binary').toString('utf-8');
+    const uuid = uuidv4(); // 每一筆新資料產生一個 uuid
+
+    // 1. 新增 trails
+    await this.trailRepo.query(
+      `
         INSERT INTO users_trails (uuid, geom, length, center, bounds, name, owner_uuid)
         VALUES (
           $1,
@@ -252,19 +265,18 @@ export class TrailsService {
         )
 
         `,
-          [uuid, geomJSON, name, owner_uuid],
-        );
+      [uuid, geomJSON, name, owner_uuid],
+    );
 
-        // 2. 同時新增 trails_info，只填 uuid 與 name
-        await this.trailRepo.query(
-          `
+    // 2. 同時新增 trails_info，只填 uuid 與 name
+    await this.trailRepo.query(
+      `
         INSERT INTO users_trails_info (uuid, name, time)
         VALUES ($1, $2, CURRENT_DATE::timestamp)
         `,
-          [uuid, nameNoExt],
-        );
-      }
-    }
+      [uuid, nameNoExt],
+    );
+    // }
 
     return {
       success: true,
