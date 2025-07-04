@@ -1,7 +1,7 @@
-@use '../styles/mixins' as mixins;
-@use '../styles/variables' as variables;
-@use '../styles/colors' as colors;
-@use '../styles/media' as media;
+@use '../mixins' as mixins;
+@use '../variables' as variables;
+@use '../colors' as colors;
+@use '../media' as media;
 
 .Owner_Data {
     @include mixins.flex_center;

@@ -23,6 +23,7 @@ export function useOwnerList() {
             try {
                 const res = await fetch(`${import.meta.env.VITE_API_URL}/owners/list`);
                 const data = await res.json();
+                console.log(data);
                 setOwnerList(data);
             } catch (err) {
                 console.error('county_order 抓取錯誤:', err);

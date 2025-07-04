@@ -1,6 +1,13 @@
-import styles from './Login.module.scss';
+// styles
+import styles from '../styles/pages/Login.module.scss';
+
+// react
 import { useState } from 'react';
+
+// context
 import { useAuth } from '../context/AuthContext';
+
+// image
 import AvatarUrl from '../assets/images/Panel_Avatar.svg';
 
 export default function Login() {

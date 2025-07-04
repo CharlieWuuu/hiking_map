@@ -1,6 +1,10 @@
-import styles from './Intro.module.scss';
+// styles
+import styles from '../styles/pages/Intro.module.scss';
+
+// image
 import GIS from '../assets/images/Intro_GIS.png';
 import Figma from '../assets/images/Intro_Figma.png';
+
 export default function Intro() {
     return (
         <div className={styles.Intro}>

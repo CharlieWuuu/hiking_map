@@ -1,10 +1,16 @@
+// styles
+import styles from '../styles/pages/Owner_Data.module.scss';
+
+// components
 import Map from '../components/Map/Map';
-import styles from './Owner_Data.module.scss';
 import Data from '../components/Data/Data';
-import { useParams } from 'react-router-dom';
+
+// context
 import { TableProvider } from '../context/TableContext';
-import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+
+// react
+import { useParams, Navigate } from 'react-router-dom';
 
 export default function Owner_Data() {
     const { name } = useParams<{ name: string; type: string }>();

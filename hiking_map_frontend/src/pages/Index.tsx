@@ -1,18 +1,15 @@
+// styles
+import styles from '../styles/pages/Index.module.scss';
+
+// image
 import Hero_Background from '../assets/images/Index_Hero_Background.png';
 import Hero_Text from '../assets/images/Index_Hero_Text.svg';
-import styles from './Index.module.scss';
+
+// react
 import { Link } from 'react-router-dom';
 
-type Owner = {
-    name: string;
-    name_zh: string;
-    id: string;
-    uuid: string;
-    avatar: string;
-    level: string;
-    description: string;
-    type: string;
-};
+// types
+import { Owner } from '../types/owner';
 
 type Props = {
     ownerList: Owner[];

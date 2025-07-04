@@ -1,6 +1,6 @@
-@use '../styles/mixins' as mixins;
-@use '../styles/media' as media;
-@use '../styles/colors' as colors;
+@use '../mixins' as mixins;
+@use '../media' as media;
+@use '../colors' as colors;
 .Intro {
     display: flex;
     flex-direction: column;

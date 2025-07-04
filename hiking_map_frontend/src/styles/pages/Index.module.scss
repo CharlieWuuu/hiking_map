@@ -1,6 +1,6 @@
-@use '../styles/mixins' as mixins;
-@use '../styles/colors' as colors;
-@use '../styles/media' as media;
+@use '../mixins' as mixins;
+@use '../colors' as colors;
+@use '../media' as media;
 
 .Index {
     @include mixins.flex_center;

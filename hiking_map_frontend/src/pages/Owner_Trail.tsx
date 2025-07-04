@@ -1,16 +1,24 @@
+// styles
+import styles from '../styles/pages/Owner_Trail.module.scss';
+import '../components/Map/Map.scss'; // 1. 因為要改 Leaflet 的樣式而不能用 modules 2. 因為 Panel、Map 的 hover 行為影響到 Panel_Button 的樣式，所以不用 modules
+
+// react
 import { useParams } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+
+// leaflet
 import { MapContainer, TileLayer, GeoJSON, useMap, ZoomControl } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useEffect, useRef } from 'react';
-import '../components/Map/Map.scss'; // 1. 因為要改 Leaflet 的樣式而不能用 modules 2. 因為 Panel、Map 的 hover 行為影響到 Panel_Button 的樣式，所以不用 modules
-import { useIsResizing } from '../hooks/useIsResizing';
-// import { usePolyline } from '../context/PolylineContext';
-// import { useTableContext } from '../context/TableContext';
-// import { useGeojson } from '../context/GeojsonContext';
-import styles from './Owner_Trail.module.scss';
+
+// components
 import GoBack from '../components/GoBack/GoBack';
+
+// context
 import { usePolyline } from '../context/PolylineContext';
+
+// hooks
+import { useIsResizing } from '../hooks/useIsResizing';
 import { useOwnerDetail } from '../hooks/useOwnerDetail';
 
 function TileEffect() {
