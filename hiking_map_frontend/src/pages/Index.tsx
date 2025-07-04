@@ -27,23 +27,6 @@ export default function Index({ ownerList }: Props) {
                     <img className={styles.HeroText} src={Hero_Text} alt="" />
                 </div>
                 <section>
-                    <h3>登山路線</h3>
-                    <div className={styles.CardContainer}>
-                        {ownerList.map((owner, index) => {
-                            if (owner.type !== 'layer') return null;
-                            return (
-                                <Link key={index} to={`/owner/${owner.type}/${owner.name}`} className={`${styles.Card}`}>
-                                    <img src={owner.avatar} alt="頭像" />
-                                    <div>
-                                        <h4>{owner.name_zh}</h4>
-                                        <p>{owner.description}</p>
-                                    </div>
-                                </Link>
-                            );
-                        })}
-                    </div>
-                </section>
-                <section>
                     <h3>用戶紀錄</h3>
                     <div className={styles.CardContainer}>
                         {ownerList.map((owner, index) => {
@@ -54,6 +37,23 @@ export default function Index({ ownerList }: Props) {
                                     <div>
                                         <h4>{owner.name}</h4>
                                         <p>{owner.level}</p>
+                                    </div>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </section>
+                <section>
+                    <h3>登山路線</h3>
+                    <div className={styles.CardContainer}>
+                        {ownerList.map((owner, index) => {
+                            if (owner.type !== 'layer') return null;
+                            return (
+                                <Link key={index} to={`/owner/${owner.type}/${owner.name}`} className={`${styles.Card}`}>
+                                    <img src={owner.avatar} alt="頭像" />
+                                    <div>
+                                        <h4>{owner.name_zh}</h4>
+                                        <p>{owner.description}</p>
                                     </div>
                                 </Link>
                             );

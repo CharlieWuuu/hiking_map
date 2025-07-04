@@ -36,6 +36,7 @@ export default function Owner_View() {
 
     const { owner } = useOwnerDetail({ name: name!, type: type! });
     const { setOwnerUuid, setType, trails } = usePolyline();
+
     useEffect(() => {
         setOwnerUuid(owner?.uuid ?? '');
         setType(type || '');
