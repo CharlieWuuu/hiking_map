@@ -4,17 +4,17 @@ import Owner_Data from './pages/Owner_Data';
 // import Data_Layer from './pages/Data_Layer';
 import Login from './pages/Login';
 import Intro from './pages/Intro';
-import BottomBar from './components/BottomBar/BottomBar';
-import Owner_View from './pages/Owner_View';
+import BottomBar from './components/layout/BottomBar/BottomBar';
+import Owner_View from './pages/Owner_View/Owner_View';
 import Search_Owner from './pages/Search_Owner';
 import Owner_Trail from './pages/Owner_Trail';
 
 // component
-import Navbar from './components/Navbar/Navbar';
-import Modal from './components/Modal/Modal';
-import Menu from './components/Menu/Menu';
-import Footer from './components/Footer/Footer';
-import ScrollToTop from './components/ScrollToTop';
+import Navbar from './components/layout/Navbar/Navbar';
+import Modal from './components/common/Modal/Modal';
+import Menu from './components/layout/Menu/Menu';
+import Footer from './components/layout/Footer/Footer';
+import ScrollToTop from './components/common/ScrollToTop';
 
 // css
 import styles from './App.module.scss';

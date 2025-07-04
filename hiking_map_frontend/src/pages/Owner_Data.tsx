@@ -2,8 +2,8 @@
 import styles from '../styles/pages/Owner_Data.module.scss';
 
 // components
-import Map from '../components/Map/Map';
-import Data from '../components/Data/Data';
+import Map from '../components/common/Map/Map';
+import Data from '../components/common/Data/Data';
 
 // context
 import { TableProvider } from '../context/TableContext';

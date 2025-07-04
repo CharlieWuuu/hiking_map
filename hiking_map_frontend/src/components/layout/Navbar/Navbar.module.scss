@@ -1,0 +1,90 @@
+@use '../../../styles/colors' as colors;
+@use '../../../styles/mixins' as mixins;
+@use '../../../styles/variables' as variables;
+@use '../../../styles/media' as media;
+
+.Navbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    background-color: colors.$background;
+
+    &.fullscreen {
+        position: relative;
+    }
+
+    .Hamburger {
+        width: 36px;
+        cursor: pointer;
+        height: 24px;
+        img {
+            height: 24px;
+        }
+    }
+    .Logo {
+        display: flex;
+        img {
+            height: var(--navbar_inner_height);
+        }
+    }
+    .SearchBar {
+        flex-grow: 1;
+    }
+
+    .RightButton {
+        @include mixins.flex_center;
+        gap: 0.5rem;
+        button {
+            width: 2rem;
+            height: var(--navbar_inner_height);
+
+            img {
+                height: 1rem;
+            }
+            &.authBtn {
+                width: auto;
+            }
+
+            a {
+                color: colors.$background_contrary;
+            }
+        }
+    }
+
+    @include media.media(lg) {
+        justify-content: space-between;
+        height: fit-content;
+        padding: 0.8rem 1.2rem;
+        .Hamburger {
+            display: none;
+        }
+        .Logo {
+            height: var(--navbar_inner_height);
+            img {
+                height: var(--navbar_inner_height);
+            }
+        }
+        .SearchBar {
+            display: none;
+        }
+        .RightButton {
+            button {
+                height: var(--navbar_inner_height);
+                font-size: 0.8rem;
+                padding: 0rem 0.6rem;
+                img {
+                    height: 1rem;
+                }
+                &.fullscreenBtn {
+                    display: none;
+                }
+            }
+        }
+    }
+}

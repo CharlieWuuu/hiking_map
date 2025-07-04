@@ -1,4 +1,4 @@
-import SearchUser from '../components/Search/SearchUser';
+import SearchUser from '../components/common/Search/SearchUser';
 import { Owner } from '../types/owner';
 
 type Props = {

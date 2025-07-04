@@ -1,0 +1,215 @@
+@use '../../../styles/colors' as colors;
+@use '../../../styles/media' as media;
+@use '../../../styles/mixins' as mixins;
+
+.Data_Detail {
+    padding: 1rem;
+    width: 100%;
+    background-color: colors.$accent;
+    color: colors.$background;
+
+    input {
+        border-radius: 0.25rem;
+        border: 0.5px solid colors.$background;
+        padding: 0.1rem 0.2rem;
+        font-size: 1rem;
+        color: colors.$background;
+        width: 100%;
+    }
+
+    .Detail_Card {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        position: relative;
+        height: 100%;
+
+        .Card_title {
+            display: flex;
+            gap: 1rem;
+            align-items: start;
+            justify-content: space-between;
+            text-wrap-mode: nowrap;
+            width: 100%;
+
+            .Card_name {
+                display: flex;
+                gap: 0.5rem;
+                align-items: end;
+                flex-grow: 1;
+                p {
+                    padding: 0;
+                    margin: 0;
+                    font-size: 1.8rem;
+                    line-height: 2rem;
+                    font-weight: bold;
+                }
+                span {
+                    font-size: 0.9rem;
+                }
+                input {
+                    height: 2rem;
+                    font-size: 1.5rem;
+                    width: 100%;
+                }
+            }
+            .Card_btn {
+                display: flex;
+                gap: 0.5rem;
+                button {
+                    border: 1px solid colors.$background;
+                    color: colors.$background;
+                    font-size: 0.75rem;
+                    @include mixins.flex_center;
+                    background-color: colors.$accent;
+                    transition: all 0.3s ease;
+                    width: 32px;
+                    height: 32px;
+                    cursor: pointer;
+                    img {
+                        width: 16px;
+                        filter: invert(1);
+                        transition: all 0.3s ease;
+                    }
+
+                    &:hover {
+                        background-color: colors.$background;
+                        color: colors.$accent;
+                        img {
+                            filter: brightness(0) saturate(100%) invert(99%) sepia(64%) saturate(1816%) hue-rotate(345deg) brightness(106%) contrast(106%);
+                        }
+                    }
+
+                    &.Card_btn_map {
+                        display: none;
+                        @include media.media(lg) {
+                            display: flex;
+                        }
+                    }
+                }
+            }
+        }
+
+        hr {
+            border: none;
+            width: 2px;
+
+            background-color: colors.$panel_active;
+        }
+
+        .Card_properties {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 1rem;
+
+            > div {
+                width: 48%;
+                display: flex;
+                flex-direction: column;
+                align-items: start;
+                justify-content: end;
+
+                span {
+                    font-size: 0.9rem;
+                    text-align: start;
+                }
+                p,
+                a {
+                    text-align: start;
+                    font-size: 1.1rem;
+                    line-height: 1.1rem;
+                    font-weight: bold;
+                    min-height: 1.1rem;
+                }
+            }
+            .Card_check {
+                width: fit-content;
+                img {
+                    height: 1.2rem;
+                    filter: invert(1);
+                }
+                input[type='checkbox'] {
+                    width: 24px;
+                    height: 24px;
+                    accent-color: colors.$panel; /* 這是改顏色的關鍵 */
+                }
+            }
+            .Card_url {
+                div {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+
+                    a {
+                        color: colors.$background;
+                        text-decoration: underline;
+                        text-wrap: nowrap;
+                    }
+                    button {
+                        border: 1px solid colors.$background;
+                        color: colors.$background;
+                        font-size: 0.75rem;
+                        @include mixins.flex_center;
+                        background-color: colors.$accent;
+                        transition: all 0.3s ease;
+                        width: 32px;
+                        height: 32px;
+                        cursor: pointer;
+                        img {
+                            width: 16px;
+                            filter: invert(1);
+                            transition: all 0.3s ease;
+                        }
+
+                        &:hover {
+                            background-color: colors.$background;
+                            color: colors.$accent;
+                            img {
+                                filter: brightness(0) saturate(100%) invert(99%) sepia(64%) saturate(1816%) hue-rotate(345deg) brightness(106%) contrast(106%);
+                            }
+                        }
+                    }
+                }
+            }
+            .Card_note {
+                text-align: start;
+                width: 100%;
+                textarea {
+                    padding: 4px;
+                    width: 100%;
+                    height: 4rem;
+                }
+            }
+        }
+    }
+    @include media.media(lg) {
+        padding: 0.8rem;
+        .Detail_Card {
+            .Card_title {
+                .Card_name {
+                    p {
+                        font-size: 1.5rem;
+                        line-height: 1.5rem;
+                    }
+                }
+                .Card_district {
+                    font-size: 0.9rem;
+                }
+            }
+            .Card_properties {
+                gap: 0.5rem;
+                > div {
+                    span {
+                        font-size: 0.6rem;
+                    }
+                    p,
+                    a {
+                        font-size: 0.9rem;
+                        line-height: 0.9rem;
+                    }
+                }
+            }
+        }
+    }
+}
