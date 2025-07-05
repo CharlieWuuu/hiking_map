@@ -1,10 +1,20 @@
-import SearchUrl from '../../../assets/images/Navbar_Search.svg';
-import { Autocomplete } from '@mui/material';
-import { Popper } from '@mui/material';
-import { useState, useRef } from 'react';
-import { usePolyline } from '../../../context/PolylineContext';
+// styles
 import styles from './Search.module.scss';
 import './Search.scss';
+
+// image
+import SearchUrl from '../../../assets/images/Navbar_Search.svg';
+
+// library
+import { useState, useRef } from 'react';
+import { Autocomplete } from '@mui/material';
+import { Popper } from '@mui/material';
+
+// hooks
+import { usePolyline } from '../../../context/PolylineContext';
+
+// store
+import { useTrailUIStore } from '../../../store/useTrailUIStore';
 
 type TrailOption = {
     label: string;
@@ -16,7 +26,9 @@ type TrailOption = {
 };
 
 export default function SearchData() {
-    const { setActiveFeatureUuid, trails } = usePolyline();
+    const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
+
+    const { trails } = usePolyline();
 
     const [showAutocomplete, setShowAutocomplete] = useState(false);
     const [selectedOption, setSelectedOption] = useState<TrailOption | null>(null);

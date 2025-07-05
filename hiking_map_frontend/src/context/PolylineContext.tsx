@@ -4,10 +4,6 @@ import type { Feature, FeatureCollection } from 'geojson';
 
 // 定義這個 context 的資料格式，包含兩組 state（hover 和 active）與對應的 set 函式
 type PolylineContextType = {
-    hoverFeatureUuid: string | null;
-    setHoverFeatureUuid: (id: string | null) => void;
-    activeFeatureUuid: string | null;
-    setActiveFeatureUuid: (id: string | null) => void;
     activeFeature: Feature | null;
     setActiveFeature: (feature: Feature | null) => void;
     deleteFeatureUuid: string | null;
@@ -36,10 +32,6 @@ const PolylineContext = createContext<PolylineContextType | undefined>(undefined
 
 // 寫一個 Provider 元件，讓外層可以包住整個應用，把這組 state 提供下去
 export const PolylineProvider = ({ children }: { children: ReactNode }) => {
-    // 宣告兩個 state，管理目前 hover 到的項目 ID 以及點選的 active 項目 ID
-    const [hoverFeatureUuid, setHoverFeatureUuid] = useState<string | null>(null);
-    const [activeFeatureUuid, setActiveFeatureUuid] = useState<string | null>(null);
-    // const [editFeatureUuid, setEditFeatureUuid] = useState<string | null>(null);
     const [activeFeature, setActiveFeature] = useState<Feature | null>(null);
     const [deleteFeatureUuid, setDeleteFeatureUuid] = useState<string | null>(null);
 
@@ -88,10 +80,6 @@ export const PolylineProvider = ({ children }: { children: ReactNode }) => {
     return (
         <PolylineContext.Provider
             value={{
-                hoverFeatureUuid,
-                setHoverFeatureUuid,
-                activeFeatureUuid,
-                setActiveFeatureUuid,
                 activeFeature,
                 setActiveFeature,
                 deleteFeatureUuid,

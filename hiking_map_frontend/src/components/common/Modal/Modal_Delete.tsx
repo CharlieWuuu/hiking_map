@@ -3,8 +3,12 @@ import { useModal } from '../../../context/ModalContext';
 import { useState } from 'react';
 import styles from './Modal_Delete.module.scss';
 
+// store
+import { useTrailUIStore } from '../../../store/useTrailUIStore';
+
 export default function Modal_Delete() {
-    const { version, setVersion, setActiveFeatureUuid, setActiveFeature } = usePolyline();
+    const { version, setVersion, setActiveFeature } = usePolyline();
+    const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
     const { deleteFeatureUuid } = usePolyline();
     const { setModalIsOpen } = useModal();
     const [deleteComplete, setDeleteComplete] = useState(false);

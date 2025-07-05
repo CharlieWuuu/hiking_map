@@ -24,6 +24,9 @@ import Menu_Data from '../../../assets/images/Menu_Data.svg';
 import './Map_Button.scss';
 import GoBack from '../GoBack/GoBack';
 
+// store
+import { useTrailUIStore } from '../../../store/useTrailUIStore';
+
 function CreateCustomPanes() {
     const map = useMap();
 
@@ -48,7 +51,11 @@ function CreateCustomPanes() {
 export default function Map() {
     const { trails, version, loading } = usePolyline();
 
-    const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid } = usePolyline();
+    const hoverFeatureUuid = useTrailUIStore((state) => state.hoverFeatureUuid);
+    const setHoverFeatureUuid = useTrailUIStore((state) => state.setHoverFeatureUuid);
+    const activeFeatureUuid = useTrailUIStore((state) => state.activeFeatureUuid);
+    const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
+
     useEffect(() => {
         setActiveFeatureUuid(null);
     }, []);

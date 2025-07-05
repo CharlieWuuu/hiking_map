@@ -1,10 +1,19 @@
+// style
 import styles from './Data_Detail.module.scss';
+
+// type
 import { TrailProperties } from '../../../types/trails';
+
+// react
 import { useEffect, useState } from 'react';
-import { useModal } from '../../../context/ModalContext';
 import { useSearchParams, useNavigate, useParams } from 'react-router-dom';
+
+// context
+import { useModal } from '../../../context/ModalContext';
 import { usePatchData } from '../../../context/PatchDataContext';
 import { usePolyline } from '../../../context/PolylineContext';
+
+// image
 import Menu_Map from '../../../assets/images/Menu_Map.svg';
 import Navbar_Edit from '../../../assets/images/Navbar_Edit.svg';
 import Close from '../../../assets/images/Panel_ClosePanel.svg';
@@ -12,6 +21,9 @@ import Delete from '../../../assets/images/Data_Delete.svg';
 import Checked from '../../../assets/images/Data_Checked.svg';
 import Upload from '../../../assets/images/Data_Upload.svg';
 import Save from '../../../assets/images/Data_Save.svg';
+
+// store
+import { useTrailUIStore } from '../../../store/useTrailUIStore';
 
 type patchData = {
     name: string;
@@ -31,6 +43,8 @@ type Props = {
 };
 
 export default function Data_Detail({ trails }: Props) {
+    const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
+
     const [isEditing, setIsEditing] = useState(false);
     const date = new Date(trails.time);
     const year = date.getFullYear();
@@ -39,7 +53,7 @@ export default function Data_Detail({ trails }: Props) {
     const time = `${year}年${month}月${day}日`;
     const { patchData, setPatchData } = usePatchData();
     const { setModalIsOpen, setModalType } = useModal();
-    const { setActiveFeatureUuid, setDeleteFeatureUuid } = usePolyline();
+    const { setDeleteFeatureUuid } = usePolyline();
     const { version, setVersion } = usePolyline();
     const [isUrlEdited, setIsUrlEdited] = useState(false);
 

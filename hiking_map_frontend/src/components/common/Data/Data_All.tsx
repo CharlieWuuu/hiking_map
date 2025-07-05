@@ -1,24 +1,41 @@
-import styles from './Data_All.module.scss'; // 引入樣式
+// import
+import styles from './Data_All.module.scss';
+
+// components
+import Data_Detail from './Data_Detail';
+
+// react
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import { useRef, useEffect, useState, Fragment } from 'react';
+
+// hooks
+import { useOwnerDetail } from '../../../hooks/useOwnerDetail';
+
+// context
+import { useAuth } from '../../../context/AuthContext';
+import { usePatchData } from '../../../context/PatchDataContext';
+import { useModal } from '../../../context/ModalContext';
 import { usePolyline } from '../../../context/PolylineContext';
 import { useTableContext } from '../../../context/TableContext';
-import { useRef, useEffect, useState, Fragment } from 'react';
-import { useModal } from '../../../context/ModalContext';
+
+// image
 import Pagination from '../../../assets/images/Table_Pagination.svg';
-import { useSearchParams } from 'react-router-dom';
-import Data_Detail from './Data_Detail';
 import Close from '../../../assets/images/Panel_ClosePanel.svg';
-import { usePatchData } from '../../../context/PatchDataContext';
-import { useParams } from 'react-router-dom';
-import { useOwnerDetail } from '../../../hooks/useOwnerDetail';
-import { useNavigate } from 'react-router-dom';
 import DataUserEdit from '../../../assets/images/Menu_Data_User_Edit.svg';
 import Menu_Data from '../../../assets/images/Menu_Data.svg';
-import { useAuth } from '../../../context/AuthContext';
+
+// store
+import { useTrailUIStore } from '../../../store/useTrailUIStore';
 
 // 定義元件
 export default function Data_All() {
+    const hoverFeatureUuid = useTrailUIStore((state) => state.hoverFeatureUuid);
+    const setHoverFeatureUuid = useTrailUIStore((state) => state.setHoverFeatureUuid);
+    const activeFeatureUuid = useTrailUIStore((state) => state.activeFeatureUuid);
+    const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
+
     const { loading, trails } = usePolyline();
-    const { hoverFeatureUuid, setHoverFeatureUuid, activeFeatureUuid, setActiveFeatureUuid, setActiveFeature, version } = usePolyline();
+    const { setActiveFeature, version } = usePolyline();
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
     const { setPatchData } = usePatchData();
     const [searchParams] = useSearchParams();

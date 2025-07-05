@@ -1,6 +1,9 @@
 import { createContext, useContext, useMemo, useState, useEffect } from 'react';
 import { usePolyline } from './PolylineContext';
 
+// store
+import { useTrailUIStore } from '../store/useTrailUIStore';
+
 type TableContextType = {
     currentPage: number;
     setCurrentPage: (page: number) => void;
@@ -26,7 +29,7 @@ export const TableProvider = ({ children }: Props) => {
     const startIndex = useMemo(() => (currentPage - 1) * itemsPerPage, [currentPage]);
     const currentPageData = useMemo(() => Features?.slice(startIndex, startIndex + itemsPerPage) ?? [], [Features, startIndex]);
     const totalPages = useMemo(() => Math.ceil((Features?.length as number) / itemsPerPage), [Features]);
-    const { activeFeatureUuid } = usePolyline();
+    const activeFeatureUuid = useTrailUIStore((state) => state.activeFeatureUuid);
 
     useEffect(() => {
         setFeatures(features);
