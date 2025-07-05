@@ -28,6 +28,7 @@ import { TrailProperties } from '../../types/trails';
 
 // store
 import { useTrailMetaStore } from '../../store/useTrailMetaStore';
+import { useTrailDataStore } from '../../store/useTrailDataStore';
 
 export default function Owner_View() {
     const { name, type } = useParams<{ name: string; type: string }>();
@@ -36,15 +37,24 @@ export default function Owner_View() {
     const [displayCount, setDisplayCount] = useState(10);
     const observerRef = useRef<HTMLDivElement | null>(null);
     const { owner } = useOwnerDetail({ name: name!, type: type! });
+
+    const trails = useTrailDataStore((state) => state.trails);
+    const { countyOrder } = useCountyOrder({ uuid: owner?.uuid ?? '', type: type! });
+
     const setOwnerUuid = useTrailMetaStore((state) => state.setOwnerUuid);
     const setType = useTrailMetaStore((state) => state.setType);
-    const { trails } = usePolyline();
-    const { countyOrder } = useCountyOrder({ uuid: owner?.uuid ?? '', type: type! });
+
     const { trailsMonthData } = useTrailsMonthData({ uuid: owner?.uuid ?? '', type: type! });
 
     useEffect(() => {
-        setOwnerUuid(owner?.uuid ?? '');
-        setType(type || '');
+        const _owner_uuid = owner?.uuid ?? '';
+        const _type = type || '';
+
+        if (_owner_uuid && _type) {
+            setOwnerUuid(_owner_uuid);
+            setType(_type);
+            useTrailDataStore.getState().fetchTrails();
+        }
     }, [owner, type]);
 
     const handleObserver = (entries: IntersectionObserverEntry[]) => {

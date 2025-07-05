@@ -27,6 +27,7 @@ import GoBack from '../GoBack/GoBack';
 // store
 import { useTrailUIStore } from '../../../store/useTrailUIStore';
 import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
+import { useTrailDataStore } from '../../../store/useTrailDataStore';
 
 function CreateCustomPanes() {
     const map = useMap();
@@ -50,8 +51,9 @@ function CreateCustomPanes() {
 }
 
 export default function Map() {
-    const version = useTrailMetaStore((state) => state.version);
-    const { trails, loading } = usePolyline();
+    // const version = useTrailMetaStore((state) => state.version);
+    const trails = useTrailDataStore((state) => state.trails);
+    const loading = useTrailDataStore((state) => state.loading);
 
     const hoverFeatureUuid = useTrailUIStore((state) => state.hoverFeatureUuid);
     const setHoverFeatureUuid = useTrailUIStore((state) => state.setHoverFeatureUuid);
@@ -78,7 +80,7 @@ export default function Map() {
 
     useEffect(() => {
         setFeatures(trails?.features ?? []);
-    }, [trails, version]);
+    }, [trails]);
 
     const location = useLocation();
     const params = new URLSearchParams(location.search);
@@ -90,7 +92,6 @@ export default function Map() {
     const { name, type } = useParams<{ name: string; type: string; mode: string }>();
     const navigate = useNavigate();
     const handleMode = () => {
-        console.log(mode);
         if (lastMode === 'edit') {
             navigate(`/owner/${type}/${name}/data?mode=edit`, { replace: true });
             setLastMode('edit');

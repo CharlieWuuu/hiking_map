@@ -1,15 +1,16 @@
 import { usePolyline } from '../../../context/PolylineContext';
 import { useModal } from '../../../context/ModalContext';
-import { useState } from 'react';
+import { use, useState } from 'react';
 import styles from './Modal_Delete.module.scss';
 
 // store
 import { useTrailUIStore } from '../../../store/useTrailUIStore';
 import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
+import { useTrailDataStore } from '../../../store/useTrailDataStore';
 
 export default function Modal_Delete() {
-    const version = useTrailMetaStore((state) => state.version);
-    const setVersion = useTrailMetaStore((state) => state.setVersion);
+    // const version = useTrailMetaStore((state) => state.version);
+    // const setVersion = useTrailMetaStore((state) => state.setVersion);
 
     const { setActiveFeature } = usePolyline();
     const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
@@ -38,7 +39,7 @@ export default function Modal_Delete() {
             const result = await res.json();
             if (result.success) {
                 setDeleteComplete(true);
-                setVersion(version + 1);
+                // setVersion(version + 1);
                 setActiveFeatureUuid(null);
                 setActiveFeature(null);
 
@@ -48,6 +49,7 @@ export default function Modal_Delete() {
                         setDeleteComplete(false);
                     }, 2000);
                 }, 2000);
+                useTrailDataStore.getState().fetchTrails();
             } else {
                 alert('上傳失敗');
             }

@@ -7,8 +7,8 @@ interface TrailMetaState {
     setType: (t: string | null) => void;
     trail_uuid: string | null;
     setTrailUuid: (id: string | null) => void;
-    version: number;
-    setVersion: (v: number) => void;
+    // version: number;
+    // setVersion: (v: number) => void;
     share: string | null;
     setShare: (s: string | null) => void;
 }
@@ -23,8 +23,8 @@ export const useTrailMetaStore = create<TrailMetaState>((set) => ({
     trail_uuid: null,
     setTrailUuid: (id) => set({ trail_uuid: id }),
 
-    version: 0,
-    setVersion: (v) => set({ version: v }),
+    // version: 0,
+    // setVersion: (v) => set({ version: v }),
 
     share: null,
     setShare: (s) => set({ share: s }),

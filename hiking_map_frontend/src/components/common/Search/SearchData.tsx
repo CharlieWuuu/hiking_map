@@ -15,6 +15,7 @@ import { usePolyline } from '../../../context/PolylineContext';
 
 // store
 import { useTrailUIStore } from '../../../store/useTrailUIStore';
+import { useTrailDataStore } from '../../../store/useTrailDataStore';
 
 type TrailOption = {
     label: string;
@@ -28,7 +29,7 @@ type TrailOption = {
 export default function SearchData() {
     const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
 
-    const { trails } = usePolyline();
+    const trails = useTrailDataStore((state) => state.trails);
 
     const [showAutocomplete, setShowAutocomplete] = useState(false);
     const [selectedOption, setSelectedOption] = useState<TrailOption | null>(null);

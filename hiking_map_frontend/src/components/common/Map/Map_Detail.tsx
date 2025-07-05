@@ -1,5 +1,4 @@
 import styles from './Ｍap_Detail.module.scss';
-// import { useAuth } from '../../context/AuthContext';
 import type { Feature } from 'geojson';
 
 type Props = {
@@ -9,7 +8,6 @@ type Props = {
 export default function Map_Detail({ trails }: Props) {
     const features = trails;
     const detailCard = features?.properties;
-    // const { isLoggedIn } = useAuth();
 
     const date = new Date(detailCard?.time);
     const year = date.getFullYear();

@@ -1,9 +1,9 @@
 // 匯入 React 的核心 hook 和型別，ReactNode 是用來定義 children 的型別
-import { createContext, useContext, useState, ReactNode, useEffect, useRef } from 'react';
-import type { Feature, FeatureCollection } from 'geojson';
+import { createContext, useContext, useState, ReactNode } from 'react';
+import type { Feature } from 'geojson';
 
 // store
-import { useTrailMetaStore } from '../store/useTrailMetaStore';
+// import { useTrailMetaStore } from '../store/useTrailMetaStore';
 
 // 定義這個 context 的資料格式，包含兩組 state（hover 和 active）與對應的 set 函式
 type PolylineContextType = {
@@ -11,23 +11,13 @@ type PolylineContextType = {
     setActiveFeature: (feature: Feature | null) => void;
     deleteFeatureUuid: string | null;
     setDeleteFeatureUuid: (id: string | null) => void;
-    trails: FeatureCollection | null;
-    setTrails: (t: FeatureCollection | null) => void;
-    fetchTrails: () => void;
-    loading: boolean;
-    setLoading: (loading: boolean) => void;
-    error: Error | null;
-    setError: (error: Error | null) => void;
-    // owner_uuid: string | null;
-    // setOwnerUuid: (uuid: string | null) => void;
-    // type: string | null;
-    // setType: (type: string | null) => void;
-    // trail_uuid: string | null;
-    // setTrailUuid: (uuid: string | null) => void;
-    // version: number;
-    // setVersion: (index: number) => void;
-    // share: string | null;
-    // setShare: (friend: string) => void;
+    // trails: FeatureCollection | null;
+    // setTrails: (t: FeatureCollection | null) => void;
+    // fetchTrails: () => void;
+    // loading: boolean;
+    // setLoading: (loading: boolean) => void;
+    // error: Error | null;
+    // setError: (error: Error | null) => void;
 };
 
 // 創建一個 Context，初始值為 undefined（因為會在 Provider 裡面真正提供值）
@@ -37,57 +27,46 @@ const PolylineContext = createContext<PolylineContextType | undefined>(undefined
 export const PolylineProvider = ({ children }: { children: ReactNode }) => {
     const [activeFeature, setActiveFeature] = useState<Feature | null>(null);
     const [deleteFeatureUuid, setDeleteFeatureUuid] = useState<string | null>(null);
+    // const [trails, setTrails] = useState<FeatureCollection | null>(null);
+    // const [loading, setLoading] = useState(true);
+    // const [error, setError] = useState<Error | null>(null);
 
-    const [trails, setTrails] = useState<FeatureCollection | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
-    // const [owner_uuid, setOwnerUuid] = useState<string | null>(null);
-    const owner_uuid = useTrailMetaStore((state) => state.owner_uuid);
-    // const setOwnerUuid = useTrailMetaStore((state) => state.setOwnerUuid);
-    // const [type, setType] = useState<string | null>(null);
-    const type = useTrailMetaStore((state) => state.type);
-    // const setType = useTrailMetaStore((state) => state.setType);
+    // const lastKeyRef = useRef<string | null>(null);
 
-    // const [trail_uuid, setTrailUuid] = useState<string | null>(null);
-    const trail_uuid = useTrailMetaStore((state) => state.trail_uuid);
-    // const setTrailUuid = useTrailMetaStore((state) => state.setTrailUuid);
-    // const [version, setVersion] = useState(0);
-    const version = useTrailMetaStore((state) => state.version);
-    // const setVersion = useTrailMetaStore((state) => state.setVersion);
-    const lastKeyRef = useRef<string | null>(null);
+    // const owner_uuid = useTrailMetaStore((state) => state.owner_uuid);
+    // const type = useTrailMetaStore((state) => state.type);
+    // const trail_uuid = useTrailMetaStore((state) => state.trail_uuid);
+    // const version = useTrailMetaStore((state) => state.version);
+    // const share = useTrailMetaStore((state) => state.share);
 
-    // const [share, setShare] = useState<string | null>(null);
-    const share = useTrailMetaStore((state) => state.share);
-    // const setShare = useTrailMetaStore((state) => state.setShare);
+    // const fetchTrails = async () => {
+    //     if (!owner_uuid || !type) return;
+    //     const key = `${owner_uuid}_${type}_${trail_uuid || 'all'}_${version}`;
+    //     if (lastKeyRef.current === key) return; // 資料沒變就不再 fetch
+    //     lastKeyRef.current = key; // 記住這次的 key
 
-    const fetchTrails = async () => {
-        if (!owner_uuid || !type) return;
-        const key = `${owner_uuid}_${type}_${trail_uuid || 'all'}_${version}`;
-        if (lastKeyRef.current === key) return; // 資料沒變就不再 fetch
-        lastKeyRef.current = key; // 記住這次的 key
+    //     // setLoading(true);
+    //     // setError(null);
 
-        setLoading(true);
-        setError(null);
+    //     let url = `${import.meta.env.VITE_API_URL}/trails?owner_uuid=${owner_uuid}&type=${type}`;
+    //     if (trail_uuid) url += `&uuid=${trail_uuid}`;
+    //     if (share) url += `&share=${share}`;
 
-        let url = `${import.meta.env.VITE_API_URL}/trails?owner_uuid=${owner_uuid}&type=${type}`;
-        if (trail_uuid) url += `&uuid=${trail_uuid}`;
-        if (share) url += `&share=${share}`;
+    //     try {
+    //         const res = await fetch(url, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+    //         const data = await res.json();
+    //         setTrails(data);
+    //     } catch (err) {
+    //         console.error('trails 抓取錯誤:', err);
+    //         // setError(err as Error);
+    //     } finally {
+    //         // setLoading(false);
+    //     }
+    // };
 
-        try {
-            const res = await fetch(url, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-            const data = await res.json();
-            setTrails(data);
-        } catch (err) {
-            console.error('trails 抓取錯誤:', err);
-            setError(err as Error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchTrails();
-    }, [owner_uuid, type, trail_uuid, version]);
+    // useEffect(() => {
+    //     fetchTrails();
+    // }, [owner_uuid, type, trail_uuid, version]);
 
     // 把這些 state 綁定到 PolylineContext.Provider 上，這樣被包住的所有 component 就都能使用了
     return (
@@ -97,23 +76,13 @@ export const PolylineProvider = ({ children }: { children: ReactNode }) => {
                 setActiveFeature,
                 deleteFeatureUuid,
                 setDeleteFeatureUuid,
-                trails,
-                setTrails,
-                fetchTrails,
-                loading,
-                setLoading,
-                error,
-                setError,
-                // owner_uuid,
-                // setOwnerUuid,
-                // type,
-                // setType,
-                // trail_uuid,
-                // setTrailUuid,
-                // version,
-                // setVersion,
-                // share,
-                // setShare,
+                // trails,
+                // setTrails,
+                // fetchTrails,
+                // loading,
+                // setLoading,
+                // error,
+                // setError,
             }}>
             {children}
         </PolylineContext.Provider>

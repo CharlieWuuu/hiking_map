@@ -7,6 +7,7 @@ import { usePolyline } from '../../../context/PolylineContext';
 
 // store
 import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
+import { useTrailDataStore } from '../../../store/useTrailDataStore';
 
 export default function Modal_File() {
     const { user } = useAuth();
@@ -15,8 +16,8 @@ export default function Modal_File() {
     const [uploadComplete, setUploadComplete] = useState(false);
     const { activeFeature } = usePolyline();
 
-    const version = useTrailMetaStore((state) => state.version);
-    const setVersion = useTrailMetaStore((state) => state.setVersion);
+    // const version = useTrailMetaStore((state) => state.version);
+    // const setVersion = useTrailMetaStore((state) => state.setVersion);
 
     const handleUpload = async () => {
         if (file === null) {
@@ -43,11 +44,12 @@ export default function Modal_File() {
 
             if (result.success) {
                 setUploadComplete(true);
-                setVersion(version + 1);
+                // setVersion(version + 1);
                 setTimeout(() => {
                     setModalIsOpen(false);
                     setTimeout(() => setUploadComplete(false), 2000);
                 }, 2000);
+                useTrailDataStore.getState().fetchTrails();
             } else {
                 alert('上傳失敗');
             }

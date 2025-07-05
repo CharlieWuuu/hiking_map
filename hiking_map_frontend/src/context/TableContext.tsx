@@ -3,6 +3,7 @@ import { usePolyline } from './PolylineContext';
 
 // store
 import { useTrailUIStore } from '../store/useTrailUIStore';
+import { useTrailDataStore } from '../store/useTrailDataStore';
 
 type TableContextType = {
     currentPage: number;
@@ -21,7 +22,7 @@ type Props = {
 
 export const TableProvider = ({ children }: Props) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const { trails } = usePolyline();
+    const trails = useTrailDataStore((state) => state.trails);
     const features = trails?.features;
     const [Features, setFeatures] = useState(features);
 

@@ -14,8 +14,8 @@ import 'leaflet/dist/leaflet.css';
 // components
 import GoBack from '../components/common/GoBack/GoBack';
 
-// context
-import { usePolyline } from '../context/PolylineContext';
+// // context
+// // import { usePolyline } from '../context/PolylineContext';
 
 // hooks
 import { useIsResizing } from '../hooks/useIsResizing';
@@ -23,6 +23,7 @@ import { useOwnerDetail } from '../hooks/useOwnerDetail';
 
 // store
 import { useTrailMetaStore } from '../store/useTrailMetaStore';
+import { useTrailDataStore } from '../store/useTrailDataStore';
 
 function TileEffect() {
     const map = useMap();
@@ -70,10 +71,17 @@ export default function Owner_Trail() {
     const { owner } = useOwnerDetail({ name: name!, type: type! });
     const setOwnerUuid = useTrailMetaStore((state) => state.setOwnerUuid);
     const setType = useTrailMetaStore((state) => state.setType);
-    const { trails } = usePolyline();
+    const trails = useTrailDataStore((state) => state.trails);
+
     useEffect(() => {
-        setOwnerUuid(owner?.uuid ?? '');
-        setType(type || '');
+        const _owner_uuid = owner?.uuid ?? '';
+        const _type = type || '';
+
+        if (_owner_uuid && _type) {
+            setOwnerUuid(_owner_uuid);
+            setType(_type);
+            useTrailDataStore.getState().fetchTrails();
+        }
     }, [owner, type]);
 
     const mapWrapperRef = useRef<HTMLDivElement>(null);

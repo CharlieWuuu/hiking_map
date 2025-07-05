@@ -56,8 +56,8 @@ export default function Data_Detail({ trails }: Props) {
     const { setModalIsOpen, setModalType } = useModal();
     const { setDeleteFeatureUuid } = usePolyline();
 
-    const version = useTrailMetaStore((state) => state.version);
-    const setVersion = useTrailMetaStore((state) => state.setVersion);
+    // const version = useTrailMetaStore((state) => state.version);
+    // const setVersion = useTrailMetaStore((state) => state.setVersion);
 
     const [isUrlEdited, setIsUrlEdited] = useState(false);
 
@@ -77,7 +77,7 @@ export default function Data_Detail({ trails }: Props) {
                 setModalType('complete');
                 setModalIsOpen(true);
                 setActiveFeatureUuid(null);
-                setVersion(version + 1);
+                // setVersion(version + 1);
                 setPatchData(null);
             } else {
                 alert('上傳失敗');

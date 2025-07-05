@@ -24,7 +24,6 @@ export function useTrailsMonthData({ uuid, type }: Props) {
             try {
                 const res = await fetch(`${import.meta.env.VITE_API_URL}/trails/trails_month_data?owner_uuid=${uuid}&type=${type}`);
                 const data = await res.json();
-                console.log(data);
                 setTrailsMonthData(data);
             } catch (err) {
                 console.error('county_order 抓取錯誤:', err);

@@ -27,6 +27,7 @@ import Menu_Data from '../../../assets/images/Menu_Data.svg';
 // store
 import { useTrailUIStore } from '../../../store/useTrailUIStore';
 import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
+import { useTrailDataStore } from '../../../store/useTrailDataStore';
 
 // 定義元件
 export default function Data_All() {
@@ -35,9 +36,10 @@ export default function Data_All() {
     const activeFeatureUuid = useTrailUIStore((state) => state.activeFeatureUuid);
     const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
 
-    const { loading, trails } = usePolyline();
+    const loading = useTrailDataStore((state) => state.loading);
+    const trails = useTrailDataStore((state) => state.trails);
 
-    const version = useTrailMetaStore((state) => state.version);
+    // const version = useTrailMetaStore((state) => state.version);
 
     const { setActiveFeature } = usePolyline();
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
@@ -83,7 +85,7 @@ export default function Data_All() {
             setOnLoading(false);
             setModalIsOpen(false);
         }
-    }, [trails, version, loading]);
+    }, [trails, loading]);
 
     const navigate = useNavigate();
     const handleMode = () => {
