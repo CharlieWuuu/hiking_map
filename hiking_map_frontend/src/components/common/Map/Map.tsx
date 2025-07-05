@@ -7,7 +7,7 @@ import L from 'leaflet';
 import { useEffect, useRef, useState } from 'react';
 import { useIsResizing } from '../../../hooks/useIsResizing';
 import Map_ZoomIn from './Map_ZoomIn';
-import { usePolyline } from '../../../context/PolylineContext';
+// import { usePolyline } from '../../../context/PolylineContext';
 import { useMapContext } from '../../../context/MapContext';
 import { useTableContext } from '../../../context/TableContext';
 import Map_Detail from './Map_Detail';
@@ -26,7 +26,7 @@ import GoBack from '../GoBack/GoBack';
 
 // store
 import { useTrailUIStore } from '../../../store/useTrailUIStore';
-import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
+// import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
 import { useTrailDataStore } from '../../../store/useTrailDataStore';
 
 function CreateCustomPanes() {

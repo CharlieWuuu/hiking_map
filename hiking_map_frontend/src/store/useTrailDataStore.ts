@@ -10,7 +10,7 @@ interface TrailDataState {
     // _lastKey: string | null;
 }
 
-export const useTrailDataStore = create<TrailDataState>((set, get) => ({
+export const useTrailDataStore = create<TrailDataState>((set) => ({
     trails: null,
     loading: false,
     error: null,
