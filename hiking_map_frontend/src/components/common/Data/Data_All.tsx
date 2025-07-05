@@ -15,7 +15,7 @@ import { useOwnerDetail } from '../../../hooks/useOwnerDetail';
 import { useAuth } from '../../../context/AuthContext';
 import { usePatchData } from '../../../context/PatchDataContext';
 import { useModal } from '../../../context/ModalContext';
-import { usePolyline } from '../../../context/PolylineContext';
+// import { usePolyline } from '../../../context/PolylineContext';
 import { useTableContext } from '../../../context/TableContext';
 
 // image
@@ -35,13 +35,12 @@ export default function Data_All() {
     const setHoverFeatureUuid = useTrailUIStore((state) => state.setHoverFeatureUuid);
     const activeFeatureUuid = useTrailUIStore((state) => state.activeFeatureUuid);
     const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
+    const setActiveFeature = useTrailUIStore((state) => state.setActiveFeature);
 
     const loading = useTrailDataStore((state) => state.loading);
     const trails = useTrailDataStore((state) => state.trails);
 
     // const version = useTrailMetaStore((state) => state.version);
-
-    const { setActiveFeature } = usePolyline();
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
     const { setPatchData } = usePatchData();
     const [searchParams] = useSearchParams();

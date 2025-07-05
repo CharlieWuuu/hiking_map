@@ -3,18 +3,20 @@ import { useState, useRef, useEffect } from 'react';
 import { useModal } from '../../../context/ModalContext';
 
 import { useAuth } from '../../../context/AuthContext';
-import { usePolyline } from '../../../context/PolylineContext';
+// import { usePolyline } from '../../../context/PolylineContext';
 
 // store
-import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
+// import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
 import { useTrailDataStore } from '../../../store/useTrailDataStore';
+import { useTrailUIStore } from '../../../store/useTrailUIStore';
 
 export default function Modal_File() {
     const { user } = useAuth();
     const [file, setFile] = useState<File | null>(null);
     const { modalType, setModalIsOpen } = useModal();
     const [uploadComplete, setUploadComplete] = useState(false);
-    const { activeFeature } = usePolyline();
+
+    const activeFeature = useTrailUIStore((state) => state.activeFeature);
 
     // const version = useTrailMetaStore((state) => state.version);
     // const setVersion = useTrailMetaStore((state) => state.setVersion);

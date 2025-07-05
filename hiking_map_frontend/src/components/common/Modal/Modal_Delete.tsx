@@ -1,20 +1,21 @@
-import { usePolyline } from '../../../context/PolylineContext';
+// import { usePolyline } from '../../../context/PolylineContext';
 import { useModal } from '../../../context/ModalContext';
-import { use, useState } from 'react';
+import { useState } from 'react';
 import styles from './Modal_Delete.module.scss';
 
 // store
 import { useTrailUIStore } from '../../../store/useTrailUIStore';
-import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
+// import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
 import { useTrailDataStore } from '../../../store/useTrailDataStore';
 
 export default function Modal_Delete() {
     // const version = useTrailMetaStore((state) => state.version);
     // const setVersion = useTrailMetaStore((state) => state.setVersion);
 
-    const { setActiveFeature } = usePolyline();
+    const activeFeatureUuid = useTrailUIStore((state) => state.activeFeatureUuid);
     const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
-    const { deleteFeatureUuid } = usePolyline();
+    const setActiveFeature = useTrailUIStore((state) => state.setActiveFeature);
+
     const { setModalIsOpen } = useModal();
     const [deleteComplete, setDeleteComplete] = useState(false);
 
@@ -31,7 +32,7 @@ export default function Modal_Delete() {
             }
 
             const baseURL = import.meta.env.VITE_API_URL;
-            const res = await fetch(`${baseURL}/trails/${deleteFeatureUuid}`, {
+            const res = await fetch(`${baseURL}/trails/${activeFeatureUuid}`, {
                 method: 'DELETE',
                 headers,
             });

@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState, useEffect } from 'react';
-import { usePolyline } from './PolylineContext';
+// import { usePolyline } from './PolylineContext';
 
 // store
 import { useTrailUIStore } from '../store/useTrailUIStore';

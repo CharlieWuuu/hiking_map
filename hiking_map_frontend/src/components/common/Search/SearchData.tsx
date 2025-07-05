@@ -11,7 +11,7 @@ import { Autocomplete } from '@mui/material';
 import { Popper } from '@mui/material';
 
 // hooks
-import { usePolyline } from '../../../context/PolylineContext';
+// import { usePolyline } from '../../../context/PolylineContext';
 
 // store
 import { useTrailUIStore } from '../../../store/useTrailUIStore';

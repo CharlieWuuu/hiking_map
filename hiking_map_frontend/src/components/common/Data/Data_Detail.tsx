@@ -11,7 +11,7 @@ import { useSearchParams, useNavigate, useParams } from 'react-router-dom';
 // context
 import { useModal } from '../../../context/ModalContext';
 import { usePatchData } from '../../../context/PatchDataContext';
-import { usePolyline } from '../../../context/PolylineContext';
+// import { usePolyline } from '../../../context/PolylineContext';
 
 // image
 import Menu_Map from '../../../assets/images/Menu_Map.svg';
@@ -24,7 +24,7 @@ import Save from '../../../assets/images/Data_Save.svg';
 
 // store
 import { useTrailUIStore } from '../../../store/useTrailUIStore';
-import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
+// import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
 
 type patchData = {
     name: string;
@@ -46,6 +46,7 @@ type Props = {
 export default function Data_Detail({ trails }: Props) {
     const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
 
+    // const { setDeleteFeatureUuid } = usePolyline();
     const [isEditing, setIsEditing] = useState(false);
     const date = new Date(trails.time);
     const year = date.getFullYear();
@@ -54,7 +55,6 @@ export default function Data_Detail({ trails }: Props) {
     const time = `${year}年${month}月${day}日`;
     const { patchData, setPatchData } = usePatchData();
     const { setModalIsOpen, setModalType } = useModal();
-    const { setDeleteFeatureUuid } = usePolyline();
 
     // const version = useTrailMetaStore((state) => state.version);
     // const setVersion = useTrailMetaStore((state) => state.setVersion);
@@ -153,7 +153,7 @@ export default function Data_Detail({ trails }: Props) {
 
                                 <button
                                     onClick={() => {
-                                        setDeleteFeatureUuid(trails?.uuid);
+                                        setActiveFeatureUuid(trails?.uuid);
                                         setModalIsOpen(true);
                                         setModalType('delete');
                                     }}>

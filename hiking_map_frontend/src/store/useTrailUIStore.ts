@@ -1,4 +1,8 @@
-import { create } from 'zustand'; // 匯入 create 函式
+// zustand
+import { create } from 'zustand';
+
+// type
+import type { Feature } from 'geojson';
 
 // 定義 Store 的狀態 (State) 型別
 interface TrailUIStore {
@@ -6,6 +10,8 @@ interface TrailUIStore {
     setHoverFeatureUuid: (id: string | null) => void;
     activeFeatureUuid: string | null;
     setActiveFeatureUuid: (id: string | null) => void;
+    activeFeature: Feature | null;
+    setActiveFeature: (feature: Feature | null) => void;
 }
 
 // 使用 create 函式創建你的 Zustand Store
@@ -15,4 +21,7 @@ export const useTrailUIStore = create<TrailUIStore>((set) => ({
 
     activeFeatureUuid: null,
     setActiveFeatureUuid: (id) => set({ activeFeatureUuid: id }),
+
+    activeFeature: null,
+    setActiveFeature: (feature) => set({ activeFeature: feature }),
 }));

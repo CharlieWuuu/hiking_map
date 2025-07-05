@@ -1,99 +1,37 @@
-// 匯入 React 的核心 hook 和型別，ReactNode 是用來定義 children 的型別
-import { createContext, useContext, useState, ReactNode } from 'react';
-import type { Feature } from 'geojson';
+// // 匯入 React 的核心 hook 和型別，ReactNode 是用來定義 children 的型別
+// import { createContext, useContext, useState, ReactNode } from 'react';
+// import type { Feature } from 'geojson';
 
-// store
-// import { useTrailMetaStore } from '../store/useTrailMetaStore';
+// // 定義這個 context 的資料格式，包含兩組 state（hover 和 active）與對應的 set 函式
+// type PolylineContextType = {
+//     activeFeature: Feature | null;
+//     setActiveFeature: (feature: Feature | null) => void;
+// };
 
-// 定義這個 context 的資料格式，包含兩組 state（hover 和 active）與對應的 set 函式
-type PolylineContextType = {
-    activeFeature: Feature | null;
-    setActiveFeature: (feature: Feature | null) => void;
-    deleteFeatureUuid: string | null;
-    setDeleteFeatureUuid: (id: string | null) => void;
-    // trails: FeatureCollection | null;
-    // setTrails: (t: FeatureCollection | null) => void;
-    // fetchTrails: () => void;
-    // loading: boolean;
-    // setLoading: (loading: boolean) => void;
-    // error: Error | null;
-    // setError: (error: Error | null) => void;
-};
+// // 創建一個 Context，初始值為 undefined（因為會在 Provider 裡面真正提供值）
+// const PolylineContext = createContext<PolylineContextType | undefined>(undefined);
 
-// 創建一個 Context，初始值為 undefined（因為會在 Provider 裡面真正提供值）
-const PolylineContext = createContext<PolylineContextType | undefined>(undefined);
+// // 寫一個 Provider 元件，讓外層可以包住整個應用，把這組 state 提供下去
+// export const PolylineProvider = ({ children }: { children: ReactNode }) => {
+//     const [activeFeature, setActiveFeature] = useState<Feature | null>(null);
 
-// 寫一個 Provider 元件，讓外層可以包住整個應用，把這組 state 提供下去
-export const PolylineProvider = ({ children }: { children: ReactNode }) => {
-    const [activeFeature, setActiveFeature] = useState<Feature | null>(null);
-    const [deleteFeatureUuid, setDeleteFeatureUuid] = useState<string | null>(null);
-    // const [trails, setTrails] = useState<FeatureCollection | null>(null);
-    // const [loading, setLoading] = useState(true);
-    // const [error, setError] = useState<Error | null>(null);
+//     // 把這些 state 綁定到 PolylineContext.Provider 上，這樣被包住的所有 component 就都能使用了
+//     return (
+//         <PolylineContext.Provider
+//             value={{
+//                 activeFeature,
+//                 setActiveFeature,
+//             }}>
+//             {children}
+//         </PolylineContext.Provider>
+//     );
+// };
 
-    // const lastKeyRef = useRef<string | null>(null);
+// // 自定義 hook usePolyline()，讓你在 component 裡可以用得像 useState 一樣直覺。
+// export const usePolyline = () => {
+//     const context = useContext(PolylineContext);
 
-    // const owner_uuid = useTrailMetaStore((state) => state.owner_uuid);
-    // const type = useTrailMetaStore((state) => state.type);
-    // const trail_uuid = useTrailMetaStore((state) => state.trail_uuid);
-    // const version = useTrailMetaStore((state) => state.version);
-    // const share = useTrailMetaStore((state) => state.share);
-
-    // const fetchTrails = async () => {
-    //     if (!owner_uuid || !type) return;
-    //     const key = `${owner_uuid}_${type}_${trail_uuid || 'all'}_${version}`;
-    //     if (lastKeyRef.current === key) return; // 資料沒變就不再 fetch
-    //     lastKeyRef.current = key; // 記住這次的 key
-
-    //     // setLoading(true);
-    //     // setError(null);
-
-    //     let url = `${import.meta.env.VITE_API_URL}/trails?owner_uuid=${owner_uuid}&type=${type}`;
-    //     if (trail_uuid) url += `&uuid=${trail_uuid}`;
-    //     if (share) url += `&share=${share}`;
-
-    //     try {
-    //         const res = await fetch(url, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
-    //         const data = await res.json();
-    //         setTrails(data);
-    //     } catch (err) {
-    //         console.error('trails 抓取錯誤:', err);
-    //         // setError(err as Error);
-    //     } finally {
-    //         // setLoading(false);
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     fetchTrails();
-    // }, [owner_uuid, type, trail_uuid, version]);
-
-    // 把這些 state 綁定到 PolylineContext.Provider 上，這樣被包住的所有 component 就都能使用了
-    return (
-        <PolylineContext.Provider
-            value={{
-                activeFeature,
-                setActiveFeature,
-                deleteFeatureUuid,
-                setDeleteFeatureUuid,
-                // trails,
-                // setTrails,
-                // fetchTrails,
-                // loading,
-                // setLoading,
-                // error,
-                // setError,
-            }}>
-            {children}
-        </PolylineContext.Provider>
-    );
-};
-
-// 自定義 hook usePolyline()，讓你在 component 裡可以用得像 useState 一樣直覺。
-export const usePolyline = () => {
-    const context = useContext(PolylineContext);
-
-    // 如果沒包在 Provider 裡就會直接拋錯，幫你 catch bug
-    if (!context) throw new Error('usePolyline 必須包在 <PolylineProvider> 內');
-    return context;
-};
+//     // 如果沒包在 Provider 裡就會直接拋錯，幫你 catch bug
+//     if (!context) throw new Error('usePolyline 必須包在 <PolylineProvider> 內');
+//     return context;
+// };
