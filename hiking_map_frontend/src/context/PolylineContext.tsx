@@ -2,6 +2,9 @@
 import { createContext, useContext, useState, ReactNode, useEffect, useRef } from 'react';
 import type { Feature, FeatureCollection } from 'geojson';
 
+// store
+import { useTrailMetaStore } from '../store/useTrailMetaStore';
+
 // 定義這個 context 的資料格式，包含兩組 state（hover 和 active）與對應的 set 函式
 type PolylineContextType = {
     activeFeature: Feature | null;
@@ -15,16 +18,16 @@ type PolylineContextType = {
     setLoading: (loading: boolean) => void;
     error: Error | null;
     setError: (error: Error | null) => void;
-    owner_uuid: string | null;
-    setOwnerUuid: (uuid: string | null) => void;
-    type: string | null;
-    setType: (type: string | null) => void;
-    trail_uuid: string | null;
-    setTrailUuid: (uuid: string | null) => void;
-    version: number;
-    setVersion: (index: number) => void;
-    share: string | null;
-    setShare: (friend: string) => void;
+    // owner_uuid: string | null;
+    // setOwnerUuid: (uuid: string | null) => void;
+    // type: string | null;
+    // setType: (type: string | null) => void;
+    // trail_uuid: string | null;
+    // setTrailUuid: (uuid: string | null) => void;
+    // version: number;
+    // setVersion: (index: number) => void;
+    // share: string | null;
+    // setShare: (friend: string) => void;
 };
 
 // 創建一個 Context，初始值為 undefined（因為會在 Provider 裡面真正提供值）
@@ -38,14 +41,24 @@ export const PolylineProvider = ({ children }: { children: ReactNode }) => {
     const [trails, setTrails] = useState<FeatureCollection | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
-    const [owner_uuid, setOwnerUuid] = useState<string | null>(null);
-    const [type, setType] = useState<string | null>(null);
+    // const [owner_uuid, setOwnerUuid] = useState<string | null>(null);
+    const owner_uuid = useTrailMetaStore((state) => state.owner_uuid);
+    // const setOwnerUuid = useTrailMetaStore((state) => state.setOwnerUuid);
+    // const [type, setType] = useState<string | null>(null);
+    const type = useTrailMetaStore((state) => state.type);
+    // const setType = useTrailMetaStore((state) => state.setType);
 
-    const [trail_uuid, setTrailUuid] = useState<string | null>(null);
-    const [version, setVersion] = useState(0);
+    // const [trail_uuid, setTrailUuid] = useState<string | null>(null);
+    const trail_uuid = useTrailMetaStore((state) => state.trail_uuid);
+    // const setTrailUuid = useTrailMetaStore((state) => state.setTrailUuid);
+    // const [version, setVersion] = useState(0);
+    const version = useTrailMetaStore((state) => state.version);
+    // const setVersion = useTrailMetaStore((state) => state.setVersion);
     const lastKeyRef = useRef<string | null>(null);
 
-    const [share, setShare] = useState<string | null>(null);
+    // const [share, setShare] = useState<string | null>(null);
+    const share = useTrailMetaStore((state) => state.share);
+    // const setShare = useTrailMetaStore((state) => state.setShare);
 
     const fetchTrails = async () => {
         if (!owner_uuid || !type) return;
@@ -91,16 +104,16 @@ export const PolylineProvider = ({ children }: { children: ReactNode }) => {
                 setLoading,
                 error,
                 setError,
-                owner_uuid,
-                setOwnerUuid,
-                type,
-                setType,
-                trail_uuid,
-                setTrailUuid,
-                version,
-                setVersion,
-                share,
-                setShare,
+                // owner_uuid,
+                // setOwnerUuid,
+                // type,
+                // setType,
+                // trail_uuid,
+                // setTrailUuid,
+                // version,
+                // setVersion,
+                // share,
+                // setShare,
             }}>
             {children}
         </PolylineContext.Provider>

@@ -5,9 +5,13 @@ import styles from './Modal_Delete.module.scss';
 
 // store
 import { useTrailUIStore } from '../../../store/useTrailUIStore';
+import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
 
 export default function Modal_Delete() {
-    const { version, setVersion, setActiveFeature } = usePolyline();
+    const version = useTrailMetaStore((state) => state.version);
+    const setVersion = useTrailMetaStore((state) => state.setVersion);
+
+    const { setActiveFeature } = usePolyline();
     const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
     const { deleteFeatureUuid } = usePolyline();
     const { setModalIsOpen } = useModal();

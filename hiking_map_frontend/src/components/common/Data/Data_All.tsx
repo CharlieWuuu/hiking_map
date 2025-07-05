@@ -26,6 +26,7 @@ import Menu_Data from '../../../assets/images/Menu_Data.svg';
 
 // store
 import { useTrailUIStore } from '../../../store/useTrailUIStore';
+import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
 
 // 定義元件
 export default function Data_All() {
@@ -35,7 +36,10 @@ export default function Data_All() {
     const setActiveFeatureUuid = useTrailUIStore((state) => state.setActiveFeatureUuid);
 
     const { loading, trails } = usePolyline();
-    const { setActiveFeature, version } = usePolyline();
+
+    const version = useTrailMetaStore((state) => state.version);
+
+    const { setActiveFeature } = usePolyline();
     const { currentPage, setCurrentPage, startIndex, currentPageData, totalPages } = useTableContext();
     const { setPatchData } = usePatchData();
     const [searchParams] = useSearchParams();
@@ -96,7 +100,10 @@ export default function Data_All() {
     const params = new URLSearchParams(window.location.search);
     const share = params.get('share');
 
-    const { setOwnerUuid, setType, setShare } = usePolyline();
+    const setOwnerUuid = useTrailMetaStore((state) => state.setOwnerUuid);
+    const setType = useTrailMetaStore((state) => state.setType);
+    const setShare = useTrailMetaStore((state) => state.setShare);
+
     useEffect(() => {
         setOwnerUuid(owner?.uuid ?? '');
         setType(type || '');

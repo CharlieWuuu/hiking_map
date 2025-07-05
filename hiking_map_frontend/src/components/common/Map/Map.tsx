@@ -26,6 +26,7 @@ import GoBack from '../GoBack/GoBack';
 
 // store
 import { useTrailUIStore } from '../../../store/useTrailUIStore';
+import { useTrailMetaStore } from '../../../store/useTrailMetaStore';
 
 function CreateCustomPanes() {
     const map = useMap();
@@ -49,7 +50,8 @@ function CreateCustomPanes() {
 }
 
 export default function Map() {
-    const { trails, version, loading } = usePolyline();
+    const version = useTrailMetaStore((state) => state.version);
+    const { trails, loading } = usePolyline();
 
     const hoverFeatureUuid = useTrailUIStore((state) => state.hoverFeatureUuid);
     const setHoverFeatureUuid = useTrailUIStore((state) => state.setHoverFeatureUuid);

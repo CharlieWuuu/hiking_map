@@ -21,6 +21,9 @@ import { usePolyline } from '../context/PolylineContext';
 import { useIsResizing } from '../hooks/useIsResizing';
 import { useOwnerDetail } from '../hooks/useOwnerDetail';
 
+// store
+import { useTrailMetaStore } from '../store/useTrailMetaStore';
+
 function TileEffect() {
     const map = useMap();
     useEffect(() => {
@@ -65,7 +68,9 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
 export default function Owner_Trail() {
     const { name, uuid, type } = useParams<{ name: string; uuid: string; type: string }>();
     const { owner } = useOwnerDetail({ name: name!, type: type! });
-    const { setOwnerUuid, setType, trails } = usePolyline();
+    const setOwnerUuid = useTrailMetaStore((state) => state.setOwnerUuid);
+    const setType = useTrailMetaStore((state) => state.setType);
+    const { trails } = usePolyline();
     useEffect(() => {
         setOwnerUuid(owner?.uuid ?? '');
         setType(type || '');
