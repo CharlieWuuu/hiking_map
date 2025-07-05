@@ -52,9 +52,9 @@ export default function Navbar({ setMenuIsOpen, ownerList }: Props) {
             <div className={styles.Hamburger} onClick={() => setMenuIsOpen(true)}>
                 <img src={Hamburger} alt="更多" />
             </div>
-            <a className={styles.Logo} href="/">
+            <Link className={styles.Logo} to="/">
                 <img src={LogoUrl} alt="LOGO" />
-            </a>
+            </Link>
             <div className={styles.SearchBar}>
                 <SearchUser ownerList={ownerList} />
             </div>

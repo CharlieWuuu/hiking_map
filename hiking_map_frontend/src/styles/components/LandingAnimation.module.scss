@@ -1,0 +1,47 @@
+@use '../colors' as colors;
+@use '../media' as media;
+@use '../variables' as variables;
+
+.LandingAnimation_Wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    background-color: colors.$background;
+    animation: LandingAnimation_Wrapper 2s linear forwards;
+    .LandingAnimation_Logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: LandingAnimation_Logo 2s linear forwards;
+    }
+}
+
+@keyframes LandingAnimation_Wrapper {
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+        z-index: -1;
+    }
+}
+
+@keyframes LandingAnimation_Logo {
+    75% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 0;
+        filter: blur(10px);
+        transform: translate(-50%, -50%) scale(1.5);
+    }
+}

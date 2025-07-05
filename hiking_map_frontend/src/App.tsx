@@ -1,7 +1,6 @@
 // page
 import Index from './pages/Index';
 import Owner_Data from './pages/Owner_Data';
-// import Data_Layer from './pages/Data_Layer';
 import Login from './pages/Login';
 import Intro from './pages/Intro';
 import BottomBar from './components/layout/BottomBar/BottomBar';
@@ -15,6 +14,7 @@ import Modal from './components/common/Modal/Modal';
 import Menu from './components/layout/Menu/Menu';
 import Footer from './components/layout/Footer/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
+import LandingAnimation from './components/common/LandingAnimation';
 
 // css
 import styles from './App.module.scss';
@@ -37,6 +37,7 @@ export default function App() {
 
     return (
         <>
+            <LandingAnimation />
             <ScrollToTop />
             <Navbar setMenuIsOpen={setMenuIsOpen} ownerList={ownerList} />
             <div className={`${styles.App} ${isFullScreen ? styles.NoScroll : ''}`}>
