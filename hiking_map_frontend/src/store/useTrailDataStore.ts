@@ -26,21 +26,13 @@ export const useTrailDataStore = create<TrailDataState>((set) => ({
         // 沒有 owner 或 type 就直接退出（這組條件不足）
         if (!owner_uuid || !type) return;
 
-        // // 用條件組一個 key：判斷「這一次要抓的資料」是否跟上一次相同
-        // const key = `${owner_uuid}_${type}_${trail_uuid || 'all'}_${version}`;
-        // if (get()._lastKey === key) {
-        //     return;
-        // } else {
-        //     // 記住這次 key，等下一次比較
-        //     get()._lastKey = key;
-        // }
-
         // 組 API URL
         let url = `${import.meta.env.VITE_API_URL}/trails?owner_uuid=${owner_uuid}&type=${type}`;
         if (trail_uuid) url += `&uuid=${trail_uuid}`; // 找特定的路線
         if (share) url += `&share=${share}`; // 分享模式
 
         try {
+            console.log(url);
             const res = await fetch(url, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
             const data = await res.json();
             set({ trails: data });

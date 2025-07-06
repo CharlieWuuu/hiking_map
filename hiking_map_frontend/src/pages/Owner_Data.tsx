@@ -28,16 +28,19 @@ export default function Owner_Data() {
     const location = window.location.pathname + window.location.search;
 
     const { owner } = useOwnerDetail({ name: name!, type: type! });
+    const ownerUuid = useTrailMetaStore((state) => state.owner_uuid);
     const setOwnerUuid = useTrailMetaStore((state) => state.setOwnerUuid);
     const setType = useTrailMetaStore((state) => state.setType);
+    const trails = useTrailDataStore((state) => state.trails);
 
     useEffect(() => {
         const _owner_uuid = owner?.uuid ?? '';
         const _type = type || '';
+
         if (_owner_uuid && _type) {
             setOwnerUuid(_owner_uuid);
             setType(_type);
-            useTrailDataStore.getState().fetchTrails();
+            if (trails === null || ownerUuid !== _owner_uuid) useTrailDataStore.getState().fetchTrails();
         }
     }, [owner, type]);
 

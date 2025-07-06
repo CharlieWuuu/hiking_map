@@ -41,6 +41,7 @@ export default function Owner_View() {
     const trails = useTrailDataStore((state) => state.trails);
     const { countyOrder } = useCountyOrder({ uuid: owner?.uuid ?? '', type: type! });
 
+    const ownerUuid = useTrailMetaStore((state) => state.owner_uuid);
     const setOwnerUuid = useTrailMetaStore((state) => state.setOwnerUuid);
     const setType = useTrailMetaStore((state) => state.setType);
 
@@ -53,7 +54,7 @@ export default function Owner_View() {
         if (_owner_uuid && _type) {
             setOwnerUuid(_owner_uuid);
             setType(_type);
-            useTrailDataStore.getState().fetchTrails();
+            if (trails === null || ownerUuid !== _owner_uuid) useTrailDataStore.getState().fetchTrails();
         }
     }, [owner, type]);
 

@@ -69,6 +69,7 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
 export default function Owner_Trail() {
     const { name, uuid, type } = useParams<{ name: string; uuid: string; type: string }>();
     const { owner } = useOwnerDetail({ name: name!, type: type! });
+    const ownerUuid = useTrailMetaStore((state) => state.owner_uuid);
     const setOwnerUuid = useTrailMetaStore((state) => state.setOwnerUuid);
     const setType = useTrailMetaStore((state) => state.setType);
     const trails = useTrailDataStore((state) => state.trails);
@@ -80,7 +81,8 @@ export default function Owner_Trail() {
         if (_owner_uuid && _type) {
             setOwnerUuid(_owner_uuid);
             setType(_type);
-            useTrailDataStore.getState().fetchTrails();
+
+            if (trails === null || ownerUuid !== _owner_uuid) useTrailDataStore.getState().fetchTrails();
         }
     }, [owner, type]);
 
