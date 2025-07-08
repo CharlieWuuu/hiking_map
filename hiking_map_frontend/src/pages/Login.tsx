@@ -2,7 +2,7 @@
 import styles from '../styles/pages/Login.module.scss';
 
 // react
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // context
 import { useAuth } from '../context/AuthContext';
@@ -10,12 +10,17 @@ import { useAuth } from '../context/AuthContext';
 // image
 import AvatarUrl from '../assets/images/Panel_Avatar.svg';
 
+// store
+import { useTrailMetaStore } from '../store/useTrailMetaStore';
+import { useTrailDataStore } from '../store/useTrailDataStore';
+
 export default function Login() {
     const { isLoggedIn, user, login, logout } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [onSubmit, setOnSubmit] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const setTrails = useTrailDataStore((state) => state.setTrails);
 
     const handleLogin = async () => {
         setOnSubmit(true);
@@ -37,11 +42,17 @@ export default function Login() {
             }
 
             login(data.token); // 🔥 給 AuthContext 處理 token 儲存與解析
+            setTrails(null);
         } catch (err) {
             setErrorMsg('登入過程發生錯誤');
         }
 
         setOnSubmit(false);
+    };
+
+    const handleLogout = () => {
+        logout();
+        setTrails(null);
     };
 
     return (
@@ -59,7 +70,7 @@ export default function Login() {
                                 <p>上次登入</p>
                                 <p>2025/04/20 20:20</p>
                             </div> */}
-                            <button type="button" onClick={logout}>
+                            <button type="button" onClick={handleLogout}>
                                 登出
                             </button>
                         </div>

@@ -4,6 +4,7 @@ import { useTrailMetaStore } from './useTrailMetaStore';
 
 interface TrailDataState {
     trails: FeatureCollection | null;
+    setTrails: (data: FeatureCollection | null) => void;
     loading: boolean;
     error: Error | null;
     fetchTrails: () => Promise<void>;
@@ -12,6 +13,7 @@ interface TrailDataState {
 
 export const useTrailDataStore = create<TrailDataState>((set) => ({
     trails: null,
+    setTrails: (data) => set({ trails: data }),
     loading: false,
     error: null,
     // _lastKey: null,
@@ -32,7 +34,6 @@ export const useTrailDataStore = create<TrailDataState>((set) => ({
         if (share) url += `&share=${share}`; // 分享模式
 
         try {
-            console.log(url);
             const res = await fetch(url, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
             const data = await res.json();
             set({ trails: data });
