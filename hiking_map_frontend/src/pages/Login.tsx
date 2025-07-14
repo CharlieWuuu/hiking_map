@@ -2,7 +2,7 @@
 import styles from '../styles/pages/Login.module.scss';
 
 // react
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 // context
 import { useAuth } from '../context/AuthContext';
@@ -11,7 +11,7 @@ import { useAuth } from '../context/AuthContext';
 import AvatarUrl from '../assets/images/Panel_Avatar.svg';
 
 // store
-import { useTrailMetaStore } from '../store/useTrailMetaStore';
+// import { useTrailMetaStore } from '../store/useTrailMetaStore';
 import { useTrailDataStore } from '../store/useTrailDataStore';
 
 export default function Login() {
