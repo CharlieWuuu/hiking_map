@@ -1,0 +1,78 @@
+@use '../../../styles/colors' as colors;
+@use '../../../styles/media' as media;
+@use '../../../styles/mixins' as mixins;
+
+.Card_title {
+  display: flex;
+  gap: 1rem;
+  align-items: start;
+  justify-content: space-between;
+  text-wrap-mode: nowrap;
+  width: 100%;
+
+  .Card_name {
+    flex-grow: 1;
+    text-align: start;
+    display: flex;
+    align-items: end;
+
+    p {
+      display: inline;
+      padding: 0;
+      margin: 0;
+      font-size: 1.8rem;
+      line-height: 2rem;
+      font-weight: bold;
+      white-space: wrap;
+      text-align: start;
+    }
+    span {
+      display: inline;
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+      line-height: 1.4;
+    }
+    input {
+      line-height: 1;
+      height: 2rem;
+      font-size: 1.4rem;
+      flex-grow: 1;
+    }
+  }
+
+  .Card_btn {
+    display: flex;
+    gap: 0.5rem;
+    button {
+      border: 1px solid colors.$background;
+      color: colors.$background;
+      font-size: 0.75rem;
+      @include mixins.flex_center;
+      background-color: colors.$accent;
+      transition: all 0.3s ease;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      img {
+        width: 16px;
+        filter: invert(1);
+        transition: all 0.3s ease;
+      }
+
+      &:hover {
+        background-color: colors.$background;
+        color: colors.$accent;
+        img {
+          filter: brightness(0) saturate(100%) invert(99%) sepia(64%) saturate(1816%) hue-rotate(345deg) brightness(106%) contrast(106%);
+        }
+      }
+
+      &.Card_btn_map {
+        display: none;
+        @include media.media(lg) {
+          display: flex;
+        }
+      }
+    }
+  }
+}
