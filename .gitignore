@@ -1,3 +1,4 @@
 *.sh
 hiking_map_data
+hiking_map_frontend_next
 node_modules
