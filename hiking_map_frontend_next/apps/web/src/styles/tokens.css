@@ -1,0 +1,10 @@
+@theme {
+  --color-background: var(--color-raw-dark);
+  --color-background-contrary: var(--color-raw-light);
+  --color-panel: var(--color-raw-gray-500);
+  --color-panel-active: var(--color-raw-gray-400);
+  --color-panel-active-lighten: color-mix(in srgb, var(--color-raw-gray-400) 90%, white 10%);
+  --color-accent: var(--color-raw-yellow);
+  --color-accent-lighten: color-mix(in srgb, var(--color-raw-yellow) 80%, white 20%);
+  --color-accent-darken: color-mix(in srgb, var(--color-raw-yellow) 50%, black 50%);
+}
