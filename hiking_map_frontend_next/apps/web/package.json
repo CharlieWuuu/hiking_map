@@ -9,10 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@hiking-map/core": "workspace:*",
     "next": "16.2.10",
     "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "@hiking-map/core": "workspace:*"
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -21,6 +21,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "eslint-config-prettier": "^10.1.8",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
