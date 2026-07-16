@@ -22,7 +22,7 @@ export namespace Owners {
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = void;
+    export type ResponseBody = object;
   }
 
   /**
@@ -39,6 +39,6 @@ export namespace Owners {
     };
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = void;
+    export type ResponseBody = object;
   }
 }

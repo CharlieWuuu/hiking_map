@@ -55,9 +55,10 @@ export class Cookie<SecurityDataType = unknown> extends HttpClient<SecurityDataT
    * @request GET:/cookie/useCookie
    */
   cookieControllerUseCookie = (params: RequestParams = {}) =>
-    this.request<void, any>({
+    this.request<object, any>({
       path: `/cookie/useCookie`,
       method: 'GET',
+      format: 'json',
       ...params,
     });
   /**

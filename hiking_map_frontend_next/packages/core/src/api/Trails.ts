@@ -26,8 +26,8 @@ export class Trails<SecurityDataType = unknown> extends HttpClient<SecurityDataT
     query: {
       owner_uuid: string;
       type: string;
-      uuid: string;
-      share: string;
+      uuid?: string;
+      share?: string;
     },
     params: RequestParams = {}
   ) =>
@@ -68,11 +68,12 @@ export class Trails<SecurityDataType = unknown> extends HttpClient<SecurityDataT
     },
     params: RequestParams = {}
   ) =>
-    this.request<void, any>({
+    this.request<object, any>({
       path: `/trails/county_order`,
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
       ...params,
     });
   /**
@@ -90,11 +91,12 @@ export class Trails<SecurityDataType = unknown> extends HttpClient<SecurityDataT
     },
     params: RequestParams = {}
   ) =>
-    this.request<void, any>({
+    this.request<object, any>({
       path: `/trails/trails_month_data`,
       method: 'GET',
       query: query,
       secure: true,
+      format: 'json',
       ...params,
     });
   /**

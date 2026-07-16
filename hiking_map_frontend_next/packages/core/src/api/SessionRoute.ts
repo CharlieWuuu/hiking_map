@@ -53,7 +53,7 @@ export namespace Session {
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = void;
+    export type ResponseBody = object;
   }
 
   /**

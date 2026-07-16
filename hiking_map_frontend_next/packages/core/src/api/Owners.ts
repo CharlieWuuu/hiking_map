@@ -21,9 +21,10 @@ export class Owners<SecurityDataType = unknown> extends HttpClient<SecurityDataT
    * @request GET:/owners/list
    */
   ownerControllerGetList = (params: RequestParams = {}) =>
-    this.request<void, any>({
+    this.request<object, any>({
       path: `/owners/list`,
       method: 'GET',
+      format: 'json',
       ...params,
     });
   /**
@@ -40,10 +41,11 @@ export class Owners<SecurityDataType = unknown> extends HttpClient<SecurityDataT
     },
     params: RequestParams = {}
   ) =>
-    this.request<void, any>({
+    this.request<object, any>({
       path: `/owners/detail`,
       method: 'GET',
       query: query,
+      format: 'json',
       ...params,
     });
 }

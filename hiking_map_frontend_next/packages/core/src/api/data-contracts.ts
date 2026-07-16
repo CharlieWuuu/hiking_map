@@ -10,6 +10,17 @@
  * ---------------------------------------------------------------
  */
 
-export type TrailsInfoDto = object;
+export interface TrailsInfoDto {
+  name?: string;
+  county?: string;
+  town?: string;
+  time?: string;
+  url?: string;
+  note?: string;
+  public?: boolean;
+}
 
-export type LoginDto = object;
+export interface LoginDto {
+  username: string;
+  password: string;
+}

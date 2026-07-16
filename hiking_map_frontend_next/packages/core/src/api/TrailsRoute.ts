@@ -25,8 +25,8 @@ export namespace Trails {
     export type RequestQuery = {
       owner_uuid: string;
       type: string;
-      uuid: string;
-      share: string;
+      uuid?: string;
+      share?: string;
     };
     export type RequestBody = never;
     export type RequestHeaders = {};
@@ -63,7 +63,7 @@ export namespace Trails {
     };
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = void;
+    export type ResponseBody = object;
   }
 
   /**
@@ -81,7 +81,7 @@ export namespace Trails {
     };
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = void;
+    export type ResponseBody = object;
   }
 
   /**

@@ -55,9 +55,10 @@ export class Session<SecurityDataType = unknown> extends HttpClient<SecurityData
    * @request GET:/session/useSession
    */
   sessionControllerUseSession = (params: RequestParams = {}) =>
-    this.request<void, any>({
+    this.request<object, any>({
       path: `/session/useSession`,
       method: 'GET',
+      format: 'json',
       ...params,
     });
   /**
