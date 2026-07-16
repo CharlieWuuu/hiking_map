@@ -1,0 +1,21 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+
+# Build outputs
+.next
+.expo
+build
+dist
+out
+
+# Environment files
+.env*
+
+# Generated files
+*.min.js
+*.min.css
+
+# Static assets
+apps/web/public
+apps/mobile/assets
