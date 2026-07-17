@@ -1,15 +1,28 @@
-import Link from 'next/link';
+import SearchBar from '../../components/SearchBar';
+import SearchResultRow from '../../components/SearchResultRow';
+import { getFullSearchResults } from '../../testing/mocks/search/search.fake-api';
 
-export default function SearchPage() {
+type Props = {
+  searchParams: Promise<{ q?: string }>;
+};
+
+export default async function SearchPage({ searchParams }: Props) {
+  const { q = '' } = await searchParams;
+  const results = getFullSearchResults(q);
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <h1>探索</h1>
-      <Link href="/profile/demo" className="text-accent">
-        前往個人頁（範例使用者）
-      </Link>
-      <Link href="/trails/demo-trail" className="text-accent">
-        前往路線詳情（範例路線）
-      </Link>
+    <div className="flex h-screen flex-col gap-4 p-4 pb-20 lg:pb-4">
+      <SearchBar />
+
+      {q && results.length === 0 && <p className="text-background-contrary/60 text-center text-sm">查無「{q}」的相關結果</p>}
+
+      {q && results.length > 0 && (
+        <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
+          {results.map((item) => (
+            <SearchResultRow key={`${item.type}-${item.type === 'user' ? item.username : item.slug}`} item={item} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

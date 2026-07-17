@@ -1,19 +1,9 @@
 'use client';
 
-import { CircleUserRound, Home, Play, Search, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-// 暫時用假的 username，之後接上登入邏輯後會改成真正登入者的 username
-const DEMO_USERNAME = 'demo';
-
-const NAV_ITEMS = [
-  { label: '首頁', href: '/', Icon: Home },
-  { label: '探索', href: '/search', Icon: Search },
-  { label: '記錄', href: '/record', Icon: Play },
-  { label: '個人頁', href: `/profile/${DEMO_USERNAME}`, Icon: CircleUserRound },
-  { label: '設定', href: '/settings', Icon: Settings },
-];
+import { NAV_ITEMS } from './AppNav.data';
 
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
@@ -26,7 +16,7 @@ export default function AppNav() {
   return (
     <>
       {/* 窄螢幕：底部導覽列 */}
-      <nav className="bg-panel fixed right-0 bottom-0 left-0 z-50 flex justify-around py-2 lg:hidden">
+      <nav className="bg-panel fixed right-0 bottom-0 left-0 z-50 flex justify-around py-4 lg:hidden">
         {NAV_ITEMS.map(({ label, href, Icon }) => (
           <Link
             key={href}

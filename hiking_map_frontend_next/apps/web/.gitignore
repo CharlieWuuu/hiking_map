@@ -42,3 +42,5 @@ next-env.d.ts
 
 # lock files
 pnpm-lock.yaml
+*storybook.log
+storybook-static
