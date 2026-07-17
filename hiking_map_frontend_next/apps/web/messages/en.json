@@ -65,8 +65,16 @@
     "goToDemoTrail": "Go to trail detail (demo)"
   },
   "TrailDetailPage": {
-    "title": "Trail detail {trailId}",
-    "backToTrails": "Back to official trail layer"
+    "back": "Back to official trail layer",
+    "date": "Date",
+    "distance": "Distance",
+    "distanceValue": "{distance} km",
+    "links": "Route links",
+    "linkLabel": "Link {index}",
+    "note": "Note",
+    "noValue": "-",
+    "intro": "Introduction",
+    "map": "Map"
   },
   "SettingsPage": {
     "title": "Settings",

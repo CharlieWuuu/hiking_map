@@ -51,7 +51,7 @@ export default async function RootLayout({ children, params }: Props) {
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
           <AppNav />
-          <main className="flex-1 p-4 pb-20 lg:pb-4 lg:pl-44">{children}</main>
+          <main className="flex-1 p-6 pb-20 lg:p-8 lg:pb-8 lg:pl-48">{children}</main>
         </NextIntlClientProvider>
       </body>
     </html>

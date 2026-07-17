@@ -65,8 +65,16 @@
     "goToDemoTrail": "前往路線詳情（範例）"
   },
   "TrailDetailPage": {
-    "title": "路線詳情 {trailId}",
-    "backToTrails": "返回官方路線圖層"
+    "back": "返回官方路線圖層",
+    "date": "日期",
+    "distance": "距離",
+    "distanceValue": "{distance} 公里",
+    "links": "路線連結",
+    "linkLabel": "連結 {index}",
+    "note": "說明",
+    "noValue": "-",
+    "intro": "介紹",
+    "map": "地圖"
   },
   "SettingsPage": {
     "title": "設定",
