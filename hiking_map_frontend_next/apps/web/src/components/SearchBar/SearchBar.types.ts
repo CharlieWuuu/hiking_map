@@ -1,10 +1,10 @@
 export type SearchResult =
-  { type: 'user'; username: string; label: string; bio?: string } | { type: 'trail'; slug: string; label: string; region?: string; description?: string };
+  | { type: 'user'; username: string; displayName: string; avatar?: string; level?: string; bio?: string }
+  | { type: 'trail'; slug: string; displayName: string; county?: string; town?: string; note?: string };
 
 export type MatchReason =
   | 'name' // 名稱本身符合關鍵字
-  | 'field' // 透過其他欄位（地區、簡介、內文）符合關鍵字
-  | 'related'; // 透過關聯（誰爬過哪條步道）擴展出來的結果
+  | 'field'; // 透過其他欄位（地區、簡介、內文）符合關鍵字
 
 export type SearchResultWithRelevance = SearchResult & {
   matchReason: MatchReason;

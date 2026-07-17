@@ -1,17 +1,15 @@
 import type { MatchReason, QuerySuggestion, SearchResult, SearchResultWithRelevance } from '../../../components/SearchBar/SearchBar.types';
-import { MOCK_HIKE_RECORDS, MOCK_POPULAR_QUERIES, MOCK_RESULTS } from './search.data';
+import { MOCK_POPULAR_QUERIES, MOCK_RESULTS } from './search.data';
 
 export const RESULTS_PER_PAGE = 5;
 
-const resultKey = (item: SearchResult) => `${item.type}-${item.type === 'user' ? item.username : item.slug}`;
-
 function fieldsToSearch(item: SearchResult): string[] {
-  if (item.type === 'user') return [item.label, item.bio ?? ''];
-  return [item.label, item.region ?? '', item.description ?? ''];
+  if (item.type === 'user') return [item.displayName, item.bio ?? ''];
+  return [item.displayName, item.county ?? '', item.town ?? '', item.note ?? ''];
 }
 
 function matchesName(item: SearchResult, q: string): boolean {
-  return item.label.toLowerCase().includes(q);
+  return item.displayName.toLowerCase().includes(q);
 }
 
 function matchesOtherFields(item: SearchResult, q: string): boolean {
@@ -38,38 +36,18 @@ export function getQuerySuggestions(query: string, limit = 3): QuerySuggestion[]
     .map((text) => ({ type: 'query', text }));
 }
 
-// 送出後的完整搜尋結果：名稱符合 > 其他欄位符合 > 關聯擴展，依此排序
-// 之後要換成 search API：後端做全文檢索 + 關聯查詢（JOIN），前端只管顯示回傳結果
+// 送出後的完整搜尋結果：名稱符合 > 其他欄位符合，依此排序
+// 之後要換成 search API：後端做全文檢索，前端只管顯示回傳結果
 export function getFullSearchResults(query: string): SearchResultWithRelevance[] {
   const q = query.trim().toLowerCase();
   if (!q) return [];
 
   const byName = MOCK_RESULTS.filter((item) => matchesName(item, q));
   const byField = MOCK_RESULTS.filter((item) => !matchesName(item, q) && matchesOtherFields(item, q));
-  const direct = [...byName, ...byField];
-  const directKeys = new Set(direct.map(resultKey));
-
-  const related: SearchResult[] = [];
-  for (const item of direct) {
-    if (item.type === 'user') {
-      const trailSlugs = MOCK_HIKE_RECORDS.filter((r) => r.username === item.username).map((r) => r.trailSlug);
-      for (const slug of trailSlugs) {
-        const trail = MOCK_RESULTS.find((r) => r.type === 'trail' && r.slug === slug);
-        if (trail && !directKeys.has(resultKey(trail))) related.push(trail);
-      }
-    } else {
-      const usernames = MOCK_HIKE_RECORDS.filter((r) => r.trailSlug === item.slug).map((r) => r.username);
-      for (const username of usernames) {
-        const user = MOCK_RESULTS.find((r) => r.type === 'user' && r.username === username);
-        if (user && !directKeys.has(resultKey(user))) related.push(user);
-      }
-    }
-  }
-  const dedupedRelated = Array.from(new Map(related.map((item) => [resultKey(item), item])).values());
 
   const withReason = (items: SearchResult[], matchReason: MatchReason): SearchResultWithRelevance[] => items.map((item) => ({ ...item, matchReason }));
 
-  return [...withReason(byName, 'name'), ...withReason(byField, 'field'), ...withReason(dedupedRelated, 'related')];
+  return [...withReason(byName, 'name'), ...withReason(byField, 'field')];
 }
 
 export function paginate<T>(items: T[], page: number, perPage = RESULTS_PER_PAGE): T[] {
