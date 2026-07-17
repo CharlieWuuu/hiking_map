@@ -6,9 +6,9 @@ import type { NavItem } from './AppNav.types';
 const DEMO_USERNAME = 'demo';
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: '首頁', href: '/', Icon: Home },
-  { label: '探索', href: '/search', Icon: Search },
-  { label: '記錄', href: '/record', Icon: Play },
-  { label: '個人頁', href: `/profile/${DEMO_USERNAME}`, Icon: CircleUserRound },
-  { label: '設定', href: '/settings', Icon: Settings },
+  { messageKey: 'home', href: '/', Icon: Home },
+  { messageKey: 'search', href: '/search', Icon: Search },
+  { messageKey: 'record', href: '/record', Icon: Play },
+  { messageKey: 'profile', href: `/profile/${DEMO_USERNAME}`, Icon: CircleUserRound },
+  { messageKey: 'settings', href: '/settings', Icon: Settings },
 ];

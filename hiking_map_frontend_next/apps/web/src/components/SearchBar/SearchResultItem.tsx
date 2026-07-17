@@ -1,4 +1,5 @@
 import { CircleUserRound } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import type { SearchResultWithRelevance } from './SearchBar.types';
 
@@ -7,12 +8,9 @@ type Props = {
   onSelect: (item: SearchResultWithRelevance) => void;
 };
 
-const MATCH_REASON_LABEL: Record<SearchResultWithRelevance['matchReason'], string> = {
-  name: '',
-  field: '・符合內容',
-};
-
 export default function SearchResultItem({ item, onSelect }: Props) {
+  const t = useTranslations('SearchResult');
+
   return (
     <button
       onClick={() => onSelect(item)}
@@ -30,8 +28,8 @@ export default function SearchResultItem({ item, onSelect }: Props) {
       <span className="flex flex-col items-start">
         <span className="font-bold">{item.displayName}</span>
         <span className="text-background-contrary/60 text-xs">
-          {item.type === 'user' ? '使用者' : '路線'}
-          {MATCH_REASON_LABEL[item.matchReason]}
+          {item.type === 'user' ? t('user') : t('trail')}
+          {item.matchReason === 'field' && t('matchField')}
         </span>
       </span>
     </button>

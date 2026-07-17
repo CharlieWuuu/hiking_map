@@ -1,0 +1,80 @@
+{
+  "Metadata": {
+    "title": "HikingMap",
+    "description": "登山紀錄與路線探索平台"
+  },
+  "AppNav": {
+    "home": "首頁",
+    "search": "探索",
+    "record": "記錄",
+    "profile": "個人頁",
+    "settings": "設定"
+  },
+  "SearchBar": {
+    "placeholder": "搜尋使用者或路線",
+    "searchLabel": "搜尋"
+  },
+  "SearchResult": {
+    "user": "使用者",
+    "trail": "路線",
+    "matchField": "・符合內容"
+  },
+  "HomePage": {
+    "title": "首頁",
+    "goToDemoHike": "前往健行紀錄詳情（範例）"
+  },
+  "LoginPage": {
+    "title": "登入",
+    "goToProfileAfterLogin": "登入後前往個人頁（暫時）"
+  },
+  "NotFoundPage": {
+    "title": "找不到這個頁面",
+    "description": "可能是網址打錯，或這筆資料不存在",
+    "backHome": "回首頁"
+  },
+  "SearchPage": {
+    "noResults": "查無「{query}」的相關結果"
+  },
+  "ProfilePage": {
+    "title": "個人頁 {username}",
+    "goToData": "前往資料檢視／編輯",
+    "goToHikeDemo": "前往健行紀錄詳情（範例）",
+    "goToCollections": "前往收藏清單"
+  },
+  "ProfileDataPage": {
+    "title": "資料檢視／編輯 {username}",
+    "description": "之後這裡會有「上傳既有 GPS 檔案」的入口，補登舊紀錄用",
+    "backToProfile": "返回個人頁"
+  },
+  "ProfileCollectionsPage": {
+    "title": "收藏清單 {username}",
+    "goToDemoTrail": "前往路線詳情（範例）",
+    "backToProfile": "返回個人頁"
+  },
+  "HikeDetailPage": {
+    "title": "健行紀錄詳情 {username} / {hikeId}",
+    "backToProfile": "返回個人頁"
+  },
+  "RecordPage": {
+    "title": "記錄",
+    "description": "之後這裡會先顯示地圖與「開始」按鈕，按下開始才會真正啟動 GPS 記錄",
+    "goToProfile": "完成後前往個人頁總覽"
+  },
+  "TrailsPage": {
+    "title": "官方路線圖層",
+    "goToDemoTrail": "前往路線詳情（範例）"
+  },
+  "TrailDetailPage": {
+    "title": "路線詳情 {trailId}",
+    "backToTrails": "返回官方路線圖層"
+  },
+  "SettingsPage": {
+    "title": "設定",
+    "goToIntro": "前往關於本站",
+    "language": "語言"
+  },
+  "SettingsIntroPage": {
+    "title": "關於本站",
+    "backToSettings": "返回設定"
+  }
+}
