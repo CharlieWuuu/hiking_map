@@ -2,28 +2,31 @@
 
 import { Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { Popover } from 'radix-ui';
 import { useState } from 'react';
 
-import { MOCK_RESULTS } from './SearchBar.mock';
+import { getQuerySuggestions, getSuggestions } from '../../testing/mocks/search/search.fake-api';
+import QuerySuggestionItem from './QuerySuggestionItem';
 import styles from './SearchBar.module.css';
-import type { SearchResult } from './SearchBar.types';
+import type { QuerySuggestion, SearchResult } from './SearchBar.types';
 import SearchResultItem from './SearchResultItem';
 
 export default function SearchBar() {
   const router = useRouter();
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [open, setOpen] = useState(false);
 
-  function runSearch() {
-    const q = query.trim().toLowerCase();
-    if (!q) {
-      setResults([]);
-      return;
-    }
-    setResults(MOCK_RESULTS.filter((item) => item.label.toLowerCase().includes(q)));
+  const entitySuggestions = getSuggestions(query);
+  const querySuggestions = getQuerySuggestions(query);
+  const showSuggestions = open && (entitySuggestions.length > 0 || querySuggestions.length > 0);
+
+  function goToSearchPage(q: string) {
+    setOpen(false);
+    if (q.trim()) router.push(`/search?q=${encodeURIComponent(q.trim())}`);
   }
 
-  function handleSelect(item: SearchResult) {
+  function handleSelectEntity(item: SearchResult) {
+    setOpen(false);
     if (item.type === 'user') {
       router.push(`/profile/${item.username}`);
     } else {
@@ -31,30 +34,50 @@ export default function SearchBar() {
     }
   }
 
-  return (
-    <div className="lg:mx-auto lg:max-w-[80%]">
-      <div className="bg-panel lg:bg-panel-active-lighten flex items-center gap-2 rounded-full px-4 py-2">
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') runSearch();
-          }}
-          placeholder="搜尋使用者或路線"
-          className="text-background-contrary flex-1 bg-transparent outline-none lg:text-lg"
-        />
-        <button onClick={runSearch} aria-label="搜尋">
-          <Search className="text-background-contrary h-5 w-5" />
-        </button>
-      </div>
+  function handleSelectQuery(item: QuerySuggestion) {
+    setQuery(item.text);
+    goToSearchPage(item.text);
+  }
 
-      {results.length > 0 && (
-        <div className={`bg-panel mt-3 flex flex-col gap-1 shadow-lg ${styles.resultsPanel}`}>
-          {results.map((item) => (
-            <SearchResultItem key={`${item.type}-${item.type === 'user' ? item.username : item.slug}`} item={item} onSelect={handleSelect} />
-          ))}
+  return (
+    <Popover.Root open={showSuggestions}>
+      <Popover.Anchor asChild>
+        <div className="bg-panel lg:bg-panel-active-lighten flex items-center gap-2 rounded-full px-4 py-2">
+          <input
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setOpen(true);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') goToSearchPage(query);
+            }}
+            placeholder="搜尋使用者或路線"
+            className="text-background-contrary flex-1 bg-transparent outline-none lg:text-lg"
+          />
+          <button onClick={() => goToSearchPage(query)} aria-label="搜尋" className="cursor-pointer">
+            <Search className="text-background-contrary h-5 w-5" />
+          </button>
         </div>
-      )}
-    </div>
+      </Popover.Anchor>
+      <Popover.Portal>
+        <Popover.Content
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          sideOffset={8}
+          className={`bg-panel w-(--radix-popover-trigger-width) ${styles.resultsPanel}`}
+        >
+          {querySuggestions.map((item) => (
+            <QuerySuggestionItem key={`query-${item.text}`} item={item} onSelect={handleSelectQuery} />
+          ))}
+          {entitySuggestions.map((item) => (
+            <SearchResultItem
+              key={`${item.type}-${item.type === 'user' ? item.username : item.slug}`}
+              item={{ ...item, matchReason: 'name' }}
+              onSelect={handleSelectEntity}
+            />
+          ))}
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
   );
 }
