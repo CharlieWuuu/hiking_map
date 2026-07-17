@@ -14,7 +14,7 @@ export default async function SearchPage({ searchParams }: Props) {
   const t = await getTranslations('SearchPage');
 
   return (
-    <div className="flex h-screen flex-col gap-4 p-4 pb-20 lg:pb-4">
+    <div className="flex h-full flex-col gap-4">
       <SearchBar />
 
       {q && results.length === 0 && <p className="text-background-contrary/60 text-center text-sm">{t('noResults', { query: q })}</p>}

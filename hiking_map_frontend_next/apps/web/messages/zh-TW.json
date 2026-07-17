@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "HikingMap",
-    "description": "登山紀錄與路線探索平台"
+    "title": "健行軌跡",
+    "description": "上傳你的 GPX，一起建立你的健行軌跡。"
   },
   "AppNav": {
     "home": "首頁",
@@ -71,7 +71,9 @@
   "SettingsPage": {
     "title": "設定",
     "goToIntro": "前往關於本站",
-    "language": "語言"
+    "language": "語言",
+    "darkMode": "深色模式",
+    "logout": "登出"
   },
   "SettingsIntroPage": {
     "title": "關於本站",

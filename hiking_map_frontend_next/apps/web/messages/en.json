@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "HikingMap",
-    "description": "Hiking records and trail exploration platform"
+    "title": "Hiking Track",
+    "description": "Upload your GPX and build your hiking track together."
   },
   "AppNav": {
     "home": "Home",
@@ -71,7 +71,9 @@
   "SettingsPage": {
     "title": "Settings",
     "goToIntro": "Go to about this site",
-    "language": "Language"
+    "language": "Language",
+    "darkMode": "Dark mode",
+    "logout": "Log out"
   },
   "SettingsIntroPage": {
     "title": "About this site",

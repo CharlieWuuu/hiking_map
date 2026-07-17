@@ -8,6 +8,7 @@ import '../globals.css';
 
 import AppNav from '../../components/AppNav';
 import { routing } from '../../i18n/routing';
+import { THEME_STORAGE_KEY } from '../../lib/theme';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 
@@ -40,10 +41,17 @@ export default async function RootLayout({ children, params }: Props) {
 
   return (
     <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if (localStorage.getItem('${THEME_STORAGE_KEY}') === 'light') document.documentElement.classList.add('light');`,
+          }}
+        />
+      </head>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
           <AppNav />
-          <main className="flex-1 pb-16 lg:pb-0 lg:pl-40">{children}</main>
+          <main className="flex-1 p-4 pb-20 lg:pb-4 lg:pl-44">{children}</main>
         </NextIntlClientProvider>
       </body>
     </html>
