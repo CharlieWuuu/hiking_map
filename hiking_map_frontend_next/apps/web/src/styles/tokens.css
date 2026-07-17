@@ -29,7 +29,7 @@
   --theme-background-contrary: var(--color-raw-dark);
   --theme-panel: var(--color-raw-light);
   --theme-panel-active: var(--color-raw-gray-200);
-  --theme-panel-active-lighten: color-mix(in srgb, var(--color-raw-gray-200) 90%, black 10%);
+  --theme-panel-active-lighten: color-mix(in srgb, var(--color-raw-gray-200) 90%, white 10%);
   --theme-nav-border: var(--color-raw-gray-200);
   --theme-accent: var(--color-raw-yellow-brown);
   --theme-accent-lighten: color-mix(in srgb, var(--color-raw-yellow-brown) 80%, white 20%);
