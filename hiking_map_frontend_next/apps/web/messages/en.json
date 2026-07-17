@@ -1,0 +1,80 @@
+{
+  "Metadata": {
+    "title": "HikingMap",
+    "description": "Hiking records and trail exploration platform"
+  },
+  "AppNav": {
+    "home": "Home",
+    "search": "Explore",
+    "record": "Record",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "SearchBar": {
+    "placeholder": "Search users or trails",
+    "searchLabel": "Search"
+  },
+  "SearchResult": {
+    "user": "User",
+    "trail": "Trail",
+    "matchField": "・matched content"
+  },
+  "HomePage": {
+    "title": "Home",
+    "goToDemoHike": "Go to hike detail (demo)"
+  },
+  "LoginPage": {
+    "title": "Log in",
+    "goToProfileAfterLogin": "Go to profile after login (temporary)"
+  },
+  "NotFoundPage": {
+    "title": "Page not found",
+    "description": "The URL may be wrong, or this data doesn't exist",
+    "backHome": "Back to home"
+  },
+  "SearchPage": {
+    "noResults": "No results for \"{query}\""
+  },
+  "ProfilePage": {
+    "title": "Profile {username}",
+    "goToData": "Go to data view/edit",
+    "goToHikeDemo": "Go to hike detail (demo)",
+    "goToCollections": "Go to collections"
+  },
+  "ProfileDataPage": {
+    "title": "Data view/edit {username}",
+    "description": "An entry point for uploading existing GPS files will be added here later, for backfilling old records",
+    "backToProfile": "Back to profile"
+  },
+  "ProfileCollectionsPage": {
+    "title": "Collections {username}",
+    "goToDemoTrail": "Go to trail detail (demo)",
+    "backToProfile": "Back to profile"
+  },
+  "HikeDetailPage": {
+    "title": "Hike detail {username} / {hikeId}",
+    "backToProfile": "Back to profile"
+  },
+  "RecordPage": {
+    "title": "Record",
+    "description": "A map and a \"Start\" button will be shown here later; GPS recording only starts once you press Start",
+    "goToProfile": "Go to profile overview when done"
+  },
+  "TrailsPage": {
+    "title": "Official trail layer",
+    "goToDemoTrail": "Go to trail detail (demo)"
+  },
+  "TrailDetailPage": {
+    "title": "Trail detail {trailId}",
+    "backToTrails": "Back to official trail layer"
+  },
+  "SettingsPage": {
+    "title": "Settings",
+    "goToIntro": "Go to about this site",
+    "language": "Language"
+  },
+  "SettingsIntroPage": {
+    "title": "About this site",
+    "backToSettings": "Back to settings"
+  }
+}

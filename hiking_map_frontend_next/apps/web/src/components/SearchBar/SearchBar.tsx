@@ -1,10 +1,11 @@
 'use client';
 
 import { Search } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Popover } from 'radix-ui';
 import { useState } from 'react';
 
+import { useRouter } from '../../i18n/navigation';
 import { getQuerySuggestions, getSuggestions } from '../../testing/mocks/search/search.fake-api';
 import QuerySuggestionItem from './QuerySuggestionItem';
 import styles from './SearchBar.module.css';
@@ -13,6 +14,7 @@ import SearchResultItem from './SearchResultItem';
 
 export default function SearchBar() {
   const router = useRouter();
+  const t = useTranslations('SearchBar');
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
 
@@ -22,7 +24,7 @@ export default function SearchBar() {
 
   function goToSearchPage(q: string) {
     setOpen(false);
-    if (q.trim()) router.push(`/search?q=${encodeURIComponent(q.trim())}`);
+    if (q.trim()) router.push({ pathname: '/search', query: { q: q.trim() } });
   }
 
   function handleSelectEntity(item: SearchResult) {
@@ -52,10 +54,10 @@ export default function SearchBar() {
             onKeyDown={(e) => {
               if (e.key === 'Enter') goToSearchPage(query);
             }}
-            placeholder="搜尋使用者或路線"
+            placeholder={t('placeholder')}
             className="text-background-contrary flex-1 bg-transparent outline-none lg:text-lg"
           />
-          <button onClick={() => goToSearchPage(query)} aria-label="搜尋" className="cursor-pointer">
+          <button onClick={() => goToSearchPage(query)} aria-label={t('searchLabel')} className="cursor-pointer">
             <Search className="text-background-contrary h-5 w-5" />
           </button>
         </div>

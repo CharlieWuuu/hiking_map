@@ -1,6 +1,17 @@
 import type { Preview } from '@storybook/nextjs-vite';
+import { NextIntlClientProvider } from 'next-intl';
+import React from 'react';
+
+import messages from '../messages/zh-TW.json';
 
 const preview: Preview = {
+  decorators: [
+    (Story) => (
+      <NextIntlClientProvider locale="zh-TW" messages={messages}>
+        <Story />
+      </NextIntlClientProvider>
+    ),
+  ],
   parameters: {
     controls: {
       matchers: {
