@@ -6,7 +6,7 @@
   --color-panel-active-lighten: color-mix(in srgb, var(--color-raw-gray-400) 90%, white 10%);
   --color-accent: var(--color-raw-yellow);
   --color-accent-lighten: color-mix(in srgb, var(--color-raw-yellow) 80%, white 20%);
-  --color-accent-darken: color-mix(in srgb, var(--color-raw-yellow) 50%, black 50%);
+  --color-accent-darken: color-mix(in srgb, var(--color-raw-yellow) 65%, black 35%);
 
   --radius-panel: 0.75rem;
 }

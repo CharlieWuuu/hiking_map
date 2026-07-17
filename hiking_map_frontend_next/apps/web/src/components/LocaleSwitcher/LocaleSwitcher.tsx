@@ -17,12 +17,12 @@ export default function LocaleSwitcher() {
   const pathname = usePathname();
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex w-full items-center justify-between py-3">
       <span>{t('language')}</span>
       <select
         value={locale}
         onChange={(e) => router.replace(pathname, { locale: e.target.value })}
-        className="bg-panel rounded-panel text-background-contrary cursor-pointer px-3 py-1.5"
+        className="bg-panel rounded-panel text-background-contrary h-7 cursor-pointer px-3"
       >
         {routing.locales.map((loc) => (
           <option key={loc} value={loc}>
