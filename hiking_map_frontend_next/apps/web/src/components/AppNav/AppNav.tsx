@@ -17,7 +17,7 @@ export default function AppNav() {
   return (
     <>
       {/* 窄螢幕：底部導覽列 */}
-      <nav className="bg-panel fixed right-0 bottom-0 left-0 z-50 flex justify-around py-4 lg:hidden">
+      <nav className="bg-panel border-nav-border fixed right-0 bottom-0 left-0 z-50 flex justify-around border-t py-4 lg:hidden">
         {NAV_ITEMS.map(({ messageKey, href, Icon }) => (
           <Link
             key={href}
@@ -31,7 +31,7 @@ export default function AppNav() {
       </nav>
 
       {/* 寬螢幕：左側導覽列 */}
-      <nav className="bg-panel fixed top-0 left-0 z-50 hidden h-full w-40 flex-col gap-6 p-4 lg:flex">
+      <nav className="bg-panel border-nav-border fixed top-0 left-0 z-50 hidden h-full w-40 flex-col gap-6 border-r p-4 lg:flex">
         {NAV_ITEMS.map(({ messageKey, href, Icon }) => (
           <Link key={href} href={href} className={`flex items-center gap-2 ${isActive(pathname, href) ? 'text-accent' : 'text-background-contrary'}`}>
             <Icon className="h-6 w-6" />
