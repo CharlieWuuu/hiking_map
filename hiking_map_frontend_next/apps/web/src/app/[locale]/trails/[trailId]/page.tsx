@@ -16,7 +16,7 @@ export default async function TrailDetailPage({ params }: { params: Promise<{ tr
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-16">
-      <Link href="/trails" className="text-background-contrary/60 flex items-center gap-1 text-sm">
+      <Link href="/trails" className="bg-panel hover:bg-panel-active-lighten flex w-fit items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors">
         <ChevronLeft className="h-4 w-4" />
         {t('back')}
       </Link>
