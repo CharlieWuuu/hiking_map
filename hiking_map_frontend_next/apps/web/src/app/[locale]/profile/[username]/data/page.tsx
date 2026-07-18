@@ -1,17 +1,36 @@
 import { getTranslations } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 
+import ProfileTrailExplorer from '../../../../../components/ProfileTrailExplorer';
 import { Link } from '../../../../../i18n/navigation';
+import { MOCK_PROFILE_DETAILS } from '../../../../../testing/mocks/profile/profile.data';
 
-export default async function ProfileDataPage({ params }: { params: Promise<{ username: string }> }) {
+type Props = {
+  params: Promise<{ username: string }>;
+  searchParams: Promise<{ mode?: string }>;
+};
+
+export default async function ProfileDataPage({ params, searchParams }: Props) {
   const { username } = await params;
+  const { mode: rawMode } = await searchParams;
+  const mode = rawMode === 'map' ? 'map' : 'data';
+
+  const profile = MOCK_PROFILE_DETAILS.find((item) => item.username === username);
+  if (!profile) notFound();
+
   const t = await getTranslations('ProfileDataPage');
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <h1>{t('title', { username })}</h1>
-      <p>{t('description')}</p>
-      <Link href={`/profile/${username}`} className="text-accent">
+    <div className="flex w-full flex-col gap-4">
+      <Link
+        href={`/profile/${username}`}
+        className="bg-panel hover:bg-panel-active/50 rounded-panel flex w-fit items-center px-3 py-1.5 text-sm transition-colors"
+      >
         {t('backToProfile')}
       </Link>
+      <div className="h-150">
+        <ProfileTrailExplorer trails={profile.trails} mode={mode} />
+      </div>
     </div>
   );
 }

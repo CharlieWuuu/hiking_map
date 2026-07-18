@@ -49,9 +49,8 @@
     "goToCollections": "Collections"
   },
   "ProfileDataPage": {
-    "title": "Data view/edit {username}",
-    "description": "An entry point for uploading existing GPS files will be added here later, for backfilling old records",
-    "backToProfile": "Back to profile"
+    "backToProfile": "Back to profile",
+    "noTrails": "No records yet"
   },
   "ProfileCollectionsPage": {
     "title": "Collections {username}",

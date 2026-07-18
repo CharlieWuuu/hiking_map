@@ -49,9 +49,8 @@
     "goToCollections": "收藏清單"
   },
   "ProfileDataPage": {
-    "title": "資料檢視／編輯 {username}",
-    "description": "之後這裡會有「上傳既有 GPS 檔案」的入口，補登舊紀錄用",
-    "backToProfile": "返回個人頁"
+    "backToProfile": "返回個人頁",
+    "noTrails": "還沒有任何紀錄"
   },
   "ProfileCollectionsPage": {
     "title": "收藏清單 {username}",
