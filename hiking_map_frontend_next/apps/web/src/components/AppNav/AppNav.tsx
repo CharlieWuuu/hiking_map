@@ -42,7 +42,7 @@ export default function AppNav() {
           <Link
             key={href}
             href={href}
-            className={`hover:bg-panel-active-lighten rounded-panel flex items-center gap-2 px-3 py-2 transition-colors duration-150 ${
+            className={`hover:bg-panel-active-lighten/50 rounded-panel flex items-center gap-2 px-3 py-2 transition-colors duration-150 ${
               isActive(pathname, href) ? 'text-accent' : 'text-background-contrary'
             }`}
           >
