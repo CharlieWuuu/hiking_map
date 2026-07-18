@@ -47,11 +47,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
 
       {/* 統計圖表 */}
       <div className="flex flex-wrap gap-4">
-        <div className="bg-panel rounded-panel flex min-w-75 flex-1 flex-col gap-4 p-4">
+        <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
           <span className="text-background-contrary/60 text-sm">{t('monthlyDistance')}</span>
           <BarChart data={profile.monthlyDistance.map((d) => ({ label: d.month.slice(5), value: d.distanceKm }))} />
         </div>
-        <div className="bg-panel rounded-panel flex min-w-75 flex-1 flex-col gap-4 p-4">
+        <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
           <span className="text-background-contrary/60 text-sm">{t('countyStats')}</span>
           <BarChart data={profile.countyStats.map((d) => ({ label: d.county, value: d.count }))} />
         </div>

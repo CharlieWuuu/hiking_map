@@ -1,41 +1,69 @@
+'use client';
+
+import * as d3 from 'd3';
+import { useEffect, useRef } from 'react';
+
 type Props = {
   label: string;
   value: number;
-  max?: number;
+  size?: number;
+  strokeWidth?: number;
 };
 
-const SIZE = 120;
-const STROKE_WIDTH = 10;
-const RADIUS = (SIZE - STROKE_WIDTH) / 2;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+export default function AchievementRing({ label, value, size = 120, strokeWidth = 10 }: Props) {
+  const ref = useRef<SVGSVGElement>(null);
 
-export default function AchievementRing({ label, value, max = 100 }: Props) {
-  const ratio = Math.min(value / max, 1);
-  const offset = CIRCUMFERENCE * (1 - ratio);
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const radius = (size - strokeWidth) / 2;
+    const circumference = 2 * Math.PI * radius;
+
+    const svg = d3.select(ref.current);
+    svg.selectAll('*').remove();
+
+    const group = svg.append('g').attr('transform', `translate(${size / 2}, ${size / 2})`);
+
+    group.append('circle').attr('r', radius).attr('fill', 'none').attr('stroke', 'var(--color-background)').attr('stroke-width', strokeWidth);
+
+    const arc = group
+      .append('circle')
+      .attr('r', radius)
+      .attr('fill', 'none')
+      .attr('stroke', 'var(--color-accent)')
+      .attr('stroke-width', strokeWidth)
+      .attr('stroke-linecap', 'round')
+      .attr('stroke-dasharray', circumference)
+      .attr('stroke-dashoffset', circumference)
+      .attr('transform', 'rotate(-90)');
+
+    arc
+      .transition()
+      .duration(1000)
+      .attr('stroke-dashoffset', circumference * (1 - Math.min(value / 100, 1)));
+
+    group
+      .append('text')
+      .text(`${value}`)
+      .attr('text-anchor', 'middle')
+      .attr('dy', '0.15em')
+      .attr('font-size', size * 0.28)
+      .attr('font-weight', 'bold')
+      .attr('fill', 'var(--color-accent)');
+
+    group
+      .append('text')
+      .text('／100')
+      .attr('text-anchor', 'middle')
+      .attr('dy', size * 0.16)
+      .attr('font-size', size * 0.09)
+      .attr('fill', 'var(--color-background-contrary)')
+      .attr('opacity', 0.6);
+  }, [value, size, strokeWidth]);
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="relative" style={{ width: SIZE, height: SIZE }}>
-        <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} className="-rotate-90">
-          <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS} fill="none" stroke="currentColor" className="text-background" strokeWidth={STROKE_WIDTH} />
-          <circle
-            cx={SIZE / 2}
-            cy={SIZE / 2}
-            r={RADIUS}
-            fill="none"
-            stroke="currentColor"
-            className="text-accent"
-            strokeWidth={STROKE_WIDTH}
-            strokeDasharray={CIRCUMFERENCE}
-            strokeDashoffset={offset}
-            strokeLinecap="round"
-          />
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-accent text-2xl font-bold">{value}</span>
-          <span className="text-background-contrary/60 text-xs">／{max}</span>
-        </div>
-      </div>
+      <svg ref={ref} width={size} height={size} viewBox={`0 0 ${size} ${size}`} />
       <span className="text-background-contrary text-sm">{label}</span>
     </div>
   );
