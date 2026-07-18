@@ -36,10 +36,17 @@
     "noResults": "No results for \"{query}\""
   },
   "ProfilePage": {
-    "title": "Profile {username}",
-    "goToData": "Go to data view/edit",
-    "goToHikeDemo": "Go to hike detail (demo)",
-    "goToCollections": "Go to collections"
+    "totalDistance": "{distance} km",
+    "hikeCount": "{count} hikes",
+    "achievementHundred": "Hundred Peaks",
+    "achievementSmallHundred": "Small Hundred Peaks",
+    "achievementHundredTrail": "Top 100 Trails",
+    "monthlyDistance": "Monthly distance",
+    "countyStats": "County stats",
+    "trailHistory": "Trail history",
+    "goToMap": "Map",
+    "goToData": "Table",
+    "goToCollections": "Collections"
   },
   "ProfileDataPage": {
     "title": "Data view/edit {username}",
@@ -63,6 +70,11 @@
   "TrailsPage": {
     "title": "Official trail layer",
     "goToDemoTrail": "Go to trail detail (demo)"
+  },
+  "TrailListItem": {
+    "date": "Date",
+    "distance": "Distance",
+    "distanceValue": "{distance} km"
   },
   "TrailDetailPage": {
     "back": "Back to official trail layer",

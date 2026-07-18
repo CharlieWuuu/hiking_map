@@ -36,10 +36,17 @@
     "noResults": "查無「{query}」的相關結果"
   },
   "ProfilePage": {
-    "title": "個人頁 {username}",
-    "goToData": "前往資料檢視／編輯",
-    "goToHikeDemo": "前往健行紀錄詳情（範例）",
-    "goToCollections": "前往收藏清單"
+    "totalDistance": "{distance} 公里",
+    "hikeCount": "{count} 次健行",
+    "achievementHundred": "百岳",
+    "achievementSmallHundred": "小百岳",
+    "achievementHundredTrail": "百大必訪步道",
+    "monthlyDistance": "每月里程",
+    "countyStats": "縣市統計",
+    "trailHistory": "歷次軌跡",
+    "goToMap": "地圖",
+    "goToData": "表格",
+    "goToCollections": "收藏清單"
   },
   "ProfileDataPage": {
     "title": "資料檢視／編輯 {username}",
@@ -63,6 +70,11 @@
   "TrailsPage": {
     "title": "官方路線圖層",
     "goToDemoTrail": "前往路線詳情（範例）"
+  },
+  "TrailListItem": {
+    "date": "日期",
+    "distance": "距離",
+    "distanceValue": "{distance} 公里"
   },
   "TrailDetailPage": {
     "back": "返回官方路線圖層",
