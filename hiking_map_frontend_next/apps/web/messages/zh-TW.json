@@ -53,8 +53,8 @@
     "noTrails": "還沒有任何紀錄"
   },
   "ProfileCollectionsPage": {
-    "title": "收藏清單 {username}",
-    "goToDemoTrail": "前往路線詳情（範例）",
+    "title": "收藏清單",
+    "empty": "還沒有收藏任何路線",
     "backToProfile": "返回個人頁"
   },
   "HikeDetailPage": {

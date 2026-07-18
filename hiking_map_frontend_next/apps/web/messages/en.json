@@ -53,8 +53,8 @@
     "noTrails": "No records yet"
   },
   "ProfileCollectionsPage": {
-    "title": "Collections {username}",
-    "goToDemoTrail": "Go to trail detail (demo)",
+    "title": "Collections",
+    "empty": "No trails collected yet",
     "backToProfile": "Back to profile"
   },
   "HikeDetailPage": {
