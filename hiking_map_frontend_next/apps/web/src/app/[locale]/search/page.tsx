@@ -20,7 +20,7 @@ export default async function SearchPage({ searchParams }: Props) {
       {q && results.length === 0 && <p className="text-background-contrary/60 text-center text-sm">{t('noResults', { query: q })}</p>}
 
       {q && results.length > 0 && (
-        <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
+        <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
           {results.map((item) => (
             <SearchResultRow key={`${item.type}-${item.type === 'user' ? item.username : item.slug}`} item={item} />
           ))}
