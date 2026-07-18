@@ -7,13 +7,13 @@ import { MOCK_PROFILE_DETAILS } from '../../../../../testing/mocks/profile/profi
 
 type Props = {
   params: Promise<{ username: string }>;
-  searchParams: Promise<{ mode?: string }>;
+  searchParams: Promise<{ fullscreen?: string }>;
 };
 
 export default async function ProfileDataPage({ params, searchParams }: Props) {
   const { username } = await params;
-  const { mode: rawMode } = await searchParams;
-  const mode = rawMode === 'map' ? 'map' : 'data';
+  const { fullscreen: rawFullscreen } = await searchParams;
+  const fullscreen = rawFullscreen === 'map' ? 'map' : rawFullscreen === 'table' ? 'table' : null;
 
   const profile = MOCK_PROFILE_DETAILS.find((item) => item.username === username);
   if (!profile) notFound();
@@ -29,7 +29,7 @@ export default async function ProfileDataPage({ params, searchParams }: Props) {
         {t('backToProfile')}
       </Link>
       <div className="h-150">
-        <ProfileTrailExplorer trails={profile.trails} mode={mode} />
+        <ProfileTrailExplorer username={username} trails={profile.trails} fullscreen={fullscreen} />
       </div>
     </div>
   );

@@ -44,13 +44,14 @@
     "monthlyDistance": "每月里程",
     "countyStats": "縣市統計",
     "trailHistory": "歷次軌跡",
-    "goToMap": "地圖",
-    "goToData": "表格",
+    "goToData": "地圖與資料",
     "goToCollections": "收藏清單"
   },
   "ProfileDataPage": {
     "backToProfile": "返回個人頁",
-    "noTrails": "還沒有任何紀錄"
+    "noTrails": "還沒有任何紀錄",
+    "expand": "展開",
+    "collapse": "收合"
   },
   "ProfileCollectionsPage": {
     "title": "收藏清單",

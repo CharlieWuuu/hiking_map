@@ -59,16 +59,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
 
       {/* 地圖／表格導覽 */}
       <div className="flex gap-4">
-        <Link
-          href={`/profile/${username}/data?mode=map`}
-          className="bg-panel hover:bg-panel-active rounded-panel flex-1 py-4 text-center text-lg transition-colors"
-        >
-          {t('goToMap')}
-        </Link>
-        <Link
-          href={`/profile/${username}/data?mode=data`}
-          className="bg-panel hover:bg-panel-active rounded-panel flex-1 py-4 text-center text-lg transition-colors"
-        >
+        <Link href={`/profile/${username}/data`} className="bg-panel hover:bg-panel-active rounded-panel flex-1 py-4 text-center text-lg transition-colors">
           {t('goToData')}
         </Link>
         <Link

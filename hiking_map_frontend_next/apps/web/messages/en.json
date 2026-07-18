@@ -44,13 +44,14 @@
     "monthlyDistance": "Monthly distance",
     "countyStats": "County stats",
     "trailHistory": "Trail history",
-    "goToMap": "Map",
-    "goToData": "Table",
+    "goToData": "Map & data",
     "goToCollections": "Collections"
   },
   "ProfileDataPage": {
     "backToProfile": "Back to profile",
-    "noTrails": "No records yet"
+    "noTrails": "No records yet",
+    "expand": "Expand",
+    "collapse": "Collapse"
   },
   "ProfileCollectionsPage": {
     "title": "Collections",
