@@ -8,7 +8,7 @@ export default async function ProfileCollectionsPage({ params }: { params: Promi
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4">
       <h1>{t('title', { username })}</h1>
-      <Link href="/trails/demo-trail" className="text-accent">
+      <Link href="/trails/trail-1" className="text-accent">
         {t('goToDemoTrail')}
       </Link>
       <Link href={`/profile/${username}`} className="text-accent">

@@ -7,7 +7,7 @@ export default function TrailsPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4">
       <h1>{t('title')}</h1>
-      <Link href="/trails/demo-trail" className="text-accent">
+      <Link href="/trails/trail-1" className="text-accent">
         {t('goToDemoTrail')}
       </Link>
     </div>
