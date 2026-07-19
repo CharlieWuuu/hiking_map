@@ -2,7 +2,6 @@ import { useTranslations } from 'next-intl';
 
 import AchievementRing from '../../components/AchievementRing';
 import BarChart from '../../components/BarChart';
-import TrailListItem from '../../components/TrailListItem';
 import { Link } from '../../i18n/navigation';
 import { MOCK_PROFILE_DETAILS } from '../../testing/mocks/profile/profile.data';
 import { MOCK_TRAIL_DETAILS } from '../../testing/mocks/trails/trails.data';
@@ -45,7 +44,25 @@ export default function Home() {
         <h2 className="text-2xl font-bold">{t('recommendedTrails')}</h2>
         <div className="flex flex-col gap-3">
           {MOCK_TRAIL_DETAILS.map((trail) => (
-            <TrailListItem key={trail.slug} {...trail} />
+            <Link
+              key={trail.slug}
+              href={`/trails/${trail.slug}`}
+              className="bg-panel hover:bg-panel-active rounded-panel flex w-full items-center gap-4 p-4 transition-colors duration-150"
+            >
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <span className="truncate text-lg font-bold">{trail.name}</span>
+                <span className="text-background-contrary/60 text-sm">
+                  {trail.county} {trail.town}
+                </span>
+              </div>
+
+              <div className="bg-panel-active w-0.5 shrink-0 self-stretch" />
+
+              <div className="flex shrink-0 flex-col items-end">
+                <span className="text-background-contrary/60 text-xs">{t('recommendedDistance')}</span>
+                <span className="font-bold">{t('recommendedDistanceValue', { distance: trail.distanceKm })}</span>
+              </div>
+            </Link>
           ))}
         </div>
       </section>
