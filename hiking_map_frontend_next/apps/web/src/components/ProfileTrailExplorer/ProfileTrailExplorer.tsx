@@ -1,11 +1,12 @@
 'use client';
 
-import { Maximize2, Minimize2 } from 'lucide-react';
+import { Download, LayoutGrid, Maximize2, Minimize2, Plus, Table } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { useRouter } from '../../i18n/navigation';
 import MapTrailListItem from '../MapTrailListItem';
+import MapTrailTable from '../MapTrailTable';
 import MultiTrailMap from '../MultiTrailMap';
 
 type Trail = {
@@ -22,13 +23,17 @@ type Props = {
   username: string;
   trails: Trail[];
   fullscreen: 'map' | 'table' | null;
+  isEditMode: boolean;
 };
 
-export default function ProfileTrailExplorer({ username, trails, fullscreen }: Props) {
+const EXPORT_FORMATS = ['GeoJSON', 'GPX', 'CSV'] as const;
+
+export default function ProfileTrailExplorer({ username, trails, fullscreen, isEditMode }: Props) {
   const t = useTranslations('ProfileDataPage');
   const router = useRouter();
   const [hoverSlug, setHoverSlug] = useState<string | null>(null);
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const [view, setView] = useState<'card' | 'table'>('card');
 
   const isMapFullscreen = fullscreen === 'map';
   const isTableFullscreen = fullscreen === 'table';
@@ -50,22 +55,65 @@ export default function ProfileTrailExplorer({ username, trails, fullscreen }: P
               {isTableFullscreen ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
               {isTableFullscreen ? t('collapse') : t('expand')}
             </button>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setView((prev) => (prev === 'card' ? 'table' : 'card'))}
+                title={view === 'card' ? t('viewTable') : t('viewCard')}
+                className="text-background-contrary/60 hover:text-background-contrary flex items-center gap-1 text-xs"
+              >
+                {view === 'card' ? <Table className="h-3 w-3" /> : <LayoutGrid className="h-3 w-3" />}
+              </button>
+
+              {isEditMode && (
+                <>
+                  <button type="button" className="bg-panel hover:bg-panel-active rounded-panel flex items-center gap-1 px-2 py-1 text-xs transition-colors">
+                    <Plus className="h-3 w-3" />
+                    {t('addTrail')}
+                  </button>
+                  <label className="bg-panel hover:bg-panel-active rounded-panel flex cursor-pointer items-center gap-1 px-2 py-1 text-xs transition-colors">
+                    <Download className="h-3 w-3" />
+                    <select defaultValue="" className="cursor-pointer bg-transparent outline-none">
+                      <option value="" disabled>
+                        {t('export')}
+                      </option>
+                      {EXPORT_FORMATS.map((format) => (
+                        <option key={format} value={format}>
+                          {format}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </>
+              )}
+            </div>
           </div>
           {trails.length === 0 && <p className="text-background-contrary/60 text-sm">{t('noTrails')}</p>}
-          {trails.map((trail) => (
-            <MapTrailListItem
-              key={trail.slug}
-              name={trail.name}
-              county={trail.county}
-              town={trail.town}
-              date={trail.date}
-              distanceKm={trail.distanceKm}
-              isActive={trail.slug === activeSlug}
-              onMouseEnter={() => setHoverSlug(trail.slug)}
+          {trails.length > 0 && view === 'table' ? (
+            <MapTrailTable
+              trails={trails}
+              activeSlug={activeSlug}
+              onMouseEnter={setHoverSlug}
               onMouseLeave={() => setHoverSlug(null)}
-              onClick={() => setActiveSlug((prev) => (prev === trail.slug ? null : trail.slug))}
+              onSelect={(slug) => setActiveSlug((prev) => (prev === slug ? null : slug))}
             />
-          ))}
+          ) : (
+            trails.map((trail) => (
+              <MapTrailListItem
+                key={trail.slug}
+                name={trail.name}
+                county={trail.county}
+                town={trail.town}
+                date={trail.date}
+                distanceKm={trail.distanceKm}
+                isActive={trail.slug === activeSlug}
+                onMouseEnter={() => setHoverSlug(trail.slug)}
+                onMouseLeave={() => setHoverSlug(null)}
+                onClick={() => setActiveSlug((prev) => (prev === trail.slug ? null : trail.slug))}
+              />
+            ))
+          )}
         </div>
       )}
 

@@ -51,7 +51,17 @@
     "backToProfile": "Back to profile",
     "noTrails": "No records yet",
     "expand": "Expand",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "addTrail": "Add trail",
+    "export": "Export",
+    "viewCard": "Card view",
+    "viewTable": "Table view"
+  },
+  "MapTrailTable": {
+    "name": "Name",
+    "county": "County",
+    "town": "Town",
+    "date": "Date"
   },
   "ProfileCollectionsPage": {
     "title": "Collections",

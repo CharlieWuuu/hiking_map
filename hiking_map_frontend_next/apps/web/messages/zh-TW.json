@@ -51,7 +51,17 @@
     "backToProfile": "返回個人頁",
     "noTrails": "還沒有任何紀錄",
     "expand": "展開",
-    "collapse": "收合"
+    "collapse": "收合",
+    "addTrail": "新增路線",
+    "export": "匯出",
+    "viewCard": "卡片檢視",
+    "viewTable": "表格檢視"
+  },
+  "MapTrailTable": {
+    "name": "名稱",
+    "county": "縣市",
+    "town": "鄉鎮",
+    "date": "時間"
   },
   "ProfileCollectionsPage": {
     "title": "收藏清單",
