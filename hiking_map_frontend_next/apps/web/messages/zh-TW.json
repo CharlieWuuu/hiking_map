@@ -49,7 +49,13 @@
     "backHome": "回首頁"
   },
   "SearchPage": {
-    "noResults": "查無「{query}」的相關結果"
+    "noResults": "查無「{query}」的相關結果",
+    "hundred": "百岳",
+    "smallHundred": "小百岳",
+    "hundredTrail": "百大必訪步道",
+    "categoryFilter": "分類",
+    "countyFilter": "縣市",
+    "noTrails": "查無符合條件的步道"
   },
   "ProfilePage": {
     "totalDistance": "{distance} 公里",

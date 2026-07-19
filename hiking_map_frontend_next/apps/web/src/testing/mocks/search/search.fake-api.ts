@@ -1,4 +1,5 @@
 import type { MatchReason, QuerySuggestion, SearchResult, SearchResultWithRelevance } from '../../../components/SearchBar/SearchBar.types';
+import { MOCK_TRAIL_DETAILS, type TrailCategory } from '../trails/trails.data';
 import { MOCK_POPULAR_QUERIES, MOCK_RESULTS } from './search.data';
 
 export const RESULTS_PER_PAGE = 5;
@@ -53,4 +54,20 @@ export function getFullSearchResults(query: string): SearchResultWithRelevance[]
 export function paginate<T>(items: T[], page: number, perPage = RESULTS_PER_PAGE): T[] {
   const start = (page - 1) * perPage;
   return items.slice(start, start + perPage);
+}
+
+// 分類／縣市篩選：只精準比對官方路線的欄位，不做模糊字串搜尋
+// 之後要換成 search API：後端依分類/縣市查詢，前端只管顯示回傳結果
+export function getTrailsByFilter(category: TrailCategory | null, county: string | null): SearchResultWithRelevance[] {
+  const trails = MOCK_TRAIL_DETAILS.filter((trail) => (!category || trail.categories.includes(category)) && (!county || trail.county === county));
+
+  return trails.map((trail) => ({
+    type: 'trail',
+    slug: trail.slug,
+    displayName: trail.name,
+    county: trail.county,
+    town: trail.town,
+    note: trail.note,
+    matchReason: 'field',
+  }));
 }
