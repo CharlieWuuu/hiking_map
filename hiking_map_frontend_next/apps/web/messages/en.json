@@ -58,6 +58,24 @@
     "viewCard": "Card view",
     "viewTable": "Table view"
   },
+  "TrailEditCard": {
+    "save": "Save",
+    "close": "Close",
+    "county": "County",
+    "town": "Town",
+    "date": "Date",
+    "distance": "Distance",
+    "distanceValue": "{distance} km",
+    "public": "Public",
+    "hundred": "Hundred Peaks",
+    "smallHundred": "Small Hundred Peaks",
+    "hundredTrail": "Top 100 Trails",
+    "links": "Route links",
+    "linksPlaceholder": "https://",
+    "addLink": "Add link",
+    "removeLink": "Remove link",
+    "note": "Note"
+  },
   "MapTrailTable": {
     "name": "Name",
     "county": "County",

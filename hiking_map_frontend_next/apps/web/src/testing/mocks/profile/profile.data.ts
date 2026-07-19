@@ -19,6 +19,12 @@ export type ProfileDetail = {
     town: string;
     date: string;
     distanceKm: number;
+    isPublic: boolean;
+    isHundred: boolean; // 百岳
+    isSmallHundred: boolean; // 小百岳
+    isHundredTrail: boolean; // 百大必訪步道
+    urls: string[];
+    note?: string;
     // 路線座標序列，[經度, 緯度]，之後接上真的後端 API 後會換成後端回傳的 GeoJSON LineString
     path: [number, number][];
   }[];
@@ -57,6 +63,12 @@ export const MOCK_PROFILE_DETAILS: ProfileDetail[] = [
         town: '信義區',
         date: '2025-06-14',
         distanceKm: 2.8,
+        isPublic: true,
+        isHundred: false,
+        isSmallHundred: false,
+        isHundredTrail: true,
+        urls: ['https://example.com/trail-1-a'],
+        note: '鄰近信義區，適合新手健行',
         path: [
           [121.5705, 25.0275],
           [121.572, 25.0268],
@@ -73,6 +85,11 @@ export const MOCK_PROFILE_DETAILS: ProfileDetail[] = [
         town: '新店區',
         date: '2025-05-02',
         distanceKm: 6.4,
+        isPublic: true,
+        isHundred: true,
+        isSmallHundred: false,
+        isHundredTrail: false,
+        urls: [],
         path: [
           [121.5445, 25.1668],
           [121.5461, 25.1652],
@@ -89,6 +106,11 @@ export const MOCK_PROFILE_DETAILS: ProfileDetail[] = [
         town: '復興區',
         date: '2025-04-18',
         distanceKm: 5.1,
+        isPublic: false,
+        isHundred: false,
+        isSmallHundred: true,
+        isHundredTrail: false,
+        urls: [],
         path: [
           [121.5223, 25.1735],
           [121.524, 25.1721],
@@ -104,6 +126,11 @@ export const MOCK_PROFILE_DETAILS: ProfileDetail[] = [
         town: '和平區',
         date: '2025-03-09',
         distanceKm: 4.3,
+        isPublic: true,
+        isHundred: false,
+        isSmallHundred: false,
+        isHundredTrail: false,
+        urls: [],
         path: [
           [121.7975, 25.0698],
           [121.799, 25.0684],
@@ -118,6 +145,12 @@ export const MOCK_PROFILE_DETAILS: ProfileDetail[] = [
         town: '南化區',
         date: '2025-02-21',
         distanceKm: 3.6,
+        isPublic: true,
+        isHundred: false,
+        isSmallHundred: false,
+        isHundredTrail: false,
+        urls: [],
+        note: '沿途景觀優美，建議攜帶登山杖',
         path: [
           [121.5265, 25.0862],
           [121.528, 25.0849],

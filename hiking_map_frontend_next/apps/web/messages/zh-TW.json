@@ -58,6 +58,24 @@
     "viewCard": "卡片檢視",
     "viewTable": "表格檢視"
   },
+  "TrailEditCard": {
+    "save": "儲存",
+    "close": "關閉",
+    "county": "縣市",
+    "town": "鄉鎮",
+    "date": "日期",
+    "distance": "距離",
+    "distanceValue": "{distance} 公里",
+    "public": "公開",
+    "hundred": "百岳",
+    "smallHundred": "小百岳",
+    "hundredTrail": "百大必訪步道",
+    "links": "路線連結",
+    "linksPlaceholder": "https://",
+    "addLink": "新增連結",
+    "removeLink": "刪除連結",
+    "note": "說明"
+  },
   "MapTrailTable": {
     "name": "名稱",
     "county": "縣市",

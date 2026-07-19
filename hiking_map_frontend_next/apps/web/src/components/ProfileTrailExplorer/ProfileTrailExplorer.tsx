@@ -8,16 +8,9 @@ import { useRouter } from '../../i18n/navigation';
 import MapTrailListItem from '../MapTrailListItem';
 import MapTrailTable from '../MapTrailTable';
 import MultiTrailMap from '../MultiTrailMap';
+import TrailEditCard, { type EditableTrail } from '../TrailEditCard';
 
-type Trail = {
-  slug: string;
-  name: string;
-  county: string;
-  town: string;
-  date: string;
-  distanceKm: number;
-  path: [number, number][];
-};
+type Trail = EditableTrail & { path: [number, number][] };
 
 type Props = {
   username: string;
@@ -28,18 +21,24 @@ type Props = {
 
 const EXPORT_FORMATS = ['GeoJSON', 'GPX', 'CSV'] as const;
 
-export default function ProfileTrailExplorer({ username, trails, fullscreen, isEditMode }: Props) {
+export default function ProfileTrailExplorer({ username, trails: initialTrails, fullscreen, isEditMode }: Props) {
   const t = useTranslations('ProfileDataPage');
   const router = useRouter();
+  const [trails, setTrails] = useState(initialTrails);
   const [hoverSlug, setHoverSlug] = useState<string | null>(null);
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const [view, setView] = useState<'card' | 'table'>('card');
 
   const isMapFullscreen = fullscreen === 'map';
   const isTableFullscreen = fullscreen === 'table';
+  const activeTrail = trails.find((trail) => trail.slug === activeSlug) ?? null;
 
   function setFullscreen(next: 'map' | 'table' | null) {
     router.replace({ pathname: `/profile/${username}/data`, query: next ? { fullscreen: next } : undefined });
+  }
+
+  function saveTrailPatch(slug: string, patch: Partial<EditableTrail>) {
+    setTrails((prev) => prev.map((trail) => (trail.slug === slug ? { ...trail, ...patch } : trail)));
   }
 
   return (
@@ -89,6 +88,11 @@ export default function ProfileTrailExplorer({ username, trails, fullscreen, isE
               )}
             </div>
           </div>
+
+          {isEditMode && activeTrail && (
+            <TrailEditCard trail={activeTrail} onClose={() => setActiveSlug(null)} onSave={(patch) => saveTrailPatch(activeTrail.slug, patch)} />
+          )}
+
           {trails.length === 0 && <p className="text-background-contrary/60 text-sm">{t('noTrails')}</p>}
           {trails.length > 0 && view === 'table' ? (
             <MapTrailTable
