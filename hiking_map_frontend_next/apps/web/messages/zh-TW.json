@@ -109,8 +109,11 @@
   },
   "RecordPage": {
     "title": "記錄",
-    "description": "之後這裡會先顯示地圖與「開始」按鈕，按下開始才會真正啟動 GPS 記錄",
-    "goToProfile": "完成後前往個人頁總覽"
+    "elapsed": "時間",
+    "distance": "距離",
+    "distanceValue": "{distance} 公里",
+    "start": "開始",
+    "stop": "結束"
   },
   "TrailsPage": {
     "title": "官方路線圖層",
