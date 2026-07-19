@@ -109,8 +109,11 @@
   },
   "RecordPage": {
     "title": "Record",
-    "description": "A map and a \"Start\" button will be shown here later; GPS recording only starts once you press Start",
-    "goToProfile": "Go to profile overview when done"
+    "elapsed": "Time",
+    "distance": "Distance",
+    "distanceValue": "{distance} km",
+    "start": "Start",
+    "stop": "Stop"
   },
   "TrailsPage": {
     "title": "Official trail layer",
