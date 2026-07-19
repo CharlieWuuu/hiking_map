@@ -25,7 +25,15 @@
   },
   "LoginPage": {
     "title": "Log in",
-    "goToProfileAfterLogin": "Go to profile after login (temporary)"
+    "username": "Username",
+    "password": "Password",
+    "submit": "Log in",
+    "orDivider": "or",
+    "oauth": {
+      "google": "Continue with Google",
+      "line": "Continue with LINE",
+      "facebook": "Continue with Facebook"
+    }
   },
   "NotFoundPage": {
     "title": "Page not found",
