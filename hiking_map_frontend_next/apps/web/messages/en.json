@@ -27,7 +27,9 @@
     "monthlyDistance": "Monthly distance",
     "countyStats": "County stats",
     "goToProfile": "View full profile",
-    "recommendedTrails": "Recommended Trails"
+    "recommendedTrails": "Recommended Trails",
+    "recommendedDistance": "Distance",
+    "recommendedDistanceValue": "{distance} km"
   },
   "LoginPage": {
     "title": "Log in",
@@ -151,6 +153,32 @@
   },
   "SettingsIntroPage": {
     "title": "About this site",
-    "backToSettings": "Back to settings"
+    "backToSettings": "Back to settings",
+    "purposeTitle": "Purpose",
+    "purposeIntro": "This site visualizes hiking records, serving both as a personal achievement log and a platform for sharing with others. Its main features:",
+    "purposeItem1": "Add, browse, edit, and delete hiking trails (requires login)",
+    "purposeItem2": "User login system to protect data ownership",
+    "purposeItem3": "Achievement dashboard showing personal activity totals",
+    "purposeItem4": "Search other users' records",
+    "purposeItem5": "Mobile-friendly and installable as a PWA",
+    "purposeNote": "The design was initially inspired by Spotify's single-page feel. It was later split into a multi-page structure for clearer navigation, alongside a simulated multi-user flow.",
+    "techTitle": "Tech Stack",
+    "techIntro": "This project is built with:",
+    "techFrontend": "Frontend: Next.js",
+    "techBackend": "Backend & database: NestJS + PostgreSQL (hosted on Neon)",
+    "techDesign": "Interface design: Figma",
+    "techVisual": "Visual design: icons, logo, and hero banner all custom-drawn",
+    "techNote": "The logo is inspired by the hiking phrase \"one more bend and you're at the summit,\" symbolizing steady progress toward a goal. The overall color scheme and interaction flow draw inspiration from Spotify, YouTube, and Hevy.",
+    "problemTitle": "The Problem",
+    "problemIntro": "I've long kept a habit of recording my hiking trails, but existing tools make producing, organizing, and presenting this data inconvenient:",
+    "problemMethodsIntro": "Common ways to record a trail:",
+    "problemMethod1": "Draw a line on Openrouteservice Maps and export as GPX",
+    "problemMethod2": "Record a GPS track while hiking and export as GPX",
+    "problemMethod3": "Draw the trail manually with GIS software like QGIS or ArcGIS",
+    "problemPainIntro": "But presenting this data brought its own problems:",
+    "problemPain1": "QGIS-exported static images aren't interactive — others can't pan or zoom them",
+    "problemPain2": "Google Maps works for display but has limited layers, forcing all trails into one file and full rewrites on every update",
+    "problemPain3": "Lacks flexibility and extensibility for further chart analysis or multi-user sharing",
+    "problemConclusion": "So I extended this need into a full web app, simulating an open platform that supports multi-user uploads, interactive queries, and achievement visualization."
   }
 }
