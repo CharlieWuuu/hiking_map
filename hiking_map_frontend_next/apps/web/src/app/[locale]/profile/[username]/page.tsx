@@ -75,7 +75,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
         <h2 className="text-2xl font-bold">{t('trailHistory')}</h2>
         <div className="flex flex-col gap-3">
           {profile.trails.map((trail) => (
-            <TrailListItem key={trail.slug} {...trail} />
+            <TrailListItem key={trail.slug} username={username} {...trail} />
           ))}
         </div>
       </section>

@@ -3,6 +3,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '../../i18n/navigation';
 
 type Props = {
+  username: string;
   slug: string;
   name: string;
   county: string;
@@ -11,11 +12,14 @@ type Props = {
   distanceKm: number;
 };
 
-export default function TrailListItem({ slug, name, county, town, date, distanceKm }: Props) {
+export default function TrailListItem({ username, slug, name, county, town, date, distanceKm }: Props) {
   const t = useTranslations('TrailListItem');
 
   return (
-    <Link href={`/trails/${slug}`} className="bg-panel hover:bg-panel-active rounded-panel flex w-full items-center gap-4 p-4 transition-colors duration-150">
+    <Link
+      href={`/profile/${username}/hikes/${slug}`}
+      className="bg-panel hover:bg-panel-active rounded-panel flex w-full items-center gap-4 p-4 transition-colors duration-150"
+    >
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <span className="truncate text-lg font-bold">{name}</span>
         <span className="text-background-contrary/60 text-sm">

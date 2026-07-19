@@ -89,8 +89,15 @@
     "backToProfile": "返回個人頁"
   },
   "HikeDetailPage": {
-    "title": "健行紀錄詳情 {username} / {hikeId}",
-    "backToProfile": "返回個人頁"
+    "backToProfile": "返回地圖與資料",
+    "date": "日期",
+    "distance": "距離",
+    "distanceValue": "{distance} 公里",
+    "links": "路線連結",
+    "linkLabel": "連結 {index}",
+    "note": "說明",
+    "noValue": "-",
+    "map": "地圖"
   },
   "RecordPage": {
     "title": "記錄",
