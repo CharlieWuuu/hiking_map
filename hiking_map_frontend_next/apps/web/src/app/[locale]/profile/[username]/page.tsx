@@ -8,9 +8,13 @@ import TrailListItem from '../../../../components/TrailListItem';
 import { Link } from '../../../../i18n/navigation';
 import { MOCK_PROFILE_DETAILS } from '../../../../testing/mocks/profile/profile.data';
 
+// 暫時用假的登入者 username，之後接上真正登入邏輯後會改成從 session 讀取
+const DEMO_LOGGED_IN_USERNAME = 'demo';
+
 export default async function ProfilePage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
   const profile = MOCK_PROFILE_DETAILS.find((item) => item.username === username);
+  const isOwner = username === DEMO_LOGGED_IN_USERNAME;
 
   if (!profile) notFound();
 
@@ -68,6 +72,14 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
         >
           {t('goToCollections')}
         </Link>
+        {isOwner && (
+          <Link
+            href={{ pathname: `/profile/${username}/data`, query: { edit: 'true' } }}
+            className="bg-panel hover:bg-panel-active rounded-panel flex-1 py-4 text-center text-lg transition-colors"
+          >
+            {t('goToEdit')}
+          </Link>
+        )}
       </div>
 
       {/* 歷次軌跡 */}

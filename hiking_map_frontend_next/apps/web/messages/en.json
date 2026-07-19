@@ -45,7 +45,8 @@
     "countyStats": "County stats",
     "trailHistory": "Trail history",
     "goToData": "Map & data",
-    "goToCollections": "Collections"
+    "goToCollections": "Collections",
+    "goToEdit": "Edit trails"
   },
   "ProfileDataPage": {
     "backToProfile": "Back to profile",
