@@ -45,8 +45,7 @@
     "countyStats": "縣市統計",
     "trailHistory": "歷次軌跡",
     "goToData": "地圖與資料",
-    "goToCollections": "收藏清單",
-    "goToEdit": "編輯路線"
+    "goToCollections": "收藏清單"
   },
   "ProfileDataPage": {
     "backToProfile": "返回個人頁",
@@ -56,7 +55,9 @@
     "addTrail": "新增路線",
     "export": "匯出",
     "viewCard": "卡片檢視",
-    "viewTable": "表格檢視"
+    "viewTable": "表格檢視",
+    "goToEdit": "編輯路線",
+    "exitEdit": "結束編輯"
   },
   "TrailEditCard": {
     "save": "儲存",

@@ -45,8 +45,7 @@
     "countyStats": "County stats",
     "trailHistory": "Trail history",
     "goToData": "Map & data",
-    "goToCollections": "Collections",
-    "goToEdit": "Edit trails"
+    "goToCollections": "Collections"
   },
   "ProfileDataPage": {
     "backToProfile": "Back to profile",
@@ -56,7 +55,9 @@
     "addTrail": "Add trail",
     "export": "Export",
     "viewCard": "Card view",
-    "viewTable": "Table view"
+    "viewTable": "Table view",
+    "goToEdit": "Edit trails",
+    "exitEdit": "Exit editing"
   },
   "TrailEditCard": {
     "save": "Save",

@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { Fragment } from 'react';
 
 type Trail = {
   slug: string;
@@ -16,9 +17,10 @@ type Props = {
   onMouseEnter: (slug: string) => void;
   onMouseLeave: () => void;
   onSelect: (slug: string) => void;
+  renderEditRow?: (slug: string) => React.ReactNode;
 };
 
-export default function MapTrailTable({ trails, activeSlug, onMouseEnter, onMouseLeave, onSelect }: Props) {
+export default function MapTrailTable({ trails, activeSlug, onMouseEnter, onMouseLeave, onSelect, renderEditRow }: Props) {
   const t = useTranslations('MapTrailTable');
 
   return (
@@ -33,21 +35,32 @@ export default function MapTrailTable({ trails, activeSlug, onMouseEnter, onMous
         </tr>
       </thead>
       <tbody>
-        {trails.map((trail, index) => (
-          <tr
-            key={trail.slug}
-            onMouseEnter={() => onMouseEnter(trail.slug)}
-            onMouseLeave={onMouseLeave}
-            onClick={() => onSelect(trail.slug)}
-            className={`hover:bg-panel-active/50 cursor-pointer transition-colors duration-150 ${trail.slug === activeSlug ? 'bg-panel-active' : ''}`}
-          >
-            <td className="py-2">{index + 1}</td>
-            <td className="py-2 font-bold">{trail.name}</td>
-            <td className="py-2">{trail.county}</td>
-            <td className="py-2">{trail.town}</td>
-            <td className="py-2">{trail.date}</td>
-          </tr>
-        ))}
+        {trails.map((trail, index) => {
+          const editRow = trail.slug === activeSlug ? renderEditRow?.(trail.slug) : null;
+          return (
+            <Fragment key={trail.slug}>
+              <tr
+                onMouseEnter={() => onMouseEnter(trail.slug)}
+                onMouseLeave={onMouseLeave}
+                onClick={() => onSelect(trail.slug)}
+                className={`hover:bg-panel-active/50 cursor-pointer transition-colors duration-150 ${trail.slug === activeSlug ? 'bg-panel-active' : ''}`}
+              >
+                <td className="py-2">{index + 1}</td>
+                <td className="py-2 font-bold">{trail.name}</td>
+                <td className="py-2">{trail.county}</td>
+                <td className="py-2">{trail.town}</td>
+                <td className="py-2">{trail.date}</td>
+              </tr>
+              {editRow && (
+                <tr>
+                  <td colSpan={5} className="py-2">
+                    {editRow}
+                  </td>
+                </tr>
+              )}
+            </Fragment>
+          );
+        })}
       </tbody>
     </table>
   );
