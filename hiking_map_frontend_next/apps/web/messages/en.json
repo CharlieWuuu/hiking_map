@@ -20,8 +20,14 @@
     "matchField": "・matched content"
   },
   "HomePage": {
-    "title": "Home",
-    "goToDemoHike": "Go to hike detail (demo)"
+    "yourStats": "Your Stats",
+    "achievementHundred": "Hundred Peaks",
+    "achievementSmallHundred": "Small Hundred Peaks",
+    "achievementHundredTrail": "Top 100 Trails",
+    "monthlyDistance": "Monthly distance",
+    "countyStats": "County stats",
+    "goToProfile": "View full profile",
+    "recommendedTrails": "Recommended Trails"
   },
   "LoginPage": {
     "title": "Log in",

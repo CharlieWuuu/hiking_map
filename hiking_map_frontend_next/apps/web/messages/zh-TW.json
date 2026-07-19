@@ -20,8 +20,14 @@
     "matchField": "・符合內容"
   },
   "HomePage": {
-    "title": "首頁",
-    "goToDemoHike": "前往健行紀錄詳情（範例）"
+    "yourStats": "我的統計",
+    "achievementHundred": "百岳",
+    "achievementSmallHundred": "小百岳",
+    "achievementHundredTrail": "百大必訪步道",
+    "monthlyDistance": "每月里程",
+    "countyStats": "縣市統計",
+    "goToProfile": "查看完整個人頁",
+    "recommendedTrails": "推薦路線"
   },
   "LoginPage": {
     "title": "登入",
