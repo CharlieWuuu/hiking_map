@@ -97,8 +97,15 @@
     "backToProfile": "Back to profile"
   },
   "HikeDetailPage": {
-    "title": "Hike detail {username} / {hikeId}",
-    "backToProfile": "Back to profile"
+    "backToProfile": "Back to map & data",
+    "date": "Date",
+    "distance": "Distance",
+    "distanceValue": "{distance} km",
+    "links": "Route links",
+    "linkLabel": "Link {index}",
+    "note": "Note",
+    "noValue": "-",
+    "map": "Map"
   },
   "RecordPage": {
     "title": "Record",
