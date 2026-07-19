@@ -25,7 +25,15 @@
   },
   "LoginPage": {
     "title": "登入",
-    "goToProfileAfterLogin": "登入後前往個人頁（暫時）"
+    "username": "使用者名稱",
+    "password": "密碼",
+    "submit": "登入",
+    "orDivider": "或",
+    "oauth": {
+      "google": "使用 Google 登入",
+      "line": "使用 LINE 登入",
+      "facebook": "使用 Facebook 登入"
+    }
   },
   "NotFoundPage": {
     "title": "找不到這個頁面",
