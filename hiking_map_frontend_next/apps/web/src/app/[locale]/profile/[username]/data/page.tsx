@@ -17,7 +17,8 @@ export default async function ProfileDataPage({ params, searchParams }: Props) {
   const { username } = await params;
   const { fullscreen: rawFullscreen, edit } = await searchParams;
   const fullscreen = rawFullscreen === 'map' ? 'map' : rawFullscreen === 'table' ? 'table' : null;
-  const isEditMode = edit === 'true' && username === DEMO_LOGGED_IN_USERNAME;
+  const isOwner = username === DEMO_LOGGED_IN_USERNAME;
+  const isEditMode = edit === 'true' && isOwner;
 
   const profile = MOCK_PROFILE_DETAILS.find((item) => item.username === username);
   if (!profile) notFound();
@@ -33,7 +34,7 @@ export default async function ProfileDataPage({ params, searchParams }: Props) {
         {t('backToProfile')}
       </Link>
       <div className="h-150">
-        <ProfileTrailExplorer username={username} trails={profile.trails} fullscreen={fullscreen} isEditMode={isEditMode} />
+        <ProfileTrailExplorer username={username} trails={profile.trails} fullscreen={fullscreen} isEditMode={isEditMode} isOwner={isOwner} />
       </div>
     </div>
   );

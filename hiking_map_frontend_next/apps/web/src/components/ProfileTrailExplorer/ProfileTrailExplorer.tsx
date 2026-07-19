@@ -1,6 +1,6 @@
 'use client';
 
-import { Download, LayoutGrid, Maximize2, Minimize2, Plus, Table } from 'lucide-react';
+import { Download, LayoutGrid, Maximize2, Minimize2, Pencil, Plus, Table, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
@@ -8,29 +8,24 @@ import { useRouter } from '../../i18n/navigation';
 import MapTrailListItem from '../MapTrailListItem';
 import MapTrailTable from '../MapTrailTable';
 import MultiTrailMap from '../MultiTrailMap';
+import TrailEditCard, { type EditableTrail } from '../TrailEditCard';
 
-type Trail = {
-  slug: string;
-  name: string;
-  county: string;
-  town: string;
-  date: string;
-  distanceKm: number;
-  path: [number, number][];
-};
+type Trail = EditableTrail & { path: [number, number][] };
 
 type Props = {
   username: string;
   trails: Trail[];
   fullscreen: 'map' | 'table' | null;
   isEditMode: boolean;
+  isOwner: boolean;
 };
 
 const EXPORT_FORMATS = ['GeoJSON', 'GPX', 'CSV'] as const;
 
-export default function ProfileTrailExplorer({ username, trails, fullscreen, isEditMode }: Props) {
+export default function ProfileTrailExplorer({ username, trails: initialTrails, fullscreen, isEditMode, isOwner }: Props) {
   const t = useTranslations('ProfileDataPage');
   const router = useRouter();
+  const [trails, setTrails] = useState(initialTrails);
   const [hoverSlug, setHoverSlug] = useState<string | null>(null);
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const [view, setView] = useState<'card' | 'table'>('card');
@@ -40,6 +35,14 @@ export default function ProfileTrailExplorer({ username, trails, fullscreen, isE
 
   function setFullscreen(next: 'map' | 'table' | null) {
     router.replace({ pathname: `/profile/${username}/data`, query: next ? { fullscreen: next } : undefined });
+  }
+
+  function toggleEditMode() {
+    router.replace({ pathname: `/profile/${username}/data`, query: isEditMode ? undefined : { edit: 'true' } });
+  }
+
+  function saveTrailPatch(slug: string, patch: Partial<EditableTrail>) {
+    setTrails((prev) => prev.map((trail) => (trail.slug === slug ? { ...trail, ...patch } : trail)));
   }
 
   return (
@@ -66,6 +69,18 @@ export default function ProfileTrailExplorer({ username, trails, fullscreen, isE
                 {view === 'card' ? <Table className="h-3 w-3" /> : <LayoutGrid className="h-3 w-3" />}
               </button>
 
+              {isOwner && (
+                <button
+                  type="button"
+                  onClick={toggleEditMode}
+                  title={isEditMode ? t('exitEdit') : t('goToEdit')}
+                  className="bg-panel hover:bg-panel-active rounded-panel flex items-center gap-1 px-2 py-1 text-xs transition-colors"
+                >
+                  {isEditMode ? <X className="h-3 w-3" /> : <Pencil className="h-3 w-3" />}
+                  {isEditMode ? t('exitEdit') : t('goToEdit')}
+                </button>
+              )}
+
               {isEditMode && (
                 <>
                   <button type="button" className="bg-panel hover:bg-panel-active rounded-panel flex items-center gap-1 px-2 py-1 text-xs transition-colors">
@@ -89,6 +104,7 @@ export default function ProfileTrailExplorer({ username, trails, fullscreen, isE
               )}
             </div>
           </div>
+
           {trails.length === 0 && <p className="text-background-contrary/60 text-sm">{t('noTrails')}</p>}
           {trails.length > 0 && view === 'table' ? (
             <MapTrailTable
@@ -97,22 +113,35 @@ export default function ProfileTrailExplorer({ username, trails, fullscreen, isE
               onMouseEnter={setHoverSlug}
               onMouseLeave={() => setHoverSlug(null)}
               onSelect={(slug) => setActiveSlug((prev) => (prev === slug ? null : slug))}
+              renderEditRow={
+                isEditMode
+                  ? (slug) => {
+                      const trail = trails.find((t) => t.slug === slug);
+                      if (!trail) return null;
+                      return <TrailEditCard trail={trail} onClose={() => setActiveSlug(null)} onSave={(patch) => saveTrailPatch(trail.slug, patch)} />;
+                    }
+                  : undefined
+              }
             />
           ) : (
-            trails.map((trail) => (
-              <MapTrailListItem
-                key={trail.slug}
-                name={trail.name}
-                county={trail.county}
-                town={trail.town}
-                date={trail.date}
-                distanceKm={trail.distanceKm}
-                isActive={trail.slug === activeSlug}
-                onMouseEnter={() => setHoverSlug(trail.slug)}
-                onMouseLeave={() => setHoverSlug(null)}
-                onClick={() => setActiveSlug((prev) => (prev === trail.slug ? null : trail.slug))}
-              />
-            ))
+            trails.map((trail) =>
+              isEditMode && trail.slug === activeSlug ? (
+                <TrailEditCard key={trail.slug} trail={trail} onClose={() => setActiveSlug(null)} onSave={(patch) => saveTrailPatch(trail.slug, patch)} />
+              ) : (
+                <MapTrailListItem
+                  key={trail.slug}
+                  name={trail.name}
+                  county={trail.county}
+                  town={trail.town}
+                  date={trail.date}
+                  distanceKm={trail.distanceKm}
+                  isActive={trail.slug === activeSlug}
+                  onMouseEnter={() => setHoverSlug(trail.slug)}
+                  onMouseLeave={() => setHoverSlug(null)}
+                  onClick={() => setActiveSlug((prev) => (prev === trail.slug ? null : trail.slug))}
+                />
+              )
+            )
           )}
         </div>
       )}
