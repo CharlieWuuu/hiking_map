@@ -36,19 +36,56 @@
     "noResults": "查無「{query}」的相關結果"
   },
   "ProfilePage": {
-    "title": "個人頁 {username}",
-    "goToData": "前往資料檢視／編輯",
-    "goToHikeDemo": "前往健行紀錄詳情（範例）",
-    "goToCollections": "前往收藏清單"
+    "totalDistance": "{distance} 公里",
+    "hikeCount": "{count} 次健行",
+    "achievementHundred": "百岳",
+    "achievementSmallHundred": "小百岳",
+    "achievementHundredTrail": "百大必訪步道",
+    "monthlyDistance": "每月里程",
+    "countyStats": "縣市統計",
+    "trailHistory": "歷次軌跡",
+    "goToData": "地圖與資料",
+    "goToCollections": "收藏清單"
   },
   "ProfileDataPage": {
-    "title": "資料檢視／編輯 {username}",
-    "description": "之後這裡會有「上傳既有 GPS 檔案」的入口，補登舊紀錄用",
-    "backToProfile": "返回個人頁"
+    "backToProfile": "返回個人頁",
+    "noTrails": "還沒有任何紀錄",
+    "expand": "展開",
+    "collapse": "收合",
+    "addTrail": "新增路線",
+    "export": "匯出",
+    "viewCard": "卡片檢視",
+    "viewTable": "表格檢視",
+    "goToEdit": "編輯路線",
+    "exitEdit": "結束編輯"
+  },
+  "TrailEditCard": {
+    "save": "儲存",
+    "close": "關閉",
+    "county": "縣市",
+    "town": "鄉鎮",
+    "date": "日期",
+    "distance": "距離",
+    "distanceValue": "{distance} 公里",
+    "public": "公開",
+    "hundred": "百岳",
+    "smallHundred": "小百岳",
+    "hundredTrail": "百大必訪步道",
+    "links": "路線連結",
+    "linksPlaceholder": "https://",
+    "addLink": "新增連結",
+    "removeLink": "刪除連結",
+    "note": "說明"
+  },
+  "MapTrailTable": {
+    "name": "名稱",
+    "county": "縣市",
+    "town": "鄉鎮",
+    "date": "時間"
   },
   "ProfileCollectionsPage": {
-    "title": "收藏清單 {username}",
-    "goToDemoTrail": "前往路線詳情（範例）",
+    "title": "收藏清單",
+    "empty": "還沒有收藏任何路線",
     "backToProfile": "返回個人頁"
   },
   "HikeDetailPage": {
@@ -63,6 +100,11 @@
   "TrailsPage": {
     "title": "官方路線圖層",
     "goToDemoTrail": "前往路線詳情（範例）"
+  },
+  "TrailListItem": {
+    "date": "日期",
+    "distance": "距離",
+    "distanceValue": "{distance} 公里"
   },
   "TrailDetailPage": {
     "back": "返回官方路線圖層",

@@ -36,19 +36,56 @@
     "noResults": "No results for \"{query}\""
   },
   "ProfilePage": {
-    "title": "Profile {username}",
-    "goToData": "Go to data view/edit",
-    "goToHikeDemo": "Go to hike detail (demo)",
-    "goToCollections": "Go to collections"
+    "totalDistance": "{distance} km",
+    "hikeCount": "{count} hikes",
+    "achievementHundred": "Hundred Peaks",
+    "achievementSmallHundred": "Small Hundred Peaks",
+    "achievementHundredTrail": "Top 100 Trails",
+    "monthlyDistance": "Monthly distance",
+    "countyStats": "County stats",
+    "trailHistory": "Trail history",
+    "goToData": "Map & data",
+    "goToCollections": "Collections"
   },
   "ProfileDataPage": {
-    "title": "Data view/edit {username}",
-    "description": "An entry point for uploading existing GPS files will be added here later, for backfilling old records",
-    "backToProfile": "Back to profile"
+    "backToProfile": "Back to profile",
+    "noTrails": "No records yet",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "addTrail": "Add trail",
+    "export": "Export",
+    "viewCard": "Card view",
+    "viewTable": "Table view",
+    "goToEdit": "Edit trails",
+    "exitEdit": "Exit editing"
+  },
+  "TrailEditCard": {
+    "save": "Save",
+    "close": "Close",
+    "county": "County",
+    "town": "Town",
+    "date": "Date",
+    "distance": "Distance",
+    "distanceValue": "{distance} km",
+    "public": "Public",
+    "hundred": "Hundred Peaks",
+    "smallHundred": "Small Hundred Peaks",
+    "hundredTrail": "Top 100 Trails",
+    "links": "Route links",
+    "linksPlaceholder": "https://",
+    "addLink": "Add link",
+    "removeLink": "Remove link",
+    "note": "Note"
+  },
+  "MapTrailTable": {
+    "name": "Name",
+    "county": "County",
+    "town": "Town",
+    "date": "Date"
   },
   "ProfileCollectionsPage": {
-    "title": "Collections {username}",
-    "goToDemoTrail": "Go to trail detail (demo)",
+    "title": "Collections",
+    "empty": "No trails collected yet",
     "backToProfile": "Back to profile"
   },
   "HikeDetailPage": {
@@ -63,6 +100,11 @@
   "TrailsPage": {
     "title": "Official trail layer",
     "goToDemoTrail": "Go to trail detail (demo)"
+  },
+  "TrailListItem": {
+    "date": "Date",
+    "distance": "Distance",
+    "distanceValue": "{distance} km"
   },
   "TrailDetailPage": {
     "back": "Back to official trail layer",
