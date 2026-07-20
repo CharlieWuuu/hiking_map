@@ -13,7 +13,7 @@ export class HikeTrack {
 
   @Column({
     type: 'geometry',
-    spatialFeatureType: 'LineString',
+    spatialFeatureType: 'MultiLineString',
     srid: 4326,
   })
   geom: object;
