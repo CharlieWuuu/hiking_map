@@ -1,0 +1,26 @@
+name: Enforce Branch Flow
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches:
+      - main
+      - dev
+
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify PR source branch is allowed
+        run: |
+          BASE="${{ github.event.pull_request.base.ref }}"
+          HEAD="${{ github.event.pull_request.head.ref }}"
+
+          echo "PR base: ${BASE}, head: ${HEAD}"
+
+          if [[ "${BASE}" == "main" && "${HEAD}" != "dev" ]]; then
+            echo "::error::main 只能接受來自 dev 的合併，請把這個 PR 的 base 改成 dev。"
+            exit 1
+          fi
+
+          echo "OK"
