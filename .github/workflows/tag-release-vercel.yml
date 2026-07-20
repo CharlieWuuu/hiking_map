@@ -52,6 +52,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+          cache-dependency-path: hiking_map_frontend_next/pnpm-lock.yaml
 
       - name: Validate required Vercel secrets
         run: |
