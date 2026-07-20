@@ -2,6 +2,8 @@
 @import '../styles/palette.css';
 @import '../styles/tokens.css';
 
+@custom-variant dark (&:where(:not(.light, .light *)));
+
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
