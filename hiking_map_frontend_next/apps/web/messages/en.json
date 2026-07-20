@@ -21,12 +21,10 @@
   },
   "HomePage": {
     "yourStats": "Your Stats",
-    "achievementHundred": "Hundred Peaks",
-    "achievementSmallHundred": "Small Hundred Peaks",
-    "achievementHundredTrail": "Top 100 Trails",
     "monthlyDistance": "Monthly distance",
     "countyStats": "County stats",
     "goToProfile": "View full profile",
+    "recentTrails": "Recent Trails",
     "recommendedTrails": "Recommended Trails",
     "recommendedDistance": "Distance",
     "recommendedDistanceValue": "{distance} km"

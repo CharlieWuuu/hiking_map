@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 
-import AchievementRing from '../../components/AchievementRing';
 import BarChart from '../../components/BarChart';
+import TrailListItem from '../../components/TrailListItem';
 import { Link } from '../../i18n/navigation';
 import { MOCK_PROFILE_DETAILS } from '../../testing/mocks/profile/profile.data';
 import { MOCK_TRAIL_DETAILS } from '../../testing/mocks/trails/trails.data';
@@ -9,19 +9,17 @@ import { MOCK_TRAIL_DETAILS } from '../../testing/mocks/trails/trails.data';
 // 暫時用假的登入者 username，之後接上真正登入邏輯後會改成從 session 讀取
 const DEMO_LOGGED_IN_USERNAME = 'demo';
 
+const RECENT_TRAILS_COUNT = 5;
+
 export default function Home() {
   const t = useTranslations('HomePage');
   const profile = MOCK_PROFILE_DETAILS.find((item) => item.username === DEMO_LOGGED_IN_USERNAME)!;
+  const recentTrails = [...profile.trails].sort((a, b) => b.date.localeCompare(a.date)).slice(0, RECENT_TRAILS_COUNT);
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-12">
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-bold">{t('yourStats')}</h2>
-        <div className="flex flex-wrap justify-around gap-4">
-          <AchievementRing label={t('achievementHundred')} value={profile.achievements.hundred} />
-          <AchievementRing label={t('achievementSmallHundred')} value={profile.achievements.smallHundred} />
-          <AchievementRing label={t('achievementHundredTrail')} value={profile.achievements.hundredTrail} />
-        </div>
         <div className="flex flex-wrap gap-4">
           <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
             <span className="text-background-contrary/60 text-sm">{t('monthlyDistance')}</span>
@@ -38,6 +36,24 @@ export default function Home() {
         >
           {t('goToProfile')}
         </Link>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-bold">{t('recentTrails')}</h2>
+        <div className="flex flex-col gap-3">
+          {recentTrails.map((trail) => (
+            <TrailListItem
+              key={trail.slug}
+              username={DEMO_LOGGED_IN_USERNAME}
+              slug={trail.slug}
+              name={trail.name}
+              county={trail.county}
+              town={trail.town}
+              date={trail.date}
+              distanceKm={trail.distanceKm}
+            />
+          ))}
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">
