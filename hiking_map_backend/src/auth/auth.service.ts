@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   async login(user: User, ip: string, ua: string) {
-    const payload = { id: user.id, username: user.username };
+    const payload = { sub: user.id, username: user.username };
     const token = this.jwtService.sign(payload);
 
     await this.auditLogRepo.insert({
