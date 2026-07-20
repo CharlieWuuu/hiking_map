@@ -129,17 +129,13 @@
     "start": "開始",
     "stop": "結束"
   },
-  "TrailsPage": {
-    "title": "官方路線圖層",
-    "goToDemoTrail": "前往路線詳情（範例）"
-  },
   "TrailListItem": {
     "date": "日期",
     "distance": "距離",
     "distanceValue": "{distance} 公里"
   },
   "TrailDetailPage": {
-    "back": "返回官方路線圖層",
+    "back": "返回搜尋",
     "date": "日期",
     "distance": "距離",
     "distanceValue": "{distance} 公里",

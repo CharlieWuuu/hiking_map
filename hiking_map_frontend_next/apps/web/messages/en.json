@@ -129,17 +129,13 @@
     "start": "Start",
     "stop": "Stop"
   },
-  "TrailsPage": {
-    "title": "Official trail layer",
-    "goToDemoTrail": "Go to trail detail (demo)"
-  },
   "TrailListItem": {
     "date": "Date",
     "distance": "Distance",
     "distanceValue": "{distance} km"
   },
   "TrailDetailPage": {
-    "back": "Back to official trail layer",
+    "back": "Back to search",
     "date": "Date",
     "distance": "Distance",
     "distanceValue": "{distance} km",
