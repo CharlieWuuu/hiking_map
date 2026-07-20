@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prepare": "git config core.hooksPath hiking_map_frontend_next/.husky"
+    "prepare": "git rev-parse --is-inside-work-tree > /dev/null 2>&1 && git config core.hooksPath hiking_map_frontend_next/.husky || true"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
