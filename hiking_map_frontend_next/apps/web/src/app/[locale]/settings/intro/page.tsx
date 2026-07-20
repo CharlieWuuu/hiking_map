@@ -8,7 +8,7 @@ export default function SettingsIntroPage() {
   const t = useTranslations('SettingsIntroPage');
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-12">
+    <div className="flex w-full flex-col gap-12">
       <Link
         href="/settings"
         className="bg-panel hover:bg-panel-active-lighten flex w-fit items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors"

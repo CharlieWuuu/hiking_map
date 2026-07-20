@@ -10,7 +10,7 @@ export default async function ProfileCollectionsPage({ params }: { params: Promi
   const t = await getTranslations('ProfileCollectionsPage');
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       <Link
         href={`/profile/${username}`}
         className="bg-panel hover:bg-panel-active/50 rounded-panel flex w-fit items-center px-3 py-1.5 text-sm transition-colors"
