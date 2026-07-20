@@ -9,7 +9,6 @@ import { HikesModule } from './hikes/hikes.module';
 import { MountainsModule } from './mountains/mountains.module';
 import { TrailsModule } from './trails/trails.module';
 import { SocialModule } from './social/social.module';
-import { CookieController, SessionController } from './test/test.controller';
 
 @Module({
   imports: [
@@ -31,7 +30,6 @@ import { CookieController, SessionController } from './test/test.controller';
     TrailsModule,
     SocialModule,
   ],
-  controllers: [CookieController, SessionController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
