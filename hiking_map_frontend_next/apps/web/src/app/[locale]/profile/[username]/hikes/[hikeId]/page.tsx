@@ -16,7 +16,7 @@ export default async function HikeDetailPage({ params }: { params: Promise<{ use
   const t = await getTranslations('HikeDetailPage');
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-16">
+    <div className="flex w-full flex-col gap-16">
       <Link
         href={`/profile/${username}/data`}
         className="bg-panel hover:bg-panel-active-lighten flex w-fit items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors"

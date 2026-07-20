@@ -51,9 +51,7 @@ export default function RecordPage() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
-      <h1 className="text-2xl font-bold">{t('title')}</h1>
-
+    <div className="flex w-full flex-col gap-6">
       <RecordMap />
 
       <div className="flex flex-wrap justify-around gap-4">

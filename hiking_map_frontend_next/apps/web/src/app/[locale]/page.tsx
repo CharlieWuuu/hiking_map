@@ -17,7 +17,7 @@ export default function Home() {
   const recentTrails = [...profile.trails].sort((a, b) => b.date.localeCompare(a.date)).slice(0, RECENT_TRAILS_COUNT);
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-12">
+    <div className="flex w-full flex-col gap-12">
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-bold">{t('yourStats')}</h2>
         <div className="flex flex-wrap gap-4">
