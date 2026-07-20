@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import '../globals.css';
 
 import AppNav from '../../components/AppNav';
+import { NAV_COLLAPSED_STORAGE_KEY } from '../../components/AppNav/AppNav.const';
 import { routing } from '../../i18n/routing';
 import { THEME_STORAGE_KEY } from '../../lib/theme';
 
@@ -44,14 +45,15 @@ export default async function RootLayout({ children, params }: Props) {
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `if (localStorage.getItem('${THEME_STORAGE_KEY}') === 'light') document.documentElement.classList.add('light');`,
+            __html: `if (localStorage.getItem('${THEME_STORAGE_KEY}') === 'light') document.documentElement.classList.add('light');
+if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.documentElement.classList.add('nav-collapsed');`,
           }}
         />
       </head>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
           <AppNav />
-          <main className="flex-1 p-6 pb-20 lg:p-8 lg:pb-8 lg:pl-64">{children}</main>
+          <main className="flex-1 p-6 pb-20 lg:p-8 lg:pb-8 lg:pl-[calc(var(--nav-width)+2rem)]">{children}</main>
         </NextIntlClientProvider>
       </body>
     </html>
