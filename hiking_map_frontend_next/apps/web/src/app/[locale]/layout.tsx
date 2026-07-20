@@ -41,7 +41,7 @@ export default async function RootLayout({ children, params }: Props) {
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -53,7 +53,9 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
           <AppNav />
-          <main className="flex-1 p-6 pb-20 lg:p-8 lg:pb-8 lg:pl-[calc(var(--nav-width)+2rem)]">{children}</main>
+          <main className="flex-1 p-6 pb-20 lg:px-8 lg:py-12 lg:pl-[calc(var(--nav-width)+2rem)]">
+            <div className="mx-auto w-full max-w-240">{children}</div>
+          </main>
         </NextIntlClientProvider>
       </body>
     </html>

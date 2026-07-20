@@ -7,8 +7,7 @@ import { Link } from '../../../i18n/navigation';
 export default function SettingsPage() {
   const t = useTranslations('SettingsPage');
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col gap-4">
-      <h1>{t('title')}</h1>
+    <div className="mx-auto flex w-full flex-col gap-4">
       <div className="bg-panel rounded-panel divide-background-contrary/10 flex flex-col divide-y px-4">
         <LocaleSwitcher />
         <ThemeSwitcher />

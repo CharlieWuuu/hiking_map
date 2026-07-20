@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { PanelLeft } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
@@ -73,9 +73,9 @@ export default function AppNav() {
         <button
           type="button"
           onClick={toggleCollapsed}
-          className="hover:bg-panel-active-lighten/50 rounded-panel text-background-contrary/60 mt-auto flex items-center justify-center gap-2 px-2 py-2 transition-colors duration-150"
+          className="hover:bg-panel-active-lighten/50 rounded-panel text-background-contrary/60 mt-auto flex h-10 w-10 items-center justify-center self-end transition-colors duration-150"
         >
-          {isCollapsed ? <ChevronsRight className="h-5 w-5" /> : <ChevronsLeft className="h-5 w-5" />}
+          <PanelLeft className="h-5 w-5" />
         </button>
       </nav>
     </>

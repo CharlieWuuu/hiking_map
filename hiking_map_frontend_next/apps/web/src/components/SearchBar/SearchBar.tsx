@@ -44,7 +44,7 @@ export default function SearchBar() {
   return (
     <Popover.Root open={showSuggestions}>
       <Popover.Anchor asChild>
-        <div className="bg-panel lg:bg-panel-active-lighten flex items-center gap-2 rounded-full px-4 py-2">
+        <div className="bg-panel flex items-center gap-2 rounded-full px-4 py-2">
           <input
             value={query}
             onChange={(e) => {

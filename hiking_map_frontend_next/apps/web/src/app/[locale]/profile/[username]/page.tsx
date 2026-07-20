@@ -17,7 +17,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
   const t = await getTranslations('ProfilePage');
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-12">
+    <div className="flex w-full flex-col gap-12">
       {/* 個人資訊 */}
       <div className="flex items-center gap-8">
         {profile.avatar ? (
