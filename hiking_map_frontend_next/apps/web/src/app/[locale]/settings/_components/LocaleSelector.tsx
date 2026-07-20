@@ -10,7 +10,7 @@ const LOCALE_LABEL: Record<(typeof routing.locales)[number], string> = {
   en: 'English',
 };
 
-export default function LocaleSwitcher() {
+export default function LocaleSelector() {
   const t = useTranslations('SettingsPage');
   const locale = useLocale();
   const router = useRouter();
