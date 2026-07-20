@@ -21,12 +21,10 @@
   },
   "HomePage": {
     "yourStats": "我的統計",
-    "achievementHundred": "百岳",
-    "achievementSmallHundred": "小百岳",
-    "achievementHundredTrail": "百大必訪步道",
     "monthlyDistance": "每月里程",
     "countyStats": "縣市統計",
     "goToProfile": "查看完整個人頁",
+    "recentTrails": "近期路線",
     "recommendedTrails": "推薦路線",
     "recommendedDistance": "距離",
     "recommendedDistanceValue": "{distance} 公里"
