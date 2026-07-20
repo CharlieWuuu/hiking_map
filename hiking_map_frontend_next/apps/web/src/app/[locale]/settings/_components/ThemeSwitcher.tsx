@@ -2,8 +2,8 @@
 
 import { useTranslations } from 'next-intl';
 
-import { useTheme } from '../../hooks/useTheme';
-import Switch from '../Switch';
+import Switch from '../../../../components/Switch';
+import { useTheme } from '../../../../hooks/useTheme';
 
 export default function ThemeSwitcher() {
   const t = useTranslations('SettingsPage');

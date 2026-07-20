@@ -1,8 +1,8 @@
 import { useTranslations } from 'next-intl';
 
-import LocaleSwitcher from '../../../components/LocaleSwitcher';
-import ThemeSwitcher from '../../../components/ThemeSwitcher';
 import { Link } from '../../../i18n/navigation';
+import LocaleSwitcher from './_components/LocaleSwitcher';
+import ThemeSwitcher from './_components/ThemeSwitcher';
 
 export default function SettingsPage() {
   const t = useTranslations('SettingsPage');

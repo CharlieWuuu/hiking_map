@@ -2,8 +2,8 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 
-import { usePathname, useRouter } from '../../i18n/navigation';
-import { routing } from '../../i18n/routing';
+import { usePathname, useRouter } from '../../../../i18n/navigation';
+import { routing } from '../../../../i18n/routing';
 
 const LOCALE_LABEL: Record<(typeof routing.locales)[number], string> = {
   'zh-TW': '繁體中文',
