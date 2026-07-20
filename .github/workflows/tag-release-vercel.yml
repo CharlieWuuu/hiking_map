@@ -1,0 +1,126 @@
+name: Tag Release to Vercel
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tag-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy-and-release:
+    runs-on: ubuntu-latest
+
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate semver tag format
+        run: |
+          if [[ ! "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Tag '${GITHUB_REF_NAME}' is not strict semver (vX.Y.Z)."
+            exit 1
+          fi
+
+      - name: Validate tag commit belongs to main
+        run: |
+          git fetch origin main --no-tags --prune
+          if ! git merge-base --is-ancestor "${GITHUB_SHA}" "origin/main"; then
+            echo "Tag commit ${GITHUB_SHA} is not on main branch history."
+            exit 1
+          fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Validate required Vercel secrets
+        run: |
+          for key in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [[ -z "${!key}" ]]; then
+              echo "Missing required secret: ${key}"
+              exit 1
+            fi
+          done
+
+      - name: Deploy to Vercel production
+        id: deploy
+        working-directory: hiking_map_frontend_next/apps/web
+        run: |
+          DEPLOY_OUTPUT="$(pnpm dlx vercel deploy --target=production --yes --token="${VERCEL_TOKEN}")"
+          DEPLOY_URL="$(echo "${DEPLOY_OUTPUT}" | tail -n1 | tr -d '\r')"
+          echo "deployment_url=${DEPLOY_URL}" >> "${GITHUB_OUTPUT}"
+          echo "Deployed to: ${DEPLOY_URL}"
+
+      - name: Generate release notes from commits
+        id: notes
+        run: |
+          CURRENT_TAG="${GITHUB_REF_NAME}"
+          PREV_TAG="$(git describe --tags --abbrev=0 "${GITHUB_SHA}^" 2>/dev/null || true)"
+
+          if [[ -n "${PREV_TAG}" ]]; then
+            RANGE="${PREV_TAG}..${CURRENT_TAG}"
+            NOTES="$(git log "${RANGE}" --pretty=format:'- %s (%h by %an)')"
+          else
+            RANGE="${CURRENT_TAG}"
+            NOTES="$(git log "${RANGE}" -n 100 --pretty=format:'- %s (%h by %an)')"
+          fi
+
+          if [[ -z "${NOTES}" ]]; then
+            NOTES='- No commit subjects found for this release.'
+          fi
+
+          COMMIT_COUNT="$(printf "%s\n" "${NOTES}" | grep -c '^- ' || true)"
+
+          {
+            echo "previous_tag=${PREV_TAG}"
+            echo "range=${RANGE}"
+            echo "commit_count=${COMMIT_COUNT}"
+            echo "notes<<EOF"
+            echo "${NOTES}"
+            echo "EOF"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Create or update GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_NOTES: ${{ steps.notes.outputs.notes }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          printf '%s\n' "${RELEASE_NOTES}" > RELEASE_NOTES.md
+
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            gh release edit "${TAG}" --title "${TAG}" --notes-file RELEASE_NOTES.md
+          else
+            gh release create "${TAG}" --title "${TAG}" --notes-file RELEASE_NOTES.md
+          fi
+
+      - name: Write job summary
+        run: |
+          {
+            echo "## Release Summary"
+            echo "- Tag: ${GITHUB_REF_NAME}"
+            echo "- Previous tag: ${{ steps.notes.outputs.previous_tag || 'N/A' }}"
+            echo "- Commit range: ${{ steps.notes.outputs.range }}"
+            echo "- Commit count: ${{ steps.notes.outputs.commit_count }}"
+            echo "- Deployment URL: ${{ steps.deploy.outputs.deployment_url }}"
+          } >> "${GITHUB_STEP_SUMMARY}"

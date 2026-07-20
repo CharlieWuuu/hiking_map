@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter hiking_map_frontend_next run build",
+  "cleanUrls": true,
+  "framework": "nextjs"
+}

@@ -1,4 +1,5 @@
 *.sh
+!vercel-build.sh
 hiking_map_data
 node_modules
 .DS_Store
