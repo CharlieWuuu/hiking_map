@@ -3,7 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User, UsersLog } from '../auth/auth.entity';
+import * as bcrypt from 'bcryptjs';
+import { User } from './auth.entity';
+import { AuditLog } from '../common/entities/audit-log.entity';
 
 @Injectable()
 export class AuthService {
@@ -11,31 +13,31 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepo: Repository<User>,
 
-    @InjectRepository(UsersLog)
-    private logRepo: Repository<UsersLog>,
+    @InjectRepository(AuditLog)
+    private auditLogRepo: Repository<AuditLog>,
 
     private jwtService: JwtService,
   ) {}
 
   async validateUser(username: string, password: string): Promise<User | null> {
-    const result = await this.usersRepo.query(
-      `SELECT * FROM users WHERE username = $1 AND password = $2 LIMIT 1`,
-      [username, password],
-    );
+    const user = await this.usersRepo.findOne({ where: { username } });
+    if (!user) return null;
 
-    const user = result[0];
-    return user ?? null;
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) return null;
+
+    return user;
   }
 
-  async login(user: User, ip: string, ua: string, uuid: string) {
-    const payload = { id: user.id, username: user.username, uuid: user.uuid };
+  async login(user: User, ip: string, ua: string) {
+    const payload = { id: user.id, username: user.username };
     const token = this.jwtService.sign(payload);
 
-    await this.logRepo.insert({
+    await this.auditLogRepo.insert({
       user_id: user.id,
+      action: 'login',
       ip_address: ip,
       user_agent: ua,
-      uuid: uuid,
     });
 
     return { token };

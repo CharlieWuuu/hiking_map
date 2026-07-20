@@ -1,11 +1,11 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TrailsModule } from './trails/trails.module';
 import { AuthModule } from './auth/auth.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { JwtOptionalMiddleware } from './auth/jwt-optional.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
-import { OwnerModule } from './owner/owner.module';
+import { ProfileModule } from './profile/profile.module';
+import { HikesModule } from './hikes/hikes.module';
 import { CookieController, SessionController } from './test/test.controller';
 
 @Module({
@@ -21,9 +21,9 @@ import { CookieController, SessionController } from './test/test.controller';
       ssl: { rejectUnauthorized: false },
     }),
     JwtModule.register({}),
-    TrailsModule,
     AuthModule,
-    OwnerModule,
+    ProfileModule,
+    HikesModule,
   ],
   controllers: [CookieController, SessionController],
 })
