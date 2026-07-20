@@ -1,4 +1,4 @@
-name: Tag after version bump merged
+name: Tag main when version has no matching tag
 
 on:
   push:
@@ -8,19 +8,29 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: tag-after-version-bump
+  cancel-in-progress: false
+
 jobs:
   tag:
     runs-on: ubuntu-latest
-    if: "startsWith(github.event.head_commit.message, 'chore: bump version to v')"
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Create and push tag from package.json version
+      - name: Create tag if package.json version isn't tagged yet
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="$(node -p "require('./hiking_map_frontend_next/package.json').version")"
           TAG="v${VERSION}"
+
+          if git rev-parse "${TAG}" >/dev/null 2>&1; then
+            echo "${TAG} already exists, skip."
+            exit 0
+          fi
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
