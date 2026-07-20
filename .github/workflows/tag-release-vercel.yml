@@ -65,7 +65,6 @@ jobs:
 
       - name: Deploy to Vercel production
         id: deploy
-        working-directory: hiking_map_frontend_next/apps/web
         run: |
           DEPLOY_OUTPUT="$(pnpm dlx vercel deploy --target=production --yes --token="${VERCEL_TOKEN}")"
           DEPLOY_URL="$(echo "${DEPLOY_OUTPUT}" | tail -n1 | tr -d '\r')"
