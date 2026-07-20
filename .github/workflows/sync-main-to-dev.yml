@@ -27,8 +27,24 @@ jobs:
             echo "needed=true" >> "${GITHUB_OUTPUT}"
           fi
 
-      - name: Open sync PR
+      - name: Try direct merge into dev
         if: steps.check.outputs.needed == 'true'
+        id: merge
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout -B dev origin/dev
+          if git merge origin/main --no-edit; then
+            git push origin dev
+            echo "conflict=false" >> "${GITHUB_OUTPUT}"
+          else
+            git merge --abort
+            echo "conflict=true" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Open sync PR on conflict
+        if: steps.check.outputs.needed == 'true' && steps.merge.outputs.conflict == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -36,5 +52,5 @@ jobs:
             --base dev \
             --head main \
             --title "chore: sync main into dev" \
-            --body "main 有新的 commit，自動同步回 dev，避免歷史分岔。" \
+            --body "main 有新的 commit，但自動合併回 dev 時發生衝突，需要手動處理。" \
             || echo "PR 可能已存在，略過"
