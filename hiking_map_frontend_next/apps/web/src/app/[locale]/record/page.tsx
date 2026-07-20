@@ -4,7 +4,7 @@ import { Square } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
-import RecordMap from '../../../components/RecordMap';
+import RecordLayer from '../../../components/MapView/RecordLayer';
 import { useRouter } from '../../../i18n/navigation';
 
 // 尚未接上真的 GPS，這裡先用固定的假速度模擬距離累積
@@ -52,7 +52,7 @@ export default function RecordPage() {
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <RecordMap />
+      <RecordLayer />
 
       <div className="flex flex-wrap justify-around gap-4">
         <div className="flex flex-col items-center">

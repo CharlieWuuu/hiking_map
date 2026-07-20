@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useRouter } from '../../i18n/navigation';
 import MapTrailListItem from '../MapTrailListItem';
 import MapTrailTable from '../MapTrailTable';
-import MultiTrailMap from '../MultiTrailMap';
+import TrailsLayer from '../MapView/TrailsLayer';
 import TrailEditCard, { type EditableTrail } from '../TrailEditCard';
 
 type Trail = EditableTrail & { path: [number, number][] };
@@ -156,7 +156,7 @@ export default function ProfileTrailExplorer({ username, trails: initialTrails, 
             {isMapFullscreen ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
             {isMapFullscreen ? t('collapse') : t('expand')}
           </button>
-          <MultiTrailMap trails={trails} hoverSlug={hoverSlug} activeSlug={activeSlug} onHoverChange={setHoverSlug} onSelect={setActiveSlug} />
+          <TrailsLayer trails={trails} hoverSlug={hoverSlug} activeSlug={activeSlug} onHoverChange={setHoverSlug} onSelect={setActiveSlug} />
         </div>
       )}
     </div>
