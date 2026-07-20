@@ -8,7 +8,8 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { RegisterResponseDto, LoginResponseDto } from './dto/auth-response.dto';
+import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -17,6 +18,7 @@ export class AuthController {
 
   @Post('register')
   @ApiBody({ type: RegisterDto })
+  @ApiCreatedResponse({ type: RegisterResponseDto })
   async register(@Body() body: RegisterDto) {
     const user = await this.authService.register(body.username, body.password);
     return { id: user.id, username: user.username };
@@ -24,6 +26,7 @@ export class AuthController {
 
   @Post('login')
   @ApiBody({ type: LoginDto }) // 👈 這行讓 Swagger 知道你要什麼欄位
+  @ApiOkResponse({ type: LoginResponseDto })
   async login(@Body() body: LoginDto, @Req() req: any) {
     const user = await this.authService.validateUser(
       body.username,
