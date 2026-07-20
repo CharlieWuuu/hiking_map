@@ -1,0 +1,29 @@
+name: Tag after version bump merged
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    if: "startsWith(github.event.head_commit.message, 'chore: bump version to v')"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create and push tag from package.json version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="$(node -p "require('./hiking_map_frontend_next/package.json').version")"
+          TAG="v${VERSION}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git tag "${TAG}"
+          git push origin "${TAG}"
