@@ -1,7 +1,6 @@
-// src/auth/dto/login.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 
-export class LoginDto {
+export class RegisterDto {
   @ApiProperty({ example: 'hiker01' })
   username: string;
 

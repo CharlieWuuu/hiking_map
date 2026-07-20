@@ -1,38 +1,17 @@
-// src/users/user.entity.ts
+// src/auth/auth.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('users')
 export class User {
+  @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({ example: 'hiker01' })
   @Column({ unique: true })
   username: string;
 
   @Column()
   password: string;
-
-  @Column({ unique: true })
-  uuid: string;
-}
-
-@Entity('users_log')
-export class UsersLog {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  user_id: number;
-
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
-  login_time: Date;
-
-  @Column()
-  ip_address: string;
-
-  @Column()
-  user_agent: string;
-
-  @Column()
-  uuid: string;
 }
