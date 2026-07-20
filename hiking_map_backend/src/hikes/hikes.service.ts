@@ -87,6 +87,10 @@ export class HikesService {
       throw new ForbiddenException('無法刪除他人的健行紀錄');
     }
 
-    await this.hikesRepo.delete(id);
+    await this.dataSource.transaction(async (manager) => {
+      await manager.getRepository(HikeCategoryMap).delete({ hike_id: id });
+      await manager.getRepository(HikeTrack).delete({ hike_id: id });
+      await manager.getRepository(Hike).delete(id);
+    });
   }
 }

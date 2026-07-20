@@ -4,11 +4,12 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { User } from './auth.entity';
 import { AuditLog } from '../common/entities/audit-log.entity';
+import { Profile } from '../profile/profile.entity';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, AuditLog]),
+    TypeOrmModule.forFeature([User, AuditLog, Profile]),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'your-secret-key',
       signOptions: { expiresIn: '7d' },

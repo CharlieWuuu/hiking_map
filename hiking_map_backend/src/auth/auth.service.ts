@@ -1,11 +1,12 @@
 // src/auth/auth.service.ts
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User } from './auth.entity';
 import { AuditLog } from '../common/entities/audit-log.entity';
+import { Profile } from '../profile/profile.entity';
 
 @Injectable()
 export class AuthService {
@@ -13,11 +14,31 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepo: Repository<User>,
 
+    @InjectRepository(Profile)
+    private profilesRepo: Repository<Profile>,
+
     @InjectRepository(AuditLog)
     private auditLogRepo: Repository<AuditLog>,
 
     private jwtService: JwtService,
   ) {}
+
+  async register(username: string, password: string): Promise<User> {
+    const existing = await this.usersRepo.findOne({ where: { username } });
+    if (existing) throw new ConflictException('帳號已被使用');
+
+    const hashed = await bcrypt.hash(password, 10);
+    const user = await this.usersRepo.save({ username, password: hashed });
+
+    await this.profilesRepo.save({
+      user_id: user.id,
+      avatar: '',
+      level: '',
+      description: '',
+    });
+
+    return user;
+  }
 
   async validateUser(username: string, password: string): Promise<User | null> {
     const user = await this.usersRepo.findOne({ where: { username } });
