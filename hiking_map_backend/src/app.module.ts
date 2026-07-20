@@ -6,6 +6,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { ProfileModule } from './profile/profile.module';
 import { HikesModule } from './hikes/hikes.module';
+import { MountainsModule } from './mountains/mountains.module';
+import { TrailsModule } from './trails/trails.module';
 import { CookieController, SessionController } from './test/test.controller';
 
 @Module({
@@ -24,6 +26,8 @@ import { CookieController, SessionController } from './test/test.controller';
     AuthModule,
     ProfileModule,
     HikesModule,
+    MountainsModule,
+    TrailsModule,
   ],
   controllers: [CookieController, SessionController],
 })

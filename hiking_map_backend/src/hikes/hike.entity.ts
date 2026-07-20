@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
 import { User } from '../auth/auth.entity';
+import { Trail } from '../trails/trail.entity';
 
 @Entity('hikes')
 export class Hike {
@@ -14,9 +15,12 @@ export class Hike {
   user: User;
 
   // 對應官方步道目錄的 trail，可為 null（例如自由行走、沒有對應官方步道）
-  // trails 表建好之前先不加 FK 約束，只保留欄位
   @Column({ type: 'int', nullable: true })
   trail_id: number | null;
+
+  @ManyToOne(() => Trail, { nullable: true })
+  @JoinColumn({ name: 'trail_id' })
+  trail: Trail | null;
 
   @Column()
   name: string;
