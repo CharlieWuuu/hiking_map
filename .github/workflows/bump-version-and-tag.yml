@@ -1,0 +1,64 @@
+name: Open version bump PR on main
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: bump-version-and-tag
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'chore: bump version to v')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump patch version in package.json
+        id: bump
+        run: |
+          FILE="hiking_map_frontend_next/package.json"
+          CURRENT_VERSION="$(node -p "require('./${FILE}').version")"
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "${CURRENT_VERSION}"
+          NEW_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))"
+
+          node -e "
+            const fs = require('fs');
+            const path = '${FILE}';
+            const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
+            pkg.version = '${NEW_VERSION}';
+            fs.writeFileSync(path, JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+          echo "new_version=${NEW_VERSION}" >> "${GITHUB_OUTPUT}"
+
+      - name: Commit to a new branch and open PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW_VERSION="${{ steps.bump.outputs.new_version }}"
+          BRANCH="chore/bump-version-v${NEW_VERSION}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "${BRANCH}"
+          git add hiking_map_frontend_next/package.json
+          git commit -m "chore: bump version to v${NEW_VERSION}"
+          git push origin "${BRANCH}"
+
+          gh pr create \
+            --base main \
+            --head "${BRANCH}" \
+            --title "chore: bump version to v${NEW_VERSION}" \
+            --body "main 有新的更新，自動遞增 patch 版號。合併後會自動打上 tag v${NEW_VERSION} 並觸發部署。"
