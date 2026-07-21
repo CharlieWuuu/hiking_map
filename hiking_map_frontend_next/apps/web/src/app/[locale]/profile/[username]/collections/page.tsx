@@ -3,11 +3,11 @@ import { getTranslations } from 'next-intl/server';
 import TrailListItem from '../../../../../components/TrailListItem';
 import UserListItem from '../../../../../components/UserListItem';
 import { Link } from '../../../../../i18n/navigation';
-import { MOCK_COLLECTIONS } from '../../../../../testing/mocks/profile/collections.data';
+import { apiClient } from '../../../../../lib/apiClient';
 
 export default async function ProfileCollectionsPage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
-  const collections = MOCK_COLLECTIONS[username] ?? [];
+  const collections = await apiClient.collections.findByUsername(username).catch(() => []);
   const t = await getTranslations('ProfileCollectionsPage');
   const tResult = await getTranslations('SearchResult');
 
@@ -27,23 +27,17 @@ export default async function ProfileCollectionsPage({ params }: { params: Promi
       ) : (
         <div className="flex flex-col gap-3">
           {collections.map((item) =>
-            item.type === 'user' ? (
+            item.itemType === 'user' ? (
               <UserListItem
-                key={`user-${item.username}`}
+                key={`user-${item.id}`}
                 href={`/profile/${item.username}`}
-                displayName={item.displayName}
-                avatar={item.avatar}
-                subtitle={item.level ?? item.bio ?? tResult('user')}
+                displayName={item.username ?? ''}
+                avatar={item.avatar ?? undefined}
+                subtitle={item.level ?? tResult('user')}
               />
-            ) : (
-              <TrailListItem
-                key={`trail-${item.slug}`}
-                href={`/trails/${item.slug}`}
-                name={item.displayName}
-                county={item.county ?? ''}
-                town={item.town ?? ''}
-              />
-            )
+            ) : item.itemType === 'trail' ? (
+              <TrailListItem key={`trail-${item.id}`} href={`/trails/${item.trailSlug}`} name={item.trailName ?? ''} county="" town="" />
+            ) : null
           )}
         </div>
       )}

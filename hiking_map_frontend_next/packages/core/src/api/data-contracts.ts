@@ -61,6 +61,10 @@ export interface UpdateProfileDto {
 export interface CreateHikeDto {
   /** @example "合歡山主峰步道" */
   name: string;
+  /** @example "南投縣" */
+  county?: string;
+  /** @example "仁愛鄉" */
+  town?: string;
   /** @example "2026-07-20" */
   date: string;
   /** @example 5.2 */
@@ -69,6 +73,8 @@ export interface CreateHikeDto {
   is_public?: boolean;
   /** @example "天氣很好，view 很棒" */
   note?: string;
+  /** @example ["https://example.com/track.gpx"] */
+  urls?: string[];
   /** @example 1 */
   trail_id?: number;
   /** @example [1,2] */
@@ -86,6 +92,10 @@ export interface Hike {
   trail_id?: object | null;
   /** @example "合歡山主峰步道" */
   name: string;
+  /** @example "南投縣" */
+  county?: object | null;
+  /** @example "仁愛鄉" */
+  town?: object | null;
   /** @example "2026-07-20" */
   date: string;
   /** @example 5.2 */
@@ -94,11 +104,46 @@ export interface Hike {
   is_public: boolean;
   /** @example "天氣很好，view 很棒" */
   note?: object | null;
+  /** @example ["https://example.com/track.gpx"] */
+  urls?: string[];
   /**
    * @format date-time
    * @example "2026-07-20T10:00:00.000Z"
    */
   created_at: string;
+}
+
+export interface AchievementsDto {
+  /** @example 12 */
+  hundred: number;
+  /** @example 28 */
+  small_hundred: number;
+  /** @example 45 */
+  hundred_trail: number;
+}
+
+export interface MonthlyDistanceDto {
+  /** @example "2026-06" */
+  month: string;
+  /** @example 15.8 */
+  distance_km: number;
+}
+
+export interface CountyStatDto {
+  /** @example "南投縣" */
+  county: string;
+  /** @example 4 */
+  count: number;
+}
+
+export interface HikeStatsDto {
+  /** @example 128.6 */
+  total_distance_km: number;
+  /** @example 24 */
+  hike_count: number;
+  achievements: AchievementsDto;
+  monthly_distance: MonthlyDistanceDto[];
+  county_stats: CountyStatDto[];
 }
 
 export interface Mountain {
@@ -147,9 +192,33 @@ export interface TrailDetailDto {
   geojson?: object | null;
 }
 
+export interface CollectionItemDto {
+  /** @example 1 */
+  id: number;
+  /** @example "trail" */
+  item_type: 'trail' | 'hike' | 'user';
+  /** @example 1 */
+  item_id: number;
+  /**
+   * @format date-time
+   * @example "2026-07-20T10:00:00.000Z"
+   */
+  created_at: string;
+  /** @example "塔塔加登山口至排雲山莊" */
+  trail_name?: object | null;
+  /** @example "tataka-trailhead-to-paiyun-lodge" */
+  trail_slug?: object | null;
+  /** @example "hiker01" */
+  username?: object | null;
+  /** @example "https://example.com/avatar.png" */
+  avatar?: object | null;
+  /** @example "中級" */
+  level?: object | null;
+}
+
 export interface CreateCollectionDto {
   /** @example "trail" */
-  item_type: 'trail' | 'hike';
+  item_type: 'trail' | 'hike' | 'user';
   /** @example 1 */
   item_id: number;
 }
@@ -160,7 +229,7 @@ export interface Collection {
   /** @example 1 */
   user_id: number;
   /** @example "trail" */
-  item_type: 'trail' | 'hike';
+  item_type: 'trail' | 'hike' | 'user';
   /** @example 1 */
   item_id: number;
   /**

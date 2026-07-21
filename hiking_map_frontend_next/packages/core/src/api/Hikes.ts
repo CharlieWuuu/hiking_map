@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { CreateHikeDto, Hike } from './data-contracts';
+import { CreateHikeDto, Hike, HikeStatsDto } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
 export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
@@ -40,11 +40,32 @@ export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
   hikesControllerFindAll = (
     query: {
       userId: string;
+      includeGeojson: string;
     },
     params: RequestParams = {}
   ) =>
     this.request<Hike[], any>({
       path: `/hikes`,
+      method: 'GET',
+      query: query,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Hikes
+   * @name HikesControllerGetStats
+   * @request GET:/hikes/stats
+   */
+  hikesControllerGetStats = (
+    query: {
+      username: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<HikeStatsDto, any>({
+      path: `/hikes/stats`,
       method: 'GET',
       query: query,
       format: 'json',

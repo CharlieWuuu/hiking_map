@@ -29,9 +29,9 @@ export function createApiClient(config?: ApiConfig) {
 
 export type ApiClient = ReturnType<typeof createApiClient>;
 
-export type { CreateHikeDto, Hike } from './adapters/hikes';
+export type { CreateHikeDto, Hike, HikeStats } from './adapters/hikes';
 export type { Mountain } from './adapters/mountains';
 export type { Profile as ProfileModel, UpdateProfileDto } from './adapters/profile';
-export type { Collection, CreateCollectionDto, Follow } from './adapters/social';
+export type { Collection, CollectionItem, CreateCollectionDto, Follow } from './adapters/social';
 export type { Trail, TrailDetail } from './adapters/trails';
 export type { LoginDto, LoginResponseDto, RegisterDto, RegisterResponseDto } from './api/data-contracts';

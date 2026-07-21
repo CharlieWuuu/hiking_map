@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { CreateHikeDto, Hike } from './data-contracts';
+import { CreateHikeDto, Hike, HikeStatsDto } from './data-contracts';
 
 export namespace Hikes {
   /**
@@ -37,10 +37,27 @@ export namespace Hikes {
     export type RequestParams = {};
     export type RequestQuery = {
       userId: string;
+      includeGeojson: string;
     };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = Hike[];
+  }
+
+  /**
+   * No description
+   * @tags Hikes
+   * @name HikesControllerGetStats
+   * @request GET:/hikes/stats
+   */
+  export namespace HikesControllerGetStats {
+    export type RequestParams = {};
+    export type RequestQuery = {
+      username: string;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = HikeStatsDto;
   }
 
   /**
