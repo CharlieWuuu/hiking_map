@@ -10,9 +10,25 @@
  * ---------------------------------------------------------------
  */
 
-import { Collection, CreateCollectionDto } from './data-contracts';
+import { Collection, CollectionItemDto, CreateCollectionDto } from './data-contracts';
 
 export namespace Collections {
+  /**
+   * No description
+   * @tags Social
+   * @name SocialControllerFindCollectionsByUsername
+   * @request GET:/collections/by-username/{username}
+   */
+  export namespace SocialControllerFindCollectionsByUsername {
+    export type RequestParams = {
+      username: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = CollectionItemDto[];
+  }
+
   /**
    * No description
    * @tags Social
@@ -38,7 +54,7 @@ export namespace Collections {
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = Collection[];
+    export type ResponseBody = CollectionItemDto[];
   }
 
   /**

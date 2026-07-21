@@ -30,6 +30,14 @@ export class Hike {
   @Column()
   name: string;
 
+  @ApiPropertyOptional({ example: '南投縣', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
+  county: string | null;
+
+  @ApiPropertyOptional({ example: '仁愛鄉', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
+  town: string | null;
+
   @ApiProperty({ example: '2026-07-20' })
   @Column({ type: 'date' })
   date: string;
@@ -45,6 +53,10 @@ export class Hike {
   @ApiPropertyOptional({ example: '天氣很好，view 很棒', nullable: true })
   @Column({ type: 'text', nullable: true })
   note: string | null;
+
+  @ApiPropertyOptional({ example: ['https://example.com/track.gpx'], type: [String] })
+  @Column({ type: 'varchar', array: true, default: () => "'{}'" })
+  urls: string[];
 
   @ApiProperty({ example: '2026-07-20T10:00:00.000Z' })
   @CreateDateColumn()

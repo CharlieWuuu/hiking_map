@@ -9,17 +9,26 @@ import {
   Query,
   Req,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { HikesService } from './hikes.service';
 import { CreateHikeDto } from './dto/create-hike.dto';
+import { HikeStatsDto } from './dto/hike-stats.dto';
 import { JwtRequiredGuard } from '../auth/jwt-required.guard';
 import { Hike } from './hike.entity';
+import { User } from '../auth/auth.entity';
 
 @ApiTags('Hikes')
 @Controller('hikes')
 export class HikesController {
-  constructor(private hikesService: HikesService) {}
+  constructor(
+    private hikesService: HikesService,
+    @InjectRepository(User)
+    private usersRepo: Repository<User>,
+  ) {}
 
   @Post()
   @UseGuards(JwtRequiredGuard)
@@ -30,8 +39,16 @@ export class HikesController {
 
   @Get()
   @ApiOkResponse({ type: Hike, isArray: true })
-  findAll(@Query('userId') userId?: string): Promise<Hike[]> {
-    return this.hikesService.findAll(userId ? Number(userId) : undefined);
+  findAll(@Query('userId') userId?: string, @Query('includeGeojson') includeGeojson?: string) {
+    return this.hikesService.findAll(userId ? Number(userId) : undefined, includeGeojson === 'true');
+  }
+
+  @Get('stats')
+  @ApiOkResponse({ type: HikeStatsDto })
+  async getStats(@Query('username') username: string): Promise<HikeStatsDto> {
+    const user = await this.usersRepo.findOne({ where: { username } });
+    if (!user) throw new NotFoundException('找不到使用者');
+    return this.hikesService.getStats(user.id);
   }
 
   @Get(':id')

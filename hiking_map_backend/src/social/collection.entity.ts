@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDa
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../auth/auth.entity';
 
-// 收藏對象可以是 trail 或 hike，用 item_type 區分，資料庫層不強制 FK（用途類似多型關聯）
+// 收藏對象可以是 trail、hike 或 user，用 item_type 區分，資料庫層不強制 FK（用途類似多型關聯）
 @Entity('collections')
 export class Collection {
   @ApiProperty({ example: 1 })
@@ -17,9 +17,9 @@ export class Collection {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ApiProperty({ example: 'trail', enum: ['trail', 'hike'] })
+  @ApiProperty({ example: 'trail', enum: ['trail', 'hike', 'user'] })
   @Column({ type: 'varchar' })
-  item_type: 'trail' | 'hike';
+  item_type: 'trail' | 'hike' | 'user';
 
   @ApiProperty({ example: 1 })
   @Column()

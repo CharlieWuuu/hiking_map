@@ -1,59 +1,65 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 import ChartBar from '../../components/ChartBar';
 import TrailListItem from '../../components/TrailListItem';
 import { Link } from '../../i18n/navigation';
-import { MOCK_PROFILE_DETAILS } from '../../testing/mocks/profile/profile.data';
+import { apiClient } from '../../lib/apiClient';
+import { getCurrentUser } from '../../lib/getCurrentUser';
 import { MOCK_TRAIL_DETAILS } from '../../testing/mocks/trails/trails.data';
-
-// 暫時用假的登入者 username，之後接上真正登入邏輯後會改成從 session 讀取
-const DEMO_LOGGED_IN_USERNAME = 'demo';
 
 const RECENT_TRAILS_COUNT = 5;
 
-export default function Home() {
-  const t = useTranslations('HomePage');
-  const profile = MOCK_PROFILE_DETAILS.find((item) => item.username === DEMO_LOGGED_IN_USERNAME)!;
-  const recentTrails = [...profile.trails].sort((a, b) => b.date.localeCompare(a.date)).slice(0, RECENT_TRAILS_COUNT);
+export default async function Home() {
+  const t = await getTranslations('HomePage');
+  const currentUser = await getCurrentUser();
+
+  const [stats, recentHikes] = currentUser
+    ? await Promise.all([apiClient.hikes.getStats(currentUser.username), apiClient.hikes.findAll(String(currentUser.userId))])
+    : [null, []];
+  const recentTrails = [...recentHikes].sort((a, b) => b.date.localeCompare(a.date)).slice(0, RECENT_TRAILS_COUNT);
 
   return (
     <div className="flex w-full flex-col gap-12">
-      <section className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold">{t('yourStats')}</h2>
-        <div className="flex flex-wrap gap-4">
-          <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
-            <span className="text-background-contrary/60 text-sm">{t('monthlyDistance')}</span>
-            <ChartBar data={profile.monthlyDistance.map((d) => ({ label: d.month.slice(5), value: d.distanceKm }))} />
+      {currentUser && stats && (
+        <section className="flex flex-col gap-4">
+          <h2 className="text-2xl font-bold">{t('yourStats')}</h2>
+          <div className="flex flex-wrap gap-4">
+            <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
+              <span className="text-background-contrary/60 text-sm">{t('monthlyDistance')}</span>
+              <ChartBar data={stats.monthlyDistance.map((d) => ({ label: d.month.slice(5), value: d.distanceKm }))} />
+            </div>
+            <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
+              <span className="text-background-contrary/60 text-sm">{t('countyStats')}</span>
+              <ChartBar data={stats.countyStats.map((d) => ({ label: d.county, value: d.count }))} />
+            </div>
           </div>
-          <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
-            <span className="text-background-contrary/60 text-sm">{t('countyStats')}</span>
-            <ChartBar data={profile.countyStats.map((d) => ({ label: d.county, value: d.count }))} />
-          </div>
-        </div>
-        <Link
-          href={`/profile/${DEMO_LOGGED_IN_USERNAME}`}
-          className="bg-panel hover:bg-panel-active rounded-panel w-fit self-center px-4 py-2 text-sm transition-colors"
-        >
-          {t('goToProfile')}
-        </Link>
-      </section>
+          <Link
+            href={`/profile/${currentUser.username}`}
+            className="bg-panel hover:bg-panel-active rounded-panel w-fit self-center px-4 py-2 text-sm transition-colors"
+          >
+            {t('goToProfile')}
+          </Link>
+        </section>
+      )}
 
-      <section className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold">{t('recentTrails')}</h2>
-        <div className="flex flex-col gap-3">
-          {recentTrails.map((trail) => (
-            <TrailListItem
-              key={trail.slug}
-              href={`/profile/${DEMO_LOGGED_IN_USERNAME}/hikes/${trail.slug}`}
-              name={trail.name}
-              county={trail.county}
-              town={trail.town}
-              date={trail.date}
-              distanceKm={trail.distanceKm}
-            />
-          ))}
-        </div>
-      </section>
+      {currentUser && recentTrails.length > 0 && (
+        <section className="flex flex-col gap-4">
+          <h2 className="text-2xl font-bold">{t('recentTrails')}</h2>
+          <div className="flex flex-col gap-3">
+            {recentTrails.map((hike) => (
+              <TrailListItem
+                key={hike.id}
+                href={`/profile/${currentUser.username}/hikes/${hike.id}`}
+                name={hike.name}
+                county={hike.county ?? ''}
+                town={hike.town ?? ''}
+                date={hike.date}
+                distanceKm={hike.distanceKm}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-bold">{t('recommendedTrails')}</h2>

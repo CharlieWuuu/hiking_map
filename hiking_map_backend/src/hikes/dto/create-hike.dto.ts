@@ -5,6 +5,12 @@ export class CreateHikeDto {
   @ApiProperty({ example: '合歡山主峰步道' })
   name: string;
 
+  @ApiPropertyOptional({ example: '南投縣' })
+  county?: string;
+
+  @ApiPropertyOptional({ example: '仁愛鄉' })
+  town?: string;
+
   @ApiProperty({ example: '2026-07-20' })
   date: string;
 
@@ -16,6 +22,9 @@ export class CreateHikeDto {
 
   @ApiPropertyOptional({ example: '天氣很好，view 很棒' })
   note?: string;
+
+  @ApiPropertyOptional({ example: ['https://example.com/track.gpx'], type: [String] })
+  urls?: string[];
 
   @ApiPropertyOptional({ example: 1 })
   trail_id?: number;
