@@ -83,7 +83,7 @@ export class HikesService {
     };
   }
 
-  async findAll(userId?: number) {
+  async findAll(userId?: number, includeGeojson = false) {
     const where = userId ? { user_id: userId } : {};
     const hikes = await this.hikesRepo.find({
       where,
@@ -108,6 +108,17 @@ export class HikesService {
       categoryKeysByHikeId.get(row.hike_id)!.add(key);
     }
 
+    const geojsonByHikeId = new Map<number, object>();
+    if (includeGeojson) {
+      const trackRows = await this.dataSource.query(
+        `SELECT hike_id, ST_AsGeoJSON(geom) AS geojson FROM hike_tracks WHERE hike_id = ANY($1)`,
+        [hikes.map((hike) => hike.id)],
+      );
+      for (const row of trackRows) {
+        geojsonByHikeId.set(row.hike_id, JSON.parse(row.geojson));
+      }
+    }
+
     return hikes.map((hike) => {
       const keys = categoryKeysByHikeId.get(hike.id) ?? new Set();
       return {
@@ -115,6 +126,7 @@ export class HikesService {
         is_hundred: keys.has('hundred'),
         is_small_hundred: keys.has('small_hundred'),
         is_hundred_trail: keys.has('hundred_trail'),
+        ...(includeGeojson ? { geojson: geojsonByHikeId.get(hike.id) ?? null } : {}),
       };
     });
   }

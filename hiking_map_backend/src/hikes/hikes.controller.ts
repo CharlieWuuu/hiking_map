@@ -39,8 +39,8 @@ export class HikesController {
 
   @Get()
   @ApiOkResponse({ type: Hike, isArray: true })
-  findAll(@Query('userId') userId?: string) {
-    return this.hikesService.findAll(userId ? Number(userId) : undefined);
+  findAll(@Query('userId') userId?: string, @Query('includeGeojson') includeGeojson?: string) {
+    return this.hikesService.findAll(userId ? Number(userId) : undefined, includeGeojson === 'true');
   }
 
   @Get('stats')
