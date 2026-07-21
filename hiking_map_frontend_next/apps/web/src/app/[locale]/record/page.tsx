@@ -5,10 +5,11 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 import RecordLayer from '../../../components/MapView/RecordLayer';
+import { useGpsTracker } from '../../../hooks/useGpsTracker';
 import { useRouter } from '../../../i18n/navigation';
-
-// 尚未接上真的 GPS，這裡先用固定的假速度模擬距離累積
-const MOCK_SPEED_KM_PER_SEC = 0.0015;
+import { apiClient } from '../../../lib/apiClient';
+import { useAuth } from '../../../lib/authStore';
+import RecordCompleteForm, { type RecordCompleteFormValues } from './_components/RecordCompleteForm';
 
 function formatElapsed(totalSeconds: number) {
   const hours = Math.floor(totalSeconds / 3600);
@@ -20,9 +21,16 @@ function formatElapsed(totalSeconds: number) {
 export default function RecordPage() {
   const t = useTranslations('RecordPage');
   const router = useRouter();
-  const [isRecording, setIsRecording] = useState(false);
+  const { username, isLoggedIn, isLoading } = useAuth();
+  const { isRecording, path, distanceKm, error, start, stop } = useGpsTracker();
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [showCompleteForm, setShowCompleteForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const intervalRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!isLoading && !isLoggedIn) router.push('/login');
+  }, [isLoading, isLoggedIn, router]);
 
   useEffect(() => {
     if (isRecording) {
@@ -37,22 +45,47 @@ export default function RecordPage() {
     };
   }, [isRecording]);
 
-  const distanceKm = elapsedSeconds * MOCK_SPEED_KM_PER_SEC;
-
   function handleToggle() {
     if (isRecording) {
-      setIsRecording(false);
-      router.push('/profile/demo');
+      stop();
+      if (path.length > 1) setShowCompleteForm(true);
       return;
     }
 
     setElapsedSeconds(0);
-    setIsRecording(true);
+    setShowCompleteForm(false);
+    start();
   }
+
+  async function handleSubmit(values: RecordCompleteFormValues) {
+    setIsSubmitting(true);
+    try {
+      await apiClient.hikes.create({
+        name: values.name,
+        county: values.county || undefined,
+        town: values.town || undefined,
+        date: new Date().toISOString().slice(0, 10),
+        distanceKm,
+        isPublic: values.isPublic,
+        note: values.note || undefined,
+        geojson: {
+          type: 'FeatureCollection',
+          features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: path } }],
+        },
+      });
+      router.push(username ? `/profile/${username}/data` : '/');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  if (isLoading || !isLoggedIn) return null;
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <RecordLayer />
+      <RecordLayer path={path} />
+
+      {error && <p className="text-center text-sm text-red-500">{t(error === 'geolocation-unsupported' ? 'gpsUnsupported' : 'gpsDenied')}</p>}
 
       <div className="flex flex-wrap justify-around gap-4">
         <div className="flex flex-col items-center">
@@ -65,16 +98,22 @@ export default function RecordPage() {
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={handleToggle}
-        className={`rounded-panel flex items-center justify-center gap-2 self-center px-8 py-3 text-lg font-bold transition-colors ${
-          isRecording ? 'bg-panel-active hover:bg-panel-active-lighten' : 'bg-accent text-background hover:bg-accent-darken'
-        }`}
-      >
-        {isRecording && <Square className="h-4 w-4 fill-current" />}
-        {isRecording ? t('stop') : t('start')}
-      </button>
+      {!showCompleteForm && (
+        <button
+          type="button"
+          onClick={handleToggle}
+          className={`rounded-panel flex items-center justify-center gap-2 self-center px-8 py-3 text-lg font-bold transition-colors ${
+            isRecording ? 'bg-panel-active hover:bg-panel-active-lighten' : 'bg-accent text-background hover:bg-accent-darken'
+          }`}
+        >
+          {isRecording && <Square className="h-4 w-4 fill-current" />}
+          {isRecording ? t('stop') : t('start')}
+        </button>
+      )}
+
+      {showCompleteForm && (
+        <RecordCompleteForm distanceKm={distanceKm} isSubmitting={isSubmitting} onSubmit={handleSubmit} onCancel={() => setShowCompleteForm(false)} />
+      )}
     </div>
   );
 }

@@ -127,7 +127,20 @@
     "distance": "Distance",
     "distanceValue": "{distance} km",
     "start": "Start",
-    "stop": "Stop"
+    "stop": "Stop",
+    "gpsUnsupported": "This device does not support location tracking",
+    "gpsDenied": "Could not get location permission, please check your browser settings"
+  },
+  "RecordCompleteForm": {
+    "title": "Finish recording",
+    "distanceValue": "Distance: {distance} km",
+    "name": "Name",
+    "county": "County",
+    "town": "Town",
+    "public": "Public",
+    "note": "Note",
+    "cancel": "Discard",
+    "save": "Save"
   },
   "TrailListItem": {
     "date": "Date",

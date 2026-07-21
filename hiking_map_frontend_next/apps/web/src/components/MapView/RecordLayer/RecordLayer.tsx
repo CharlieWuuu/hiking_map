@@ -1,12 +1,12 @@
 'use client';
 
 import L from 'leaflet';
-import { Marker } from 'react-leaflet';
+import { useEffect } from 'react';
+import { Marker, Polyline, useMap } from 'react-leaflet';
 
 import MapView from '../MapView';
 
-// 尚未接上真的 GPS，先用固定的示範座標（台北 101 附近）當作目前位置
-const DEMO_CENTER: [number, number] = [25.033, 121.5645];
+const DEFAULT_CENTER: [number, number] = [23.7, 120.9];
 
 const markerIcon = L.divIcon({
   className: '',
@@ -15,10 +15,31 @@ const markerIcon = L.divIcon({
   iconAnchor: [8, 8],
 });
 
-export default function RecordLayer() {
+type Props = {
+  // 路線座標序列，[經度, 緯度]
+  path: [number, number][];
+};
+
+// 目前位置變更時，讓地圖跟著平移到最新座標
+function FollowCurrentPositionEffect({ position }: { position: [number, number] | null }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (position) map.panTo(position);
+  }, [position, map]);
+
+  return null;
+}
+
+export default function RecordLayer({ path }: Props) {
+  const latLngPath: [number, number][] = path.map(([lng, lat]) => [lat, lng]);
+  const currentPosition = latLngPath.length > 0 ? latLngPath[latLngPath.length - 1] : null;
+
   return (
-    <MapView center={DEMO_CENTER} zoom={16} className="rounded-panel h-100 w-full overflow-hidden">
-      <Marker position={DEMO_CENTER} icon={markerIcon} />
+    <MapView center={currentPosition ?? DEFAULT_CENTER} zoom={16} className="rounded-panel h-100 w-full overflow-hidden">
+      <FollowCurrentPositionEffect position={currentPosition} />
+      {latLngPath.length > 1 && <Polyline positions={latLngPath} pathOptions={{ color: '#FFFF3C', weight: 4 }} />}
+      {currentPosition && <Marker position={currentPosition} icon={markerIcon} />}
     </MapView>
   );
 }
