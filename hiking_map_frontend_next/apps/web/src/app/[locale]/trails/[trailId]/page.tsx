@@ -2,7 +2,7 @@ import { ChevronLeft } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
-import TrailMap from '../../../../components/TrailMap';
+import TrailLayer from '../../../../components/MapView/TrailLayer';
 import { Link } from '../../../../i18n/navigation';
 import { MOCK_TRAIL_DETAILS } from '../../../../testing/mocks/trails/trails.data';
 
@@ -66,7 +66,7 @@ export default async function TrailDetailPage({ params }: { params: Promise<{ tr
 
       <section className="flex flex-col items-start gap-4">
         <h2 className="text-2xl font-bold">{t('map')}</h2>
-        <TrailMap path={trail.path} />
+        <TrailLayer path={trail.path} />
       </section>
     </div>
   );

@@ -5,15 +5,18 @@ import { useTranslations } from 'next-intl';
 import { Popover } from 'radix-ui';
 import { useState } from 'react';
 
-import { useRouter } from '../../i18n/navigation';
 import { getQuerySuggestions, getSuggestions } from '../../testing/mocks/search/search.fake-api';
 import QuerySuggestionItem from './QuerySuggestionItem';
 import styles from './SearchBar.module.css';
 import type { QuerySuggestion, SearchResult } from './SearchBar.types';
 import SearchResultItem from './SearchResultItem';
 
-export default function SearchBar() {
-  const router = useRouter();
+type Props = {
+  onSubmitQuery: (query: string) => void;
+  onSelectEntity: (item: SearchResult) => void;
+};
+
+export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
   const t = useTranslations('SearchBar');
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -22,23 +25,19 @@ export default function SearchBar() {
   const querySuggestions = getQuerySuggestions(query);
   const showSuggestions = open && (entitySuggestions.length > 0 || querySuggestions.length > 0);
 
-  function goToSearchPage(q: string) {
+  function submitQuery(q: string) {
     setOpen(false);
-    if (q.trim()) router.push({ pathname: '/search', query: { q: q.trim() } });
+    if (q.trim()) onSubmitQuery(q.trim());
   }
 
   function handleSelectEntity(item: SearchResult) {
     setOpen(false);
-    if (item.type === 'user') {
-      router.push(`/profile/${item.username}`);
-    } else {
-      router.push(`/trails/${item.slug}`);
-    }
+    onSelectEntity(item);
   }
 
   function handleSelectQuery(item: QuerySuggestion) {
     setQuery(item.text);
-    goToSearchPage(item.text);
+    submitQuery(item.text);
   }
 
   return (
@@ -52,12 +51,12 @@ export default function SearchBar() {
               setOpen(true);
             }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') goToSearchPage(query);
+              if (e.key === 'Enter') submitQuery(query);
             }}
             placeholder={t('placeholder')}
             className="text-background-contrary flex-1 bg-transparent outline-none lg:text-lg"
           />
-          <button onClick={() => goToSearchPage(query)} aria-label={t('searchLabel')} className="cursor-pointer">
+          <button onClick={() => submitQuery(query)} aria-label={t('searchLabel')} className="cursor-pointer">
             <Search className="text-background-contrary h-5 w-5" />
           </button>
         </div>

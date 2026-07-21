@@ -1,10 +1,11 @@
 import { getTranslations } from 'next-intl/server';
 
-import SearchBar from '../../../components/SearchBar';
-import SearchResultRow from '../../../components/SearchResultRow';
+import TrailListItem from '../../../components/TrailListItem';
+import UserListItem from '../../../components/UserListItem';
 import { Link } from '../../../i18n/navigation';
 import { getFullSearchResults, getTrailsByFilter } from '../../../testing/mocks/search/search.fake-api';
 import { MOCK_TRAIL_DETAILS, TRAIL_CATEGORIES, type TrailCategory } from '../../../testing/mocks/trails/trails.data';
+import SearchBarWithNavigation from './_components/SearchBarWithNavigation';
 
 type Props = {
   searchParams: Promise<{ q?: string; category?: string; county?: string }>;
@@ -16,22 +17,39 @@ export default async function SearchPage({ searchParams }: Props) {
   const counties = [...new Set(MOCK_TRAIL_DETAILS.map((trail) => trail.county))];
   const county = counties.includes(rawCounty ?? '') ? rawCounty! : null;
   const t = await getTranslations('SearchPage');
+  const tResult = await getTranslations('SearchResult');
 
   const isFiltering = Boolean(category || county);
   const results = q ? getFullSearchResults(q) : isFiltering ? getTrailsByFilter(category, county) : [];
 
   return (
     <div className="flex h-full flex-col gap-4">
-      <SearchBar />
+      <SearchBarWithNavigation />
 
       {q && results.length === 0 && <p className="text-background-contrary/60 text-center text-sm">{t('noResults', { query: q })}</p>}
       {!q && isFiltering && results.length === 0 && <p className="text-background-contrary/60 text-center text-sm">{t('noTrails')}</p>}
 
       {(q || isFiltering) && results.length > 0 && (
         <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
-          {results.map((item) => (
-            <SearchResultRow key={`${item.type}-${item.type === 'user' ? item.username : item.slug}`} item={item} />
-          ))}
+          {results.map((item) =>
+            item.type === 'user' ? (
+              <UserListItem
+                key={`user-${item.username}`}
+                href={`/profile/${item.username}`}
+                displayName={item.displayName}
+                avatar={item.avatar}
+                subtitle={item.level ?? item.bio ?? tResult('user')}
+              />
+            ) : (
+              <TrailListItem
+                key={`trail-${item.slug}`}
+                href={`/trails/${item.slug}`}
+                name={item.displayName}
+                county={item.county ?? ''}
+                town={item.town ?? ''}
+              />
+            )
+          )}
         </div>
       )}
 
