@@ -16,13 +16,13 @@ export class TrailsService {
     return this.trailsRepo.find({ order: { name: 'ASC' } });
   }
 
-  async findOne(id: number) {
-    const trail = await this.trailsRepo.findOne({ where: { id } });
+  async findOne(slug: string) {
+    const trail = await this.trailsRepo.findOne({ where: { slug } });
     if (!trail) throw new NotFoundException('找不到這條步道');
 
     const geometry = await this.dataSource.query(
       `SELECT ST_AsGeoJSON(geom) AS geojson FROM trail_geometries WHERE trail_id = $1`,
-      [id],
+      [trail.id],
     );
 
     return {

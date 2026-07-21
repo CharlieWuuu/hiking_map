@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { Trail } from './data-contracts';
+import { Trail, TrailDetailDto } from './data-contracts';
 
 export namespace Trails {
   /**
@@ -31,15 +31,15 @@ export namespace Trails {
    * No description
    * @tags Trails
    * @name TrailsControllerFindOne
-   * @request GET:/trails/{id}
+   * @request GET:/trails/{slug}
    */
   export namespace TrailsControllerFindOne {
     export type RequestParams = {
-      id: number;
+      slug: string;
     };
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = Trail;
+    export type ResponseBody = TrailDetailDto;
   }
 }

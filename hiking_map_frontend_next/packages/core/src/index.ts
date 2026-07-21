@@ -33,5 +33,5 @@ export type { CreateHikeDto, Hike } from './adapters/hikes';
 export type { Mountain } from './adapters/mountains';
 export type { Profile as ProfileModel, UpdateProfileDto } from './adapters/profile';
 export type { Collection, CreateCollectionDto, Follow } from './adapters/social';
-export type { Trail } from './adapters/trails';
+export type { Trail, TrailDetail } from './adapters/trails';
 export type { LoginDto, LoginResponseDto, RegisterDto, RegisterResponseDto } from './api/data-contracts';

@@ -3,7 +3,7 @@
     "title": "健行軌跡",
     "description": "上傳你的 GPX，一起建立你的健行軌跡。"
   },
-  "AppNav": {
+  "Nav": {
     "home": "首頁",
     "search": "探索",
     "record": "記錄",

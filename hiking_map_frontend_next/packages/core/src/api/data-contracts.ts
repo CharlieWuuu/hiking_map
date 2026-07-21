@@ -121,10 +121,30 @@ export interface Trail {
   id: number;
   /** @example "塔塔加登山口至排雲山莊" */
   name: string;
+  /** @example "tataka-trailhead-to-paiyun-lodge" */
+  slug: string;
   /** @example "玉山主線經典路線" */
   description?: object | null;
   /** @example 8.5 */
   distance_km?: object | null;
+}
+
+export interface TrailDetailDto {
+  /** @example 1 */
+  id: number;
+  /** @example "塔塔加登山口至排雲山莊" */
+  name: string;
+  /** @example "tataka-trailhead-to-paiyun-lodge" */
+  slug: string;
+  /** @example "玉山主線經典路線" */
+  description?: object | null;
+  /** @example 8.5 */
+  distance_km?: object | null;
+  /**
+   * 路線座標，GeoJSON LineString
+   * @example {"type":"LineString","coordinates":[[120.9,23.47]]}
+   */
+  geojson?: object | null;
 }
 
 export interface CreateCollectionDto {
