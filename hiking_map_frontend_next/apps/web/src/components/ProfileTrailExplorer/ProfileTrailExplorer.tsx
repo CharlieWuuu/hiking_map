@@ -5,10 +5,10 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { useRouter } from '../../i18n/navigation';
-import MapTrailListItem from '../MapTrailListItem';
 import MapTrailTable from '../MapTrailTable';
 import TrailsLayer from '../MapView/TrailsLayer';
 import TrailEditCard, { type EditableTrail } from '../TrailEditCard';
+import TrailListItem from '../TrailListItem';
 
 type Trail = EditableTrail & { path: [number, number][] };
 
@@ -128,7 +128,7 @@ export default function ProfileTrailExplorer({ username, trails: initialTrails, 
               isEditMode && trail.slug === activeSlug ? (
                 <TrailEditCard key={trail.slug} trail={trail} onClose={() => setActiveSlug(null)} onSave={(patch) => saveTrailPatch(trail.slug, patch)} />
               ) : (
-                <MapTrailListItem
+                <TrailListItem
                   key={trail.slug}
                   name={trail.name}
                   county={trail.county}
