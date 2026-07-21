@@ -16,7 +16,7 @@ export class JwtOptionalMiddleware implements NestMiddleware {
           secret: process.env.JWT_SECRET || 'your-secret-key',
         });
         req.user = {
-          userId: payload.sub,
+          user_id: payload.sub,
           username: payload.username,
         };
       } catch {

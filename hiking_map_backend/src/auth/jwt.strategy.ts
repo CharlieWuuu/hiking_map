@@ -25,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any) {
     // payload 是 JWT 裡面加的資訊（ex: sub、username）
     return {
-      userId: payload.sub,
+      user_id: payload.sub,
       username: payload.username,
     };
   }
