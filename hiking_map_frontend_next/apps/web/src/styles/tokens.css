@@ -23,6 +23,8 @@
   --theme-accent: var(--color-raw-yellow);
   --theme-accent-lighten: color-mix(in srgb, var(--color-raw-yellow) 80%, white 20%);
   --theme-accent-darken: color-mix(in srgb, var(--color-raw-yellow) 65%, black 35%);
+  --logo-outline-fill: none;
+  --logo-text-fill: #ffff3c;
 }
 
 .light {
@@ -35,6 +37,8 @@
   --theme-accent: var(--color-raw-yellow-brown);
   --theme-accent-lighten: color-mix(in srgb, var(--color-raw-yellow-brown) 80%, white 20%);
   --theme-accent-darken: color-mix(in srgb, var(--color-raw-yellow-brown) 65%, black 35%);
+  --logo-outline-fill: #000000;
+  --logo-text-fill: #000000;
 }
 
 .nav-collapsed {

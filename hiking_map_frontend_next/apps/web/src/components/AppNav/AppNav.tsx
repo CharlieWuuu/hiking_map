@@ -4,9 +4,9 @@ import { PanelLeft } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
+import LogoMark from '../../assets/logo-mark.svg';
+import Logo from '../../assets/logo.svg';
 import { Link, usePathname } from '../../i18n/navigation';
-import Logo from '../Logo';
-import LogoMark from '../LogoMark';
 import { NAV_COLLAPSED_STORAGE_KEY } from './AppNav.const';
 import { NAV_ITEMS } from './AppNav.data';
 
@@ -53,7 +53,7 @@ export default function AppNav() {
         style={{ width: 'var(--nav-width)' }}
       >
         <Link href="/" className="flex items-center justify-center overflow-hidden">
-          {isCollapsed ? <LogoMark /> : <Logo />}
+          {isCollapsed ? <LogoMark /> : <Logo className="h-auto max-w-full" />}
         </Link>
         <div className="flex flex-col gap-2">
           {NAV_ITEMS.map(({ messageKey, href, Icon }) => (
