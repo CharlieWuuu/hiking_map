@@ -151,7 +151,8 @@
     "goToIntro": "前往關於本站",
     "language": "語言",
     "darkMode": "深色模式",
-    "logout": "登出"
+    "logout": "登出",
+    "login": "登入"
   },
   "SettingsIntroPage": {
     "title": "網站介紹",

@@ -8,11 +8,21 @@ import { useAuth } from '../../../../lib/AuthContext';
 export default function LogoutButton() {
   const t = useTranslations('SettingsPage');
   const router = useRouter();
-  const { logout } = useAuth();
+  const { isLoggedIn, isLoading, logout } = useAuth();
 
   async function handleLogout() {
     await logout();
     router.push('/login');
+  }
+
+  if (isLoading) return null;
+
+  if (!isLoggedIn) {
+    return (
+      <button type="button" onClick={() => router.push('/login')} className="text-accent flex w-full items-center justify-between py-3">
+        {t('login')}
+      </button>
+    );
   }
 
   return (

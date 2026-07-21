@@ -151,7 +151,8 @@
     "goToIntro": "Go to about this site",
     "language": "Language",
     "darkMode": "Dark mode",
-    "logout": "Log out"
+    "logout": "Log out",
+    "login": "Log in"
   },
   "SettingsIntroPage": {
     "title": "About this site",
