@@ -9,6 +9,7 @@ import '../globals.css';
 import Nav from '../../components/Nav';
 import { NAV_COLLAPSED_STORAGE_KEY } from '../../components/Nav/Nav.const';
 import { routing } from '../../i18n/routing';
+import { AuthProvider } from '../../lib/AuthContext';
 import { THEME_STORAGE_KEY } from '../../lib/theme';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -52,10 +53,12 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
       </head>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
-          <Nav />
-          <main className="flex-1 p-6 pb-20 lg:px-8 lg:py-12 lg:pl-[calc(var(--nav-width)+2rem)]">
-            <div className="mx-auto w-full max-w-240">{children}</div>
-          </main>
+          <AuthProvider>
+            <Nav />
+            <main className="flex-1 p-6 pb-20 lg:px-8 lg:py-12 lg:pl-[calc(var(--nav-width)+2rem)]">
+              <div className="mx-auto w-full max-w-240">{children}</div>
+            </main>
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

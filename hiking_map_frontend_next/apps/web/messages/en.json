@@ -34,7 +34,9 @@
     "username": "Username",
     "password": "Password",
     "submit": "Log in",
+    "error": "Incorrect username or password",
     "orDivider": "or",
+    "oauthComingSoon": "Coming soon",
     "oauth": {
       "google": "Continue with Google",
       "line": "Continue with LINE",
@@ -149,7 +151,8 @@
     "goToIntro": "Go to about this site",
     "language": "Language",
     "darkMode": "Dark mode",
-    "logout": "Log out"
+    "logout": "Log out",
+    "login": "Log in"
   },
   "SettingsIntroPage": {
     "title": "About this site",

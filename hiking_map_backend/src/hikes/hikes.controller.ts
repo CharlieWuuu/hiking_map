@@ -25,7 +25,7 @@ export class HikesController {
   @UseGuards(JwtRequiredGuard)
   @ApiCreatedResponse({ type: Hike })
   create(@Body() dto: CreateHikeDto, @Req() req: any) {
-    return this.hikesService.create(req.user.userId, dto);
+    return this.hikesService.create(req.user.user_id, dto);
   }
 
   @Get()
@@ -43,6 +43,6 @@ export class HikesController {
   @Delete(':id')
   @UseGuards(JwtRequiredGuard)
   remove(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
-    return this.hikesService.remove(id, req.user.userId);
+    return this.hikesService.remove(id, req.user.user_id);
   }
 }

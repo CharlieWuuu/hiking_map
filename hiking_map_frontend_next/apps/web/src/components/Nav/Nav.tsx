@@ -7,8 +7,9 @@ import { useEffect, useState } from 'react';
 import LogoMark from '../../assets/logo-mark.svg?react';
 import Logo from '../../assets/logo.svg?react';
 import { Link, usePathname } from '../../i18n/navigation';
+import { useAuth } from '../../lib/AuthContext';
 import { NAV_COLLAPSED_STORAGE_KEY } from './Nav.const';
-import { NAV_ITEMS } from './Nav.data';
+import { getNavItems } from './Nav.data';
 
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
@@ -18,6 +19,8 @@ function isActive(pathname: string, href: string) {
 export default function Nav() {
   const pathname = usePathname();
   const t = useTranslations('Nav');
+  const { username } = useAuth();
+  const navItems = getNavItems(username);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
@@ -35,7 +38,7 @@ export default function Nav() {
     <>
       {/* 窄螢幕：底部導覽列 */}
       <nav className="bg-panel border-nav-border fixed right-0 bottom-0 left-0 z-50 flex justify-around border-t py-4 lg:hidden">
-        {NAV_ITEMS.map(({ messageKey, href, Icon }) => (
+        {navItems.map(({ messageKey, href, Icon }) => (
           <Link
             key={href}
             href={href}
@@ -56,7 +59,7 @@ export default function Nav() {
           {isCollapsed ? <LogoMark /> : <Logo className="h-auto max-w-full" />}
         </Link>
         <div className="flex flex-col gap-2">
-          {NAV_ITEMS.map(({ messageKey, href, Icon }) => (
+          {navItems.map(({ messageKey, href, Icon }) => (
             <Link
               key={href}
               href={href}

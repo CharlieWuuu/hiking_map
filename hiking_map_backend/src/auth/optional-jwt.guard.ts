@@ -16,7 +16,7 @@ export class OptionalJwtGuard implements CanActivate {
       try {
         const payload = this.jwtService.verify(token);
         req.user = {
-          userId: payload.sub,
+          user_id: payload.sub,
           username: payload.username,
         };
       } catch {

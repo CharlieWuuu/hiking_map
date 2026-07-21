@@ -14,14 +14,14 @@ export class ProfileController {
   @UseGuards(JwtRequiredGuard)
   @ApiOkResponse({ type: Profile })
   getMe(@Req() req: any) {
-    return this.profileService.findByUserId(req.user.userId);
+    return this.profileService.findByUserId(req.user.user_id);
   }
 
   @Patch('me')
   @UseGuards(JwtRequiredGuard)
   @ApiOkResponse({ type: Profile })
   updateMe(@Body() dto: UpdateProfileDto, @Req() req: any) {
-    return this.profileService.update(req.user.userId, dto);
+    return this.profileService.update(req.user.user_id, dto);
   }
 
   @Get(':username')

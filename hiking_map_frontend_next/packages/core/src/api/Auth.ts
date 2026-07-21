@@ -46,4 +46,17 @@ export class Auth<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
       format: 'json',
       ...params,
     });
+  /**
+   * No description
+   *
+   * @tags Auth
+   * @name AuthControllerLogout
+   * @request POST:/auth/logout
+   */
+  authControllerLogout = (params: RequestParams = {}) =>
+    this.request<void, any>({
+      path: `/auth/logout`,
+      method: 'POST',
+      ...params,
+    });
 }

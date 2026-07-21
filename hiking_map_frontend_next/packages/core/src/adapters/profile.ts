@@ -1,10 +1,12 @@
 import type { Profile as RawProfile, UpdateProfileDto as RawUpdateProfileDto } from '../api/data-contracts';
+import type { RequestParams } from '../api/http-client';
 import type { Profile as ProfileClient } from '../api/Profile';
 import { toCamelCase } from './case';
 
 export type Profile = {
   id: number;
   userId: number;
+  username: string;
   avatar: string;
   level: string;
   description: string;
@@ -16,8 +18,10 @@ export type UpdateProfileDto = {
   description?: string;
 };
 
-export function adaptProfile(raw: RawProfile): Profile {
-  return toCamelCase<RawProfile>(raw) as Profile;
+// 後端 findByUserId/findByUsername 實際上都會多回傳 username，但 Swagger DTO
+// 是照 Profile entity 產生的，沒有這個欄位，所以在這裡手動補上型別。
+export function adaptProfile(raw: RawProfile & { username: string }): Profile {
+  return toCamelCase<RawProfile & { username: string }>(raw) as Profile;
 }
 
 export function toUpdateProfileDto(dto: UpdateProfileDto): RawUpdateProfileDto {
@@ -30,8 +34,9 @@ export function toUpdateProfileDto(dto: UpdateProfileDto): RawUpdateProfileDto {
 
 export function createProfileService(client: ProfileClient) {
   return {
-    getMe: async () => adaptProfile(await client.profileControllerGetMe()),
-    updateMe: async (dto: UpdateProfileDto) => adaptProfile(await client.profileControllerUpdateMe(toUpdateProfileDto(dto))),
-    getByUsername: async (username: string) => adaptProfile(await client.profileControllerGetByUsername(username)),
+    getMe: async (params?: RequestParams) => adaptProfile((await client.profileControllerGetMe(params)) as RawProfile & { username: string }),
+    updateMe: async (dto: UpdateProfileDto) =>
+      adaptProfile((await client.profileControllerUpdateMe(toUpdateProfileDto(dto))) as RawProfile & { username: string }),
+    getByUsername: async (username: string) => adaptProfile((await client.profileControllerGetByUsername(username)) as RawProfile & { username: string }),
   };
 }

@@ -18,7 +18,9 @@ export class ProfileService {
   async findByUserId(userId: number) {
     const profile = await this.profilesRepo.findOne({ where: { user_id: userId } });
     if (!profile) throw new NotFoundException('找不到個人檔案');
-    return profile;
+
+    const user = await this.usersRepo.findOne({ where: { id: userId } });
+    return { username: user!.username, ...profile };
   }
 
   async findByUsername(username: string) {
