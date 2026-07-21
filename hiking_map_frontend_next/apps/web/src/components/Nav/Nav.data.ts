@@ -1,6 +1,6 @@
 import { CircleUserRound, Home, Play, Search, Settings } from 'lucide-react';
 
-import type { NavItem } from './AppNav.types';
+import type { NavItem } from './Nav.types';
 
 // 暫時用假的 username，之後接上登入邏輯後會改成真正登入者的 username
 const DEMO_USERNAME = 'demo';

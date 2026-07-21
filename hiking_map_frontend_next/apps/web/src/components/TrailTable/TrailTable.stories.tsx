@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
 
-import MapTrailTable from './MapTrailTable';
+import TrailTable from './TrailTable';
 
 const trails = [
   { slug: 'xueshan-main-peak', name: '雪山主峰步道', county: '台中市', town: '和平區', date: '2026-03-12' },
@@ -9,9 +9,9 @@ const trails = [
   { slug: 'yushan-main-peak', name: '玉山主峰步道', county: '南投縣', town: '信義鄉', date: '2026-01-05' },
 ];
 
-const meta: Meta<typeof MapTrailTable> = {
-  title: 'components/MapTrailTable',
-  component: MapTrailTable,
+const meta: Meta<typeof TrailTable> = {
+  title: 'components/TrailTable',
+  component: TrailTable,
   args: {
     trails,
     activeSlug: null,
@@ -23,7 +23,7 @@ const meta: Meta<typeof MapTrailTable> = {
 
 export default meta;
 
-type Story = StoryObj<typeof MapTrailTable>;
+type Story = StoryObj<typeof TrailTable>;
 
 export const Default: Story = {};
 

@@ -20,8 +20,8 @@ type Props = {
   renderEditRow?: (slug: string) => React.ReactNode;
 };
 
-export default function MapTrailTable({ trails, activeSlug, onMouseEnter, onMouseLeave, onSelect, renderEditRow }: Props) {
-  const t = useTranslations('MapTrailTable');
+export default function TrailTable({ trails, activeSlug, onMouseEnter, onMouseLeave, onSelect, renderEditRow }: Props) {
+  const t = useTranslations('TrailTable');
 
   return (
     <table className="w-full border-collapse text-sm">

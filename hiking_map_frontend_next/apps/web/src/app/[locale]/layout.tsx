@@ -6,8 +6,8 @@ import { notFound } from 'next/navigation';
 
 import '../globals.css';
 
-import AppNav from '../../components/AppNav';
-import { NAV_COLLAPSED_STORAGE_KEY } from '../../components/AppNav/AppNav.const';
+import Nav from '../../components/Nav';
+import { NAV_COLLAPSED_STORAGE_KEY } from '../../components/Nav/Nav.const';
 import { routing } from '../../i18n/routing';
 import { THEME_STORAGE_KEY } from '../../lib/theme';
 
@@ -52,7 +52,7 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
       </head>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
-          <AppNav />
+          <Nav />
           <main className="flex-1 p-6 pb-20 lg:px-8 lg:py-12 lg:pl-[calc(var(--nav-width)+2rem)]">
             <div className="mx-auto w-full max-w-240">{children}</div>
           </main>

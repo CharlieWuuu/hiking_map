@@ -7,17 +7,17 @@ import { useEffect, useState } from 'react';
 import LogoMark from '../../assets/logo-mark.svg?react';
 import Logo from '../../assets/logo.svg?react';
 import { Link, usePathname } from '../../i18n/navigation';
-import { NAV_COLLAPSED_STORAGE_KEY } from './AppNav.const';
-import { NAV_ITEMS } from './AppNav.data';
+import { NAV_COLLAPSED_STORAGE_KEY } from './Nav.const';
+import { NAV_ITEMS } from './Nav.data';
 
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
   return pathname.startsWith(href);
 }
 
-export default function AppNav() {
+export default function Nav() {
   const pathname = usePathname();
-  const t = useTranslations('AppNav');
+  const t = useTranslations('Nav');
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {

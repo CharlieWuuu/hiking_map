@@ -1,8 +1,8 @@
 import { useTranslations } from 'next-intl';
 
-import MapTrailTable from '../../../../../../components/MapTrailTable';
 import TrailEditCard, { type EditableTrail } from '../../../../../../components/TrailEditCard';
 import TrailListItem from '../../../../../../components/TrailListItem';
+import TrailTable from '../../../../../../components/TrailTable';
 
 type Trail = EditableTrail & { path: [number, number][] };
 
@@ -25,7 +25,7 @@ export default function TrailExplorerList({ trails, view, activeSlug, isEditMode
 
   if (view === 'table') {
     return (
-      <MapTrailTable
+      <TrailTable
         trails={trails}
         activeSlug={activeSlug}
         onMouseEnter={onHoverChange}

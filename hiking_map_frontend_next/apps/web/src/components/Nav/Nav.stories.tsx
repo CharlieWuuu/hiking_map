@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import AppNav from './AppNav';
+import Nav from './Nav';
 
-const meta: Meta<typeof AppNav> = {
-  title: 'components/AppNav',
-  component: AppNav,
+const meta: Meta<typeof Nav> = {
+  title: 'components/Nav',
+  component: Nav,
   parameters: {
     nextjs: {
       appDirectory: true,
@@ -17,6 +17,6 @@ const meta: Meta<typeof AppNav> = {
 
 export default meta;
 
-type Story = StoryObj<typeof AppNav>;
+type Story = StoryObj<typeof Nav>;
 
 export const Default: Story = {};
