@@ -9,8 +9,8 @@ export class JwtOptionalMiddleware implements NestMiddleware {
 
   use(req: Request, res: Response, next: NextFunction) {
     const auth = req.headers.authorization;
-    if (auth?.startsWith('Bearer ')) {
-      const token = auth.slice(7);
+    const token = auth?.startsWith('Bearer ') ? auth.slice(7) : (req as any).cookies?.auth_token;
+    if (token) {
       try {
         const payload = this.jwtService.verify(token, {
           secret: process.env.JWT_SECRET || 'your-secret-key',
