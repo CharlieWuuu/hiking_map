@@ -168,6 +168,10 @@ export interface Trail {
   name: string;
   /** @example "tataka-trailhead-to-paiyun-lodge" */
   slug: string;
+  /** @example "南投縣" */
+  county?: object | null;
+  /** @example "信義鄉" */
+  town?: object | null;
   /** @example "玉山主線經典路線" */
   description?: object | null;
   /** @example 8.5 */
@@ -249,4 +253,23 @@ export interface Follow {
    * @example "2026-07-20T10:00:00.000Z"
    */
   created_at: string;
+}
+
+export interface SearchResultDto {
+  /** @example "trail" */
+  type: 'trail' | 'user';
+  /** @example "tataka-trailhead-to-paiyun-lodge" */
+  slug: string;
+  /** @example "塔塔加登山口至排雲山莊" */
+  display_name: string;
+  /** @example "https://example.com/avatar.png" */
+  avatar?: object | null;
+  /** @example "南投縣" */
+  county?: object | null;
+  /** @example "信義鄉" */
+  town?: object | null;
+  /** @example "中級" */
+  level?: object | null;
+  /** @example "name" */
+  match_reason: 'name' | 'field';
 }

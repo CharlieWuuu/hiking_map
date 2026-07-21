@@ -9,6 +9,7 @@ import { HikesModule } from './hikes/hikes.module';
 import { MountainsModule } from './mountains/mountains.module';
 import { TrailsModule } from './trails/trails.module';
 import { SocialModule } from './social/social.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { SocialModule } from './social/social.module';
     MountainsModule,
     TrailsModule,
     SocialModule,
+    SearchModule,
   ],
 })
 export class AppModule implements NestModule {

@@ -2,6 +2,7 @@ import { createAuthService } from './adapters/auth';
 import { createHikesService } from './adapters/hikes';
 import { createMountainsService } from './adapters/mountains';
 import { createProfileService } from './adapters/profile';
+import { createSearchService } from './adapters/search';
 import { createCollectionsService, createFollowsService } from './adapters/social';
 import { createTrailsService } from './adapters/trails';
 import { Auth } from './api/Auth';
@@ -11,6 +12,7 @@ import { Hikes } from './api/Hikes';
 import type { ApiConfig } from './api/http-client';
 import { Mountains } from './api/Mountains';
 import { Profile } from './api/Profile';
+import { Search } from './api/Search';
 import { Trails } from './api/Trails';
 
 // 後端回傳/接收的欄位是 snake_case，前端要用的是 camelCase。
@@ -24,6 +26,7 @@ export function createApiClient(config?: ApiConfig) {
     trails: createTrailsService(new Trails(config)),
     collections: createCollectionsService(new Collections(config)),
     follows: createFollowsService(new Follows(config)),
+    search: createSearchService(new Search(config)),
   };
 }
 
@@ -32,6 +35,7 @@ export type ApiClient = ReturnType<typeof createApiClient>;
 export type { CreateHikeDto, Hike, HikeStats } from './adapters/hikes';
 export type { Mountain } from './adapters/mountains';
 export type { Profile as ProfileModel, UpdateProfileDto } from './adapters/profile';
+export type { SearchResult } from './adapters/search';
 export type { Collection, CollectionItem, CreateCollectionDto, Follow } from './adapters/social';
 export type { Trail, TrailDetail } from './adapters/trails';
 export type { LoginDto, LoginResponseDto, RegisterDto, RegisterResponseDto } from './api/data-contracts';

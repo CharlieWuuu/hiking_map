@@ -3,9 +3,10 @@
 import { Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Popover } from 'radix-ui';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { getQuerySuggestions, getSuggestions } from '../../testing/mocks/search/search.fake-api';
+import { apiClient } from '../../lib/apiClient';
+import { getQuerySuggestions } from '../../testing/mocks/search/search.fake-api';
 import QuerySuggestionItem from './QuerySuggestionItem';
 import styles from './SearchBar.module.css';
 import type { QuerySuggestion, SearchResult } from './SearchBar.types';
@@ -16,12 +17,38 @@ type Props = {
   onSelectEntity: (item: SearchResult) => void;
 };
 
+const SUGGESTION_DEBOUNCE_MS = 250;
+const SUGGESTION_LIMIT = 5;
+
 export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
   const t = useTranslations('SearchBar');
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
+  const [entitySuggestions, setEntitySuggestions] = useState<SearchResult[]>([]);
 
-  const entitySuggestions = getSuggestions(query);
+  useEffect(() => {
+    const q = query.trim();
+    if (!q) {
+      setEntitySuggestions([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      const results = await apiClient.search.search(q).catch(() => []);
+      setEntitySuggestions(
+        results
+          .slice(0, SUGGESTION_LIMIT)
+          .map((item) =>
+            item.type === 'user'
+              ? { type: 'user', username: item.slug, displayName: item.displayName, avatar: item.avatar ?? undefined, level: item.level ?? undefined }
+              : { type: 'trail', slug: item.slug, displayName: item.displayName, county: item.county ?? undefined, town: item.town ?? undefined }
+          )
+      );
+    }, SUGGESTION_DEBOUNCE_MS);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
   const querySuggestions = getQuerySuggestions(query);
   const showSuggestions = open && (entitySuggestions.length > 0 || querySuggestions.length > 0);
 

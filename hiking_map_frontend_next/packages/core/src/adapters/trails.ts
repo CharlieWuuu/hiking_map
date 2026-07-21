@@ -6,6 +6,8 @@ export type Trail = {
   id: number;
   name: string;
   slug: string;
+  county: string | null;
+  town: string | null;
   description: string | null;
   distanceKm: number | null;
 };
