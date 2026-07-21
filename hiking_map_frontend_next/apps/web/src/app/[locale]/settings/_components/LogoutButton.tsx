@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 
 import { useRouter } from '../../../../i18n/navigation';
-import { useAuth } from '../../../../lib/AuthContext';
+import { useAuth } from '../../../../lib/authStore';
 
 export default function LogoutButton() {
   const t = useTranslations('SettingsPage');

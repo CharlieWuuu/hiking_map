@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { useRouter } from '../../../i18n/navigation';
-import { useAuth } from '../../../lib/AuthContext';
+import { useAuth } from '../../../lib/authStore';
 
 const OAUTH_PROVIDERS = ['google', 'line', 'facebook'] as const;
 

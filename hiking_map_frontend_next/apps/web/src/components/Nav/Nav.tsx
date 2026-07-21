@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import LogoMark from '../../assets/logo-mark.svg?react';
 import Logo from '../../assets/logo.svg?react';
 import { Link, usePathname } from '../../i18n/navigation';
-import { useAuth } from '../../lib/AuthContext';
+import { useAuth } from '../../lib/authStore';
 import { NAV_COLLAPSED_STORAGE_KEY } from './Nav.const';
 import { getNavItems } from './Nav.data';
 
