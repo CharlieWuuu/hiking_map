@@ -4,8 +4,8 @@ import { PanelLeft } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
-import LogoMark from '../../assets/logo-mark.svg';
-import Logo from '../../assets/logo.svg';
+import LogoMark from '../../assets/logo-mark.svg?react';
+import Logo from '../../assets/logo.svg?react';
 import { Link, usePathname } from '../../i18n/navigation';
 import { NAV_COLLAPSED_STORAGE_KEY } from './AppNav.const';
 import { NAV_ITEMS } from './AppNav.data';
