@@ -10,60 +10,65 @@
  * ---------------------------------------------------------------
  */
 
-export namespace Session {
+import { CreateHikeDto, Hike } from './data-contracts';
+
+export namespace Hikes {
   /**
    * No description
-   * @tags Session
-   * @name SessionControllerSetSession
-   * @request POST:/session/setSession
+   * @tags Hikes
+   * @name HikesControllerCreate
+   * @request POST:/hikes
    */
-  export namespace SessionControllerSetSession {
+  export namespace HikesControllerCreate {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = {
-      /** @example "hello-session" */
-      value?: string;
+    export type RequestBody = CreateHikeDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = Hike;
+  }
+
+  /**
+   * No description
+   * @tags Hikes
+   * @name HikesControllerFindAll
+   * @request GET:/hikes
+   */
+  export namespace HikesControllerFindAll {
+    export type RequestParams = {};
+    export type RequestQuery = {
+      userId: string;
     };
+    export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = void;
+    export type ResponseBody = Hike[];
   }
 
   /**
    * No description
-   * @tags Session
-   * @name SessionControllerSeeSession
-   * @request GET:/session/seeSession
+   * @tags Hikes
+   * @name HikesControllerFindOne
+   * @request GET:/hikes/{id}
    */
-  export namespace SessionControllerSeeSession {
-    export type RequestParams = {};
+  export namespace HikesControllerFindOne {
+    export type RequestParams = {
+      id: number;
+    };
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = void;
+    export type ResponseBody = Hike;
   }
 
   /**
    * No description
-   * @tags Session
-   * @name SessionControllerUseSession
-   * @request GET:/session/useSession
+   * @tags Hikes
+   * @name HikesControllerRemove
+   * @request DELETE:/hikes/{id}
    */
-  export namespace SessionControllerUseSession {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = never;
-    export type RequestHeaders = {};
-    export type ResponseBody = object;
-  }
-
-  /**
-   * No description
-   * @tags Session
-   * @name SessionControllerDropSession
-   * @request POST:/session/dropSession
-   */
-  export namespace SessionControllerDropSession {
-    export type RequestParams = {};
+  export namespace HikesControllerRemove {
+    export type RequestParams = {
+      id: number;
+    };
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};

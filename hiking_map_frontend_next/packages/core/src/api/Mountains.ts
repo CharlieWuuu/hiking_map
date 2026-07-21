@@ -10,19 +10,20 @@
  * ---------------------------------------------------------------
  */
 
+import { Mountain } from './data-contracts';
 import { HttpClient, RequestParams } from './http-client';
 
-export class Owners<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+export class Mountains<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
   /**
    * No description
    *
-   * @tags Owner
-   * @name OwnerControllerGetList
-   * @request GET:/owners/list
+   * @tags Mountains
+   * @name MountainsControllerFindAll
+   * @request GET:/mountains
    */
-  ownerControllerGetList = (params: RequestParams = {}) =>
-    this.request<object, any>({
-      path: `/owners/list`,
+  mountainsControllerFindAll = (params: RequestParams = {}) =>
+    this.request<Mountain[], any>({
+      path: `/mountains`,
       method: 'GET',
       format: 'json',
       ...params,
@@ -30,21 +31,14 @@ export class Owners<SecurityDataType = unknown> extends HttpClient<SecurityDataT
   /**
    * No description
    *
-   * @tags Owner
-   * @name OwnerControllerGetDetail
-   * @request GET:/owners/detail
+   * @tags Mountains
+   * @name MountainsControllerFindOne
+   * @request GET:/mountains/{id}
    */
-  ownerControllerGetDetail = (
-    query: {
-      name: string;
-      type: string;
-    },
-    params: RequestParams = {}
-  ) =>
-    this.request<object, any>({
-      path: `/owners/detail`,
+  mountainsControllerFindOne = (id: number, params: RequestParams = {}) =>
+    this.request<Mountain, any>({
+      path: `/mountains/${id}`,
       method: 'GET',
-      query: query,
       format: 'json',
       ...params,
     });

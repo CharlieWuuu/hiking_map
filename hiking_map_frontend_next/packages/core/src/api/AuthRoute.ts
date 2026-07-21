@@ -10,9 +10,23 @@
  * ---------------------------------------------------------------
  */
 
-import { LoginDto } from './data-contracts';
+import { LoginDto, LoginResponseDto, RegisterDto, RegisterResponseDto } from './data-contracts';
 
 export namespace Auth {
+  /**
+   * No description
+   * @tags Auth
+   * @name AuthControllerRegister
+   * @request POST:/auth/register
+   */
+  export namespace AuthControllerRegister {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = RegisterDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = RegisterResponseDto;
+  }
+
   /**
    * No description
    * @tags Auth
@@ -24,6 +38,6 @@ export namespace Auth {
     export type RequestQuery = {};
     export type RequestBody = LoginDto;
     export type RequestHeaders = {};
-    export type ResponseBody = void;
+    export type ResponseBody = LoginResponseDto;
   }
 }

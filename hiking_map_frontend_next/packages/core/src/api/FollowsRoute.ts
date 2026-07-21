@@ -10,32 +10,35 @@
  * ---------------------------------------------------------------
  */
 
-export namespace Cookie {
+import { Follow } from './data-contracts';
+
+export namespace Follows {
   /**
    * No description
-   * @tags Cookie
-   * @name CookieControllerSetCookie
-   * @request POST:/cookie/setCookie
+   * @tags Social
+   * @name SocialControllerFollow
+   * @request POST:/follows/{userId}
    */
-  export namespace CookieControllerSetCookie {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = {
-      /** @example "hello-cookie" */
-      value?: string;
+  export namespace SocialControllerFollow {
+    export type RequestParams = {
+      userId: number;
     };
+    export type RequestQuery = {};
+    export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = void;
+    export type ResponseBody = Follow;
   }
 
   /**
    * No description
-   * @tags Cookie
-   * @name CookieControllerSeeCookie
-   * @request GET:/cookie/seeCookie
+   * @tags Social
+   * @name SocialControllerUnfollow
+   * @request DELETE:/follows/{userId}
    */
-  export namespace CookieControllerSeeCookie {
-    export type RequestParams = {};
+  export namespace SocialControllerUnfollow {
+    export type RequestParams = {
+      userId: number;
+    };
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
@@ -44,29 +47,29 @@ export namespace Cookie {
 
   /**
    * No description
-   * @tags Cookie
-   * @name CookieControllerUseCookie
-   * @request GET:/cookie/useCookie
+   * @tags Social
+   * @name SocialControllerFindFollowing
+   * @request GET:/follows/following
    */
-  export namespace CookieControllerUseCookie {
+  export namespace SocialControllerFindFollowing {
     export type RequestParams = {};
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = object;
+    export type ResponseBody = Follow[];
   }
 
   /**
    * No description
-   * @tags Cookie
-   * @name CookieControllerDropCookie
-   * @request POST:/cookie/dropCookie
+   * @tags Social
+   * @name SocialControllerFindFollowers
+   * @request GET:/follows/followers
    */
-  export namespace CookieControllerDropCookie {
+  export namespace SocialControllerFindFollowers {
     export type RequestParams = {};
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = void;
+    export type ResponseBody = Follow[];
   }
 }
