@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
-import SearchResultRow from '../../../components/SearchResultRow';
+import TrailListItem from '../../../components/TrailListItem';
+import UserListItem from '../../../components/UserListItem';
 import { Link } from '../../../i18n/navigation';
 import { getFullSearchResults, getTrailsByFilter } from '../../../testing/mocks/search/search.fake-api';
 import { MOCK_TRAIL_DETAILS, TRAIL_CATEGORIES, type TrailCategory } from '../../../testing/mocks/trails/trails.data';
@@ -16,6 +17,7 @@ export default async function SearchPage({ searchParams }: Props) {
   const counties = [...new Set(MOCK_TRAIL_DETAILS.map((trail) => trail.county))];
   const county = counties.includes(rawCounty ?? '') ? rawCounty! : null;
   const t = await getTranslations('SearchPage');
+  const tResult = await getTranslations('SearchResult');
 
   const isFiltering = Boolean(category || county);
   const results = q ? getFullSearchResults(q) : isFiltering ? getTrailsByFilter(category, county) : [];
@@ -29,9 +31,25 @@ export default async function SearchPage({ searchParams }: Props) {
 
       {(q || isFiltering) && results.length > 0 && (
         <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
-          {results.map((item) => (
-            <SearchResultRow key={`${item.type}-${item.type === 'user' ? item.username : item.slug}`} item={item} />
-          ))}
+          {results.map((item) =>
+            item.type === 'user' ? (
+              <UserListItem
+                key={`user-${item.username}`}
+                href={`/profile/${item.username}`}
+                displayName={item.displayName}
+                avatar={item.avatar}
+                subtitle={item.level ?? item.bio ?? tResult('user')}
+              />
+            ) : (
+              <TrailListItem
+                key={`trail-${item.slug}`}
+                href={`/trails/${item.slug}`}
+                name={item.displayName}
+                county={item.county ?? ''}
+                town={item.town ?? ''}
+              />
+            )
+          )}
         </div>
       )}
 

@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 
-import BarChart from '../../components/BarChart';
+import ChartBar from '../../components/ChartBar';
 import TrailListItem from '../../components/TrailListItem';
 import { Link } from '../../i18n/navigation';
 import { MOCK_PROFILE_DETAILS } from '../../testing/mocks/profile/profile.data';
@@ -23,11 +23,11 @@ export default function Home() {
         <div className="flex flex-wrap gap-4">
           <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
             <span className="text-background-contrary/60 text-sm">{t('monthlyDistance')}</span>
-            <BarChart data={profile.monthlyDistance.map((d) => ({ label: d.month.slice(5), value: d.distanceKm }))} />
+            <ChartBar data={profile.monthlyDistance.map((d) => ({ label: d.month.slice(5), value: d.distanceKm }))} />
           </div>
           <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
             <span className="text-background-contrary/60 text-sm">{t('countyStats')}</span>
-            <BarChart data={profile.countyStats.map((d) => ({ label: d.county, value: d.count }))} />
+            <ChartBar data={profile.countyStats.map((d) => ({ label: d.county, value: d.count }))} />
           </div>
         </div>
         <Link
@@ -44,8 +44,7 @@ export default function Home() {
           {recentTrails.map((trail) => (
             <TrailListItem
               key={trail.slug}
-              username={DEMO_LOGGED_IN_USERNAME}
-              slug={trail.slug}
+              href={`/profile/${DEMO_LOGGED_IN_USERNAME}/hikes/${trail.slug}`}
               name={trail.name}
               county={trail.county}
               town={trail.town}

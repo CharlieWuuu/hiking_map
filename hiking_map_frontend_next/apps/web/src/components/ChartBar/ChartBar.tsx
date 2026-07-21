@@ -11,7 +11,7 @@ const WIDTH = 400;
 const HEIGHT = 180;
 const MARGIN = { top: 10, right: 5, bottom: 20, left: 0 };
 
-export default function BarChart({ data }: Props) {
+export default function ChartBar({ data }: Props) {
   const ref = useRef<SVGSVGElement>(null);
 
   useEffect(() => {

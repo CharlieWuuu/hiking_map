@@ -10,7 +10,7 @@ type Props = {
   strokeWidth?: number;
 };
 
-export default function AchievementRing({ label, value, size = 120, strokeWidth = 10 }: Props) {
+export default function ChartRing({ label, value, size = 120, strokeWidth = 10 }: Props) {
   const ref = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function AchievementRing({ label, value, size = 120, strokeWidth 
 
     const group = svg.append('g').attr('transform', `translate(${size / 2}, ${size / 2})`);
 
-    group.append('circle').attr('r', radius).attr('fill', 'none').attr('stroke', 'var(--color-background)').attr('stroke-width', strokeWidth);
+    group.append('circle').attr('r', radius).attr('fill', 'none').attr('stroke', 'var(--color-panel-active)').attr('stroke-width', strokeWidth);
 
     const arc = group
       .append('circle')

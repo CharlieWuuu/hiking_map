@@ -1,1 +1,1 @@
-export { default } from './AchievementRing';
+export { default } from './ChartRing';
