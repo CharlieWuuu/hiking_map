@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { fn } from 'storybook/test';
 
 import ProfileTrailExplorer from './ProfileTrailExplorer';
 
@@ -41,16 +42,10 @@ const trails = [
 ];
 
 const meta: Meta<typeof ProfileTrailExplorer> = {
-  title: 'components/ProfileTrailExplorer',
+  title: 'profile/data/ProfileTrailExplorer',
   component: ProfileTrailExplorer,
   parameters: {
     layout: 'fullscreen',
-    nextjs: {
-      appDirectory: true,
-      navigation: {
-        pathname: '/profile/charliewu/data',
-      },
-    },
   },
   decorators: [
     (Story) => (
@@ -60,11 +55,12 @@ const meta: Meta<typeof ProfileTrailExplorer> = {
     ),
   ],
   args: {
-    username: 'charliewu',
     trails,
     fullscreen: null,
     isEditMode: false,
     isOwner: true,
+    onFullscreenChange: fn(),
+    onToggleEditMode: fn(),
   },
 };
 

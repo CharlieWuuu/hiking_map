@@ -1,9 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
-import ProfileTrailExplorer from '../../../../../components/ProfileTrailExplorer';
 import { Link } from '../../../../../i18n/navigation';
 import { MOCK_PROFILE_DETAILS } from '../../../../../testing/mocks/profile/profile.data';
+import ProfileTrailExplorerWithNavigation from './_components/ProfileTrailExplorerWithNavigation';
 
 // 暫時用假的登入者 username，之後接上真正登入邏輯後會改成從 session 讀取
 const DEMO_LOGGED_IN_USERNAME = 'demo';
@@ -34,7 +34,7 @@ export default async function ProfileDataPage({ params, searchParams }: Props) {
         {t('backToProfile')}
       </Link>
       <div className="h-150">
-        <ProfileTrailExplorer username={username} trails={profile.trails} fullscreen={fullscreen} isEditMode={isEditMode} isOwner={isOwner} />
+        <ProfileTrailExplorerWithNavigation username={username} trails={profile.trails} fullscreen={fullscreen} isEditMode={isEditMode} isOwner={isOwner} />
       </div>
     </div>
   );
