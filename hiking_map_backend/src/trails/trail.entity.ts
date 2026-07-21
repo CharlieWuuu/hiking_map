@@ -15,6 +15,14 @@ export class Trail {
   @Column({ unique: true })
   slug: string;
 
+  @ApiPropertyOptional({ example: '南投縣', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
+  county: string | null;
+
+  @ApiPropertyOptional({ example: '信義鄉', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
+  town: string | null;
+
   @ApiPropertyOptional({ example: '玉山主線經典路線', nullable: true })
   @Column({ type: 'text', nullable: true })
   description: string | null;
