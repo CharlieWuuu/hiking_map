@@ -40,4 +40,18 @@ export namespace Auth {
     export type RequestHeaders = {};
     export type ResponseBody = LoginResponseDto;
   }
+
+  /**
+   * No description
+   * @tags Auth
+   * @name AuthControllerLogout
+   * @request POST:/auth/logout
+   */
+  export namespace AuthControllerLogout {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = void;
+  }
 }

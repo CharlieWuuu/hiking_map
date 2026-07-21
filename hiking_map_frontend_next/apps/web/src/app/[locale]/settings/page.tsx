@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 
 import { Link } from '../../../i18n/navigation';
 import LocaleSelector from './_components/LocaleSelector';
+import LogoutButton from './_components/LogoutButton';
 import ThemeSwitcher from './_components/ThemeSwitcher';
 
 export default function SettingsPage() {
@@ -18,9 +19,7 @@ export default function SettingsPage() {
         </Link>
       </div>
       <div className="bg-panel rounded-panel px-4">
-        <button type="button" className="flex w-full items-center justify-between py-3 text-red-400">
-          {t('logout')}
-        </button>
+        <LogoutButton />
       </div>
     </div>
   );

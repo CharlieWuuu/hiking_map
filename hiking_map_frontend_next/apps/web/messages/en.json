@@ -34,7 +34,9 @@
     "username": "Username",
     "password": "Password",
     "submit": "Log in",
+    "error": "Incorrect username or password",
     "orDivider": "or",
+    "oauthComingSoon": "Coming soon",
     "oauth": {
       "google": "Continue with Google",
       "line": "Continue with LINE",
