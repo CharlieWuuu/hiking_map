@@ -11,9 +11,9 @@ const meta: Meta<typeof Switch> = {
 export default meta;
 type Story = StoryObj<typeof Switch>;
 
-function ControlledSwitch(props: { defaultChecked?: boolean; disabled?: boolean }) {
+function ControlledSwitch(props: { defaultChecked?: boolean }) {
   const [checked, setChecked] = useState(props.defaultChecked ?? false);
-  return <Switch checked={checked} onChange={setChecked} disabled={props.disabled} />;
+  return <Switch checked={checked} onChange={setChecked} />;
 }
 
 export const Off: Story = {
@@ -22,8 +22,4 @@ export const Off: Story = {
 
 export const On: Story = {
   render: () => <ControlledSwitch defaultChecked={true} />,
-};
-
-export const Disabled: Story = {
-  render: () => <ControlledSwitch defaultChecked={true} disabled />,
 };
