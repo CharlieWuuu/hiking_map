@@ -6,7 +6,6 @@ import { Popover } from 'radix-ui';
 import { useEffect, useState } from 'react';
 
 import { apiClient } from '../../lib/apiClient';
-import { getQuerySuggestions } from '../../testing/mocks/search/search.fake-api';
 import QuerySuggestionItem from './QuerySuggestionItem';
 import styles from './SearchBar.module.css';
 import type { QuerySuggestion, SearchResult } from './SearchBar.types';
@@ -25,6 +24,14 @@ export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [entitySuggestions, setEntitySuggestions] = useState<SearchResult[]>([]);
+  const [popularQueries, setPopularQueries] = useState<string[]>([]);
+
+  useEffect(() => {
+    apiClient.search
+      .popularQueries()
+      .then(setPopularQueries)
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const q = query.trim();
@@ -49,12 +56,21 @@ export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
     return () => clearTimeout(timer);
   }, [query]);
 
-  const querySuggestions = getQuerySuggestions(query);
+  const q = query.trim().toLowerCase();
+  const querySuggestions: QuerySuggestion[] = q
+    ? popularQueries
+        .filter((text) => text.toLowerCase().includes(q))
+        .slice(0, 3)
+        .map((text) => ({ type: 'query', text }))
+    : [];
   const showSuggestions = open && (entitySuggestions.length > 0 || querySuggestions.length > 0);
 
   function submitQuery(q: string) {
     setOpen(false);
-    if (q.trim()) onSubmitQuery(q.trim());
+    const trimmed = q.trim();
+    if (!trimmed) return;
+    apiClient.search.logQuery(trimmed).catch(() => {});
+    onSubmitQuery(trimmed);
   }
 
   function handleSelectEntity(item: SearchResult) {

@@ -10,8 +10,8 @@
  * ---------------------------------------------------------------
  */
 
-import { SearchResultDto } from './data-contracts';
-import { HttpClient, RequestParams } from './http-client';
+import { LogSearchQueryDto, PopularQueryDto, SearchResultDto } from './data-contracts';
+import { ContentType, HttpClient, RequestParams } from './http-client';
 
 export class Search<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
   /**
@@ -34,6 +34,35 @@ export class Search<SecurityDataType = unknown> extends HttpClient<SecurityDataT
       method: 'GET',
       query: query,
       format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Search
+   * @name SearchControllerPopularQueries
+   * @request GET:/search/popular
+   */
+  searchControllerPopularQueries = (params: RequestParams = {}) =>
+    this.request<PopularQueryDto[], any>({
+      path: `/search/popular`,
+      method: 'GET',
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Search
+   * @name SearchControllerLogQuery
+   * @request POST:/search/log
+   */
+  searchControllerLogQuery = (data: LogSearchQueryDto, params: RequestParams = {}) =>
+    this.request<void, any>({
+      path: `/search/log`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
       ...params,
     });
 }
