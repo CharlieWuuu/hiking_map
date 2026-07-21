@@ -1,25 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-@Entity('trails')
-export class Trail {
+export class TrailDetailDto {
   @ApiProperty({ example: 1 })
-  @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty({ example: '塔塔加登山口至排雲山莊' })
-  @Column()
   name: string;
 
   @ApiProperty({ example: 'tataka-trailhead-to-paiyun-lodge' })
-  @Column({ unique: true })
   slug: string;
 
   @ApiPropertyOptional({ example: '玉山主線經典路線', nullable: true })
-  @Column({ type: 'text', nullable: true })
   description: string | null;
 
   @ApiPropertyOptional({ example: 8.5, nullable: true })
-  @Column('double precision', { nullable: true })
   distance_km: number | null;
+
+  @ApiPropertyOptional({
+    example: { type: 'LineString', coordinates: [[120.9, 23.47]] },
+    nullable: true,
+    description: '路線座標，GeoJSON LineString',
+  })
+  geojson: object | null;
 }

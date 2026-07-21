@@ -10,35 +10,36 @@
  * ---------------------------------------------------------------
  */
 
-export namespace Owners {
+import { Mountain } from './data-contracts';
+
+export namespace Mountains {
   /**
    * No description
-   * @tags Owner
-   * @name OwnerControllerGetList
-   * @request GET:/owners/list
+   * @tags Mountains
+   * @name MountainsControllerFindAll
+   * @request GET:/mountains
    */
-  export namespace OwnerControllerGetList {
+  export namespace MountainsControllerFindAll {
     export type RequestParams = {};
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = object;
+    export type ResponseBody = Mountain[];
   }
 
   /**
    * No description
-   * @tags Owner
-   * @name OwnerControllerGetDetail
-   * @request GET:/owners/detail
+   * @tags Mountains
+   * @name MountainsControllerFindOne
+   * @request GET:/mountains/{id}
    */
-  export namespace OwnerControllerGetDetail {
-    export type RequestParams = {};
-    export type RequestQuery = {
-      name: string;
-      type: string;
+  export namespace MountainsControllerFindOne {
+    export type RequestParams = {
+      id: number;
     };
+    export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = object;
+    export type ResponseBody = Mountain;
   }
 }

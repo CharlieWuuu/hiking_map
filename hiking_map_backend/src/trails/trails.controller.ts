@@ -1,7 +1,8 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { TrailsService } from './trails.service';
 import { Trail } from './trail.entity';
+import { TrailDetailDto } from './dto/trail-detail.dto';
 
 @ApiTags('Trails')
 @Controller('trails')
@@ -14,9 +15,9 @@ export class TrailsController {
     return this.trailsService.findAll();
   }
 
-  @Get(':id')
-  @ApiOkResponse({ type: Trail })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.trailsService.findOne(id);
+  @Get(':slug')
+  @ApiOkResponse({ type: TrailDetailDto })
+  findOne(@Param('slug') slug: string) {
+    return this.trailsService.findOne(slug);
   }
 }

@@ -3,7 +3,7 @@
     "title": "Hiking Track",
     "description": "Upload your GPX and build your hiking track together."
   },
-  "AppNav": {
+  "Nav": {
     "home": "Home",
     "search": "Explore",
     "record": "Record",

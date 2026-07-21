@@ -10,10 +10,26 @@
  * ---------------------------------------------------------------
  */
 
-import { LoginDto } from './data-contracts';
+import { LoginDto, LoginResponseDto, RegisterDto, RegisterResponseDto } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
 export class Auth<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Auth
+   * @name AuthControllerRegister
+   * @request POST:/auth/register
+   */
+  authControllerRegister = (data: RegisterDto, params: RequestParams = {}) =>
+    this.request<RegisterResponseDto, any>({
+      path: `/auth/register`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
   /**
    * No description
    *
@@ -22,11 +38,12 @@ export class Auth<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
    * @request POST:/auth/login
    */
   authControllerLogin = (data: LoginDto, params: RequestParams = {}) =>
-    this.request<void, any>({
+    this.request<LoginResponseDto, any>({
       path: `/auth/login`,
       method: 'POST',
       body: data,
       type: ContentType.Json,
+      format: 'json',
       ...params,
     });
 }
