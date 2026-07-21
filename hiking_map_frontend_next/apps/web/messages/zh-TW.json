@@ -127,7 +127,20 @@
     "distance": "距離",
     "distanceValue": "{distance} 公里",
     "start": "開始",
-    "stop": "結束"
+    "stop": "結束",
+    "gpsUnsupported": "此裝置不支援定位功能",
+    "gpsDenied": "無法取得定位權限，請確認瀏覽器設定"
+  },
+  "RecordCompleteForm": {
+    "title": "完成記錄",
+    "distanceValue": "距離：{distance} 公里",
+    "name": "名稱",
+    "county": "縣市",
+    "town": "鄉鎮",
+    "public": "公開",
+    "note": "備註",
+    "cancel": "捨棄",
+    "save": "儲存"
   },
   "TrailListItem": {
     "date": "日期",
