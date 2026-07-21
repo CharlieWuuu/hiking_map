@@ -2,9 +2,9 @@
 
 import dynamic from 'next/dynamic';
 
-import TrailLayerPlaceholder from '../TrailLayerPlaceholder';
+import MapViewPlaceholder from '../MapViewPlaceholder';
 
 export default dynamic(() => import('./TrailLayer'), {
   ssr: false,
-  loading: TrailLayerPlaceholder,
+  loading: MapViewPlaceholder,
 });
