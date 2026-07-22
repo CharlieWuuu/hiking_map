@@ -7,6 +7,7 @@ import * as bcrypt from 'bcryptjs';
 import { User } from './auth.entity';
 import { AuditLog } from '../common/entities/audit-log.entity';
 import { Profile } from '../profile/profile.entity';
+import { GoogleProfile } from './google.strategy';
 
 @Injectable()
 export class AuthService {
@@ -42,10 +43,34 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<User | null> {
     const user = await this.usersRepo.findOne({ where: { username } });
-    if (!user) return null;
+    if (!user || !user.password) return null;
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return null;
+
+    return user;
+  }
+
+  async findOrCreateGoogleUser(profile: GoogleProfile): Promise<User> {
+    const existing = await this.usersRepo.findOne({ where: { google_id: profile.googleId } });
+    if (existing) return existing;
+
+    const baseUsername = (profile.email?.split('@')[0] || profile.displayName).replace(/[^a-zA-Z0-9_]/g, '') || 'hiker';
+    let username = baseUsername;
+    let suffix = 0;
+    while (await this.usersRepo.findOne({ where: { username } })) {
+      suffix += 1;
+      username = `${baseUsername}${suffix}`;
+    }
+
+    const user = await this.usersRepo.save({ username, password: null, google_id: profile.googleId });
+
+    await this.profilesRepo.save({
+      user_id: user.id,
+      avatar: '',
+      level: '',
+      description: '',
+    });
 
     return user;
   }
