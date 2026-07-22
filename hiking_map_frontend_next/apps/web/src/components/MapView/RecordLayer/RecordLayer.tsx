@@ -36,7 +36,7 @@ export default function RecordLayer({ path }: Props) {
   const currentPosition = latLngPath.length > 0 ? latLngPath[latLngPath.length - 1] : null;
 
   return (
-    <MapView center={currentPosition ?? DEFAULT_CENTER} zoom={16} className="rounded-panel h-100 w-full overflow-hidden">
+    <MapView center={currentPosition ?? DEFAULT_CENTER} zoom={16} className="rounded-panel h-full w-full overflow-hidden">
       <FollowCurrentPositionEffect position={currentPosition} />
       {latLngPath.length > 1 && <Polyline positions={latLngPath} pathOptions={{ color: '#FFFF3C', weight: 4 }} />}
       {currentPosition && <Marker position={currentPosition} icon={markerIcon} />}
