@@ -6,6 +6,7 @@ import { User } from './auth.entity';
 import { AuditLog } from '../common/entities/audit-log.entity';
 import { Profile } from '../profile/profile.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { GoogleStrategy } from './google.strategy';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { JwtModule } from '@nestjs/jwt';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, GoogleStrategy],
 })
 export class AuthModule {}

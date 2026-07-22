@@ -12,6 +12,10 @@ export class User {
   @Column({ unique: true })
   username: string;
 
-  @Column()
-  password: string;
+  // OAuth 使用者（google_id 有值）沒有密碼
+  @Column({ type: 'varchar', nullable: true })
+  password: string | null;
+
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  google_id: string | null;
 }
