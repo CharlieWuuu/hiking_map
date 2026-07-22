@@ -69,6 +69,15 @@
     "goToData": "Map & data",
     "goToCollections": "Collections"
   },
+  "EditProfileForm": {
+    "edit": "Edit profile",
+    "title": "Edit profile",
+    "avatar": "Avatar URL",
+    "level": "Level",
+    "description": "Bio",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
   "ProfileDataPage": {
     "backToProfile": "Back to profile",
     "noTrails": "No records yet",

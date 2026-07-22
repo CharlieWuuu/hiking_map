@@ -69,6 +69,15 @@
     "goToData": "地圖與資料",
     "goToCollections": "收藏清單"
   },
+  "EditProfileForm": {
+    "edit": "編輯個人資料",
+    "title": "編輯個人資料",
+    "avatar": "大頭貼網址",
+    "level": "程度",
+    "description": "簡介",
+    "cancel": "取消",
+    "save": "儲存"
+  },
   "ProfileDataPage": {
     "backToProfile": "返回個人頁",
     "noTrails": "還沒有任何紀錄",

@@ -7,15 +7,18 @@ import ChartRing from '../../../../components/ChartRing';
 import TrailListItem from '../../../../components/TrailListItem';
 import { Link } from '../../../../i18n/navigation';
 import { apiClient } from '../../../../lib/apiClient';
+import { getCurrentUser } from '../../../../lib/getCurrentUser';
+import EditProfileButton from './_components/EditProfileButton';
 
 const TRAIL_HISTORY_COUNT = 10;
 
 export default async function ProfilePage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
 
-  const [profile, stats] = await Promise.all([
+  const [profile, stats, currentUser] = await Promise.all([
     apiClient.profile.getByUsername(username).catch(() => null),
     apiClient.hikes.getStats(username).catch(() => null),
+    getCurrentUser(),
   ]);
 
   if (!profile || !stats) notFound();
@@ -24,6 +27,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
 
   const t = await getTranslations('ProfilePage');
   const recentHikes = [...hikes].sort((a, b) => b.date.localeCompare(a.date)).slice(0, TRAIL_HISTORY_COUNT);
+  const isOwner = currentUser?.username === username;
 
   return (
     <div className="flex w-full flex-col gap-12">
@@ -37,13 +41,17 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
             <CircleUserRound className="text-background-contrary/60 h-16 w-16" />
           </span>
         )}
-        <div className="flex flex-col gap-2">
-          <h1 className="text-accent text-3xl font-bold">{profile.username}</h1>
+        <div className="flex flex-1 flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <h1 className="text-accent text-3xl font-bold">{profile.username}</h1>
+            {isOwner && <EditProfileButton avatar={profile.avatar} level={profile.level} description={profile.description} />}
+          </div>
           <div className="flex flex-wrap gap-4 text-lg">
             <span>{profile.level}</span>
             <span>{t('totalDistance', { distance: stats.totalDistanceKm })}</span>
             <span>{t('hikeCount', { count: stats.hikeCount })}</span>
           </div>
+          {profile.description && <p className="text-background-contrary/80">{profile.description}</p>}
         </div>
       </div>
 
