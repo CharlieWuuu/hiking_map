@@ -273,3 +273,13 @@ export interface SearchResultDto {
   /** @example "name" */
   match_reason: 'name' | 'field';
 }
+
+export interface PopularQueryDto {
+  /** @example "象山親山步道" */
+  text: string;
+}
+
+export interface LogSearchQueryDto {
+  /** @example "象山親山步道" */
+  query: string;
+}

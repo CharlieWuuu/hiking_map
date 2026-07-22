@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { SearchResultDto } from './dto/search-result.dto';
+import { PopularQueryDto } from './dto/popular-query.dto';
+import { SearchQuery } from './search-query.entity';
 
 // 前端用的分類 key -> categories.name
 const CATEGORY_KEY_TO_NAME: Record<string, string> = {
@@ -9,9 +12,34 @@ const CATEGORY_KEY_TO_NAME: Record<string, string> = {
   hundredTrail: '百大必訪步道',
 };
 
+const POPULAR_QUERIES_LIMIT = 5;
+const POPULAR_QUERIES_WINDOW_DAYS = 30;
+
 @Injectable()
 export class SearchService {
-  constructor(private dataSource: DataSource) {}
+  constructor(
+    private dataSource: DataSource,
+    @InjectRepository(SearchQuery)
+    private searchQueriesRepo: Repository<SearchQuery>,
+  ) {}
+
+  async logQuery(query: string): Promise<void> {
+    const q = query.trim();
+    if (!q) return;
+    await this.searchQueriesRepo.insert({ query: q });
+  }
+
+  async popularQueries(): Promise<PopularQueryDto[]> {
+    const rows = await this.dataSource.query(
+      `SELECT query, COUNT(*) AS count
+       FROM search_queries
+       WHERE created_at > now() - interval '${POPULAR_QUERIES_WINDOW_DAYS} days'
+       GROUP BY query
+       ORDER BY count DESC, MAX(created_at) DESC
+       LIMIT ${POPULAR_QUERIES_LIMIT}`,
+    );
+    return rows.map((row: any) => ({ text: row.query }));
+  }
 
   async search(query: string): Promise<SearchResultDto[]> {
     const q = query.trim();

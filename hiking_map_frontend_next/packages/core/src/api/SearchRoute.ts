@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { SearchResultDto } from './data-contracts';
+import { LogSearchQueryDto, PopularQueryDto, SearchResultDto } from './data-contracts';
 
 export namespace Search {
   /**
@@ -29,5 +29,33 @@ export namespace Search {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = SearchResultDto[];
+  }
+
+  /**
+   * No description
+   * @tags Search
+   * @name SearchControllerPopularQueries
+   * @request GET:/search/popular
+   */
+  export namespace SearchControllerPopularQueries {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = PopularQueryDto[];
+  }
+
+  /**
+   * No description
+   * @tags Search
+   * @name SearchControllerLogQuery
+   * @request POST:/search/log
+   */
+  export namespace SearchControllerLogQuery {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = LogSearchQueryDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = void;
   }
 }

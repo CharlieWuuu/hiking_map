@@ -22,5 +22,7 @@ export function createSearchService(client: SearchClient) {
     search: async (q: string) => (await client.searchControllerSearch({ q, category: '', county: '' })).map(adaptSearchResult),
     filterTrails: async (category: string | null, county: string | null) =>
       (await client.searchControllerSearch({ q: '', category: category ?? '', county: county ?? '' })).map(adaptSearchResult),
+    popularQueries: async () => (await client.searchControllerPopularQueries()).map((item) => item.text),
+    logQuery: (query: string) => client.searchControllerLogQuery({ query }),
   };
 }
