@@ -92,7 +92,10 @@
     "viewCard": "卡片檢視",
     "viewTable": "表格檢視",
     "goToEdit": "編輯路線",
-    "exitEdit": "結束編輯"
+    "exitEdit": "結束編輯",
+    "previousPage": "上一頁",
+    "nextPage": "下一頁",
+    "pageIndicator": "第 {page} / {pageCount} 頁"
   },
   "TrailEditCard": {
     "save": "儲存",
@@ -114,7 +117,7 @@
     "removeLink": "刪除連結",
     "note": "說明"
   },
-  "MapTrailTable": {
+  "TrailTable": {
     "name": "名稱",
     "county": "縣市",
     "town": "鄉鎮",
