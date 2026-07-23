@@ -57,6 +57,10 @@ export default async function SearchPage({ searchParams }: Props) {
 
       {!q && !isFiltering && (
         <div className="flex flex-col gap-6">
+          <Link href="/mountains" className="bg-panel hover:bg-panel-active rounded-panel px-4 py-4 text-center text-lg font-bold transition-colors">
+            {t('mountainsLink')}
+          </Link>
+
           <div className="flex flex-col gap-2">
             <span className="text-background-contrary/60 text-sm">{t('categoryFilter')}</span>
             <div className="grid grid-cols-3 gap-3">
