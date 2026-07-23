@@ -24,6 +24,7 @@ type Props = {
   onClose: () => void;
   // 之後接上真的後端 API 後，這裡會改成打 PATCH /trails/:uuid/properties
   onSave: (patch: Partial<EditableTrail>) => void;
+  onDelete: () => void;
 };
 
 const inputClassName = 'bg-background text-background-contrary w-full rounded px-1.5 py-0.5 text-sm outline-none';
@@ -31,11 +32,14 @@ const iconButtonClassName =
   'bg-panel-active text-background-contrary hover:bg-panel-active-lighten flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-150 cursor-pointer';
 const saveButtonClassName =
   'bg-accent text-background hover:bg-accent-darken flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-150 cursor-pointer';
+const deleteButtonClassName =
+  'bg-panel-active text-red-500 hover:bg-red-500 hover:text-background flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-150 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
 
-export default function TrailEditCard({ trail, onClose, onSave }: Props) {
+export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Props) {
   const t = useTranslations('TrailEditCard');
   const [patch, setPatch] = useState<Partial<EditableTrail>>({});
   const [urls, setUrls] = useState(trail.urls);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   function updateField<K extends keyof EditableTrail>(field: K, value: EditableTrail[K]) {
     setPatch((prev) => ({ ...prev, [field]: value }));
@@ -62,6 +66,16 @@ export default function TrailEditCard({ trail, onClose, onSave }: Props) {
     setPatch({});
   }
 
+  async function handleDelete() {
+    if (!window.confirm(t('confirmDelete'))) return;
+    setIsDeleting(true);
+    try {
+      onDelete();
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
   return (
     <div className="bg-panel text-background-contrary flex w-full flex-col gap-6 rounded-lg p-4">
       <div className="border-accent flex items-end justify-between gap-4 border-b pb-3">
@@ -74,6 +88,9 @@ export default function TrailEditCard({ trail, onClose, onSave }: Props) {
           />
         </div>
         <div className="flex shrink-0 items-center gap-2">
+          <button type="button" onClick={handleDelete} disabled={isDeleting} title={t('delete')} className={deleteButtonClassName}>
+            <Trash2 className="h-4 w-4" />
+          </button>
           <button type="button" onClick={handleSave} title={t('save')} className={saveButtonClassName}>
             <Save className="h-4 w-4" />
           </button>
