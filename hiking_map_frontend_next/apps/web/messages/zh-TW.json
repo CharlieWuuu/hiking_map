@@ -55,7 +55,25 @@
     "hundredTrail": "百大必訪步道",
     "categoryFilter": "分類",
     "countyFilter": "縣市",
-    "noTrails": "查無符合條件的步道"
+    "noTrails": "查無符合條件的步道",
+    "mountainsLink": "百岳列表"
+  },
+  "MountainsPage": {
+    "title": "百岳列表",
+    "allCounties": "全部縣市",
+    "noMountains": "查無符合條件的山峰",
+    "previousPage": "上一頁",
+    "nextPage": "下一頁",
+    "pageIndicator": "第 {page} / {pageCount} 頁"
+  },
+  "MountainListItem": {
+    "elevation": "海拔",
+    "elevationValue": "{elevation} 公尺"
+  },
+  "MountainDetailPage": {
+    "back": "返回百岳列表",
+    "elevation": "海拔",
+    "elevationValue": "{elevation} 公尺"
   },
   "ProfilePage": {
     "totalDistance": "{distance} 公里",

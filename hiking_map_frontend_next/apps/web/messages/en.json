@@ -55,7 +55,25 @@
     "hundredTrail": "Top 100 Trails",
     "categoryFilter": "Category",
     "countyFilter": "County",
-    "noTrails": "No trails match the current filters"
+    "noTrails": "No trails match the current filters",
+    "mountainsLink": "Mountain list"
+  },
+  "MountainsPage": {
+    "title": "Mountain list",
+    "allCounties": "All counties",
+    "noMountains": "No mountains match the current filters",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "pageIndicator": "Page {page} of {pageCount}"
+  },
+  "MountainListItem": {
+    "elevation": "Elevation",
+    "elevationValue": "{elevation} m"
+  },
+  "MountainDetailPage": {
+    "back": "Back to mountain list",
+    "elevation": "Elevation",
+    "elevationValue": "{elevation} m"
   },
   "ProfilePage": {
     "totalDistance": "{distance} km",
