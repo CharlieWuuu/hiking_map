@@ -67,7 +67,11 @@
     "countyStats": "縣市統計",
     "trailHistory": "歷次軌跡",
     "goToData": "地圖與資料",
-    "goToCollections": "收藏清單"
+    "goToCollections": "收藏清單",
+    "follow": "追蹤",
+    "unfollow": "取消追蹤",
+    "followerCount": "{count} 位追蹤者",
+    "followingCount": "追蹤 {count} 人"
   },
   "EditProfileForm": {
     "edit": "編輯個人資料",

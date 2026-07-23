@@ -54,4 +54,32 @@ export namespace Auth {
     export type RequestHeaders = {};
     export type ResponseBody = void;
   }
+
+  /**
+   * No description
+   * @tags Auth
+   * @name AuthControllerGoogleLogin
+   * @request GET:/auth/google
+   */
+  export namespace AuthControllerGoogleLogin {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = void;
+  }
+
+  /**
+   * No description
+   * @tags Auth
+   * @name AuthControllerGoogleCallback
+   * @request GET:/auth/google/callback
+   */
+  export namespace AuthControllerGoogleCallback {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = void;
+  }
 }

@@ -68,7 +68,10 @@ export class SocialController {
 
   @Delete('follows/:userId')
   @UseGuards(JwtRequiredGuard)
-  unfollow(@Param('userId', ParseIntPipe) targetUserId: number, @Req() req: any) {
+  unfollow(
+    @Param('userId', ParseIntPipe) targetUserId: number,
+    @Req() req: any,
+  ) {
     return this.socialService.unfollow(req.user.user_id, targetUserId);
   }
 
@@ -84,5 +87,26 @@ export class SocialController {
   @ApiOkResponse({ type: Follow, isArray: true })
   findFollowers(@Req() req: any) {
     return this.socialService.findFollowers(req.user.user_id);
+  }
+
+  // 查任何人的追蹤者/正在追蹤數，以及目前登入者是否已追蹤該使用者（未登入時 isFollowing 固定為 false）
+  @Get('follows/status/:userId')
+  @ApiOkResponse({
+    schema: {
+      properties: {
+        followerCount: { type: 'number' },
+        followingCount: { type: 'number' },
+        isFollowing: { type: 'boolean' },
+      },
+    },
+  })
+  getFollowStatus(
+    @Param('userId', ParseIntPipe) targetUserId: number,
+    @Req() req: any,
+  ) {
+    return this.socialService.getFollowStatus(
+      targetUserId,
+      req.user?.user_id ?? null,
+    );
   }
 }

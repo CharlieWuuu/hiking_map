@@ -59,4 +59,30 @@ export class Auth<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
       method: 'POST',
       ...params,
     });
+  /**
+   * No description
+   *
+   * @tags Auth
+   * @name AuthControllerGoogleLogin
+   * @request GET:/auth/google
+   */
+  authControllerGoogleLogin = (params: RequestParams = {}) =>
+    this.request<void, any>({
+      path: `/auth/google`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Auth
+   * @name AuthControllerGoogleCallback
+   * @request GET:/auth/google/callback
+   */
+  authControllerGoogleCallback = (params: RequestParams = {}) =>
+    this.request<void, any>({
+      path: `/auth/google/callback`,
+      method: 'GET',
+      ...params,
+    });
 }

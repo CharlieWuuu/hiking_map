@@ -6,6 +6,7 @@ import type {
   Follow as RawFollow,
 } from '../api/data-contracts';
 import type { Follows as FollowsClient } from '../api/Follows';
+import type { RequestParams } from '../api/http-client';
 import { toCamelCase } from './case';
 
 export type Collection = {
@@ -33,6 +34,12 @@ export type Follow = {
   followerUserId: number;
   followingUserId: number;
   createdAt: string;
+};
+
+export type FollowStatus = {
+  followerCount: number;
+  followingCount: number;
+  isFollowing: boolean;
 };
 
 export function adaptCollection(raw: RawCollection): Collection {
@@ -69,5 +76,13 @@ export function createFollowsService(client: FollowsClient) {
     unfollow: (userId: number) => client.socialControllerUnfollow(userId),
     findFollowing: async () => (await client.socialControllerFindFollowing()).map(adaptFollow),
     findFollowers: async () => (await client.socialControllerFindFollowers()).map(adaptFollow),
+    getStatus: async (userId: number, params?: RequestParams): Promise<FollowStatus> => {
+      const raw = await client.socialControllerGetFollowStatus(userId, params);
+      return {
+        followerCount: raw.followerCount ?? 0,
+        followingCount: raw.followingCount ?? 0,
+        isFollowing: raw.isFollowing ?? false,
+      };
+    },
   };
 }

@@ -69,4 +69,25 @@ export class Follows<SecurityDataType = unknown> extends HttpClient<SecurityData
       format: 'json',
       ...params,
     });
+  /**
+   * No description
+   *
+   * @tags Social
+   * @name SocialControllerGetFollowStatus
+   * @request GET:/follows/status/{userId}
+   */
+  socialControllerGetFollowStatus = (userId: number, params: RequestParams = {}) =>
+    this.request<
+      {
+        followerCount?: number;
+        followingCount?: number;
+        isFollowing?: boolean;
+      },
+      any
+    >({
+      path: `/follows/status/${userId}`,
+      method: 'GET',
+      format: 'json',
+      ...params,
+    });
 }

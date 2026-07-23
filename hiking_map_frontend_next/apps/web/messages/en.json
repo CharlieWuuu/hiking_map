@@ -67,7 +67,11 @@
     "countyStats": "County stats",
     "trailHistory": "Trail history",
     "goToData": "Map & data",
-    "goToCollections": "Collections"
+    "goToCollections": "Collections",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "followerCount": "{count} followers",
+    "followingCount": "Following {count}"
   },
   "EditProfileForm": {
     "edit": "Edit profile",
