@@ -110,7 +110,10 @@
     "viewCard": "Card view",
     "viewTable": "Table view",
     "goToEdit": "Edit trails",
-    "exitEdit": "Exit editing"
+    "exitEdit": "Exit editing",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "pageIndicator": "Page {page} of {pageCount}"
   },
   "TrailEditCard": {
     "save": "Save",
@@ -132,7 +135,7 @@
     "removeLink": "Remove link",
     "note": "Note"
   },
-  "MapTrailTable": {
+  "TrailTable": {
     "name": "Name",
     "county": "County",
     "town": "Town",

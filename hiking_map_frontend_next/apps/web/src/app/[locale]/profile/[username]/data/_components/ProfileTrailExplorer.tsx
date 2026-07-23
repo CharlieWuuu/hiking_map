@@ -9,8 +9,11 @@ import { apiClient } from '../../../../../../lib/apiClient';
 import ExpandToggleButton from './ExpandToggleButton';
 import TrailExplorerList from './TrailExplorerList';
 import TrailExplorerToolbar from './TrailExplorerToolbar';
+import TrailListPagination from './TrailListPagination';
 
 type Trail = EditableTrail & { path: [number, number][] };
+
+const PAGE_SIZE = 20;
 
 type Props = {
   trails: Trail[];
@@ -27,9 +30,12 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
   const [hoverSlug, setHoverSlug] = useState<string | null>(null);
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const [view, setView] = useState<'card' | 'table'>('card');
+  const [page, setPage] = useState(1);
 
   const isMapFullscreen = fullscreen === 'map';
   const isTableFullscreen = fullscreen === 'table';
+  const pageCount = Math.max(1, Math.ceil(trails.length / PAGE_SIZE));
+  const pagedTrails = trails.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   function saveTrailPatch(slug: string, patch: Partial<EditableTrail>) {
     setTrails((prev) => prev.map((trail) => (trail.slug === slug ? { ...trail, ...patch } : trail)));
@@ -39,6 +45,11 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
     await apiClient.hikes.remove(Number(slug));
     setTrails((prev) => prev.filter((trail) => trail.slug !== slug));
     setActiveSlug((prev) => (prev === slug ? null : prev));
+    setPage((prev) => Math.min(prev, Math.max(1, Math.ceil((trails.length - 1) / PAGE_SIZE))));
+  }
+
+  function changePage(next: number) {
+    setPage(Math.min(Math.max(next, 1), pageCount));
   }
 
   return (
@@ -56,7 +67,7 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
           />
 
           <TrailExplorerList
-            trails={trails}
+            trails={pagedTrails}
             view={view}
             activeSlug={activeSlug}
             isEditMode={isEditMode}
@@ -65,6 +76,7 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
             onSaveTrailPatch={saveTrailPatch}
             onDeleteTrail={deleteTrail}
           />
+          <TrailListPagination page={page} pageCount={pageCount} onPageChange={changePage} />
         </div>
       )}
 
