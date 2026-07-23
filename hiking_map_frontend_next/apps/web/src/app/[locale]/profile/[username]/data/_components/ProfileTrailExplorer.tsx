@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import TrailsLayer from '../../../../../../components/MapView/TrailsLayer';
 import type { EditableTrail } from '../../../../../../components/TrailEditCard';
+import { apiClient } from '../../../../../../lib/apiClient';
 import ExpandToggleButton from './ExpandToggleButton';
 import TrailExplorerList from './TrailExplorerList';
 import TrailExplorerToolbar from './TrailExplorerToolbar';
@@ -34,6 +35,12 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
     setTrails((prev) => prev.map((trail) => (trail.slug === slug ? { ...trail, ...patch } : trail)));
   }
 
+  async function deleteTrail(slug: string) {
+    await apiClient.hikes.remove(Number(slug));
+    setTrails((prev) => prev.filter((trail) => trail.slug !== slug));
+    setActiveSlug((prev) => (prev === slug ? null : prev));
+  }
+
   return (
     <div className={`flex h-full w-full gap-4 ${isMapFullscreen || isTableFullscreen ? '' : 'flex-col lg:flex-row'}`}>
       {!isMapFullscreen && (
@@ -56,6 +63,7 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
             onHoverChange={setHoverSlug}
             onSelect={setActiveSlug}
             onSaveTrailPatch={saveTrailPatch}
+            onDeleteTrail={deleteTrail}
           />
         </div>
       )}

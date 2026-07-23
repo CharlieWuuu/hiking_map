@@ -14,9 +14,10 @@ type Props = {
   onHoverChange: (slug: string | null) => void;
   onSelect: (slug: string | null) => void;
   onSaveTrailPatch: (slug: string, patch: Partial<EditableTrail>) => void;
+  onDeleteTrail: (slug: string) => void;
 };
 
-export default function TrailExplorerList({ trails, view, activeSlug, isEditMode, onHoverChange, onSelect, onSaveTrailPatch }: Props) {
+export default function TrailExplorerList({ trails, view, activeSlug, isEditMode, onHoverChange, onSelect, onSaveTrailPatch, onDeleteTrail }: Props) {
   const t = useTranslations('ProfileDataPage');
 
   if (trails.length === 0) {
@@ -36,7 +37,14 @@ export default function TrailExplorerList({ trails, view, activeSlug, isEditMode
             ? (slug) => {
                 const trail = trails.find((item) => item.slug === slug);
                 if (!trail) return null;
-                return <TrailEditCard trail={trail} onClose={() => onSelect(null)} onSave={(patch) => onSaveTrailPatch(trail.slug, patch)} />;
+                return (
+                  <TrailEditCard
+                    trail={trail}
+                    onClose={() => onSelect(null)}
+                    onSave={(patch) => onSaveTrailPatch(trail.slug, patch)}
+                    onDelete={() => onDeleteTrail(trail.slug)}
+                  />
+                );
               }
             : undefined
         }
@@ -48,7 +56,13 @@ export default function TrailExplorerList({ trails, view, activeSlug, isEditMode
     <>
       {trails.map((trail) =>
         isEditMode && trail.slug === activeSlug ? (
-          <TrailEditCard key={trail.slug} trail={trail} onClose={() => onSelect(null)} onSave={(patch) => onSaveTrailPatch(trail.slug, patch)} />
+          <TrailEditCard
+            key={trail.slug}
+            trail={trail}
+            onClose={() => onSelect(null)}
+            onSave={(patch) => onSaveTrailPatch(trail.slug, patch)}
+            onDelete={() => onDeleteTrail(trail.slug)}
+          />
         ) : (
           <TrailListItem
             key={trail.slug}

@@ -93,6 +93,8 @@
   "TrailEditCard": {
     "save": "Save",
     "close": "Close",
+    "delete": "Delete record",
+    "confirmDelete": "Are you sure you want to delete this hike record? This cannot be undone.",
     "county": "County",
     "town": "Town",
     "date": "Date",

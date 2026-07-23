@@ -93,6 +93,8 @@
   "TrailEditCard": {
     "save": "儲存",
     "close": "關閉",
+    "delete": "刪除紀錄",
+    "confirmDelete": "確定要刪除這筆健行紀錄嗎？此操作無法復原。",
     "county": "縣市",
     "town": "鄉鎮",
     "date": "日期",
