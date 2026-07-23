@@ -72,4 +72,24 @@ export namespace Follows {
     export type RequestHeaders = {};
     export type ResponseBody = Follow[];
   }
+
+  /**
+   * No description
+   * @tags Social
+   * @name SocialControllerGetFollowStatus
+   * @request GET:/follows/status/{userId}
+   */
+  export namespace SocialControllerGetFollowStatus {
+    export type RequestParams = {
+      userId: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = {
+      followerCount?: number;
+      followingCount?: number;
+      isFollowing?: boolean;
+    };
+  }
 }

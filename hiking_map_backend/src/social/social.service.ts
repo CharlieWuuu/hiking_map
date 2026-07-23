@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Collection } from './collection.entity';
@@ -30,7 +34,11 @@ export class SocialService {
 
   async addCollection(userId: number, dto: CreateCollectionDto) {
     const existing = await this.collectionsRepo.findOne({
-      where: { user_id: userId, item_type: dto.item_type, item_id: dto.item_id },
+      where: {
+        user_id: userId,
+        item_type: dto.item_type,
+        item_id: dto.item_id,
+      },
     });
     if (existing) throw new ConflictException('已經收藏過了');
 
@@ -44,35 +52,60 @@ export class SocialService {
   async removeCollection(userId: number, id: number) {
     const collection = await this.collectionsRepo.findOne({ where: { id } });
     if (!collection) throw new NotFoundException('找不到這筆收藏');
-    if (collection.user_id !== userId) throw new NotFoundException('找不到這筆收藏');
+    if (collection.user_id !== userId)
+      throw new NotFoundException('找不到這筆收藏');
 
     await this.collectionsRepo.delete(id);
   }
 
   async findCollections(userId: number): Promise<CollectionItemDto[]> {
-    const collections = await this.collectionsRepo.find({ where: { user_id: userId }, order: { created_at: 'DESC' } });
+    const collections = await this.collectionsRepo.find({
+      where: { user_id: userId },
+      order: { created_at: 'DESC' },
+    });
     if (collections.length === 0) return [];
 
-    const trailIds = collections.filter((c) => c.item_type === 'trail').map((c) => c.item_id);
-    const userIds = collections.filter((c) => c.item_type === 'user').map((c) => c.item_id);
+    const trailIds = collections
+      .filter((c) => c.item_type === 'trail')
+      .map((c) => c.item_id);
+    const userIds = collections
+      .filter((c) => c.item_type === 'user')
+      .map((c) => c.item_id);
 
-    const trails = trailIds.length ? await this.trailsRepo.findBy({ id: In(trailIds) }) : [];
+    const trails = trailIds.length
+      ? await this.trailsRepo.findBy({ id: In(trailIds) })
+      : [];
     const trailsById = new Map(trails.map((trail) => [trail.id, trail]));
 
-    const users = userIds.length ? await this.usersRepo.findBy({ id: In(userIds) }) : [];
+    const users = userIds.length
+      ? await this.usersRepo.findBy({ id: In(userIds) })
+      : [];
     const usersById = new Map(users.map((user) => [user.id, user]));
-    const profiles = userIds.length ? await this.profilesRepo.findBy({ user_id: In(userIds) }) : [];
-    const profilesByUserId = new Map(profiles.map((profile) => [profile.user_id, profile]));
+    const profiles = userIds.length
+      ? await this.profilesRepo.findBy({ user_id: In(userIds) })
+      : [];
+    const profilesByUserId = new Map(
+      profiles.map((profile) => [profile.user_id, profile]),
+    );
 
     return collections.map((collection) => {
       if (collection.item_type === 'trail') {
         const trail = trailsById.get(collection.item_id);
-        return { ...collection, trail_name: trail?.name ?? null, trail_slug: trail?.slug ?? null };
+        return {
+          ...collection,
+          trail_name: trail?.name ?? null,
+          trail_slug: trail?.slug ?? null,
+        };
       }
       if (collection.item_type === 'user') {
         const user = usersById.get(collection.item_id);
         const profile = profilesByUserId.get(collection.item_id);
-        return { ...collection, username: user?.username ?? null, avatar: profile?.avatar ?? null, level: profile?.level ?? null };
+        return {
+          ...collection,
+          username: user?.username ?? null,
+          avatar: profile?.avatar ?? null,
+          level: profile?.level ?? null,
+        };
       }
       return { ...collection };
     });
@@ -84,7 +117,10 @@ export class SocialService {
     }
 
     const existing = await this.followsRepo.findOne({
-      where: { follower_user_id: followerUserId, following_user_id: followingUserId },
+      where: {
+        follower_user_id: followerUserId,
+        following_user_id: followingUserId,
+      },
     });
     if (existing) throw new ConflictException('已經追蹤過了');
 
@@ -107,5 +143,22 @@ export class SocialService {
 
   findFollowers(userId: number) {
     return this.followsRepo.find({ where: { following_user_id: userId } });
+  }
+
+  async getFollowStatus(targetUserId: number, viewerUserId: number | null) {
+    const [followerCount, followingCount, isFollowing] = await Promise.all([
+      this.followsRepo.count({ where: { following_user_id: targetUserId } }),
+      this.followsRepo.count({ where: { follower_user_id: targetUserId } }),
+      viewerUserId
+        ? this.followsRepo.exists({
+            where: {
+              follower_user_id: viewerUserId,
+              following_user_id: targetUserId,
+            },
+          })
+        : Promise.resolve(false),
+    ]);
+
+    return { followerCount, followingCount, isFollowing };
   }
 }
