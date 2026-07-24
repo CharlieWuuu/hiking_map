@@ -3,6 +3,9 @@
     "title": "健行軌跡",
     "description": "上傳你的 GPX，一起建立你的健行軌跡。"
   },
+  "Common": {
+    "noData": "無資料"
+  },
   "Nav": {
     "home": "首頁",
     "search": "探索",
@@ -55,25 +58,7 @@
     "hundredTrail": "百大必訪步道",
     "categoryFilter": "分類",
     "countyFilter": "縣市",
-    "noTrails": "查無符合條件的步道",
-    "mountainsLink": "百岳列表"
-  },
-  "MountainsPage": {
-    "title": "百岳列表",
-    "allCounties": "全部縣市",
-    "noMountains": "查無符合條件的山峰",
-    "previousPage": "上一頁",
-    "nextPage": "下一頁",
-    "pageIndicator": "第 {page} / {pageCount} 頁"
-  },
-  "MountainListItem": {
-    "elevation": "海拔",
-    "elevationValue": "{elevation} 公尺"
-  },
-  "MountainDetailPage": {
-    "back": "返回百岳列表",
-    "elevation": "海拔",
-    "elevationValue": "{elevation} 公尺"
+    "noTrails": "查無符合條件的步道"
   },
   "ProfilePage": {
     "totalDistance": "{distance} 公里",

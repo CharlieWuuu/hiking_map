@@ -4,6 +4,7 @@ import TrailListItem from '../../../components/TrailListItem';
 import UserListItem from '../../../components/UserListItem';
 import { Link } from '../../../i18n/navigation';
 import { apiClient } from '../../../lib/apiClient';
+import { placeholderImage } from '../../../lib/placeholderImage';
 import { TRAIL_CATEGORIES, type TrailCategory } from '../../../testing/mocks/trails/trails.data';
 import SearchBarWithNavigation from './_components/SearchBarWithNavigation';
 
@@ -57,10 +58,6 @@ export default async function SearchPage({ searchParams }: Props) {
 
       {!q && !isFiltering && (
         <div className="flex flex-col gap-6">
-          <Link href="/mountains" className="bg-panel hover:bg-panel-active rounded-panel px-4 py-4 text-center text-lg font-bold transition-colors">
-            {t('mountainsLink')}
-          </Link>
-
           <div className="flex flex-col gap-2">
             <span className="text-background-contrary/60 text-sm">{t('categoryFilter')}</span>
             <div className="grid grid-cols-3 gap-3">
@@ -68,9 +65,11 @@ export default async function SearchPage({ searchParams }: Props) {
                 <Link
                   key={item}
                   href={{ pathname: '/search', query: { category: item } }}
-                  className="bg-panel hover:bg-panel-active rounded-panel px-4 py-6 text-center text-lg font-bold transition-colors"
+                  className="rounded-panel relative h-24 overflow-hidden bg-cover bg-center px-4 py-6 text-center text-lg font-bold text-white transition-opacity hover:opacity-90"
+                  style={{ backgroundImage: `url(${placeholderImage(`category-${item}`)})` }}
                 >
-                  {t(item)}
+                  <span className="absolute inset-0 bg-black/40" />
+                  <span className="relative">{t(item)}</span>
                 </Link>
               ))}
             </div>
@@ -83,9 +82,11 @@ export default async function SearchPage({ searchParams }: Props) {
                 <Link
                   key={item}
                   href={{ pathname: '/search', query: { county: item } }}
-                  className="bg-panel hover:bg-panel-active rounded-panel px-4 py-6 text-center text-lg font-bold transition-colors"
+                  className="rounded-panel relative h-24 overflow-hidden bg-cover bg-center px-4 py-6 text-center text-lg font-bold text-white transition-opacity hover:opacity-90"
+                  style={{ backgroundImage: `url(${placeholderImage(`county-${item}`)})` }}
                 >
-                  {item}
+                  <span className="absolute inset-0 bg-black/40" />
+                  <span className="relative">{item}</span>
                 </Link>
               ))}
             </div>

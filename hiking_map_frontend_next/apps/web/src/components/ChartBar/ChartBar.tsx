@@ -5,14 +5,16 @@ import { useEffect, useRef } from 'react';
 
 type Props = {
   data: { label: string; value: number }[];
+  emptyLabel?: string;
 };
 
 const WIDTH = 400;
 const HEIGHT = 180;
 const MARGIN = { top: 10, right: 5, bottom: 20, left: 0 };
 
-export default function ChartBar({ data }: Props) {
+export default function ChartBar({ data, emptyLabel }: Props) {
   const ref = useRef<SVGSVGElement>(null);
+  const isEmpty = data.every((d) => d.value === 0);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -50,7 +52,7 @@ export default function ChartBar({ data }: Props) {
       .attr('y', (d) => y(d.value))
       .attr('height', (d) => y(0) - y(d.value));
 
-    const xAxis = d3.axisBottom(x).tickSizeInner(0).tickSizeOuter(0);
+    const xAxis = d3.axisBottom(x).tickSizeInner(0).tickSizeOuter(0).tickPadding(5);
 
     svg
       .append('g')
@@ -72,8 +74,9 @@ export default function ChartBar({ data }: Props) {
   }, [data]);
 
   return (
-    <div className="min-h-0 flex-1">
+    <div className="relative min-h-0 flex-1">
       <svg ref={ref} width="100%" height="100%" />
+      {isEmpty && emptyLabel && <div className="text-background-contrary/60 absolute inset-0 flex items-center justify-center text-sm">{emptyLabel}</div>}
     </div>
   );
 }

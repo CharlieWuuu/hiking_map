@@ -4,13 +4,17 @@ import ChartBar from '../../components/ChartBar';
 import TrailListItem from '../../components/TrailListItem';
 import { Link } from '../../i18n/navigation';
 import { apiClient } from '../../lib/apiClient';
+import { fillMonthlyDistance } from '../../lib/fillMonthlyDistance';
 import { getCurrentUser } from '../../lib/getCurrentUser';
 
 const RECENT_TRAILS_COUNT = 5;
 const RECOMMENDED_TRAILS_COUNT = 5;
+const COUNTY_STATS_COUNT = 7;
+const MONTHLY_DISTANCE_MONTHS_COUNT = 12;
 
 export default async function Home() {
   const t = await getTranslations('HomePage');
+  const tCommon = await getTranslations('Common');
   const currentUser = await getCurrentUser();
 
   const [stats, recentHikes, allTrails] = await Promise.all([
@@ -29,11 +33,20 @@ export default async function Home() {
           <div className="flex flex-wrap gap-4">
             <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
               <span className="text-background-contrary/60 text-sm">{t('monthlyDistance')}</span>
-              <ChartBar data={stats.monthlyDistance.map((d) => ({ label: d.month.slice(5), value: d.distanceKm }))} />
+              <ChartBar
+                data={fillMonthlyDistance(stats.monthlyDistance, MONTHLY_DISTANCE_MONTHS_COUNT).map((d) => ({
+                  label: d.month.slice(5),
+                  value: d.distanceKm,
+                }))}
+                emptyLabel={tCommon('noData')}
+              />
             </div>
             <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
               <span className="text-background-contrary/60 text-sm">{t('countyStats')}</span>
-              <ChartBar data={stats.countyStats.map((d) => ({ label: d.county, value: d.count }))} />
+              <ChartBar
+                data={stats.countyStats.slice(0, COUNTY_STATS_COUNT).map((d) => ({ label: d.county, value: d.count }))}
+                emptyLabel={tCommon('noData')}
+              />
             </div>
           </div>
           <Link

@@ -3,6 +3,9 @@
     "title": "Hiking Track",
     "description": "Upload your GPX and build your hiking track together."
   },
+  "Common": {
+    "noData": "No data"
+  },
   "Nav": {
     "home": "Home",
     "search": "Explore",
@@ -55,25 +58,7 @@
     "hundredTrail": "Top 100 Trails",
     "categoryFilter": "Category",
     "countyFilter": "County",
-    "noTrails": "No trails match the current filters",
-    "mountainsLink": "Mountain list"
-  },
-  "MountainsPage": {
-    "title": "Mountain list",
-    "allCounties": "All counties",
-    "noMountains": "No mountains match the current filters",
-    "previousPage": "Previous page",
-    "nextPage": "Next page",
-    "pageIndicator": "Page {page} of {pageCount}"
-  },
-  "MountainListItem": {
-    "elevation": "Elevation",
-    "elevationValue": "{elevation} m"
-  },
-  "MountainDetailPage": {
-    "back": "Back to mountain list",
-    "elevation": "Elevation",
-    "elevationValue": "{elevation} m"
+    "noTrails": "No trails match the current filters"
   },
   "ProfilePage": {
     "totalDistance": "{distance} km",
