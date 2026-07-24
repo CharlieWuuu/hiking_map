@@ -28,13 +28,13 @@ export default function LayerSwitcher({ activeKey, onActiveKeyChange, styleOverr
   const activeSetting = styleOverrides[activeKey];
 
   return (
-    <div ref={panelRef} className="absolute top-3 right-3 z-[500]">
+    <div ref={panelRef} className="absolute bottom-3 left-3 z-[500]">
       <button onClick={() => setOpen(true)} className="bg-panel flex h-9 w-9 items-center justify-center rounded-full shadow" aria-label="切換圖層">
         <Layers className="h-4 w-4" />
       </button>
 
       {open && (
-        <div className="bg-panel rounded-panel absolute top-11 right-0 w-64 p-4 shadow-lg">
+        <div className="bg-panel rounded-panel absolute bottom-11 left-0 w-64 p-4 shadow-lg">
           <button onClick={() => setOpen(false)} className="absolute top-3 right-3" aria-label="關閉">
             <X className="h-4 w-4" />
           </button>
