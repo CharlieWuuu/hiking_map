@@ -8,11 +8,14 @@ import ChartRing from '../../../../components/ChartRing';
 import TrailListItem from '../../../../components/TrailListItem';
 import { Link } from '../../../../i18n/navigation';
 import { apiClient } from '../../../../lib/apiClient';
+import { fillMonthlyDistance } from '../../../../lib/fillMonthlyDistance';
 import { getCurrentUser } from '../../../../lib/getCurrentUser';
 import EditProfileButton from './_components/EditProfileButton';
 import FollowButton from './_components/FollowButton';
 
 const TRAIL_HISTORY_COUNT = 10;
+const COUNTY_STATS_COUNT = 7;
+const MONTHLY_DISTANCE_MONTHS_COUNT = 12;
 
 export default async function ProfilePage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
@@ -34,6 +37,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
     : await apiClient.follows.getStatus(profile.userId, authToken ? { headers: { Cookie: `auth_token=${authToken}` } } : undefined);
 
   const t = await getTranslations('ProfilePage');
+  const tCommon = await getTranslations('Common');
   const recentHikes = [...hikes].sort((a, b) => b.date.localeCompare(a.date)).slice(0, TRAIL_HISTORY_COUNT);
 
   return (
@@ -80,11 +84,17 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
       <div className="flex flex-wrap gap-4">
         <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
           <span className="text-background-contrary/60 text-sm">{t('monthlyDistance')}</span>
-          <ChartBar data={stats.monthlyDistance.map((d) => ({ label: d.month.slice(5), value: d.distanceKm }))} />
+          <ChartBar
+            data={fillMonthlyDistance(stats.monthlyDistance, MONTHLY_DISTANCE_MONTHS_COUNT).map((d) => ({
+              label: d.month.slice(5),
+              value: d.distanceKm,
+            }))}
+            emptyLabel={tCommon('noData')}
+          />
         </div>
         <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
           <span className="text-background-contrary/60 text-sm">{t('countyStats')}</span>
-          <ChartBar data={stats.countyStats.map((d) => ({ label: d.county, value: d.count }))} />
+          <ChartBar data={stats.countyStats.slice(0, COUNTY_STATS_COUNT).map((d) => ({ label: d.county, value: d.count }))} emptyLabel={tCommon('noData')} />
         </div>
       </div>
 

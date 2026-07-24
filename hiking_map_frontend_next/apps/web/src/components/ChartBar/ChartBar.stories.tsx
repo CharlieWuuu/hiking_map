@@ -43,5 +43,6 @@ export const AllZero: Story = {
       { label: '二月', value: 0 },
       { label: '三月', value: 0 },
     ],
+    emptyLabel: '無資料',
   },
 };
