@@ -26,6 +26,9 @@ export class CreateHikeDto {
   @ApiPropertyOptional({ example: ['https://example.com/track.gpx'], type: [String] })
   urls?: string[];
 
+  @ApiPropertyOptional({ example: 'https://pub-xxxx.r2.dev/hikes/1/cover.jpg' })
+  cover_image_url?: string;
+
   @ApiPropertyOptional({ example: 1 })
   trail_id?: number;
 

@@ -14,6 +14,7 @@ export type Hike = {
   isPublic: boolean;
   note: string | null;
   urls: string[];
+  coverImageUrl: string | null;
   createdAt: string;
   // GET /hikes 才會附帶，取決於這次紀錄對應的 trail 是否屬於對應分類
   isHundred?: boolean;
@@ -32,6 +33,7 @@ export type CreateHikeDto = {
   isPublic?: boolean;
   note?: string;
   urls?: string[];
+  coverImageUrl?: string;
   trailId?: number;
   categoryIds?: string[];
   geojson: object;
@@ -67,6 +69,7 @@ export function toCreateHikeDto(dto: CreateHikeDto): RawCreateHikeDto {
     is_public: dto.isPublic,
     note: dto.note,
     urls: dto.urls,
+    cover_image_url: dto.coverImageUrl,
     trail_id: dto.trailId,
     category_ids: dto.categoryIds,
     geojson: dto.geojson,

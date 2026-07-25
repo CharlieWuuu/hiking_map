@@ -30,4 +30,11 @@ export class Trail {
   @ApiPropertyOptional({ example: 8.5, nullable: true })
   @Column('double precision', { nullable: true })
   distance_km: number | null;
+
+  @ApiPropertyOptional({
+    example: 'https://pub-xxxx.r2.dev/trails/1/cover.jpg',
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  cover_image_url: string | null;
 }

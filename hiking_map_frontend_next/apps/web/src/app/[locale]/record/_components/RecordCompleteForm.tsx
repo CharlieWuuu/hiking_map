@@ -1,7 +1,10 @@
 'use client';
 
+import { Map } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+
+import { apiClient } from '../../../../lib/apiClient';
 
 export type RecordCompleteFormValues = {
   name: string;
@@ -9,6 +12,7 @@ export type RecordCompleteFormValues = {
   town: string;
   isPublic: boolean;
   note: string;
+  coverImageUrl?: string;
 };
 
 type Props = {
@@ -27,11 +31,29 @@ export default function RecordCompleteForm({ distanceKm, isSubmitting, onSubmit,
   const [town, setTown] = useState('');
   const [isPublic, setIsPublic] = useState(true);
   const [note, setNote] = useState('');
+  const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>(undefined);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState(false);
+
+  async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingImage(true);
+    setUploadError(false);
+    try {
+      const url = await apiClient.uploads.uploadImage(file);
+      setCoverImageUrl(url);
+    } catch {
+      setUploadError(true);
+    } finally {
+      setIsUploadingImage(false);
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
-    onSubmit({ name: name.trim(), county, town, isPublic, note });
+    onSubmit({ name: name.trim(), county, town, isPublic, note, coverImageUrl });
   }
 
   return (
@@ -40,10 +62,29 @@ export default function RecordCompleteForm({ distanceKm, isSubmitting, onSubmit,
 
       <p className="text-background-contrary/60 text-sm">{t('distanceValue', { distance: distanceKm.toFixed(2) })}</p>
 
-      <label className="flex flex-col items-start gap-1">
-        <span className="text-sm">{t('name')}</span>
-        <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className={inputClassName} />
-      </label>
+      <div className="flex gap-4">
+        <label className="flex shrink-0 cursor-pointer flex-col items-start gap-1">
+          <span className="text-sm">{t('coverImage')}</span>
+          <span className="bg-panel-active hover:bg-panel-active-lighten relative flex h-20 w-20 items-center justify-center overflow-hidden rounded transition-colors">
+            {coverImageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={coverImageUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <Map className="text-background-contrary/60 h-8 w-8" />
+            )}
+            {isUploadingImage && <span className="absolute inset-0 flex items-center justify-center bg-black/50 text-xs text-white">{t('uploading')}</span>}
+            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} className="hidden" />
+          </span>
+          {uploadError && <span className="text-xs text-red-500">{t('uploadFailed')}</span>}
+        </label>
+
+        <div className="flex flex-1 flex-col gap-4">
+          <label className="flex flex-col items-start gap-1">
+            <span className="text-sm">{t('name')}</span>
+            <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className={inputClassName} />
+          </label>
+        </div>
+      </div>
 
       <div className="flex flex-wrap gap-4">
         <label className="flex min-w-24 flex-1 flex-col items-start gap-1">

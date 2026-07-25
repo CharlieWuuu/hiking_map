@@ -10,6 +10,7 @@ export type Trail = {
   town: string | null;
   description: string | null;
   distanceKm: number | null;
+  coverImageUrl: string | null;
 };
 
 export type TrailDetail = Trail & {

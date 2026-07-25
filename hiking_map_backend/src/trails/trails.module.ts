@@ -9,7 +9,12 @@ import { TrailsController } from './trails.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Trail, TrailGeometry, TrailCategoryMap, TrailMountainMap]),
+    TypeOrmModule.forFeature([
+      Trail,
+      TrailGeometry,
+      TrailCategoryMap,
+      TrailMountainMap,
+    ]),
   ],
   controllers: [TrailsController],
   providers: [TrailsService],

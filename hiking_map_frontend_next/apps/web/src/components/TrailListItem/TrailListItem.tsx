@@ -1,3 +1,4 @@
+import { Map } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { Link } from '../../i18n/navigation';
@@ -8,6 +9,7 @@ type DisplayProps = {
   town: string;
   date?: string;
   distanceKm?: number;
+  coverImageUrl?: string | null;
 };
 
 type NavigationProps = DisplayProps & {
@@ -27,6 +29,19 @@ type InteractiveProps = DisplayProps & {
 };
 
 type Props = NavigationProps | InteractiveProps;
+
+function TrailThumbnail({ coverImageUrl }: { coverImageUrl?: string | null }) {
+  if (coverImageUrl) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={coverImageUrl} alt="" className="h-20 w-20 shrink-0 object-cover" />;
+  }
+
+  return (
+    <span className="bg-panel-active flex h-20 w-20 shrink-0 items-center justify-center">
+      <Map className="text-background-contrary/60 h-8 w-8" />
+    </span>
+  );
+}
 
 function TrailListItemContent({ name, county, town, date, distanceKm }: DisplayProps) {
   const t = useTranslations('TrailListItem');
@@ -68,8 +83,14 @@ function TrailListItemContent({ name, county, town, date, distanceKm }: DisplayP
 export default function TrailListItem(props: Props) {
   if (props.href !== undefined) {
     return (
-      <Link href={props.href} className="bg-panel hover:bg-panel-active rounded-panel flex w-full items-center gap-4 p-4 transition-colors duration-150">
-        <TrailListItemContent {...props} />
+      <Link
+        href={props.href}
+        className="bg-panel hover:bg-panel-active rounded-panel relative flex w-full items-stretch gap-4 overflow-hidden transition-colors duration-150"
+      >
+        <TrailThumbnail coverImageUrl={props.coverImageUrl} />
+        <div className="flex min-w-0 flex-1 items-center gap-4 py-4 pr-4">
+          <TrailListItemContent {...props} />
+        </div>
       </Link>
     );
   }
@@ -82,11 +103,14 @@ export default function TrailListItem(props: Props) {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onClick}
-      className={`rounded-panel flex w-full cursor-pointer items-center gap-4 p-4 text-left transition-colors duration-150 ${
+      className={`rounded-panel relative flex w-full cursor-pointer items-stretch gap-4 overflow-hidden text-left transition-colors duration-150 ${
         isActive ? 'bg-panel-active' : 'bg-panel hover:bg-panel-active'
       }`}
     >
-      <TrailListItemContent {...props} />
+      <TrailThumbnail coverImageUrl={props.coverImageUrl} />
+      <div className="flex min-w-0 flex-1 items-center gap-4 py-4 pr-4">
+        <TrailListItemContent {...props} />
+      </div>
     </button>
   );
 }

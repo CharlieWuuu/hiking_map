@@ -19,5 +19,6 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "ignoreDeprecations": "5.0"
-  }
+  },
+  "exclude": ["scripts"]
 }
