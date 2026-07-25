@@ -75,6 +75,8 @@ export interface CreateHikeDto {
   note?: string;
   /** @example ["https://example.com/track.gpx"] */
   urls?: string[];
+  /** @example "https://pub-xxxx.r2.dev/hikes/1/cover.jpg" */
+  cover_image_url?: string;
   /** @example 1 */
   trail_id?: number;
   /** @example [1,2] */
@@ -106,6 +108,8 @@ export interface Hike {
   note?: object | null;
   /** @example ["https://example.com/track.gpx"] */
   urls?: string[];
+  /** @example "https://pub-xxxx.r2.dev/hikes/1/cover.jpg" */
+  cover_image_url?: object | null;
   /**
    * @format date-time
    * @example "2026-07-20T10:00:00.000Z"
@@ -176,6 +180,8 @@ export interface Trail {
   description?: object | null;
   /** @example 8.5 */
   distance_km?: object | null;
+  /** @example "https://pub-xxxx.r2.dev/trails/1/cover.jpg" */
+  cover_image_url?: object | null;
 }
 
 export interface TrailDetailDto {
@@ -270,6 +276,8 @@ export interface SearchResultDto {
   town?: object | null;
   /** @example "中級" */
   level?: object | null;
+  /** @example "https://pub-xxxx.r2.dev/trails/1/cover.jpg" */
+  cover_image_url?: object | null;
   /** @example "name" */
   match_reason: 'name' | 'field';
 }

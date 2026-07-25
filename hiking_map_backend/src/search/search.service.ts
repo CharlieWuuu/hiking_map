@@ -46,7 +46,7 @@ export class SearchService {
     if (!q) return [];
 
     const trailRows = await this.dataSource.query(
-      `SELECT slug, name, county, town,
+      `SELECT slug, name, county, town, cover_image_url,
               (name ILIKE $1) AS matches_name
        FROM trails
        WHERE name ILIKE $1 OR county ILIKE $1 OR town ILIKE $1 OR description ILIKE $1`,
@@ -68,6 +68,7 @@ export class SearchService {
       display_name: row.name,
       county: row.county,
       town: row.town,
+      cover_image_url: row.cover_image_url,
       match_reason: row.matches_name ? 'name' : 'field',
     }));
 
@@ -80,10 +81,19 @@ export class SearchService {
       match_reason: row.matches_name ? 'name' : 'field',
     }));
 
-    return [...trailResults, ...userResults].sort((a, b) => (a.match_reason === b.match_reason ? 0 : a.match_reason === 'name' ? -1 : 1));
+    return [...trailResults, ...userResults].sort((a, b) =>
+      a.match_reason === b.match_reason
+        ? 0
+        : a.match_reason === 'name'
+          ? -1
+          : 1,
+    );
   }
 
-  async filterTrails(categoryKey: string | null, county: string | null): Promise<SearchResultDto[]> {
+  async filterTrails(
+    categoryKey: string | null,
+    county: string | null,
+  ): Promise<SearchResultDto[]> {
     const conditions: string[] = [];
     const params: unknown[] = [];
 
@@ -102,7 +112,10 @@ export class SearchService {
     }
 
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
-    const rows = await this.dataSource.query(`SELECT slug, name, county, town FROM trails t ${where} ORDER BY name`, params);
+    const rows = await this.dataSource.query(
+      `SELECT slug, name, county, town, cover_image_url FROM trails t ${where} ORDER BY name`,
+      params,
+    );
 
     return rows.map((row: any) => ({
       type: 'trail',
@@ -110,6 +123,7 @@ export class SearchService {
       display_name: row.name,
       county: row.county,
       town: row.town,
+      cover_image_url: row.cover_image_url,
       match_reason: 'field',
     }));
   }

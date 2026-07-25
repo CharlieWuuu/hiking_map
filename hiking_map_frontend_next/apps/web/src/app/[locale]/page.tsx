@@ -71,6 +71,7 @@ export default async function Home() {
                 town={hike.town ?? ''}
                 date={hike.date}
                 distanceKm={hike.distanceKm}
+                coverImageUrl={hike.coverImageUrl}
               />
             ))}
           </div>

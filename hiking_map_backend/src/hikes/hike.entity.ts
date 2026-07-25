@@ -58,6 +58,10 @@ export class Hike {
   @Column({ type: 'varchar', array: true, default: () => "'{}'" })
   urls: string[];
 
+  @ApiPropertyOptional({ example: 'https://pub-xxxx.r2.dev/hikes/1/cover.jpg', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
+  cover_image_url: string | null;
+
   @ApiProperty({ example: '2026-07-20T10:00:00.000Z' })
   @CreateDateColumn()
   created_at: Date;

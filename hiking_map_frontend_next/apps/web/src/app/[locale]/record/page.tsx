@@ -68,6 +68,7 @@ export default function RecordPage() {
         distanceKm,
         isPublic: values.isPublic,
         note: values.note || undefined,
+        coverImageUrl: values.coverImageUrl,
         geojson: {
           type: 'FeatureCollection',
           features: [{ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: path } }],

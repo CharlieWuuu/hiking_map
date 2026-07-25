@@ -10,6 +10,7 @@ export type SearchResult = {
   county?: string | null;
   town?: string | null;
   level?: string | null;
+  coverImageUrl?: string | null;
   matchReason: 'name' | 'field';
 };
 

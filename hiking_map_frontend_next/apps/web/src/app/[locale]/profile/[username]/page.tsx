@@ -124,6 +124,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
               town={hike.town ?? ''}
               date={hike.date}
               distanceKm={hike.distanceKm}
+              coverImageUrl={hike.coverImageUrl}
             />
           ))}
         </div>

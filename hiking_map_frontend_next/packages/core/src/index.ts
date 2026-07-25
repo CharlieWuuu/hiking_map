@@ -5,6 +5,7 @@ import { createProfileService } from './adapters/profile';
 import { createSearchService } from './adapters/search';
 import { createCollectionsService, createFollowsService } from './adapters/social';
 import { createTrailsService } from './adapters/trails';
+import { createUploadsService } from './adapters/uploads';
 import { Auth } from './api/Auth';
 import { Collections } from './api/Collections';
 import { Follows } from './api/Follows';
@@ -14,6 +15,7 @@ import { Mountains } from './api/Mountains';
 import { Profile } from './api/Profile';
 import { Search } from './api/Search';
 import { Trails } from './api/Trails';
+import { Uploads } from './api/Uploads';
 
 // 後端回傳/接收的欄位是 snake_case，前端要用的是 camelCase。
 // 這裡組裝出來的 service 已經套用過轉換，app 端不該直接 import ./api/* 下的生成檔案。
@@ -27,6 +29,7 @@ export function createApiClient(config?: ApiConfig) {
     collections: createCollectionsService(new Collections(config)),
     follows: createFollowsService(new Follows(config)),
     search: createSearchService(new Search(config)),
+    uploads: createUploadsService(new Uploads(config)),
   };
 }
 

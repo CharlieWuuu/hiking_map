@@ -47,6 +47,7 @@ export class HikesService {
         is_public: dto.is_public ?? true,
         note: dto.note ?? null,
         urls: dto.urls ?? [],
+        cover_image_url: dto.cover_image_url ?? null,
       });
 
       await manager.query(
