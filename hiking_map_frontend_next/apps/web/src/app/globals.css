@@ -15,6 +15,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 .animate-landing-wrapper {
   animation: landing-wrapper 2s linear forwards;
 }
