@@ -1,6 +1,5 @@
 import { CircleUserRound } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
-import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 
 import ChartBar from '../../../../components/ChartBar';
@@ -11,7 +10,6 @@ import { apiClient } from '../../../../lib/apiClient';
 import { fillMonthlyDistance } from '../../../../lib/fillMonthlyDistance';
 import { getCurrentUser } from '../../../../lib/getCurrentUser';
 import EditProfileButton from './_components/EditProfileButton';
-import FollowButton from './_components/FollowButton';
 
 const TRAIL_HISTORY_COUNT = 10;
 const COUNTY_STATS_COUNT = 7;
@@ -31,10 +29,6 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
   const hikes = await apiClient.hikes.findAll(String(profile.userId));
 
   const isOwner = currentUser?.username === username;
-  const authToken = (await cookies()).get('auth_token')?.value;
-  const followStatus = isOwner
-    ? null
-    : await apiClient.follows.getStatus(profile.userId, authToken ? { headers: { Cookie: `auth_token=${authToken}` } } : undefined);
 
   const t = await getTranslations('ProfilePage');
   const tCommon = await getTranslations('Common');
@@ -56,18 +50,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
           <div className="flex items-center gap-2">
             <h1 className="text-accent text-3xl font-bold">{profile.username}</h1>
             {isOwner && <EditProfileButton avatar={profile.avatar} level={profile.level} description={profile.description} />}
-            {followStatus && <FollowButton targetUserId={profile.userId} initialIsFollowing={followStatus.isFollowing} />}
           </div>
           <div className="flex flex-wrap gap-4 text-lg">
             <span>{profile.level}</span>
             <span>{t('totalDistance', { distance: stats.totalDistanceKm })}</span>
             <span>{t('hikeCount', { count: stats.hikeCount })}</span>
-            {followStatus && (
-              <>
-                <span>{t('followerCount', { count: followStatus.followerCount })}</span>
-                <span>{t('followingCount', { count: followStatus.followingCount })}</span>
-              </>
-            )}
           </div>
           {profile.description && <p className="text-background-contrary/80">{profile.description}</p>}
         </div>

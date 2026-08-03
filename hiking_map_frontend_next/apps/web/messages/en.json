@@ -9,7 +9,6 @@
   "Nav": {
     "home": "Home",
     "search": "Explore",
-    "record": "Record",
     "profile": "Profile",
     "settings": "Settings"
   },
@@ -30,7 +29,7 @@
     "recentTrails": "Recent Trails",
     "recommendedTrails": "Recommended Trails",
     "recommendedDistance": "Distance",
-    "recommendedDistanceValue": "{distance} km"
+    "recommendedDistanceValue": "{distance, number, ::.00} km"
   },
   "LoginPage": {
     "title": "Log in",
@@ -39,11 +38,8 @@
     "submit": "Log in",
     "error": "Incorrect username or password",
     "orDivider": "or",
-    "oauthComingSoon": "Coming soon",
     "oauth": {
-      "google": "Continue with Google",
-      "line": "Continue with LINE",
-      "facebook": "Continue with Facebook"
+      "google": "Continue with Google"
     }
   },
   "NotFoundPage": {
@@ -61,7 +57,7 @@
     "noTrails": "No trails match the current filters"
   },
   "ProfilePage": {
-    "totalDistance": "{distance} km",
+    "totalDistance": "{distance, number, ::.00} km",
     "hikeCount": "{count} hikes",
     "achievementHundred": "Hundred Peaks",
     "achievementSmallHundred": "Small Hundred Peaks",
@@ -70,11 +66,7 @@
     "countyStats": "County stats",
     "trailHistory": "Trail history",
     "goToData": "Map & data",
-    "goToCollections": "Collections",
-    "follow": "Follow",
-    "unfollow": "Unfollow",
-    "followerCount": "{count} followers",
-    "followingCount": "Following {count}"
+    "goToCollections": "Collections"
   },
   "EditProfileForm": {
     "edit": "Edit profile",
@@ -109,7 +101,7 @@
     "town": "Town",
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance} km",
+    "distanceValue": "{distance, number, ::.00} km",
     "public": "Public",
     "hundred": "Hundred Peaks",
     "smallHundred": "Small Hundred Peaks",
@@ -135,48 +127,23 @@
     "backToProfile": "Back to map & data",
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance} km",
+    "distanceValue": "{distance, number, ::.00} km",
     "links": "Route links",
     "linkLabel": "Link {index}",
     "note": "Note",
     "noValue": "-",
     "map": "Map"
   },
-  "RecordPage": {
-    "title": "Record",
-    "elapsed": "Time",
-    "distance": "Distance",
-    "distanceValue": "{distance} km",
-    "start": "Start",
-    "stop": "Stop",
-    "gpsUnsupported": "This device does not support location tracking",
-    "gpsDenied": "Could not get location permission, please check your browser settings"
-  },
-  "RecordCompleteForm": {
-    "title": "Finish recording",
-    "distanceValue": "Distance: {distance} km",
-    "name": "Name",
-    "county": "County",
-    "town": "Town",
-    "coverImage": "Cover photo",
-    "chooseImage": "Choose photo",
-    "uploading": "Uploading…",
-    "uploadFailed": "Failed to upload photo",
-    "public": "Public",
-    "note": "Note",
-    "cancel": "Discard",
-    "save": "Save"
-  },
   "TrailListItem": {
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance} km"
+    "distanceValue": "{distance, number, ::.00} km"
   },
   "TrailDetailPage": {
     "back": "Back to search",
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance} km",
+    "distanceValue": "{distance, number, ::.00} km",
     "links": "Route links",
     "linkLabel": "Link {index}",
     "note": "Note",

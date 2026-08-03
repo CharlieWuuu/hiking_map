@@ -6,8 +6,6 @@ import { useState } from 'react';
 import { useRouter } from '../../../i18n/navigation';
 import { useAuth } from '../../../lib/authStore';
 
-const COMING_SOON_OAUTH_PROVIDERS = ['line', 'facebook'] as const;
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:3001';
 
 export default function LoginPage() {
@@ -84,17 +82,6 @@ export default function LoginPage() {
         >
           {t('oauth.google')}
         </a>
-        {COMING_SOON_OAUTH_PROVIDERS.map((provider) => (
-          <button
-            key={provider}
-            type="button"
-            disabled
-            title={t('oauthComingSoon')}
-            className="bg-panel hover:bg-panel-active rounded-panel flex items-center justify-center gap-2 px-4 py-2 transition-colors disabled:opacity-50"
-          >
-            {t(`oauth.${provider}`)}
-          </button>
-        ))}
       </div>
     </div>
   );

@@ -3,12 +3,11 @@ import { createHikesService } from './adapters/hikes';
 import { createMountainsService } from './adapters/mountains';
 import { createProfileService } from './adapters/profile';
 import { createSearchService } from './adapters/search';
-import { createCollectionsService, createFollowsService } from './adapters/social';
+import { createCollectionsService } from './adapters/social';
 import { createTrailsService } from './adapters/trails';
 import { createUploadsService } from './adapters/uploads';
 import { Auth } from './api/Auth';
 import { Collections } from './api/Collections';
-import { Follows } from './api/Follows';
 import { Hikes } from './api/Hikes';
 import type { ApiConfig } from './api/http-client';
 import { Mountains } from './api/Mountains';
@@ -27,7 +26,6 @@ export function createApiClient(config?: ApiConfig) {
     mountains: createMountainsService(new Mountains(config)),
     trails: createTrailsService(new Trails(config)),
     collections: createCollectionsService(new Collections(config)),
-    follows: createFollowsService(new Follows(config)),
     search: createSearchService(new Search(config)),
     uploads: createUploadsService(new Uploads(config)),
   };
@@ -39,6 +37,6 @@ export type { CreateHikeDto, Hike, HikeStats } from './adapters/hikes';
 export type { Mountain } from './adapters/mountains';
 export type { Profile as ProfileModel, UpdateProfileDto } from './adapters/profile';
 export type { SearchResult } from './adapters/search';
-export type { Collection, CollectionItem, CreateCollectionDto, Follow } from './adapters/social';
+export type { Collection, CollectionItem, CreateCollectionDto } from './adapters/social';
 export type { Trail, TrailDetail } from './adapters/trails';
 export type { LoginDto, LoginResponseDto, RegisterDto, RegisterResponseDto } from './api/data-contracts';

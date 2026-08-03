@@ -1,4 +1,4 @@
-import { CircleUserRound, Home, Play, Search, Settings } from 'lucide-react';
+import { CircleUserRound, Home, Search, Settings } from 'lucide-react';
 
 import type { NavItem } from './Nav.types';
 
@@ -7,7 +7,6 @@ export function getNavItems(username: string | null): NavItem[] {
   return [
     { messageKey: 'home', href: '/', Icon: Home },
     { messageKey: 'search', href: '/search', Icon: Search },
-    { messageKey: 'record', href: '/record', Icon: Play },
     { messageKey: 'profile', href: username ? `/profile/${username}` : '/login', Icon: CircleUserRound },
     { messageKey: 'settings', href: '/settings', Icon: Settings },
   ];

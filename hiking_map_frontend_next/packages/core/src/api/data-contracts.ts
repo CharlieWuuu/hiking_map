@@ -249,18 +249,6 @@ export interface Collection {
   created_at: string;
 }
 
-export interface Follow {
-  /** @example 1 */
-  follower_user_id: number;
-  /** @example 2 */
-  following_user_id: number;
-  /**
-   * @format date-time
-   * @example "2026-07-20T10:00:00.000Z"
-   */
-  created_at: string;
-}
-
 export interface SearchResultDto {
   /** @example "trail" */
   type: 'trail' | 'user';

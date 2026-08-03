@@ -9,7 +9,6 @@
   "Nav": {
     "home": "首頁",
     "search": "探索",
-    "record": "記錄",
     "profile": "個人頁",
     "settings": "設定"
   },
@@ -30,7 +29,7 @@
     "recentTrails": "近期路線",
     "recommendedTrails": "推薦路線",
     "recommendedDistance": "距離",
-    "recommendedDistanceValue": "{distance} 公里"
+    "recommendedDistanceValue": "{distance, number, ::.00} 公里"
   },
   "LoginPage": {
     "title": "登入",
@@ -39,11 +38,8 @@
     "submit": "登入",
     "error": "帳號或密碼錯誤",
     "orDivider": "或",
-    "oauthComingSoon": "即將推出",
     "oauth": {
-      "google": "使用 Google 登入",
-      "line": "使用 LINE 登入",
-      "facebook": "使用 Facebook 登入"
+      "google": "使用 Google 登入"
     }
   },
   "NotFoundPage": {
@@ -61,7 +57,7 @@
     "noTrails": "查無符合條件的步道"
   },
   "ProfilePage": {
-    "totalDistance": "{distance} 公里",
+    "totalDistance": "{distance, number, ::.00} 公里",
     "hikeCount": "{count} 次健行",
     "achievementHundred": "百岳",
     "achievementSmallHundred": "小百岳",
@@ -70,11 +66,7 @@
     "countyStats": "縣市統計",
     "trailHistory": "歷次軌跡",
     "goToData": "地圖與資料",
-    "goToCollections": "收藏清單",
-    "follow": "追蹤",
-    "unfollow": "取消追蹤",
-    "followerCount": "{count} 位追蹤者",
-    "followingCount": "追蹤 {count} 人"
+    "goToCollections": "收藏清單"
   },
   "EditProfileForm": {
     "edit": "編輯個人資料",
@@ -109,7 +101,7 @@
     "town": "鄉鎮",
     "date": "日期",
     "distance": "距離",
-    "distanceValue": "{distance} 公里",
+    "distanceValue": "{distance, number, ::.00} 公里",
     "public": "公開",
     "hundred": "百岳",
     "smallHundred": "小百岳",
@@ -135,48 +127,23 @@
     "backToProfile": "返回地圖與資料",
     "date": "日期",
     "distance": "距離",
-    "distanceValue": "{distance} 公里",
+    "distanceValue": "{distance, number, ::.00} 公里",
     "links": "路線連結",
     "linkLabel": "連結 {index}",
     "note": "說明",
     "noValue": "-",
     "map": "地圖"
   },
-  "RecordPage": {
-    "title": "記錄",
-    "elapsed": "時間",
-    "distance": "距離",
-    "distanceValue": "{distance} 公里",
-    "start": "開始",
-    "stop": "結束",
-    "gpsUnsupported": "此裝置不支援定位功能",
-    "gpsDenied": "無法取得定位權限，請確認瀏覽器設定"
-  },
-  "RecordCompleteForm": {
-    "title": "完成記錄",
-    "distanceValue": "距離：{distance} 公里",
-    "name": "名稱",
-    "county": "縣市",
-    "town": "鄉鎮",
-    "coverImage": "封面照片",
-    "chooseImage": "選擇照片",
-    "uploading": "上傳中…",
-    "uploadFailed": "圖片上傳失敗",
-    "public": "公開",
-    "note": "備註",
-    "cancel": "捨棄",
-    "save": "儲存"
-  },
   "TrailListItem": {
     "date": "日期",
     "distance": "距離",
-    "distanceValue": "{distance} 公里"
+    "distanceValue": "{distance, number, ::.00} 公里"
   },
   "TrailDetailPage": {
     "back": "返回搜尋",
     "date": "日期",
     "distance": "距離",
-    "distanceValue": "{distance} 公里",
+    "distanceValue": "{distance, number, ::.00} 公里",
     "links": "路線連結",
     "linkLabel": "連結 {index}",
     "note": "說明",
