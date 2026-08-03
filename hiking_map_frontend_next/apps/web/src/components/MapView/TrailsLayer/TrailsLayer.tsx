@@ -49,7 +49,7 @@ export default function TrailsLayer({ trails, hoverSlug, activeSlug, onHoverChan
         const isHover = trail.slug === hoverSlug;
 
         const [outlineColor, outlineWeight, coreColor, coreWeight] = isActive
-          ? ['#000000', 8, '#FFFF3C', 4]
+          ? ['#000000', 8, '#90C8D0', 4]
           : isHover
             ? ['#ffffff', 8, '#CFCF13', 4]
             : ['#ffffff', 6, '#747009', 3];
