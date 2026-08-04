@@ -1,7 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
-import { Link } from '../../../../../i18n/navigation';
+import BackLink from '../../../../../components/BackLink';
+import PageLayout from '../../../../../components/PageLayout';
 import { apiClient } from '../../../../../lib/apiClient';
 import { getCurrentUser } from '../../../../../lib/getCurrentUser';
 import ProfileTrailExplorerWithNavigation from './_components/ProfileTrailExplorerWithNavigation';
@@ -50,16 +51,10 @@ export default async function ProfileDataPage({ params, searchParams }: Props) {
   const t = await getTranslations('ProfileDataPage');
 
   return (
-    <div className="flex w-full flex-col gap-4">
-      <Link
-        href={`/profile/${username}`}
-        className="bg-panel hover:bg-panel-active/50 rounded-panel flex w-fit items-center px-3 py-1.5 text-sm transition-colors"
-      >
-        {t('backToProfile')}
-      </Link>
+    <PageLayout before={<BackLink href={`/profile/${username}`}>{t('backToProfile')}</BackLink>}>
       <div className="h-150">
         <ProfileTrailExplorerWithNavigation username={username} trails={trails} fullscreen={fullscreen} isEditMode={isEditMode} isOwner={isOwner} />
       </div>
-    </div>
+    </PageLayout>
   );
 }

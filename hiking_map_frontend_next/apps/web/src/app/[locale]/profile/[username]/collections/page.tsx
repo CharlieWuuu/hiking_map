@@ -1,8 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 
+import BackLink from '../../../../../components/BackLink';
+import PageLayout from '../../../../../components/PageLayout';
 import TrailListItem from '../../../../../components/TrailListItem';
 import UserListItem from '../../../../../components/UserListItem';
-import { Link } from '../../../../../i18n/navigation';
 import { apiClient } from '../../../../../lib/apiClient';
 
 export default async function ProfileCollectionsPage({ params }: { params: Promise<{ username: string }> }) {
@@ -12,16 +13,7 @@ export default async function ProfileCollectionsPage({ params }: { params: Promi
   const tResult = await getTranslations('SearchResult');
 
   return (
-    <div className="flex w-full flex-col gap-4">
-      <Link
-        href={`/profile/${username}`}
-        className="bg-panel hover:bg-panel-active/50 rounded-panel flex w-fit items-center px-3 py-1.5 text-sm transition-colors"
-      >
-        {t('backToProfile')}
-      </Link>
-
-      <h1 className="text-2xl font-bold">{t('title')}</h1>
-
+    <PageLayout title={t('title')} before={<BackLink href={`/profile/${username}`}>{t('backToProfile')}</BackLink>}>
       {collections.length === 0 ? (
         <p className="text-background-contrary/60 text-sm">{t('empty')}</p>
       ) : (
@@ -41,6 +33,6 @@ export default async function ProfileCollectionsPage({ params }: { params: Promi
           )}
         </div>
       )}
-    </div>
+    </PageLayout>
   );
 }

@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
 import ChartBar from '../../components/ChartBar';
+import PageLayout from '../../components/PageLayout';
 import TrailListItem from '../../components/TrailListItem';
 import { Link } from '../../i18n/navigation';
 import { apiClient } from '../../lib/apiClient';
@@ -26,7 +27,7 @@ export default async function Home() {
   const recommendedTrails = allTrails.slice(0, RECOMMENDED_TRAILS_COUNT);
 
   return (
-    <div className="flex w-full flex-col gap-12">
+    <PageLayout>
       {currentUser && stats && (
         <section className="flex flex-col gap-4">
           <h2 className="text-2xl font-bold">{t('yourStats')}</h2>
@@ -108,6 +109,6 @@ export default async function Home() {
           </div>
         </section>
       )}
-    </div>
+    </PageLayout>
   );
 }
