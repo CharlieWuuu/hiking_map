@@ -52,7 +52,7 @@ export default function Nav() {
 
       {/* 寬螢幕：左側導覽列。在正常流中排版，寬度變化不需要 main 那邊補償 */}
       <nav
-        className="bg-nav border-nav-border sticky top-0 hidden h-dvh shrink-0 flex-col gap-4 border-r px-4 py-6 lg:flex"
+        className="bg-nav border-nav-border sticky top-0 hidden h-dvh shrink-0 flex-col gap-4 border-r px-4 py-8 lg:flex"
         style={{ width: 'var(--nav-width)' }}
       >
         {/* 內距與下方選單項目相同，logo 因此和項目共用同一條左緣與同一個寬度上限 */}
