@@ -15,6 +15,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 /* 時長需與 LandingAnimation.const.ts 的 LANDING_ANIMATION_DURATION_MS 保持一致 */
 .animate-landing-wrapper {
   animation: landing-wrapper 2s linear forwards;

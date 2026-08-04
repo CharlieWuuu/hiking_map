@@ -6,7 +6,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Collection } from './collection.entity';
-import { Follow } from './follow.entity';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { CollectionItemDto } from './dto/collection-item.dto';
 import { User } from '../auth/auth.entity';
@@ -18,9 +17,6 @@ export class SocialService {
   constructor(
     @InjectRepository(Collection)
     private collectionsRepo: Repository<Collection>,
-
-    @InjectRepository(Follow)
-    private followsRepo: Repository<Follow>,
 
     @InjectRepository(User)
     private usersRepo: Repository<User>,
@@ -109,56 +105,5 @@ export class SocialService {
       }
       return { ...collection };
     });
-  }
-
-  async follow(followerUserId: number, followingUserId: number) {
-    if (followerUserId === followingUserId) {
-      throw new ConflictException('無法追蹤自己');
-    }
-
-    const existing = await this.followsRepo.findOne({
-      where: {
-        follower_user_id: followerUserId,
-        following_user_id: followingUserId,
-      },
-    });
-    if (existing) throw new ConflictException('已經追蹤過了');
-
-    return this.followsRepo.save({
-      follower_user_id: followerUserId,
-      following_user_id: followingUserId,
-    });
-  }
-
-  async unfollow(followerUserId: number, followingUserId: number) {
-    await this.followsRepo.delete({
-      follower_user_id: followerUserId,
-      following_user_id: followingUserId,
-    });
-  }
-
-  findFollowing(userId: number) {
-    return this.followsRepo.find({ where: { follower_user_id: userId } });
-  }
-
-  findFollowers(userId: number) {
-    return this.followsRepo.find({ where: { following_user_id: userId } });
-  }
-
-  async getFollowStatus(targetUserId: number, viewerUserId: number | null) {
-    const [followerCount, followingCount, isFollowing] = await Promise.all([
-      this.followsRepo.count({ where: { following_user_id: targetUserId } }),
-      this.followsRepo.count({ where: { follower_user_id: targetUserId } }),
-      viewerUserId
-        ? this.followsRepo.exists({
-            where: {
-              follower_user_id: viewerUserId,
-              following_user_id: targetUserId,
-            },
-          })
-        : Promise.resolve(false),
-    ]);
-
-    return { followerCount, followingCount, isFollowing };
   }
 }

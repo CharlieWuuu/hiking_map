@@ -17,7 +17,6 @@ import { SocialService } from './social.service';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { JwtRequiredGuard } from '../auth/jwt-required.guard';
 import { Collection } from './collection.entity';
-import { Follow } from './follow.entity';
 import { CollectionItemDto } from './dto/collection-item.dto';
 import { User } from '../auth/auth.entity';
 
@@ -57,56 +56,5 @@ export class SocialController {
   @ApiOkResponse({ type: CollectionItemDto, isArray: true })
   findCollections(@Req() req: any) {
     return this.socialService.findCollections(req.user.user_id);
-  }
-
-  @Post('follows/:userId')
-  @UseGuards(JwtRequiredGuard)
-  @ApiCreatedResponse({ type: Follow })
-  follow(@Param('userId', ParseIntPipe) targetUserId: number, @Req() req: any) {
-    return this.socialService.follow(req.user.user_id, targetUserId);
-  }
-
-  @Delete('follows/:userId')
-  @UseGuards(JwtRequiredGuard)
-  unfollow(
-    @Param('userId', ParseIntPipe) targetUserId: number,
-    @Req() req: any,
-  ) {
-    return this.socialService.unfollow(req.user.user_id, targetUserId);
-  }
-
-  @Get('follows/following')
-  @UseGuards(JwtRequiredGuard)
-  @ApiOkResponse({ type: Follow, isArray: true })
-  findFollowing(@Req() req: any) {
-    return this.socialService.findFollowing(req.user.user_id);
-  }
-
-  @Get('follows/followers')
-  @UseGuards(JwtRequiredGuard)
-  @ApiOkResponse({ type: Follow, isArray: true })
-  findFollowers(@Req() req: any) {
-    return this.socialService.findFollowers(req.user.user_id);
-  }
-
-  // 查任何人的追蹤者/正在追蹤數，以及目前登入者是否已追蹤該使用者（未登入時 isFollowing 固定為 false）
-  @Get('follows/status/:userId')
-  @ApiOkResponse({
-    schema: {
-      properties: {
-        followerCount: { type: 'number' },
-        followingCount: { type: 'number' },
-        isFollowing: { type: 'boolean' },
-      },
-    },
-  })
-  getFollowStatus(
-    @Param('userId', ParseIntPipe) targetUserId: number,
-    @Req() req: any,
-  ) {
-    return this.socialService.getFollowStatus(
-      targetUserId,
-      req.user?.user_id ?? null,
-    );
   }
 }

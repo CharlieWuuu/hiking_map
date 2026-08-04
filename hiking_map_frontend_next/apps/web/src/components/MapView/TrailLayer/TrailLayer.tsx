@@ -16,7 +16,7 @@ export default function TrailLayer({ path }: Props) {
   return (
     <MapView center={center} zoom={15}>
       <Polyline positions={latLngPath} pathOptions={{ color: '#000000', weight: 8 }} interactive={false} />
-      <Polyline positions={latLngPath} pathOptions={{ color: '#FFFF3C', weight: 4 }} interactive={false} />
+      <Polyline positions={latLngPath} pathOptions={{ color: '#90C8D0', weight: 4 }} interactive={false} />
     </MapView>
   );
 }

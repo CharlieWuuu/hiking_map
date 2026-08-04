@@ -20,11 +20,11 @@
   --theme-panel-active: var(--color-raw-gray-400);
   --theme-panel-active-lighten: color-mix(in srgb, var(--color-raw-gray-400) 90%, white 10%);
   --theme-nav-border: transparent;
-  --theme-accent: var(--color-raw-yellow);
-  --theme-accent-lighten: color-mix(in srgb, var(--color-raw-yellow) 80%, white 20%);
-  --theme-accent-darken: color-mix(in srgb, var(--color-raw-yellow) 65%, black 35%);
-  --logo-outline-fill: none;
-  --logo-text-fill: #ffff3c;
+  --theme-accent: var(--color-raw-cyan);
+  --theme-accent-lighten: color-mix(in srgb, var(--color-raw-cyan) 80%, white 20%);
+  --theme-accent-darken: color-mix(in srgb, var(--color-raw-cyan) 65%, black 35%);
+  --logo-color: var(--theme-accent);
+  --logo-text-fill: var(--theme-accent);
 }
 
 .light {
@@ -34,11 +34,6 @@
   --theme-panel-active: var(--color-raw-gray-200);
   --theme-panel-active-lighten: color-mix(in srgb, var(--color-raw-gray-200) 90%, white 10%);
   --theme-nav-border: var(--color-raw-gray-200);
-  --theme-accent: var(--color-raw-yellow-brown);
-  --theme-accent-lighten: color-mix(in srgb, var(--color-raw-yellow-brown) 80%, white 20%);
-  --theme-accent-darken: color-mix(in srgb, var(--color-raw-yellow-brown) 65%, black 35%);
-  --logo-outline-fill: #000000;
-  --logo-text-fill: #000000;
 }
 
 .nav-collapsed {
