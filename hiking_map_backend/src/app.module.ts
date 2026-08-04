@@ -1,12 +1,16 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TrailsModule } from './trails/trails.module';
 import { AuthModule } from './auth/auth.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { JwtOptionalMiddleware } from './auth/jwt-optional.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
-import { OwnerModule } from './owner/owner.module';
-import { CookieController, SessionController } from './test/test.controller';
+import { ProfileModule } from './profile/profile.module';
+import { HikesModule } from './hikes/hikes.module';
+import { MountainsModule } from './mountains/mountains.module';
+import { TrailsModule } from './trails/trails.module';
+import { SocialModule } from './social/social.module';
+import { SearchModule } from './search/search.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -21,11 +25,15 @@ import { CookieController, SessionController } from './test/test.controller';
       ssl: { rejectUnauthorized: false },
     }),
     JwtModule.register({}),
-    TrailsModule,
     AuthModule,
-    OwnerModule,
+    ProfileModule,
+    HikesModule,
+    MountainsModule,
+    TrailsModule,
+    SocialModule,
+    SearchModule,
+    UploadsModule,
   ],
-  controllers: [CookieController, SessionController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

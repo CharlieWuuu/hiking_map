@@ -4,23 +4,31 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { useRouter } from '../../../i18n/navigation';
+import { useAuth } from '../../../lib/authStore';
 
-const OAUTH_PROVIDERS = ['google', 'line', 'facebook'] as const;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:3001';
 
 export default function LoginPage() {
   const t = useTranslations('LoginPage');
   const router = useRouter();
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 目前尚未接上真的後端/auth，這裡先模擬登入成功後直接導向 demo 使用者的個人頁
-  function mockLogin() {
-    router.push(`/profile/demo`);
-  }
-
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    mockLogin();
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      await login(username, password);
+      router.push('/');
+    } catch {
+      setError(t('error'));
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -50,7 +58,13 @@ export default function LoginPage() {
           />
         </label>
 
-        <button type="submit" className="bg-panel-active hover:bg-panel-active-lighten rounded-panel w-fit self-center px-4 py-2 transition-colors">
+        {error && <p className="text-sm text-red-500">{error}</p>}
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-panel-active hover:bg-panel-active-lighten rounded-panel w-fit self-center px-4 py-2 transition-colors disabled:opacity-50"
+        >
           {t('submit')}
         </button>
       </form>
@@ -62,16 +76,12 @@ export default function LoginPage() {
       </div>
 
       <div className="flex w-full max-w-xs flex-col gap-3">
-        {OAUTH_PROVIDERS.map((provider) => (
-          <button
-            key={provider}
-            type="button"
-            onClick={mockLogin}
-            className="bg-panel hover:bg-panel-active rounded-panel flex items-center justify-center gap-2 px-4 py-2 transition-colors"
-          >
-            {t(`oauth.${provider}`)}
-          </button>
-        ))}
+        <a
+          href={`${API_BASE_URL}/auth/google`}
+          className="bg-panel hover:bg-panel-active rounded-panel flex items-center justify-center gap-2 px-4 py-2 transition-colors"
+        >
+          {t('oauth.google')}
+        </a>
       </div>
     </div>
   );

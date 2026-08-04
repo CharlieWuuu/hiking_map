@@ -6,9 +6,11 @@ import { notFound } from 'next/navigation';
 
 import '../globals.css';
 
-import AppNav from '../../components/AppNav';
-import { NAV_COLLAPSED_STORAGE_KEY } from '../../components/AppNav/AppNav.const';
+import LandingAnimation, { AppReveal } from '../../components/LandingAnimation';
+import Nav from '../../components/Nav';
+import { NAV_COLLAPSED_STORAGE_KEY } from '../../components/Nav/Nav.const';
 import { routing } from '../../i18n/routing';
+import AuthInitializer from '../../lib/AuthInitializer';
 import { THEME_STORAGE_KEY } from '../../lib/theme';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -52,10 +54,14 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
       </head>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
-          <AppNav />
-          <main className="flex-1 p-6 pb-20 lg:px-8 lg:py-12 lg:pl-[calc(var(--nav-width)+2rem)]">
-            <div className="mx-auto w-full max-w-240">{children}</div>
-          </main>
+          <LandingAnimation />
+          <AuthInitializer />
+          <AppReveal>
+            <Nav />
+            <main className="min-w-0 flex-1 p-6 pb-20 lg:px-8 lg:py-12 lg:pb-12">
+              <div className="mx-auto w-full max-w-240">{children}</div>
+            </main>
+          </AppReveal>
         </NextIntlClientProvider>
       </body>
     </html>

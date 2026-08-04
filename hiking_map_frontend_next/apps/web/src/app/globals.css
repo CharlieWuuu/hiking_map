@@ -15,6 +15,45 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+/* 時長需與 LandingAnimation.const.ts 的 LANDING_ANIMATION_DURATION_MS 保持一致 */
+.animate-landing-wrapper {
+  animation: landing-wrapper 2s linear forwards;
+}
+
+.animate-landing-logo {
+  transform: translate(-50%, -50%) scale(1);
+  animation: landing-logo 2s linear forwards;
+}
+
+@keyframes landing-wrapper {
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+    z-index: -1;
+  }
+}
+
+@keyframes landing-logo {
+  0%,
+  75% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
+
 /* For debugging */
 /* * {
   box-shadow: inset 0 0 0 1px var(--color-background-contrary);

@@ -1,77 +1,40 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
-import { Geometry } from 'geojson';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-@Entity()
+@Entity('trails')
 export class Trail {
-  @PrimaryColumn('uuid')
-  uuid: string;
+  @ApiProperty({ example: 1 })
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @Column('text')
+  @ApiProperty({ example: '塔塔加登山口至排雲山莊' })
+  @Column()
   name: string;
 
-  @Column('double precision')
-  length: number;
+  @ApiProperty({ example: 'tataka-trailhead-to-paiyun-lodge' })
+  @Column({ unique: true })
+  slug: string;
 
-  @Column({
-    type: 'geometry',
-    spatialFeatureType: 'MultiLineString',
-    srid: 4326,
+  @ApiPropertyOptional({ example: '南投縣', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
+  county: string | null;
+
+  @ApiPropertyOptional({ example: '信義鄉', nullable: true })
+  @Column({ type: 'varchar', nullable: true })
+  town: string | null;
+
+  @ApiPropertyOptional({ example: '玉山主線經典路線', nullable: true })
+  @Column({ type: 'text', nullable: true })
+  description: string | null;
+
+  @ApiPropertyOptional({ example: 8.5, nullable: true })
+  @Column('double precision', { nullable: true })
+  distance_km: number | null;
+
+  @ApiPropertyOptional({
+    example: 'https://pub-xxxx.r2.dev/trails/1/cover.jpg',
+    nullable: true,
   })
-  geom: object;
-
-  @Column({
-    type: 'geometry',
-    spatialFeatureType: 'Point',
-    srid: 4326,
-  })
-  center: object;
-
-  @Column({
-    type: 'geometry',
-    spatialFeatureType: 'Polygon',
-    srid: 4326,
-  })
-  bounds: object;
-
-  @Column('text')
-  owner_uuid: string;
-}
-
-@Entity()
-export class TrailInfo {
-  @PrimaryColumn('uuid')
-  uuid: string;
-
-  @Column('text')
-  name: string;
-
-  @Column('text')
-  county: string;
-
-  @Column('text')
-  town: string;
-
-  @Column({ type: 'timestamptz' }) // 等同 TIMESTAMP WITH TIME ZONE
-  time: Date;
-
-  @Column('double precision')
-  length: number;
-
-  @Column('text')
-  url: string;
-
-  @Column('text')
-  note: string;
-
-  @Column('boolean')
-  public: boolean;
-
-  @Column('varchar')
-  hundred_id: string;
-
-  @Column('varchar')
-  small_hundred_id: string;
-
-  @Column('varchar')
-  hundred_trail_id: string;
+  @Column({ type: 'varchar', nullable: true })
+  cover_image_url: string | null;
 }

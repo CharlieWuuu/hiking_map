@@ -2,19 +2,37 @@ import { CircleUserRound } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
-import AchievementRing from '../../../../components/AchievementRing';
-import BarChart from '../../../../components/BarChart';
+import ChartBar from '../../../../components/ChartBar';
+import ChartRing from '../../../../components/ChartRing';
 import TrailListItem from '../../../../components/TrailListItem';
 import { Link } from '../../../../i18n/navigation';
-import { MOCK_PROFILE_DETAILS } from '../../../../testing/mocks/profile/profile.data';
+import { apiClient } from '../../../../lib/apiClient';
+import { fillMonthlyDistance } from '../../../../lib/fillMonthlyDistance';
+import { getCurrentUser } from '../../../../lib/getCurrentUser';
+import EditProfileButton from './_components/EditProfileButton';
+
+const TRAIL_HISTORY_COUNT = 10;
+const COUNTY_STATS_COUNT = 7;
+const MONTHLY_DISTANCE_MONTHS_COUNT = 12;
 
 export default async function ProfilePage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
-  const profile = MOCK_PROFILE_DETAILS.find((item) => item.username === username);
 
-  if (!profile) notFound();
+  const [profile, stats, currentUser] = await Promise.all([
+    apiClient.profile.getByUsername(username).catch(() => null),
+    apiClient.hikes.getStats(username).catch(() => null),
+    getCurrentUser(),
+  ]);
+
+  if (!profile || !stats) notFound();
+
+  const hikes = await apiClient.hikes.findAll(String(profile.userId));
+
+  const isOwner = currentUser?.username === username;
 
   const t = await getTranslations('ProfilePage');
+  const tCommon = await getTranslations('Common');
+  const recentHikes = [...hikes].sort((a, b) => b.date.localeCompare(a.date)).slice(0, TRAIL_HISTORY_COUNT);
 
   return (
     <div className="flex w-full flex-col gap-12">
@@ -28,32 +46,42 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
             <CircleUserRound className="text-background-contrary/60 h-16 w-16" />
           </span>
         )}
-        <div className="flex flex-col gap-2">
-          <h1 className="text-accent text-3xl font-bold">{profile.displayName}</h1>
+        <div className="flex flex-1 flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <h1 className="text-accent text-3xl font-bold">{profile.username}</h1>
+            {isOwner && <EditProfileButton avatar={profile.avatar} level={profile.level} description={profile.description} />}
+          </div>
           <div className="flex flex-wrap gap-4 text-lg">
             <span>{profile.level}</span>
-            <span>{t('totalDistance', { distance: profile.totalDistanceKm })}</span>
-            <span>{t('hikeCount', { count: profile.hikeCount })}</span>
+            <span>{t('totalDistance', { distance: stats.totalDistanceKm })}</span>
+            <span>{t('hikeCount', { count: stats.hikeCount })}</span>
           </div>
+          {profile.description && <p className="text-background-contrary/80">{profile.description}</p>}
         </div>
       </div>
 
       {/* 成就 */}
       <div className="flex flex-wrap justify-around gap-4">
-        <AchievementRing label={t('achievementHundred')} value={profile.achievements.hundred} />
-        <AchievementRing label={t('achievementSmallHundred')} value={profile.achievements.smallHundred} />
-        <AchievementRing label={t('achievementHundredTrail')} value={profile.achievements.hundredTrail} />
+        <ChartRing label={t('achievementHundred')} value={stats.achievements.hundred} />
+        <ChartRing label={t('achievementSmallHundred')} value={stats.achievements.smallHundred} />
+        <ChartRing label={t('achievementHundredTrail')} value={stats.achievements.hundredTrail} />
       </div>
 
       {/* 統計圖表 */}
       <div className="flex flex-wrap gap-4">
         <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
           <span className="text-background-contrary/60 text-sm">{t('monthlyDistance')}</span>
-          <BarChart data={profile.monthlyDistance.map((d) => ({ label: d.month.slice(5), value: d.distanceKm }))} />
+          <ChartBar
+            data={fillMonthlyDistance(stats.monthlyDistance, MONTHLY_DISTANCE_MONTHS_COUNT).map((d) => ({
+              label: d.month.slice(5),
+              value: d.distanceKm,
+            }))}
+            emptyLabel={tCommon('noData')}
+          />
         </div>
         <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
           <span className="text-background-contrary/60 text-sm">{t('countyStats')}</span>
-          <BarChart data={profile.countyStats.map((d) => ({ label: d.county, value: d.count }))} />
+          <ChartBar data={stats.countyStats.slice(0, COUNTY_STATS_COUNT).map((d) => ({ label: d.county, value: d.count }))} emptyLabel={tCommon('noData')} />
         </div>
       </div>
 
@@ -74,8 +102,17 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-bold">{t('trailHistory')}</h2>
         <div className="flex flex-col gap-3">
-          {profile.trails.map((trail) => (
-            <TrailListItem key={trail.slug} username={username} {...trail} />
+          {recentHikes.map((hike) => (
+            <TrailListItem
+              key={hike.id}
+              href={`/profile/${username}/hikes/${hike.id}`}
+              name={hike.name}
+              county={hike.county ?? ''}
+              town={hike.town ?? ''}
+              date={hike.date}
+              distanceKm={hike.distanceKm}
+              coverImageUrl={hike.coverImageUrl}
+            />
           ))}
         </div>
       </section>

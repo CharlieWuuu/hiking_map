@@ -1,13 +1,15 @@
 import { getTranslations } from 'next-intl/server';
 
-import SearchResultRow from '../../../../../components/SearchResultRow';
+import TrailListItem from '../../../../../components/TrailListItem';
+import UserListItem from '../../../../../components/UserListItem';
 import { Link } from '../../../../../i18n/navigation';
-import { MOCK_COLLECTIONS } from '../../../../../testing/mocks/profile/collections.data';
+import { apiClient } from '../../../../../lib/apiClient';
 
 export default async function ProfileCollectionsPage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
-  const collections = MOCK_COLLECTIONS[username] ?? [];
+  const collections = await apiClient.collections.findByUsername(username).catch(() => []);
   const t = await getTranslations('ProfileCollectionsPage');
+  const tResult = await getTranslations('SearchResult');
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -24,9 +26,19 @@ export default async function ProfileCollectionsPage({ params }: { params: Promi
         <p className="text-background-contrary/60 text-sm">{t('empty')}</p>
       ) : (
         <div className="flex flex-col gap-3">
-          {collections.map((item) => (
-            <SearchResultRow key={item.type === 'user' ? item.username : item.slug} item={item} />
-          ))}
+          {collections.map((item) =>
+            item.itemType === 'user' ? (
+              <UserListItem
+                key={`user-${item.id}`}
+                href={`/profile/${item.username}`}
+                displayName={item.username ?? ''}
+                avatar={item.avatar ?? undefined}
+                subtitle={item.level ?? tResult('user')}
+              />
+            ) : item.itemType === 'trail' ? (
+              <TrailListItem key={`trail-${item.id}`} href={`/trails/${item.trailSlug}`} name={item.trailName ?? ''} county="" town="" />
+            ) : null
+          )}
         </div>
       )}
     </div>

@@ -11,7 +11,7 @@ import { Request } from 'express';
 export class JwtRequiredGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest<Request>();
-    if (!req.user || !('userId' in req.user)) {
+    if (!req.user || !('user_id' in req.user)) {
       throw new UnauthorizedException('請先登入');
     }
     return true;
