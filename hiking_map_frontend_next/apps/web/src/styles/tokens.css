@@ -4,6 +4,7 @@
   --color-panel: var(--theme-panel);
   --color-panel-active: var(--theme-panel-active);
   --color-panel-active-lighten: var(--theme-panel-active-lighten);
+  --color-nav: var(--theme-nav);
   --color-nav-border: var(--theme-nav-border);
   --color-accent: var(--theme-accent);
   --color-accent-lighten: var(--theme-accent-lighten);
@@ -19,6 +20,9 @@
   --theme-panel: var(--color-raw-gray-500);
   --theme-panel-active: var(--color-raw-gray-400);
   --theme-panel-active-lighten: color-mix(in srgb, var(--color-raw-gray-400) 90%, white 10%);
+  /* 導覽列只比底色深/淺一階，不用 panel 那麼重的對比。
+     由主題色衍生，所以深淺兩版自動一致，不需要各自寫死色值 */
+  --theme-nav: color-mix(in srgb, var(--theme-background) 94%, var(--theme-background-contrary) 6%);
   --theme-nav-border: transparent;
   --theme-accent: var(--color-raw-cyan);
   --theme-accent-lighten: color-mix(in srgb, var(--color-raw-cyan) 80%, white 20%);
@@ -37,5 +41,5 @@
 }
 
 .nav-collapsed {
-  --nav-width: 5.5rem;
+  --nav-width: 4rem;
 }

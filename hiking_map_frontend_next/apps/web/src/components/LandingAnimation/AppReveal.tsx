@@ -13,5 +13,6 @@ export default function AppReveal({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(timer);
   }, []);
 
-  return <div className={isRevealed ? '' : 'invisible'}>{children}</div>;
+  // 寬螢幕時是 Nav 與 main 並排的 flex 容器，Nav 佔的寬度由它自己決定
+  return <div className={`flex min-h-dvh flex-col lg:flex-row ${isRevealed ? '' : 'invisible'}`}>{children}</div>;
 }
