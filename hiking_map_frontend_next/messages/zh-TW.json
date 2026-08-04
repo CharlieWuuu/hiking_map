@@ -26,6 +26,8 @@
     "monthlyDistance": "每月里程",
     "countyStats": "縣市統計",
     "goToProfile": "查看完整個人頁",
+    "loginPrompt": "登入後即可看到自己的健行統計",
+    "loginCta": "前往登入",
     "recentTrails": "近期路線",
     "recommendedTrails": "推薦路線",
     "recommendedDistance": "距離",

@@ -26,6 +26,8 @@
     "monthlyDistance": "Monthly distance",
     "countyStats": "County stats",
     "goToProfile": "View full profile",
+    "loginPrompt": "Sign in to see your hiking stats",
+    "loginCta": "Go to sign in",
     "recentTrails": "Recent Trails",
     "recommendedTrails": "Recommended Trails",
     "recommendedDistance": "Distance",
