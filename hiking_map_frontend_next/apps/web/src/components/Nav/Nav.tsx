@@ -50,25 +50,22 @@ export default function Nav() {
         ))}
       </nav>
 
-      {/* 寬螢幕：左側導覽列 */}
-      <nav
-        className="bg-panel border-nav-border fixed top-0 left-0 z-50 hidden h-full flex-col gap-6 border-r px-4 py-8 lg:flex"
-        style={{ width: 'var(--nav-width)' }}
-      >
+      {/* 寬螢幕：左側導覽列。在正常流中排版，寬度變化不需要 main 那邊補償 */}
+      <nav className="bg-panel border-nav-border sticky top-0 hidden h-dvh shrink-0 flex-col gap-4 border-r p-4 lg:flex" style={{ width: 'var(--nav-width)' }}>
         <Link href="/" className="flex items-center justify-center overflow-hidden">
           {isCollapsed ? <LogoMark /> : <Logo className="h-auto max-w-full" />}
         </Link>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           {navItems.map(({ messageKey, href, Icon }) => (
             <Link
               key={href}
               href={href}
               title={isCollapsed ? t(messageKey) : undefined}
-              className={`hover:bg-panel-active-lighten/50 rounded-panel flex items-center gap-2 px-2 py-2 transition-colors duration-150 ${
-                isCollapsed ? 'justify-center' : ''
+              className={`hover:bg-panel-active-lighten/50 rounded-panel flex items-center gap-2 py-2 text-sm transition-colors duration-150 ${
+                isCollapsed ? 'justify-center px-0' : 'px-3'
               } ${isActive(pathname, href) ? 'text-accent' : 'text-background-contrary'}`}
             >
-              <Icon className="h-6 w-6 shrink-0" />
+              <Icon className="h-4.5 w-4.5 shrink-0" />
               {!isCollapsed && t(messageKey)}
             </Link>
           ))}
@@ -76,9 +73,11 @@ export default function Nav() {
         <button
           type="button"
           onClick={toggleCollapsed}
-          className="hover:bg-panel-active-lighten/50 rounded-panel text-background-contrary/60 mt-auto flex h-10 w-10 items-center justify-center self-end transition-colors duration-150"
+          className={`hover:bg-panel-active-lighten/50 rounded-panel text-background-contrary/60 mt-auto flex h-8 w-8 items-center justify-center transition-colors duration-150 ${
+            isCollapsed ? 'self-center' : 'self-end'
+          }`}
         >
-          <PanelLeft className="h-5 w-5" />
+          <PanelLeft className="h-4.5 w-4.5" />
         </button>
       </nav>
     </>
