@@ -1,5 +1,5 @@
-import type { Mountain as RawMountain } from '../api/data-contracts';
-import type { Mountains as MountainsClient } from '../api/Mountains';
+import type { Mountain as RawMountain } from '../generated/data-contracts';
+import type { Mountains as MountainsClient } from '../generated/Mountains';
 import { toCamelCase } from './case';
 
 export type Mountain = {

@@ -6,15 +6,15 @@ import { createSearchService } from './adapters/search';
 import { createCollectionsService } from './adapters/social';
 import { createTrailsService } from './adapters/trails';
 import { createUploadsService } from './adapters/uploads';
-import { Auth } from './api/Auth';
-import { Collections } from './api/Collections';
-import { Hikes } from './api/Hikes';
-import type { ApiConfig } from './api/http-client';
-import { Mountains } from './api/Mountains';
-import { Profile } from './api/Profile';
-import { Search } from './api/Search';
-import { Trails } from './api/Trails';
-import { Uploads } from './api/Uploads';
+import { Auth } from './generated/Auth';
+import { Collections } from './generated/Collections';
+import { Hikes } from './generated/Hikes';
+import type { ApiConfig } from './generated/http-client';
+import { Mountains } from './generated/Mountains';
+import { Profile } from './generated/Profile';
+import { Search } from './generated/Search';
+import { Trails } from './generated/Trails';
+import { Uploads } from './generated/Uploads';
 
 // 後端回傳/接收的欄位是 snake_case，前端要用的是 camelCase。
 // 這裡組裝出來的 service 已經套用過轉換，app 端不該直接 import ./api/* 下的生成檔案。
@@ -39,4 +39,4 @@ export type { Profile as ProfileModel, UpdateProfileDto } from './adapters/profi
 export type { SearchResult } from './adapters/search';
 export type { Collection, CollectionItem, CreateCollectionDto } from './adapters/social';
 export type { Trail, TrailDetail } from './adapters/trails';
-export type { LoginDto, LoginResponseDto, RegisterDto, RegisterResponseDto } from './api/data-contracts';
+export type { LoginDto, LoginResponseDto, RegisterDto, RegisterResponseDto } from './generated/data-contracts';

@@ -1,5 +1,5 @@
-import type { SearchResultDto as RawSearchResultDto } from '../api/data-contracts';
-import type { Search as SearchClient } from '../api/Search';
+import type { SearchResultDto as RawSearchResultDto } from '../generated/data-contracts';
+import type { Search as SearchClient } from '../generated/Search';
 import { toCamelCase } from './case';
 
 export type SearchResult = {

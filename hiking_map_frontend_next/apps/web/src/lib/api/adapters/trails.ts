@@ -1,5 +1,5 @@
-import type { Trail as RawTrail, TrailDetailDto as RawTrailDetail } from '../api/data-contracts';
-import type { Trails as TrailsClient } from '../api/Trails';
+import type { Trail as RawTrail, TrailDetailDto as RawTrailDetail } from '../generated/data-contracts';
+import type { Trails as TrailsClient } from '../generated/Trails';
 import { toCamelCase } from './case';
 
 export type Trail = {

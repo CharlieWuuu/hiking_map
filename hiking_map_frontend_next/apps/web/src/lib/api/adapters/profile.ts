@@ -1,6 +1,6 @@
-import type { Profile as RawProfile, UpdateProfileDto as RawUpdateProfileDto } from '../api/data-contracts';
-import type { RequestParams } from '../api/http-client';
-import type { Profile as ProfileClient } from '../api/Profile';
+import type { Profile as RawProfile, UpdateProfileDto as RawUpdateProfileDto } from '../generated/data-contracts';
+import type { RequestParams } from '../generated/http-client';
+import type { Profile as ProfileClient } from '../generated/Profile';
 import { toCamelCase } from './case';
 
 export type Profile = {

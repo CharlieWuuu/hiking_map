@@ -1,9 +1,9 @@
-import type { Collections as CollectionsClient } from '../api/Collections';
+import type { Collections as CollectionsClient } from '../generated/Collections';
 import type {
   Collection as RawCollection,
   CollectionItemDto as RawCollectionItemDto,
   CreateCollectionDto as RawCreateCollectionDto,
-} from '../api/data-contracts';
+} from '../generated/data-contracts';
 import { toCamelCase } from './case';
 
 export type Collection = {

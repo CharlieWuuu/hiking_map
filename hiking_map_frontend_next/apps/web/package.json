@@ -8,10 +8,11 @@
     "start": "next start -p 4219",
     "lint": "eslint",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "generate:api": "swagger-typescript-api generate --path http://localhost:3001/api-docs-json --output ./src/lib/api/generated --name index.ts --axios --modular --unwrap-response-data --route-types"
   },
   "dependencies": {
-    "@hiking-map/core": "workspace:*",
+    "axios": "^1.18.1",
     "d3": "^7.9.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.24.0",
@@ -45,6 +46,7 @@
     "eslint-plugin-storybook": "^10.5.2",
     "playwright": "^1.61.1",
     "storybook": "^10.5.2",
+    "swagger-typescript-api": "^13.12.5",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vite": "^8.1.5",

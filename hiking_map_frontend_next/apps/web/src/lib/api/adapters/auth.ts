@@ -1,4 +1,4 @@
-import type { Auth } from '../api/Auth';
+import type { Auth } from '../generated/Auth';
 
 export function createAuthService(client: Auth) {
   return {

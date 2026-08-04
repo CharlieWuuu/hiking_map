@@ -1,5 +1,5 @@
-import type { CreateHikeDto as RawCreateHikeDto, Hike as RawHike, HikeStatsDto as RawHikeStatsDto } from '../api/data-contracts';
-import type { Hikes as HikesClient } from '../api/Hikes';
+import type { CreateHikeDto as RawCreateHikeDto, Hike as RawHike, HikeStatsDto as RawHikeStatsDto } from '../generated/data-contracts';
+import type { Hikes as HikesClient } from '../generated/Hikes';
 import { toCamelCase } from './case';
 
 export type Hike = {

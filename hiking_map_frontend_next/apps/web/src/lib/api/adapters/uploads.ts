@@ -1,4 +1,4 @@
-import type { Uploads as UploadsClient } from '../api/Uploads';
+import type { Uploads as UploadsClient } from '../generated/Uploads';
 
 export function createUploadsService(client: UploadsClient) {
   return {
