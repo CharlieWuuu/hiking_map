@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
+import PageLayout from '../../../components/PageLayout';
 import TrailListItem from '../../../components/TrailListItem';
 import UserListItem from '../../../components/UserListItem';
 import { Link } from '../../../i18n/navigation';
@@ -26,7 +27,7 @@ export default async function SearchPage({ searchParams }: Props) {
   const results = q ? await apiClient.search.search(q) : isFiltering ? await apiClient.search.filterTrails(category, county) : [];
 
   return (
-    <div className="flex h-full flex-col gap-4">
+    <PageLayout>
       <SearchBarWithNavigation />
 
       {q && results.length === 0 && <p className="text-background-contrary/60 text-center text-sm">{t('noResults', { query: q })}</p>}
@@ -94,6 +95,6 @@ export default async function SearchPage({ searchParams }: Props) {
           </div>
         </div>
       )}
-    </div>
+    </PageLayout>
   );
 }

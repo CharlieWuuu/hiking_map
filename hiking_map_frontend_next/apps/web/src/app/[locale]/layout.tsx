@@ -58,8 +58,9 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
           <AuthInitializer />
           <AppReveal>
             <Nav />
-            <main className="min-w-0 flex-1 p-6 pb-20 lg:px-8 lg:py-12 lg:pb-12">
-              <div className="mx-auto w-full max-w-240">{children}</div>
+            {/* flex 一路傳到頁面，頁面才能用 flex-1 撐滿高度（例如登入頁要垂直置中） */}
+            <main className="flex min-w-0 flex-1 flex-col p-6 pb-20 lg:px-8 lg:py-12 lg:pb-12">
+              <div className="mx-auto flex w-full max-w-240 flex-1 flex-col">{children}</div>
             </main>
           </AppReveal>
         </NextIntlClientProvider>
