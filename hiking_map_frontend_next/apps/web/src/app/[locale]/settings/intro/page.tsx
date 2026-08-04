@@ -1,24 +1,14 @@
-import { ChevronLeft } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
-import { Link } from '../../../../i18n/navigation';
+import BackLink from '../../../../components/BackLink';
+import PageLayout from '../../../../components/PageLayout';
 
 export default function SettingsIntroPage() {
   const t = useTranslations('SettingsIntroPage');
 
   return (
-    <div className="flex w-full flex-col gap-12">
-      <Link
-        href="/settings"
-        className="bg-panel hover:bg-panel-active-lighten flex w-fit items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors"
-      >
-        <ChevronLeft className="h-4 w-4" />
-        {t('backToSettings')}
-      </Link>
-
-      <h1 className="text-3xl font-bold">{t('title')}</h1>
-
+    <PageLayout title={t('title')} before={<BackLink href="/settings">{t('backToSettings')}</BackLink>}>
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-bold">{t('purposeTitle')}</h2>
         <p className="text-background-contrary/80">{t('purposeIntro')}</p>
@@ -63,6 +53,6 @@ export default function SettingsIntroPage() {
         </ul>
         <p className="text-background-contrary/80">{t('problemConclusion')}</p>
       </section>
-    </div>
+    </PageLayout>
   );
 }

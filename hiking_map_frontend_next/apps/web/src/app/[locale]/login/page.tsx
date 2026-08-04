@@ -32,7 +32,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-8">
+    <div className="flex flex-1 flex-col items-center justify-center gap-8">
       <h1 className="text-3xl font-bold">{t('title')}</h1>
 
       <form onSubmit={handleSubmit} className="flex w-full max-w-xs flex-col gap-6">

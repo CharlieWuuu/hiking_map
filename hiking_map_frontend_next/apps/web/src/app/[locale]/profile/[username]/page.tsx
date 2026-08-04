@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 
 import ChartBar from '../../../../components/ChartBar';
 import ChartRing from '../../../../components/ChartRing';
+import PageLayout from '../../../../components/PageLayout';
 import TrailListItem from '../../../../components/TrailListItem';
 import { Link } from '../../../../i18n/navigation';
 import { apiClient } from '../../../../lib/apiClient';
@@ -35,7 +36,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
   const recentHikes = [...hikes].sort((a, b) => b.date.localeCompare(a.date)).slice(0, TRAIL_HISTORY_COUNT);
 
   return (
-    <div className="flex w-full flex-col gap-12">
+    <PageLayout>
       {/* 個人資訊 */}
       <div className="flex items-center gap-8">
         {profile.avatar ? (
@@ -116,6 +117,6 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
           ))}
         </div>
       </section>
-    </div>
+    </PageLayout>
   );
 }
