@@ -43,8 +43,6 @@ export interface Profile {
   user_id: number;
   /** @example "https://example.com/avatar.png" */
   avatar: string;
-  /** @example "中級" */
-  level: string;
   /** @example "喜歡爬百岳的登山愛好者" */
   description: string;
 }
@@ -52,8 +50,6 @@ export interface Profile {
 export interface UpdateProfileDto {
   /** @example "https://example.com/avatar.png" */
   avatar?: string;
-  /** @example "中級" */
-  level?: string;
   /** @example "喜歡爬百岳的登山愛好者" */
   description?: string;
 }
@@ -222,8 +218,6 @@ export interface CollectionItemDto {
   username?: object | null;
   /** @example "https://example.com/avatar.png" */
   avatar?: object | null;
-  /** @example "中級" */
-  level?: object | null;
 }
 
 export interface CreateCollectionDto {
@@ -262,8 +256,6 @@ export interface SearchResultDto {
   county?: object | null;
   /** @example "信義鄉" */
   town?: object | null;
-  /** @example "中級" */
-  level?: object | null;
   /** @example "https://pub-xxxx.r2.dev/trails/1/cover.jpg" */
   cover_image_url?: object | null;
   /** @example "name" */

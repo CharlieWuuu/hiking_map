@@ -2,7 +2,6 @@ export type ProfileDetail = {
   username: string;
   displayName: string;
   avatar?: string;
-  level: string;
   totalDistanceKm: number;
   hikeCount: number;
   achievements: {
@@ -35,7 +34,6 @@ export const MOCK_PROFILE_DETAILS: ProfileDetail[] = [
   {
     username: 'demo',
     displayName: '示範使用者',
-    level: '進階山友',
     totalDistanceKm: 128.6,
     hikeCount: 24,
     achievements: { hundred: 12, smallHundred: 28, hundredTrail: 45 },

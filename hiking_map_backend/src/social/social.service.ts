@@ -100,7 +100,6 @@ export class SocialService {
           ...collection,
           username: user?.username ?? null,
           avatar: profile?.avatar ?? null,
-          level: profile?.level ?? null,
         };
       }
       return { ...collection };

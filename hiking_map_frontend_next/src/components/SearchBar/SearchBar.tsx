@@ -47,7 +47,7 @@ export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
           .slice(0, SUGGESTION_LIMIT)
           .map((item) =>
             item.type === 'user'
-              ? { type: 'user', username: item.slug, displayName: item.displayName, avatar: item.avatar ?? undefined, level: item.level ?? undefined }
+              ? { type: 'user', username: item.slug, displayName: item.displayName, avatar: item.avatar ?? undefined }
               : { type: 'trail', slug: item.slug, displayName: item.displayName, county: item.county ?? undefined, town: item.town ?? undefined }
           )
       );

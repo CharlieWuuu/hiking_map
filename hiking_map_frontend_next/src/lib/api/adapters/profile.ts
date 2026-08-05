@@ -8,13 +8,11 @@ export type Profile = {
   userId: number;
   username: string;
   avatar: string;
-  level: string;
   description: string;
 };
 
 export type UpdateProfileDto = {
   avatar?: string;
-  level?: string;
   description?: string;
 };
 
@@ -27,7 +25,6 @@ export function adaptProfile(raw: RawProfile & { username: string }): Profile {
 export function toUpdateProfileDto(dto: UpdateProfileDto): RawUpdateProfileDto {
   return {
     avatar: dto.avatar,
-    level: dto.level,
     description: dto.description,
   };
 }
