@@ -147,7 +147,7 @@ export default function DebugPanel({
           top: 0,
           zIndex: 1,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           gap: '6px',
           padding: '6px 8px',
           fontSize: '13px',
@@ -156,7 +156,8 @@ export default function DebugPanel({
           borderBottom: '1px solid rgba(255,255,255,0.15)',
         }}
       >
-        <div style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {/* 元件名稱可能很長，寧可折行也不要截掉 */}
+        <div style={{ flex: 1, minWidth: 0, wordBreak: 'break-word', lineHeight: 1.5 }}>
           {active ? (
             <>
               <span style={{ color: COLORS[active.kind] }}>■ </span>
@@ -182,11 +183,15 @@ export default function DebugPanel({
               <IconButton label="Next.js 內部" title="連 Next.js 與 React 自己的元件一起顯示" active={includeFramework} onClick={onToggleFramework} />
             </div>
             <div style={{ display: 'flex', gap: '10px', fontSize: '11px', marginTop: '6px' }}>
-              <span style={{ color: COLORS.server }}>■ server {serverCount}</span>
-              <span style={{ color: COLORS.client }}>■ client {clientCount}</span>
-              {/* 沒開 DOM 模式時畫面上沒有黃色，圖例也就不用佔位 */}
+              {/* 圖例只列出畫面上真的看得到的顏色 */}
+              {showOutlines && (
+                <>
+                  <span style={{ color: COLORS.server }}>■ server {serverCount}</span>
+                  <span style={{ color: COLORS.client }}>■ client {clientCount}</span>
+                  <span style={{ color: RENDER_COLOR }}>■ 剛 render</span>
+                </>
+              )}
               {(showDomLabels || showDomOutlines) && <span style={{ color: DOM_COLOR }}>■ dom{showDomLabels ? ` ${domCount}` : ''}</span>}
-              <span style={{ color: RENDER_COLOR }}>■ 剛 render</span>
             </div>
             <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '6px', lineHeight: 1.6 }}>
               Shift+D 關閉 · 點標籤看該元件 · Alt+點擊 釘選
