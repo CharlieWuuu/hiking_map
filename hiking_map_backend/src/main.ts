@@ -13,6 +13,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors({
     origin: [
+      'http://localhost:4219', // 開發時本機（Next.js 前端）
       'http://localhost:3000', // 開發時本機
       'http://localhost:5173', // 開發時本機
       'https://hiking-map.vercel.app', // 正式部署後的前端網址
