@@ -53,3 +53,18 @@ src/
 定位收斂為**個人紀錄工具**——保存自己的健行紀錄、看圖表，不做社群。追蹤功能與即時 GPS 錄製都已移除，紀錄來源改為上傳 GPX。
 
 進行中：GPX 上傳與編輯（裁掉忘記關錄製的路段、把多段軌跡合併）。
+
+## Debug 疊層
+
+開發時按 `Shift+D`，把畫面上的 React 元件直接畫出來。
+
+![debug 疊層](docs/debug-overlay.png)
+
+- **元件框與名稱**，藍色是 server component、粉紅是 client component
+- **props、state、全域狀態**，state 會顯示原始碼裡的變數名稱（`query = "12345678"`）
+- **render 次數**，剛重畫過的元件會亮綠色，用來確認誰因為什麼而重新渲染
+- **由誰渲染**，也就是這個元件是寫在誰的 JSX 裡
+- 滑鼠移到標籤上切換元件，`Alt` + 點擊釘選
+
+實作在 `src/lib/debug/`，資料來自 React 的 fiber tree 與 commit 掛鉤，
+都不是公開 API，所以只在開發環境載入，讀取全程 try/catch。

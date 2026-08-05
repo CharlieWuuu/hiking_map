@@ -11,6 +11,7 @@ import Nav from '../../components/Nav';
 import { NAV_COLLAPSED_STORAGE_KEY } from '../../components/Nav/Nav.const';
 import { routing } from '../../i18n/routing';
 import AuthInitializer from '../../lib/AuthInitializer';
+import { COMMIT_HOOK_INSTALLER, DebugOverlay, DebugProvider } from '../../lib/debug';
 import { THEME_STORAGE_KEY } from '../../lib/theme';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -45,6 +46,8 @@ export default async function RootLayout({ children, params }: Props) {
   return (
     <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
+        {/* React 一載入就會去讀 DevTools 掛鉤，所以這段必須早於所有 bundle，且只在開發環境注入 */}
+        {process.env.NODE_ENV === 'development' && <script dangerouslySetInnerHTML={{ __html: COMMIT_HOOK_INSTALLER }} />}
         <script
           dangerouslySetInnerHTML={{
             __html: `if (localStorage.getItem('${THEME_STORAGE_KEY}') === 'light') document.documentElement.classList.add('light');
@@ -54,15 +57,18 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
       </head>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
-          <LandingAnimation />
-          <AuthInitializer />
-          <AppReveal>
-            <Nav />
-            {/* flex 一路傳到頁面，頁面才能用 flex-1 撐滿高度（例如登入頁要垂直置中） */}
-            <main className="flex min-w-0 flex-1 flex-col p-6 pb-20 lg:px-8 lg:py-12 lg:pb-12">
-              <div className="mx-auto flex w-full max-w-240 flex-1 flex-col">{children}</div>
-            </main>
-          </AppReveal>
+          <DebugProvider>
+            <LandingAnimation />
+            <AuthInitializer />
+            <AppReveal>
+              <Nav />
+              {/* flex 一路傳到頁面，頁面才能用 flex-1 撐滿高度（例如登入頁要垂直置中） */}
+              <main className="flex min-w-0 flex-1 flex-col p-6 pb-20 lg:px-8 lg:py-12 lg:pb-12">
+                <div className="mx-auto flex w-full max-w-240 flex-1 flex-col">{children}</div>
+              </main>
+            </AppReveal>
+            <DebugOverlay />
+          </DebugProvider>
         </NextIntlClientProvider>
       </body>
     </html>
