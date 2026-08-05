@@ -46,7 +46,7 @@ function IconButton({ label, title, active, onClick }: { label: string; title: s
         background: active ? 'rgba(255,255,255,0.18)' : 'transparent',
         color: '#fff',
         borderRadius: '3px',
-        fontSize: '10px',
+        fontSize: '11px',
         fontFamily: 'monospace',
         lineHeight: '16px',
         padding: '0 5px',
@@ -75,7 +75,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
           border: 0,
           background: 'transparent',
           color: 'rgba(255,255,255,0.5)',
-          fontSize: '10px',
+          fontSize: '11px',
           fontFamily: 'monospace',
           letterSpacing: '0.05em',
           padding: '6px 10px',
@@ -92,7 +92,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 function Code({ children }: { children: string }) {
-  return <pre style={{ margin: 0, color: '#8ef', fontSize: '10px', lineHeight: 1.5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{children}</pre>;
+  return <pre style={{ margin: 0, color: '#fff', fontSize: '12px', lineHeight: 1.6, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{children}</pre>;
 }
 
 // 以 Debug 開頭的 displayName 會被疊層過濾掉，避免 debug 工具照到自己
@@ -129,10 +129,10 @@ export default function DebugPanel({
         position: 'fixed',
         top: 8,
         right: 8,
-        width: 320,
+        width: 360,
         maxHeight: collapsed ? undefined : '80vh',
         overflow: collapsed ? 'hidden' : 'auto',
-        background: 'rgba(0,0,0,0.92)',
+        background: 'rgba(0,0,0,0.97)',
         border: '1px solid rgba(255,255,255,0.2)',
         borderRadius: '6px',
         fontFamily: 'monospace',
@@ -150,7 +150,7 @@ export default function DebugPanel({
           alignItems: 'center',
           gap: '6px',
           padding: '6px 8px',
-          fontSize: '11px',
+          fontSize: '13px',
           fontWeight: 700,
           background: 'rgba(0,0,0,0.96)',
           borderBottom: '1px solid rgba(255,255,255,0.15)',
@@ -181,13 +181,14 @@ export default function DebugPanel({
               <IconButton label="DOM 名稱" title="畫面內的 HTML 標籤加上名稱，例如 input[type=password]" active={showDomLabels} onClick={onToggleDomLabels} />
               <IconButton label="Next.js 內部" title="連 Next.js 與 React 自己的元件一起顯示" active={includeFramework} onClick={onToggleFramework} />
             </div>
-            <div style={{ display: 'flex', gap: '10px', fontSize: '10px', marginTop: '6px' }}>
+            <div style={{ display: 'flex', gap: '10px', fontSize: '11px', marginTop: '6px' }}>
               <span style={{ color: COLORS.server }}>■ server {serverCount}</span>
               <span style={{ color: COLORS.client }}>■ client {clientCount}</span>
+              {/* 沒開 DOM 模式時畫面上沒有黃色，圖例也就不用佔位 */}
               {(showDomLabels || showDomOutlines) && <span style={{ color: DOM_COLOR }}>■ dom{showDomLabels ? ` ${domCount}` : ''}</span>}
               <span style={{ color: RENDER_COLOR }}>■ 剛 render</span>
             </div>
-            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginTop: '6px', lineHeight: 1.6 }}>
+            <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '6px', lineHeight: 1.6 }}>
               Shift+D 關閉 · 點標籤看該元件 · Alt+點擊 釘選
               {!trackerActive && <div style={{ color: 'hsl(20 100% 65%)' }}>commit hook 沒掛上，render 次數無法計算</div>}
             </div>
