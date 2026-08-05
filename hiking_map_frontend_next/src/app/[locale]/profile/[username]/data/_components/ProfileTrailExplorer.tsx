@@ -55,7 +55,7 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
   return (
     <div className={`flex h-full w-full gap-4 ${isMapFullscreen || isTableFullscreen ? '' : 'flex-col lg:flex-row'}`}>
       {!isMapFullscreen && (
-        <div className={`flex w-full flex-col gap-2 overflow-y-auto lg:h-full ${isTableFullscreen ? '' : 'lg:max-w-md'}`}>
+        <div className={`flex w-full flex-col gap-2 lg:h-full ${isTableFullscreen ? '' : 'lg:max-w-md'}`}>
           <TrailExplorerToolbar
             isTableExpanded={isTableFullscreen}
             onToggleTableExpanded={() => onFullscreenChange(isTableFullscreen ? null : 'table')}
@@ -66,16 +66,20 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
             onToggleEditMode={onToggleEditMode}
           />
 
-          <TrailExplorerList
-            trails={pagedTrails}
-            view={view}
-            activeSlug={activeSlug}
-            isEditMode={isEditMode}
-            onHoverChange={setHoverSlug}
-            onSelect={setActiveSlug}
-            onSaveTrailPatch={saveTrailPatch}
-            onDeleteTrail={deleteTrail}
-          />
+          {/* 只有清單捲動，工具列與分頁才會一直留在畫面上 */}
+          <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
+            <TrailExplorerList
+              trails={pagedTrails}
+              view={view}
+              activeSlug={activeSlug}
+              isEditMode={isEditMode}
+              onHoverChange={setHoverSlug}
+              onSelect={setActiveSlug}
+              onSaveTrailPatch={saveTrailPatch}
+              onDeleteTrail={deleteTrail}
+            />
+          </div>
+
           <TrailListPagination page={page} pageCount={pageCount} onPageChange={changePage} />
         </div>
       )}
