@@ -184,7 +184,7 @@ export default function DebugPanel({
             <div style={{ display: 'flex', gap: '10px', fontSize: '10px', marginTop: '6px' }}>
               <span style={{ color: COLORS.server }}>■ server {serverCount}</span>
               <span style={{ color: COLORS.client }}>■ client {clientCount}</span>
-              {showDomLabels && <span style={{ color: DOM_COLOR }}>■ dom {domCount}</span>}
+              {(showDomLabels || showDomOutlines) && <span style={{ color: DOM_COLOR }}>■ dom{showDomLabels ? ` ${domCount}` : ''}</span>}
               <span style={{ color: RENDER_COLOR }}>■ 剛 render</span>
             </div>
             <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginTop: '6px', lineHeight: 1.6 }}>

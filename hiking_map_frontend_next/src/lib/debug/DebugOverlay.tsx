@@ -130,7 +130,7 @@ export default function DebugOverlay() {
     <div data-debug-overlay="" style={{ position: 'fixed', inset: 0, zIndex: 99999, pointerEvents: 'none' }}>
       {/* 每個 DOM 節點都描一條線，等同於手動加 * { box-shadow: ... } */}
       {showDomOutlines && (
-        <style>{`body *:not([data-debug-overlay], [data-debug-overlay] *) { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14) !important; }`}</style>
+        <style>{`body *:not([data-debug-overlay], [data-debug-overlay] *) { box-shadow: inset 0 0 0 1px hsl(45 100% 60% / 0.35) !important; }`}</style>
       )}
       {/* 原生標籤畫在元件框底下：元件是主角，DOM 是背景資訊 */}
       {domBoxes.map((box, index) => (
