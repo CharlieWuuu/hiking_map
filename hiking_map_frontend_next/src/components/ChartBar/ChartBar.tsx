@@ -66,7 +66,15 @@ export default function ChartBar({ data, emptyLabel }: Props) {
     svg
       .append('g')
       .attr('transform', `translate(${MARGIN.left},0)`)
-      .call(d3.axisLeft(y).ticks(5).tickSizeInner(0).tickSizeOuter(0).tickFormat(d3.format('d')))
+      // 值域很小時（例如全為 0）取 5 個刻度會四捨五入成重複的整數，改用實際整數刻度
+      .call(
+        d3
+          .axisLeft(y)
+          .tickValues(d3.range(0, Math.floor(y.domain()[1]) + 1).filter((_, i, arr) => arr.length <= 6 || i % Math.ceil(arr.length / 6) === 0))
+          .tickSizeInner(0)
+          .tickSizeOuter(0)
+          .tickFormat(d3.format('d'))
+      )
       .call((g) => g.select('.domain').remove())
       .selectAll('text')
       .attr('fill', 'var(--color-background-contrary)')

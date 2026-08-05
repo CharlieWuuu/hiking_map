@@ -28,36 +28,44 @@ export default async function Home() {
 
   return (
     <PageLayout>
-      {currentUser && stats && (
-        <section className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold">{t('yourStats')}</h2>
-          <div className="flex flex-wrap gap-4">
-            <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
-              <span className="text-background-contrary/60 text-sm">{t('monthlyDistance')}</span>
-              <ChartBar
-                data={fillMonthlyDistance(stats.monthlyDistance, MONTHLY_DISTANCE_MONTHS_COUNT).map((d) => ({
-                  label: d.month.slice(5),
-                  value: d.distanceKm,
-                }))}
-                emptyLabel={tCommon('noData')}
-              />
-            </div>
-            <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
-              <span className="text-background-contrary/60 text-sm">{t('countyStats')}</span>
-              <ChartBar
-                data={stats.countyStats.slice(0, COUNTY_STATS_COUNT).map((d) => ({ label: d.county, value: d.count }))}
-                emptyLabel={tCommon('noData')}
-              />
-            </div>
+      {/* 統計一律顯示。未登入時圖表仍畫出空的座標軸，並提示登入 */}
+      <section className="flex flex-col gap-4">
+        <h2 className="text-2xl font-bold">{t('yourStats')}</h2>
+        <div className="flex flex-wrap gap-4">
+          <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
+            <span className="text-background-contrary/60 text-sm">{t('monthlyDistance')}</span>
+            <ChartBar
+              data={fillMonthlyDistance(stats?.monthlyDistance ?? [], MONTHLY_DISTANCE_MONTHS_COUNT).map((d) => ({
+                label: d.month.slice(5),
+                value: d.distanceKm,
+              }))}
+              emptyLabel={tCommon('noData')}
+            />
           </div>
+          <div className="bg-panel rounded-panel flex h-50 min-w-75 flex-1 flex-col gap-4 p-4">
+            <span className="text-background-contrary/60 text-sm">{t('countyStats')}</span>
+            <ChartBar
+              data={(stats?.countyStats ?? []).slice(0, COUNTY_STATS_COUNT).map((d) => ({ label: d.county, value: d.count }))}
+              emptyLabel={tCommon('noData')}
+            />
+          </div>
+        </div>
+        {currentUser ? (
           <Link
             href={`/profile/${currentUser.username}`}
             className="bg-panel hover:bg-panel-active rounded-panel w-fit self-center px-4 py-2 text-sm transition-colors"
           >
             {t('goToProfile')}
           </Link>
-        </section>
-      )}
+        ) : (
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-background-contrary/60 text-sm">{t('loginPrompt')}</p>
+            <Link href="/login" className="bg-panel hover:bg-panel-active rounded-panel w-fit px-4 py-2 text-sm transition-colors">
+              {t('loginCta')}
+            </Link>
+          </div>
+        )}
+      </section>
 
       {currentUser && recentTrails.length > 0 && (
         <section className="flex flex-col gap-4">
