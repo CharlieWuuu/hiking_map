@@ -85,7 +85,7 @@ export default function TrailListItem(props: Props) {
     return (
       <Link
         href={props.href}
-        className="bg-panel hover:bg-panel-active rounded-panel relative flex w-full items-stretch gap-4 overflow-hidden transition-colors duration-150"
+        className="bg-panel hover:bg-panel-active rounded-panel relative flex w-full shrink-0 items-stretch gap-4 overflow-hidden transition-colors duration-150"
       >
         <TrailThumbnail coverImageUrl={props.coverImageUrl} />
         <div className="flex min-w-0 flex-1 items-center gap-4 py-4 pr-4">
@@ -103,7 +103,7 @@ export default function TrailListItem(props: Props) {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onClick}
-      className={`rounded-panel relative flex w-full cursor-pointer items-stretch gap-4 overflow-hidden text-left transition-colors duration-150 ${
+      className={`rounded-panel relative flex w-full shrink-0 cursor-pointer items-stretch gap-4 overflow-hidden text-left transition-colors duration-150 ${
         isActive ? 'bg-panel-active' : 'bg-panel hover:bg-panel-active'
       }`}
     >
