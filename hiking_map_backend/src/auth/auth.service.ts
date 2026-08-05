@@ -34,7 +34,6 @@ export class AuthService {
     await this.profilesRepo.save({
       user_id: user.id,
       avatar: '',
-      level: '',
       description: '',
     });
 
@@ -68,7 +67,6 @@ export class AuthService {
     await this.profilesRepo.save({
       user_id: user.id,
       avatar: '',
-      level: '',
       description: '',
     });
 

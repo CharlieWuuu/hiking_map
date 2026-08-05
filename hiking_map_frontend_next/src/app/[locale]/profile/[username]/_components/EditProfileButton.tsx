@@ -9,26 +9,24 @@ import { apiClient } from '../../../../../lib/apiClient';
 
 type Props = {
   avatar: string;
-  level: string;
   description: string;
 };
 
 const inputClassName = 'bg-background text-background-contrary w-full rounded px-1.5 py-0.5 text-sm outline-none';
 
-export default function EditProfileButton({ avatar, level, description }: Props) {
+export default function EditProfileButton({ avatar, description }: Props) {
   const t = useTranslations('EditProfileForm');
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [avatarValue, setAvatarValue] = useState(avatar);
-  const [levelValue, setLevelValue] = useState(level);
   const [descriptionValue, setDescriptionValue] = useState(description);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await apiClient.profile.updateMe({ avatar: avatarValue, level: levelValue, description: descriptionValue });
+      await apiClient.profile.updateMe({ avatar: avatarValue, description: descriptionValue });
       setIsOpen(false);
       router.refresh();
     } finally {
@@ -56,11 +54,6 @@ export default function EditProfileButton({ avatar, level, description }: Props)
       <label className="flex flex-col items-start gap-1">
         <span className="text-sm">{t('avatar')}</span>
         <input type="text" value={avatarValue} onChange={(e) => setAvatarValue(e.target.value)} className={inputClassName} />
-      </label>
-
-      <label className="flex flex-col items-start gap-1">
-        <span className="text-sm">{t('level')}</span>
-        <input type="text" value={levelValue} onChange={(e) => setLevelValue(e.target.value)} className={inputClassName} />
       </label>
 
       <label className="flex flex-col items-start gap-1">

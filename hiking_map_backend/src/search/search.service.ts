@@ -54,7 +54,7 @@ export class SearchService {
     );
 
     const userRows = await this.dataSource.query(
-      `SELECT u.username, p.avatar, p.level, p.description,
+      `SELECT u.username, p.avatar, p.description,
               (u.username ILIKE $1) AS matches_name
        FROM users u
        JOIN profiles p ON p.user_id = u.id
@@ -77,7 +77,6 @@ export class SearchService {
       slug: row.username,
       display_name: row.username,
       avatar: row.avatar,
-      level: row.level,
       match_reason: row.matches_name ? 'name' : 'field',
     }));
 

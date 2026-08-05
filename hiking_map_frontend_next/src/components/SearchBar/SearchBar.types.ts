@@ -1,5 +1,5 @@
 export type SearchResult =
-  | { type: 'user'; username: string; displayName: string; avatar?: string; level?: string; bio?: string }
+  | { type: 'user'; username: string; displayName: string; avatar?: string; bio?: string }
   | { type: 'trail'; slug: string; displayName: string; thumbnail?: string; county?: string; town?: string; note?: string };
 
 export type MatchReason =

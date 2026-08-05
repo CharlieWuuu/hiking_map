@@ -42,7 +42,7 @@ export default async function SearchPage({ searchParams }: Props) {
                 href={`/profile/${item.slug}`}
                 displayName={item.displayName}
                 avatar={item.avatar ?? undefined}
-                subtitle={item.level ?? tResult('user')}
+                subtitle={tResult('user')}
               />
             ) : (
               <TrailListItem

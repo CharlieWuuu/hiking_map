@@ -26,7 +26,4 @@ export class CollectionItemDto {
 
   @ApiPropertyOptional({ example: 'https://example.com/avatar.png', nullable: true })
   avatar?: string | null;
-
-  @ApiPropertyOptional({ example: '中級', nullable: true })
-  level?: string | null;
 }

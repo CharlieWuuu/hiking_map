@@ -50,10 +50,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
         <div className="flex flex-1 flex-col gap-2">
           <div className="flex items-center gap-2">
             <h1 className="text-accent text-3xl font-bold">{profile.username}</h1>
-            {isOwner && <EditProfileButton avatar={profile.avatar} level={profile.level} description={profile.description} />}
+            {isOwner && <EditProfileButton avatar={profile.avatar} description={profile.description} />}
           </div>
           <div className="flex flex-wrap gap-4 text-lg">
-            <span>{profile.level}</span>
             <span>{t('totalDistance', { distance: stats.totalDistanceKm })}</span>
             <span>{t('hikeCount', { count: stats.hikeCount })}</span>
           </div>
