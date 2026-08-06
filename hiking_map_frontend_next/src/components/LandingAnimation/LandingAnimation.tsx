@@ -10,26 +10,30 @@ export default function LandingAnimation() {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <g stroke="var(--logo-color)" fill="none" strokeWidth="16.8" strokeLinecap="round" strokeLinejoin="round" pathLength="1">
-          {/* 外框先描出來 */}
-          <rect x="9" y="9" width="174" height="174" rx="51" strokeDasharray="1" strokeDashoffset="1">
-            <animate attributeName="stroke-dashoffset" from="1" to="0" dur="0.7s" fill="freeze" />
-          </rect>
+        <g stroke="var(--logo-color)" fill="none" strokeWidth="16.8" strokeLinecap="round" strokeLinejoin="round">
+          {/* 外框先描出來。pathLength 必須放在元素本身，放在 <g> 上不會被繼承 */}
+          <rect className="animate-landing-draw" x="9" y="9" width="174" height="174" rx="51" pathLength={1} />
 
-          {/* 起點 */}
-          <circle cx="48" cy="144" r="18" opacity="0">
-            <animate attributeName="opacity" from="0" to="1" begin="0.5s" dur="0.2s" fill="freeze" />
-          </circle>
+          {/* 起點：外框快畫完時浮現 */}
+          <circle className="animate-landing-dot" cx="48" cy="144" r="18" style={{ animationDelay: '0.55s', transformOrigin: '48px 144px' }} />
 
-          {/* 軌跡沿著路線畫出 */}
-          <path d="M59.4 127.8 L80.4 98.4 L105 117.6 L132 65.4" strokeDasharray="1" strokeDashoffset="1">
-            <animate attributeName="stroke-dashoffset" from="1" to="0" begin="0.65s" dur="0.7s" fill="freeze" />
-          </path>
+          {/* 軌跡從起點延伸出去 */}
+          <path
+            className="animate-landing-draw"
+            d="M59.4 127.8 L80.4 98.4 L105 117.6 L132 65.4"
+            pathLength={1}
+            style={{ animationDelay: '0.7s', animationDuration: '0.6s' }}
+          />
 
           {/* 終點最後落下 */}
-          <circle cx="144" cy="52.8" r="17.4" fill="var(--logo-color)" opacity="0">
-            <animate attributeName="opacity" from="0" to="1" begin="1.3s" dur="0.2s" fill="freeze" />
-          </circle>
+          <circle
+            className="animate-landing-dot"
+            cx="144"
+            cy="52.8"
+            r="17.4"
+            fill="var(--logo-color)"
+            style={{ animationDelay: '1.3s', transformOrigin: '144px 52.8px' }}
+          />
         </g>
       </svg>
     </div>

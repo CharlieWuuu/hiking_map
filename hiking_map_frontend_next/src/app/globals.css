@@ -40,6 +40,42 @@ button:not(:disabled) {
   }
 }
 
+/*
+ * logo 的描繪動畫。
+ *
+ * 不用 SVG 的 <animate>（SMIL）：它的 begin 是相對於文件時間軸，而這段 SVG
+ * 是 React hydration 之後才插入的，插入時起算點早就過了，動畫不會播。
+ * CSS animation 則是元素一出現就從頭開始，行為穩定。
+ */
+.animate-landing-draw {
+  /* 搭配元素上的 pathLength="1"，dasharray 才是「整條長度」而不是 1px */
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: landing-draw 0.7s ease-in-out forwards;
+}
+
+.animate-landing-dot {
+  opacity: 0;
+  animation: landing-dot 0.25s ease-out forwards;
+}
+
+@keyframes landing-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes landing-dot {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @keyframes landing-logo {
   0%,
   75% {
