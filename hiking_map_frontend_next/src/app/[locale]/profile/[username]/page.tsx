@@ -1,4 +1,4 @@
-import { CircleUserRound } from 'lucide-react';
+import { CircleUserRound, Upload } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
@@ -51,6 +51,15 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
           <div className="flex items-center gap-2">
             <h1 className="text-accent text-3xl font-bold">{profile.username}</h1>
             {isOwner && <EditProfileButton avatar={profile.avatar} description={profile.description} />}
+            {isOwner && (
+              <Link
+                href="/hikes/new"
+                className="bg-panel-active hover:bg-panel-active-lighten rounded-panel ml-auto flex items-center gap-1.5 px-3 py-1.5 text-sm transition-colors"
+              >
+                <Upload className="h-4 w-4" />
+                {t('uploadHike')}
+              </Link>
+            )}
           </div>
           <div className="flex flex-wrap gap-4 text-lg">
             <span>{t('totalDistance', { distance: stats.totalDistanceKm })}</span>

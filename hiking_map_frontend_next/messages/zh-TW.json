@@ -68,7 +68,8 @@
     "countyStats": "縣市統計",
     "trailHistory": "歷次軌跡",
     "goToData": "地圖與資料",
-    "goToCollections": "收藏清單"
+    "goToCollections": "收藏清單",
+    "uploadHike": "上傳紀錄"
   },
   "EditProfileForm": {
     "edit": "編輯個人資料",
@@ -189,5 +190,26 @@
     "problemPain2": "Google Maps 雖可用於展示，但圖層數量有限，需合併所有路線為一檔，更新時也需整體覆寫",
     "problemPain3": "缺乏彈性與擴充性，難以進一步做圖表分析或多使用者共享",
     "problemConclusion": "因此，我將此需求延伸發展為一個網站應用，並模擬成開放平臺架構，支援多用戶資料上傳、互動查詢、成就視覺化等功能。"
+  },
+  "HikeUploadPage": {
+    "title": "上傳紀錄",
+    "subtitle": "選擇 GPX 檔案，確認內容後儲存",
+    "backToProfile": "返回個人頁",
+    "choosePrompt": "選擇 GPX 檔案",
+    "chooseHint": "支援登山 App 匯出的 .gpx",
+    "parseFailed": "檔案讀取失敗",
+    "submitFailed": "儲存失敗，請稍後再試",
+    "distance": "距離",
+    "distanceValue": "{distance, number, ::.00} 公里",
+    "elevationGain": "總爬升",
+    "elevationGainValue": "{meters, number} 公尺",
+    "segments": "軌跡段數",
+    "points": "軌跡點數",
+    "name": "名稱",
+    "date": "日期",
+    "note": "備註",
+    "isPublic": "公開這筆紀錄",
+    "submit": "儲存紀錄",
+    "submitting": "儲存中…"
   }
 }
