@@ -1,4 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { V1Module } from './v1/v1.module';
 import { AuthModule } from './auth/auth.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { JwtOptionalMiddleware } from './auth/jwt-optional.middleware';
@@ -26,6 +27,7 @@ import { UploadsModule } from './uploads/uploads.module';
     }),
     JwtModule.register({}),
     AuthModule,
+    V1Module,
     ProfileModule,
     HikesModule,
     MountainsModule,
