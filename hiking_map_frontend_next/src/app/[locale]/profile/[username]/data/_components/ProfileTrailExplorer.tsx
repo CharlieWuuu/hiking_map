@@ -3,15 +3,16 @@
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import TrailsLayer from '../../../../../../components/MapView/TrailsLayer';
+import TrailsLayer, { type MapTrail } from '../../../../../../components/MapView/TrailsLayer';
 import type { EditableTrail } from '../../../../../../components/TrailEditCard';
 import { apiClient } from '../../../../../../lib/apiClient';
+import { useMapStore } from '../../../../../../lib/mapStore';
 import ExpandToggleButton from './ExpandToggleButton';
 import TrailExplorerList from './TrailExplorerList';
 import TrailExplorerToolbar from './TrailExplorerToolbar';
 import TrailListPagination from './TrailListPagination';
 
-type Trail = EditableTrail & { path: [number, number][] };
+type Trail = EditableTrail & Pick<MapTrail, 'path' | 'trackUrl' | 'bbox'>;
 
 const PAGE_SIZE = 20;
 
@@ -27,8 +28,10 @@ type Props = {
 export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen, isEditMode, isOwner, onFullscreenChange, onToggleEditMode }: Props) {
   const t = useTranslations('ProfileDataPage');
   const [trails, setTrails] = useState(initialTrails);
-  const [hoverSlug, setHoverSlug] = useState<string | null>(null);
-  const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  // hover/選取狀態放在 map store，清單與地圖不必再靠 props 互相轉發
+  const activeSlug = useMapStore((state) => state.activeSlug);
+  const setHoverSlug = useMapStore((state) => state.setHoverSlug);
+  const setActiveSlug = useMapStore((state) => state.setActiveSlug);
   const [view, setView] = useState<'card' | 'table'>('card');
   const [page, setPage] = useState(1);
 
@@ -44,7 +47,7 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
   async function deleteTrail(slug: string) {
     await apiClient.hikes.remove(Number(slug));
     setTrails((prev) => prev.filter((trail) => trail.slug !== slug));
-    setActiveSlug((prev) => (prev === slug ? null : prev));
+    if (activeSlug === slug) setActiveSlug(null);
     setPage((prev) => Math.min(prev, Math.max(1, Math.ceil((trails.length - 1) / PAGE_SIZE))));
   }
 
@@ -93,7 +96,7 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
               label={isMapFullscreen ? t('collapse') : t('expand')}
             />
           </div>
-          <TrailsLayer trails={trails} hoverSlug={hoverSlug} activeSlug={activeSlug} onHoverChange={setHoverSlug} onSelect={setActiveSlug} />
+          <TrailsLayer trails={trails} />
         </div>
       )}
     </div>

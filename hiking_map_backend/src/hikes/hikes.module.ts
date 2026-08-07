@@ -7,9 +7,10 @@ import { HikeCategoryMap } from './hike-category-map.entity';
 import { HikesService } from './hikes.service';
 import { HikesController } from './hikes.controller';
 import { User } from '../auth/auth.entity';
+import { UploadsModule } from '../uploads/uploads.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Hike, HikeTrack, Category, HikeCategoryMap, User])],
+  imports: [TypeOrmModule.forFeature([Hike, HikeTrack, Category, HikeCategoryMap, User]), UploadsModule],
   controllers: [HikesController],
   providers: [HikesService],
 })

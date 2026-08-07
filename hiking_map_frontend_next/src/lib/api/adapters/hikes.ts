@@ -20,7 +20,13 @@ export type Hike = {
   isHundred?: boolean;
   isSmallHundred?: boolean;
   isHundredTrail?: boolean;
-  // GET /hikes?includeGeojson=true 才會附帶
+  // 軌跡的 meta，很小所以一律附帶
+  center: [number, number] | null;
+  bbox: [number, number, number, number] | null;
+  pointCount: number | null;
+  // 完整軌跡在 R2 的網址，放大或匯出時由瀏覽器直接抓
+  trackUrl: string | null;
+  // GET /hikes?includeGeojson=true 才會附帶，且只有簡化過的線
   geojson?: object | null;
 };
 
