@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   Post,
@@ -41,6 +42,17 @@ export class HikesController {
   @ApiOkResponse({ type: Hike, isArray: true })
   findAll(@Query('userId') userId?: string, @Query('includeGeojson') includeGeojson?: string) {
     return this.hikesService.findAll(userId ? Number(userId) : undefined, includeGeojson === 'true');
+  }
+
+  // bbox 格式為 minLng,minLat,maxLng,maxLat
+  @Get('in-view')
+  @ApiOkResponse({ description: '目前視野內的紀錄，含 center / bbox 與簡化軌跡' })
+  findInView(@Query('bbox') bbox: string, @Query('userId') userId?: string) {
+    const parts = (bbox ?? '').split(',').map(Number);
+    if (parts.length !== 4 || parts.some(Number.isNaN)) {
+      throw new BadRequestException('bbox 格式應為 minLng,minLat,maxLng,maxLat');
+    }
+    return this.hikesService.findInView(parts as [number, number, number, number], userId ? Number(userId) : undefined);
   }
 
   @Get('stats')

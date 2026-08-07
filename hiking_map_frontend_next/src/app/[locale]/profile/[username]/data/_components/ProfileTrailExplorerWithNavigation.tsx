@@ -1,10 +1,11 @@
 'use client';
 
+import type { MapTrail } from '../../../../../../components/MapView/TrailsLayer';
 import type { EditableTrail } from '../../../../../../components/TrailEditCard';
 import { useRouter } from '../../../../../../i18n/navigation';
 import ProfileTrailExplorer from './ProfileTrailExplorer';
 
-type Trail = EditableTrail & { path: [number, number][] };
+type Trail = EditableTrail & Pick<MapTrail, 'path' | 'trackUrl' | 'bbox'>;
 
 type Props = {
   username: string;
