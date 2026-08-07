@@ -4,12 +4,18 @@ dotenv.config();
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const expressApp = app.getHttpAdapter().getInstance();
   expressApp.set('trust proxy', 1);
+
+  // 上傳 GPX 時整條軌跡會以 GeoJSON 放在 body 裡，動輒數百 KB
+  // （一趟六千多個點約 256 KB），Express 預設的 100kb 會直接回 413
+  app.useBodyParser('json', { limit: '10mb' });
+
   app.use(cookieParser());
   app.enableCors({
     origin: [
