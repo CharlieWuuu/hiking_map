@@ -6,13 +6,15 @@ import { notFound } from 'next/navigation';
 
 import '../globals.css';
 
+import { COMMIT_HOOK_INSTALLER } from 'react-component-overlay';
+
 import LandingAnimation, { AppReveal } from '../../components/LandingAnimation';
 import Nav from '../../components/Nav';
 import { NAV_COLLAPSED_STORAGE_KEY } from '../../components/Nav/Nav.const';
 import { routing } from '../../i18n/routing';
 import AuthInitializer from '../../lib/AuthInitializer';
-import { COMMIT_HOOK_INSTALLER, DebugOverlay, DebugProvider } from '../../lib/debug';
 import { THEME_STORAGE_KEY } from '../../lib/theme';
+import DebugSetup from './DebugSetup';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 
@@ -57,7 +59,7 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
       </head>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
-          <DebugProvider>
+          <DebugSetup>
             <LandingAnimation />
             <AuthInitializer />
             <AppReveal>
@@ -67,8 +69,7 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
                 <div className="mx-auto flex w-full max-w-240 flex-1 flex-col">{children}</div>
               </main>
             </AppReveal>
-            <DebugOverlay />
-          </DebugProvider>
+          </DebugSetup>
         </NextIntlClientProvider>
       </body>
     </html>
