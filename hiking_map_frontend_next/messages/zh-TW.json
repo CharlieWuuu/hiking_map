@@ -6,6 +6,10 @@
   "Common": {
     "noData": "無資料"
   },
+  "HikeStatsCharts": {
+    "monthlyDistance": "每月里程",
+    "countyStats": "縣市統計"
+  },
   "Nav": {
     "home": "首頁",
     "search": "探索",
@@ -23,8 +27,6 @@
   },
   "HomePage": {
     "yourStats": "我的統計",
-    "monthlyDistance": "每月里程",
-    "countyStats": "縣市統計",
     "goToProfile": "查看完整個人頁",
     "loginPrompt": "登入後即可看到自己的健行統計",
     "loginCta": "前往登入",
@@ -64,8 +66,6 @@
     "achievementHundred": "百岳",
     "achievementSmallHundred": "小百岳",
     "achievementHundredTrail": "百大必訪步道",
-    "monthlyDistance": "每月里程",
-    "countyStats": "縣市統計",
     "trailHistory": "歷次軌跡",
     "goToData": "地圖與資料",
     "goToCollections": "收藏清單",
