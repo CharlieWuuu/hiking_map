@@ -35,10 +35,9 @@ export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
 
   useEffect(() => {
     const q = query.trim();
-    if (!q) {
-      setEntitySuggestions([]);
-      return;
-    }
+    // 清空的工作交給下面的 visibleEntitySuggestions 用算的，
+    // 在 effect 裡同步 setState 會多觸發一輪 render
+    if (!q) return;
 
     const timer = setTimeout(async () => {
       const results = await apiClient.search.search(q).catch(() => []);
@@ -63,7 +62,9 @@ export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
         .slice(0, 3)
         .map((text) => ({ type: 'query', text }))
     : [];
-  const showSuggestions = open && (entitySuggestions.length > 0 || querySuggestions.length > 0);
+  // 輸入框清空時舊的建議就不該再出現，但那是「算得出來」的，不需要另外存一份 state
+  const visibleEntitySuggestions = q ? entitySuggestions : [];
+  const showSuggestions = open && (visibleEntitySuggestions.length > 0 || querySuggestions.length > 0);
 
   function submitQuery(q: string) {
     setOpen(false);
@@ -113,7 +114,7 @@ export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
           {querySuggestions.map((item) => (
             <QuerySuggestionItem key={`query-${item.text}`} item={item} onSelect={handleSelectQuery} />
           ))}
-          {entitySuggestions.map((item) => (
+          {visibleEntitySuggestions.map((item) => (
             <SearchResultItem
               key={`${item.type}-${item.type === 'user' ? item.username : item.slug}`}
               item={{ ...item, matchReason: 'name' }}

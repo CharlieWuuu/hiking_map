@@ -2,14 +2,32 @@
 
 import { PanelLeft } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
 import LogoMark from '../../assets/logo-mark.svg?react';
 import Logo from '../../assets/logo.svg?react';
 import { Link, usePathname } from '../../i18n/navigation';
 import { useAuth } from '../../lib/authStore';
-import { NAV_COLLAPSED_STORAGE_KEY } from './Nav.const';
+import { NAV_COLLAPSED_EVENT, NAV_COLLAPSED_STORAGE_KEY } from './Nav.const';
 import { getNavItems } from './Nav.data';
+
+// 收合狀態存在 localStorage，對 React 來說是外部資料來源。
+// 用 useSyncExternalStore 讀取，才不需要在 effect 裡補一次 setState——
+// 那會多觸發一輪 render，而且 lint 也擋
+const collapsedStore = {
+  subscribe(onChange: () => void) {
+    window.addEventListener(NAV_COLLAPSED_EVENT, onChange);
+    return () => window.removeEventListener(NAV_COLLAPSED_EVENT, onChange);
+  },
+  getSnapshot() {
+    return localStorage.getItem(NAV_COLLAPSED_STORAGE_KEY) === 'true';
+  },
+  // 伺服器端讀不到 localStorage。畫面不會閃是因為 layout 的 inline script
+  // 已經先在 <html> 掛上 nav-collapsed，寬度由 CSS 決定
+  getServerSnapshot() {
+    return false;
+  },
+};
 
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
@@ -19,19 +37,16 @@ function isActive(pathname: string, href: string) {
 export default function Nav() {
   const pathname = usePathname();
   const t = useTranslations('Nav');
-  const { username } = useAuth();
+  // 只訂閱 username，不然登入狀態任何一個欄位變動都會讓整個 Nav 重畫
+  const username = useAuth((state) => state.username);
   const navItems = getNavItems(username);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
-  useEffect(() => {
-    setIsCollapsed(localStorage.getItem(NAV_COLLAPSED_STORAGE_KEY) === 'true');
-  }, []);
+  const isCollapsed = useSyncExternalStore(collapsedStore.subscribe, collapsedStore.getSnapshot, collapsedStore.getServerSnapshot);
 
   function toggleCollapsed() {
     const next = !isCollapsed;
-    setIsCollapsed(next);
     localStorage.setItem(NAV_COLLAPSED_STORAGE_KEY, String(next));
     document.documentElement.classList.toggle('nav-collapsed', next);
+    window.dispatchEvent(new Event(NAV_COLLAPSED_EVENT));
   }
 
   return (
