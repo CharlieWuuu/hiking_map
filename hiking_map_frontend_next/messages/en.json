@@ -6,6 +6,10 @@
   "Common": {
     "noData": "No data"
   },
+  "HikeStatsCharts": {
+    "monthlyDistance": "Monthly distance",
+    "countyStats": "County stats"
+  },
   "Nav": {
     "home": "Home",
     "search": "Explore",
@@ -23,8 +27,6 @@
   },
   "HomePage": {
     "yourStats": "Your Stats",
-    "monthlyDistance": "Monthly distance",
-    "countyStats": "County stats",
     "goToProfile": "View full profile",
     "loginPrompt": "Sign in to see your hiking stats",
     "loginCta": "Go to sign in",
@@ -64,8 +66,6 @@
     "achievementHundred": "Hundred Peaks",
     "achievementSmallHundred": "Small Hundred Peaks",
     "achievementHundredTrail": "Top 100 Trails",
-    "monthlyDistance": "Monthly distance",
-    "countyStats": "County stats",
     "trailHistory": "Trail history",
     "goToData": "Map & data",
     "goToCollections": "Collections",
