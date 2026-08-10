@@ -7,10 +7,13 @@ import { AuditLog } from '../common/entities/audit-log.entity';
 import { Profile } from '../profile/profile.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { GoogleStrategy } from './google.strategy';
+import { PasswordResetToken } from './password-reset-token.entity';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, AuditLog, Profile]),
+    TypeOrmModule.forFeature([User, AuditLog, Profile, PasswordResetToken]),
+    MailModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'your-secret-key',
       signOptions: { expiresIn: '7d' },

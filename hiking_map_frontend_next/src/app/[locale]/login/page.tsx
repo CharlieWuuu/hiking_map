@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { useRouter } from '../../../i18n/navigation';
+import { Link, useRouter } from '../../../i18n/navigation';
 import { useAuth } from '../../../lib/authStore';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:3001';
@@ -59,6 +59,10 @@ export default function LoginPage() {
         </label>
 
         {error && <p className="text-sm text-red-500">{error}</p>}
+
+        <Link href="/forgot-password" className="text-background-contrary/60 hover:text-background-contrary self-start text-sm transition-colors">
+          {t('forgotPassword')}
+        </Link>
 
         <button
           type="submit"

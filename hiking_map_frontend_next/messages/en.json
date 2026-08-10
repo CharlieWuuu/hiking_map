@@ -44,7 +44,27 @@
     "orDivider": "or",
     "oauth": {
       "google": "Continue with Google"
-    }
+    },
+    "forgotPassword": "Forgot password?"
+  },
+  "ForgotPasswordPage": {
+    "title": "Forgot password",
+    "description": "Enter the email on your account and we will send you a reset link.",
+    "email": "Email",
+    "submit": "Send reset link",
+    "sentTitle": "Check your inbox",
+    "sentDescription": "If that email matches an account, a reset link is on its way. It expires in an hour. Check your spam folder too.",
+    "backToLogin": "Back to login"
+  },
+  "ResetPasswordPage": {
+    "title": "Set a new password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "submit": "Update password",
+    "mismatch": "The two passwords do not match",
+    "expired": "This link is no longer valid. Please request a new one.",
+    "invalidTitle": "Incomplete link",
+    "requestAgain": "Request a new link"
   },
   "NotFoundPage": {
     "title": "Page not found",
@@ -160,6 +180,22 @@
     "darkMode": "Dark mode",
     "logout": "Log out",
     "login": "Log in"
+  },
+  "AccountSecurity": {
+    "title": "Account security",
+    "email": "Email",
+    "emailHint": "Password reset links are sent here.",
+    "emailMissingHint": "Not set. Without an email you cannot reset your own password.",
+    "saveEmail": "Save",
+    "saved": "Saved",
+    "saveFailed": "Could not save. That email may already be used by another account.",
+    "google": "Google account",
+    "googleHint": "Once linked, you can sign in with Google if you forget your password.",
+    "googleLinked": "Linked",
+    "googleLink": "Link",
+    "googleUnlink": "Unlink",
+    "googleUnlinkBlocked": "This account has no password. Unlinking would lock you out.",
+    "googleConflict": "That Google account is already linked to another account."
   },
   "SettingsIntroPage": {
     "title": "About this site",

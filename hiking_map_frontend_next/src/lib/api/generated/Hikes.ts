@@ -55,6 +55,26 @@ export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
    * No description
    *
    * @tags Hikes
+   * @name HikesControllerFindInView
+   * @request GET:/hikes/in-view
+   */
+  hikesControllerFindInView = (
+    query: {
+      bbox: string;
+      userId: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<void, any>({
+      path: `/hikes/in-view`,
+      method: 'GET',
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Hikes
    * @name HikesControllerGetStats
    * @request GET:/hikes/stats
    */
