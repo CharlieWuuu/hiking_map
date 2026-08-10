@@ -15,6 +15,8 @@ export interface RegisterDto {
   username: string;
   /** @example "password123" */
   password: string;
+  /** @example "hiker01@example.com" */
+  email?: string;
 }
 
 export interface RegisterResponseDto {
@@ -34,6 +36,48 @@ export interface LoginDto {
 export interface LoginResponseDto {
   /** @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." */
   token: string;
+}
+
+export interface AuthMethodsDto {
+  /** @example "hiker01@example.com" */
+  email?: object | null;
+  /**
+   * 是否設定過密碼
+   * @example true
+   */
+  has_password: boolean;
+  /**
+   * 是否綁定 Google
+   * @example false
+   */
+  has_google: boolean;
+}
+
+export interface SetEmailDto {
+  /** @example "hiker01@example.com" */
+  email: string;
+}
+
+export interface ForgotPasswordDto {
+  /** @example "hiker01@example.com" */
+  email: string;
+}
+
+export interface ResetPasswordDto {
+  /** @example "5f1c…（信裡連結帶的 token）" */
+  token: string;
+  /** @example "newPassword123" */
+  password: string;
+}
+
+export interface TrailsInfoDto {
+  name?: string;
+  county?: string;
+  town?: string;
+  time?: string;
+  url?: string;
+  note?: string;
+  public?: boolean;
 }
 
 export interface Profile {

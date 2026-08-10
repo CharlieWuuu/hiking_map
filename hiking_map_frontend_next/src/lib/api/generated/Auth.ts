@@ -10,7 +10,16 @@
  * ---------------------------------------------------------------
  */
 
-import { LoginDto, LoginResponseDto, RegisterDto, RegisterResponseDto } from './data-contracts';
+import {
+  AuthMethodsDto,
+  ForgotPasswordDto,
+  LoginDto,
+  LoginResponseDto,
+  RegisterDto,
+  RegisterResponseDto,
+  ResetPasswordDto,
+  SetEmailDto,
+} from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
 export class Auth<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
@@ -63,6 +72,65 @@ export class Auth<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
    * No description
    *
    * @tags Auth
+   * @name AuthControllerGetMethods
+   * @request GET:/auth/methods
+   */
+  authControllerGetMethods = (params: RequestParams = {}) =>
+    this.request<AuthMethodsDto, any>({
+      path: `/auth/methods`,
+      method: 'GET',
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Auth
+   * @name AuthControllerSetEmail
+   * @request PUT:/auth/email
+   */
+  authControllerSetEmail = (data: SetEmailDto, params: RequestParams = {}) =>
+    this.request<void, any>({
+      path: `/auth/email`,
+      method: 'PUT',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Auth
+   * @name AuthControllerForgotPassword
+   * @request POST:/auth/forgot-password
+   */
+  authControllerForgotPassword = (data: ForgotPasswordDto, params: RequestParams = {}) =>
+    this.request<void, any>({
+      path: `/auth/forgot-password`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Auth
+   * @name AuthControllerResetPassword
+   * @request POST:/auth/reset-password
+   */
+  authControllerResetPassword = (data: ResetPasswordDto, params: RequestParams = {}) =>
+    this.request<void, any>({
+      path: `/auth/reset-password`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Auth
    * @name AuthControllerGoogleLogin
    * @request GET:/auth/google
    */
@@ -70,6 +138,19 @@ export class Auth<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
     this.request<void, any>({
       path: `/auth/google`,
       method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Auth
+   * @name AuthControllerUnlinkGoogle
+   * @request DELETE:/auth/google
+   */
+  authControllerUnlinkGoogle = (params: RequestParams = {}) =>
+    this.request<void, any>({
+      path: `/auth/google`,
+      method: 'DELETE',
       ...params,
     });
   /**

@@ -44,7 +44,27 @@
     "orDivider": "或",
     "oauth": {
       "google": "使用 Google 登入"
-    }
+    },
+    "forgotPassword": "忘記密碼？"
+  },
+  "ForgotPasswordPage": {
+    "title": "忘記密碼",
+    "description": "輸入你設定過的 email，我們會寄一條重設連結給你。",
+    "email": "Email",
+    "submit": "寄出重設連結",
+    "sentTitle": "信寄出去了",
+    "sentDescription": "如果這個 email 有對應的帳號，重設連結已經寄出，一小時內有效。記得看看垃圾郵件匣。",
+    "backToLogin": "回到登入"
+  },
+  "ResetPasswordPage": {
+    "title": "設定新密碼",
+    "newPassword": "新密碼",
+    "confirmPassword": "再輸入一次",
+    "submit": "更新密碼",
+    "mismatch": "兩次輸入的密碼不一樣",
+    "expired": "這條連結已經失效，請重新申請",
+    "invalidTitle": "連結不完整",
+    "requestAgain": "重新申請"
   },
   "NotFoundPage": {
     "title": "找不到這個頁面",
@@ -160,6 +180,22 @@
     "darkMode": "深色模式",
     "logout": "登出",
     "login": "登入"
+  },
+  "AccountSecurity": {
+    "title": "帳號安全",
+    "email": "Email",
+    "emailHint": "忘記密碼時，重設連結會寄到這裡。",
+    "emailMissingHint": "還沒設定。沒有 email 就沒辦法自己重設密碼。",
+    "saveEmail": "儲存",
+    "saved": "已儲存",
+    "saveFailed": "儲存失敗，這個 email 可能已經被其他帳號使用",
+    "google": "Google 帳號",
+    "googleHint": "綁定後，忘記密碼也能用 Google 登入進來。",
+    "googleLinked": "已綁定",
+    "googleLink": "綁定",
+    "googleUnlink": "解除綁定",
+    "googleUnlinkBlocked": "這個帳號沒有密碼，解除綁定後將無法登入",
+    "googleConflict": "這個 Google 帳號已經綁在其他帳號上"
   },
   "SettingsIntroPage": {
     "title": "網站介紹",
