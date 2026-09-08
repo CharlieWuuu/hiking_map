@@ -1,1 +1,0 @@
-export const LANDING_ANIMATION_DURATION_MS = 2000;
