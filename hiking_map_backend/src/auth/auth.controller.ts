@@ -1,15 +1,4 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Post,
-  Put,
-  Body,
-  Req,
-  Res,
-  UseGuards,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, Body, Req, Res, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -64,10 +53,7 @@ export class AuthController {
   @ApiBody({ type: LoginDto }) // 👈 這行讓 Swagger 知道你要什麼欄位
   @ApiOkResponse({ type: LoginResponseDto })
   async login(@Body() body: LoginDto, @Req() req: any, @Res({ passthrough: true }) res: Response) {
-    const user = await this.authService.validateUser(
-      body.username,
-      body.password,
-    );
+    const user = await this.authService.validateUser(body.username, body.password);
     if (!user) throw new UnauthorizedException('帳號或密碼錯誤');
 
     const ip = req.ip;

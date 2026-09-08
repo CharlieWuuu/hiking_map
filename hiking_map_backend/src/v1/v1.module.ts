@@ -21,7 +21,10 @@ import { getJwtSecret } from '../common/jwt-secret';
  * 程式碼原封不動取自 commit 65739d5^，只改了路由前綴與類別名稱。
  */
 @Module({
-  imports: [TypeOrmModule.forFeature([Trail, Owner]), JwtModule.register({ secret: getJwtSecret(), signOptions: { expiresIn: '7d' } })],
+  imports: [
+    TypeOrmModule.forFeature([Trail, Owner]),
+    JwtModule.register({ secret: getJwtSecret(), signOptions: { expiresIn: '7d' } }),
+  ],
   controllers: [V1TrailsController, V1OwnerController, V1AuthController],
   providers: [V1TrailsService, V1OwnerService],
 })

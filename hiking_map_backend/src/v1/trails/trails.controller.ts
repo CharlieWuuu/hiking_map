@@ -15,6 +15,7 @@ import {
   Res,
   Req,
   Header,
+  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
@@ -29,6 +30,8 @@ import { getJwtSecret } from '../../common/jwt-secret';
 @ApiTags('v1 (舊版前端)')
 @Controller('v1/trails')
 export class V1TrailsController {
+  private readonly logger = new Logger(V1TrailsController.name);
+
   constructor(
     private readonly trailsService: V1TrailsService,
     private readonly jwtService: JwtService,
@@ -54,35 +57,24 @@ export class V1TrailsController {
         });
 
         payload.uuid === ownerUuid && (isLogin = true);
-      } catch (err) {
-        console.warn('JWT 驗證失敗');
+      } catch {
+        // 驗不過就當成未登入，不是錯誤
+        this.logger.debug('JWT 驗證失敗，以未登入身分繼續');
       }
     }
-    const data: FeatureCollection = await this.trailsService.getTrails(
-      isLogin,
-      ownerUuid,
-      type,
-      uuid,
-      share,
-    );
+    const data: FeatureCollection = await this.trailsService.getTrails(isLogin, ownerUuid, type, uuid, share);
     return data;
   }
 
   @ApiBearerAuth()
   @Get('county_order')
-  async getCountyOrder(
-    @Query('owner_uuid') owner_uuid: string,
-    @Query('type') type: string,
-  ) {
+  async getCountyOrder(@Query('owner_uuid') owner_uuid: string, @Query('type') type: string) {
     return this.trailsService.getCountyOrder(owner_uuid, type);
   }
 
   @ApiBearerAuth()
   @Get('trails_month_data')
-  async getTrailsMonthData(
-    @Query('owner_uuid') owner_uuid: string,
-    @Query('type') type: string,
-  ) {
+  async getTrailsMonthData(@Query('owner_uuid') owner_uuid: string, @Query('type') type: string) {
     return this.trailsService.getTrailsMonthData(owner_uuid, type);
   }
 
@@ -105,8 +97,9 @@ export class V1TrailsController {
         });
 
         isLogin = true;
-      } catch (err) {
-        console.warn('JWT 驗證失敗');
+      } catch {
+        // 驗不過就當成未登入，不是錯誤
+        this.logger.debug('JWT 驗證失敗，以未登入身分繼續');
       }
     }
 
@@ -116,21 +109,14 @@ export class V1TrailsController {
   @ApiBearerAuth()
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  async post(
-    @Body('owner_uuid') owner_uuid: string,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
+  async post(@Body('owner_uuid') owner_uuid: string, @UploadedFile() file: Express.Multer.File) {
     return this.trailsService.post(owner_uuid, file);
   }
 
   @ApiBearerAuth()
   @Put(':uuid')
   @UseInterceptors(FileInterceptor('file'))
-  put(
-    @Body('uuid') uuid: string,
-    @Body('owner_uuid') owner_uuid: string,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
+  put(@Body('uuid') uuid: string, @Body('owner_uuid') owner_uuid: string, @UploadedFile() file: Express.Multer.File) {
     return this.trailsService.put(uuid, owner_uuid, file);
   }
 

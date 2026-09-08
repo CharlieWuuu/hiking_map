@@ -81,18 +81,11 @@ export class SearchService {
     }));
 
     return [...trailResults, ...userResults].sort((a, b) =>
-      a.match_reason === b.match_reason
-        ? 0
-        : a.match_reason === 'name'
-          ? -1
-          : 1,
+      a.match_reason === b.match_reason ? 0 : a.match_reason === 'name' ? -1 : 1,
     );
   }
 
-  async filterTrails(
-    categoryKey: string | null,
-    county: string | null,
-  ): Promise<SearchResultDto[]> {
+  async filterTrails(categoryKey: string | null, county: string | null): Promise<SearchResultDto[]> {
     const conditions: string[] = [];
     const params: unknown[] = [];
 

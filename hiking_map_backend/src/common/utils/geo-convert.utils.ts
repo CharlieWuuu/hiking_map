@@ -1,6 +1,9 @@
+import { Logger } from '@nestjs/common';
 import { FeatureCollection } from 'geojson';
 import * as Papa from 'papaparse';
 import { create as xmlCreate } from 'xmlbuilder2';
+
+const logger = new Logger('GeoConvert');
 
 export function convertGeojsonToCsv(geojson: FeatureCollection): string {
   const rows = geojson.features.map((f) => {
@@ -37,11 +40,7 @@ export async function convertGeojsonToGpx(geojson: FeatureCollection) {
     for (const [key, value] of Object.entries(feature.properties || {})) {
       if (key !== 'name') {
         if (key === 'time') {
-          ext
-            .ele('time')
-            .txt(
-              new Date(value).toISOString().split('T')[0].replace(/-/g, '/'),
-            );
+          ext.ele('time').txt(new Date(value).toISOString().split('T')[0].replace(/-/g, '/'));
         } else {
           ext.ele(key).txt(String(value ?? ''));
         }
@@ -82,11 +81,7 @@ export async function convertGpxToGeojson(file: Express.Multer.File) {
     }
 
     const lineStrings = featureCollection.features
-      .filter(
-        (f) =>
-          f.geometry.type === 'LineString' &&
-          Array.isArray((f.geometry as any).coordinates),
-      )
+      .filter((f) => f.geometry.type === 'LineString' && Array.isArray((f.geometry as any).coordinates))
       .map((f) => f.geometry);
 
     if (lineStrings.length === 0) {
@@ -114,7 +109,7 @@ export async function convertGpxToGeojson(file: Express.Multer.File) {
       features: [unifiedFeature],
     };
   } catch (err) {
-    console.error('GPX 轉換失敗:', err);
+    logger.error(`GPX 轉換失敗：${String(err)}`);
     throw new Error('GPX 檔案解析錯誤，請確認格式正確');
   }
 }
