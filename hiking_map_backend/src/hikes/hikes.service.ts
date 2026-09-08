@@ -1,12 +1,15 @@
-import { Injectable, ForbiddenException, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, ForbiddenException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, EntityManager, In } from 'typeorm';
 import { Hike } from './hike.entity';
 import { HikeTrack } from './hike-track.entity';
 import { HikeCategoryMap } from './hike-category-map.entity';
 import { CreateHikeDto } from './dto/create-hike.dto';
 import { HikeStatsDto } from './dto/hike-stats.dto';
 import { UploadsService } from '../uploads/uploads.service';
+import { MergeHikesDto } from './dto/merge-hikes.dto';
+import { TrimTrackDto } from './dto/trim-track.dto';
+import { TrackGeometry, mergeTracks, trimTrack } from './track-edit.utils';
 
 // 簡化軌跡的容差，單位是經緯度的「度」。0.00045 度在台灣的緯度約等於 45～50 公尺。
 // 敢壓這麼兇是因為放大到看得出差別的時候，前端會另外去 R2 抓完整軌跡換掉。
@@ -90,7 +93,8 @@ export class HikesService {
   async create(userId: number, dto: CreateHikeDto) {
     const feature = dto.geojson.features[0];
     if (!feature) {
-      throw new ForbiddenException('geojson 中沒有可用的軌跡');
+      // 這是輸入格式問題，不是權限問題
+      throw new BadRequestException('geojson 中沒有可用的軌跡');
     }
 
     const hike = await this.dataSource.transaction(async (manager) => {
@@ -108,13 +112,7 @@ export class HikesService {
         cover_image_url: dto.cover_image_url ?? null,
       });
 
-      // 簡化線跟原始軌跡在同一句寫入，兩者不可能不同步
-      await manager.query(
-        `INSERT INTO hike_tracks (hike_id, geom, geom_simplified, point_count)
-         SELECT $1, g, ST_Multi(ST_SimplifyPreserveTopology(g, $3)), ST_NPoints(g)
-         FROM (SELECT ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON($2), 4326)) AS g) AS source`,
-        [hike.id, JSON.stringify(feature.geometry), SIMPLIFY_TOLERANCE_DEG],
-      );
+      await this.writeTrack(manager, hike.id, feature.geometry as TrackGeometry);
 
       if (dto.category_ids?.length) {
         await manager.getRepository(HikeCategoryMap).insert(
@@ -132,6 +130,60 @@ export class HikesService {
     // 失敗也只是少了「高縮放才用得到」的那一層，紀錄本身仍然完整可用。
     await this.storeFullTrack(hike.id, feature.geometry);
 
+    return hike;
+  }
+
+  // 寫入（或覆蓋）一筆軌跡。簡化線與 point_count 都在同一句 SQL 由 geom 推導，
+  // 所以不管是新建還是編輯，三者永遠一致。
+  private async writeTrack(manager: EntityManager, hikeId: number, geometry: TrackGeometry) {
+    await manager.query(
+      `INSERT INTO hike_tracks (hike_id, geom, geom_simplified, point_count)
+       SELECT $1, g, ST_Multi(ST_SimplifyPreserveTopology(g, $3)), ST_NPoints(g)
+       FROM (SELECT ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON($2), 4326)) AS g) AS source
+       ON CONFLICT (hike_id) DO UPDATE
+         SET geom = EXCLUDED.geom,
+             geom_simplified = EXCLUDED.geom_simplified,
+             point_count = EXCLUDED.point_count,
+             track_url = NULL`,
+      [hikeId, JSON.stringify(geometry), SIMPLIFY_TOLERANCE_DEG],
+    );
+  }
+
+  // 編輯過軌跡以後距離一定變了，交給 PostGIS 用 geography 重算，
+  // 比在 JS 裡自己寫 haversine 準，也少一份要維護的公式。
+  private async recalcDistance(manager: EntityManager, hikeId: number) {
+    await manager.query(
+      `UPDATE hikes SET distance_km = COALESCE(
+         (SELECT ST_Length(geom::geography) / 1000 FROM hike_tracks WHERE hike_id = $1), 0)
+       WHERE id = $1`,
+      [hikeId],
+    );
+  }
+
+  // 取出完整軌跡（真實來源），編輯一律以它為基準，不能拿簡化線去編
+  // lock=true 會在交易內鎖住這列，避免兩個並行的編輯各自讀到編輯前的軌跡、
+  // 後寫的那個把先寫的成果整個蓋掉。
+  private async loadTrackGeometry(
+    hikeId: number,
+    runner: EntityManager | DataSource = this.dataSource,
+    lock = false,
+  ): Promise<TrackGeometry> {
+    const rows = await runner.query(
+      `SELECT ST_AsGeoJSON(geom) AS geojson FROM hike_tracks WHERE hike_id = $1${lock ? ' FOR UPDATE' : ''}`,
+      [hikeId],
+    );
+    if (!rows[0]?.geojson) {
+      throw new NotFoundException('這筆紀錄沒有軌跡可以編輯');
+    }
+    return JSON.parse(rows[0].geojson) as TrackGeometry;
+  }
+
+  private async findOwnedHike(hikeId: number, userId: number, action = '編輯'): Promise<Hike> {
+    const hike = await this.hikesRepo.findOne({ where: { id: hikeId } });
+    if (!hike) throw new NotFoundException('找不到這筆健行紀錄');
+    if (hike.user_id !== userId) {
+      throw new ForbiddenException(`無法${action}他人的健行紀錄`);
+    }
     return hike;
   }
 
@@ -290,12 +342,109 @@ export class HikesService {
     };
   }
 
-  async remove(id: number, userId: number) {
-    const hike = await this.hikesRepo.findOne({ where: { id } });
-    if (!hike) throw new NotFoundException('找不到這筆健行紀錄');
-    if (hike.user_id !== userId) {
-      throw new ForbiddenException('無法刪除他人的健行紀錄');
+  // 裁切軌跡頭尾。索引是攤平後的點序號，由前端從 point_count 或完整軌跡推得。
+  async trimTrack(hikeId: number, userId: number, dto: TrimTrackDto) {
+    await this.findOwnedHike(hikeId, userId);
+
+    // 讀取與寫入必須在同一個交易裡，中間隔著一次 HTTP 往返的話就擋不住並行編輯
+    const trimmed = await this.dataSource.transaction(async (manager) => {
+      const geometry = await this.loadTrackGeometry(hikeId, manager, true);
+
+      let result: TrackGeometry;
+      try {
+        result = trimTrack(geometry, dto.start_index, dto.end_index);
+      } catch (error) {
+        // 純函式用 Error 表達「輸入不合理」，到了 HTTP 這層要翻成 400
+        throw new BadRequestException((error as Error).message);
+      }
+
+      await this.writeTrack(manager, hikeId, result);
+      await this.recalcDistance(manager, hikeId);
+      return result;
+    });
+
+    await this.storeFullTrack(hikeId, trimmed);
+    return this.findOne(hikeId);
+  }
+
+  // 把多筆紀錄的軌跡合併成一筆新紀錄（例如多日縱走各天分開上傳）。
+  // 來源預設保留，要刪得明確指定 delete_sources。
+  async merge(userId: number, dto: MergeHikesDto) {
+    // 專案目前沒有全域 ValidationPipe，DTO 只是型別宣告，執行期擋不住任何東西，
+    // 所以這裡自己驗。移除前請先確認 main.ts 已掛上 ValidationPipe。
+    const ids = dto.hike_ids ?? [];
+    if (!Array.isArray(ids) || ids.some((id) => !Number.isInteger(id))) {
+      throw new BadRequestException('hike_ids 必須是整數陣列');
     }
+    if (typeof dto.name !== 'string' || dto.name.trim() === '') {
+      throw new BadRequestException('name 不可為空');
+    }
+    if (dto.date !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(dto.date)) {
+      throw new BadRequestException('date 格式應為 YYYY-MM-DD');
+    }
+    if (new Set(ids).size !== ids.length) {
+      throw new BadRequestException('hike_ids 不可重複');
+    }
+    if (ids.length < 2) {
+      throw new BadRequestException('合併至少需要兩筆紀錄');
+    }
+
+    const hikes = await this.hikesRepo.find({ where: { id: In(ids) } });
+    if (hikes.length !== ids.length) {
+      throw new NotFoundException('有些紀錄不存在');
+    }
+    if (hikes.some((hike) => hike.user_id !== userId)) {
+      throw new ForbiddenException('無法合併他人的健行紀錄');
+    }
+
+    // 依照 dto 給的順序取軌跡，而不是資料庫回傳的順序
+    const byId = new Map(hikes.map((hike) => [hike.id, hike]));
+    const geometries = await Promise.all(ids.map((id) => this.loadTrackGeometry(id)));
+
+    let merged: TrackGeometry;
+    try {
+      merged = mergeTracks(geometries);
+    } catch (error) {
+      throw new BadRequestException((error as Error).message);
+    }
+
+    const sources = ids.map((id) => byId.get(id)!);
+    const earliest = sources.map((hike) => hike.date).sort()[0];
+    const first = sources[0];
+
+    const created = await this.dataSource.transaction(async (manager) => {
+      const hike = await manager.getRepository(Hike).save({
+        user_id: userId,
+        trail_id: first.trail_id,
+        name: dto.name,
+        county: first.county,
+        town: first.town,
+        date: dto.date ?? earliest,
+        distance_km: 0, // 隨即由 recalcDistance 從合併後的軌跡算出
+        is_public: sources.every((source) => source.is_public),
+        note: null,
+        urls: [],
+        cover_image_url: first.cover_image_url,
+      });
+
+      await this.writeTrack(manager, hike.id, merged);
+      await this.recalcDistance(manager, hike.id);
+
+      if (dto.delete_sources) {
+        await manager.getRepository(HikeCategoryMap).delete({ hike_id: In(ids) });
+        await manager.getRepository(HikeTrack).delete({ hike_id: In(ids) });
+        await manager.getRepository(Hike).delete(ids);
+      }
+
+      return hike;
+    });
+
+    await this.storeFullTrack(created.id, merged);
+    return this.findOne(created.id);
+  }
+
+  async remove(id: number, userId: number) {
+    await this.findOwnedHike(id, userId, '刪除');
 
     await this.dataSource.transaction(async (manager) => {
       await manager.getRepository(HikeCategoryMap).delete({ hike_id: id });
