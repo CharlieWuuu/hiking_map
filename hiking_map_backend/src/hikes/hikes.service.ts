@@ -1,4 +1,11 @@
-import { BadRequestException, Injectable, ForbiddenException, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  ForbiddenException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, EntityManager, In } from 'typeorm';
 import { Hike } from './hike.entity';
@@ -9,7 +16,7 @@ import { HikeStatsDto } from './dto/hike-stats.dto';
 import { UploadsService } from '../uploads/uploads.service';
 import { MergeHikesDto } from './dto/merge-hikes.dto';
 import { TrimTrackDto } from './dto/trim-track.dto';
-import { TrackGeometry, mergeTracks, trimTrack } from './track-edit.utils';
+import { TrackGeometry, countPoints, mergeTracks, trimTrack } from './track-edit.utils';
 
 // 簡化軌跡的容差，單位是經緯度的「度」。0.00045 度在台灣的緯度約等於 45～50 公尺。
 // 敢壓這麼兇是因為放大到看得出差別的時候，前端會另外去 R2 抓完整軌跡換掉。
@@ -105,7 +112,7 @@ export class HikesService {
         county: dto.county ?? null,
         town: dto.town ?? null,
         date: dto.date,
-        distance_km: dto.distance_km,
+        distance_km: 0, // 隨即由 recalcDistance 從軌跡算出
         is_public: dto.is_public ?? true,
         note: dto.note ?? null,
         urls: dto.urls ?? [],
@@ -113,6 +120,10 @@ export class HikesService {
       });
 
       await this.writeTrack(manager, hike.id, feature.geometry as TrackGeometry);
+
+      // 距離一律由 PostGIS 從軌跡算，不採用前端送來的 distance_km。
+      // 否則新建與編輯會是兩套定義，getStats 等於在加總兩種不同的數字。
+      await this.recalcDistance(manager, hike.id);
 
       if (dto.category_ids?.length) {
         await manager.getRepository(HikeCategoryMap).insert(
@@ -190,8 +201,17 @@ export class HikesService {
   // 把完整軌跡另存一份到 R2，供前端在放大或匯出時直接抓
   private async storeFullTrack(hikeId: number, geometry: unknown) {
     try {
+      // 編輯過的紀錄會有一份舊的，換上新網址之後那份就沒人讀得到了
+      const previous: { track_url: string | null }[] = await this.dataSource.query(
+        `SELECT track_url FROM hike_tracks WHERE hike_id = $1`,
+        [hikeId],
+      );
+
       const url = await this.uploadsService.uploadImmutableJson(geometry, 'tracks');
       await this.dataSource.query(`UPDATE hike_tracks SET track_url = $2 WHERE hike_id = $1`, [hikeId, url]);
+
+      // 新網址寫進資料庫之後才刪舊的，中途失敗也不會留下指向已刪檔案的紀錄
+      await this.uploadsService.deleteByUrl(previous[0]?.track_url);
     } catch (error) {
       this.logger.warn(`hike ${hikeId} 的完整軌跡沒能存進 R2，前端會退回使用簡化線：${String(error)}`);
     }
@@ -350,6 +370,15 @@ export class HikesService {
     const trimmed = await this.dataSource.transaction(async (manager) => {
       const geometry = await this.loadTrackGeometry(hikeId, manager, true);
 
+      // 索引必須以完整軌跡為基準。前端若拿列表 API 的簡化線去算，
+      // 索引仍會落在合法範圍內，卻會裁到完全不同的位置。
+      const total = countPoints(geometry);
+      if (dto.expected_point_count !== undefined && dto.expected_point_count !== total) {
+        throw new ConflictException(
+          `軌跡有 ${total} 個點，與你送出的 ${dto.expected_point_count} 不符。請重新載入完整軌跡後再裁切`,
+        );
+      }
+
       let result: TrackGeometry;
       try {
         result = trimTrack(geometry, dto.start_index, dto.end_index);
@@ -409,6 +438,16 @@ export class HikesService {
     }
 
     const sources = ids.map((id) => byId.get(id)!);
+
+    // 合併後的新紀錄只留得住一個 trail_id，而 getStats 是用
+    // COUNT(DISTINCT h.trail_id) 算成就的。來源分屬不同官方步道時若把它們刪掉，
+    // 成就數就會憑空減少且無法復原——寧可擋下來，讓使用者自己決定。
+    const distinctTrailIds = new Set(sources.map((s) => s.trail_id).filter((id) => id !== null));
+    if (dto.delete_sources && distinctTrailIds.size > 1) {
+      throw new BadRequestException(
+        `這幾筆紀錄分屬 ${distinctTrailIds.size} 條官方步道，刪除來源會讓成就統計少算。請改為保留來源（delete_sources = false）`,
+      );
+    }
     const earliest = sources.map((hike) => hike.date).sort()[0];
     const first = sources[0];
 
@@ -430,6 +469,22 @@ export class HikesService {
       await this.writeTrack(manager, hike.id, merged);
       await this.recalcDistance(manager, hike.id);
 
+      // 成就是用 trail_id 算的（getStats 的 COUNT(DISTINCT h.trail_id)），
+      // 而合併後的新紀錄只留得住第一筆的 trail_id。三天縱走三座百岳若把來源刪掉，
+      // 百岳數會從 3 掉到 1，所以來源的分類對應要一併搬到新紀錄上。
+      const sourceCategories: { category_id: number }[] = await manager.query(
+        `SELECT DISTINCT category_id FROM hike_category_map WHERE hike_id = ANY($1)`,
+        [ids],
+      );
+      if (sourceCategories.length) {
+        await manager.getRepository(HikeCategoryMap).insert(
+          sourceCategories.map((row) => ({
+            hike_id: hike.id,
+            category_id: row.category_id,
+          })),
+        );
+      }
+
       if (dto.delete_sources) {
         await manager.getRepository(HikeCategoryMap).delete({ hike_id: In(ids) });
         await manager.getRepository(HikeTrack).delete({ hike_id: In(ids) });
@@ -446,10 +501,19 @@ export class HikesService {
   async remove(id: number, userId: number) {
     await this.findOwnedHike(id, userId, '刪除');
 
+    // 交易外先取，因為交易一結束這筆就查不到了
+    const track: { track_url: string | null }[] = await this.dataSource.query(
+      `SELECT track_url FROM hike_tracks WHERE hike_id = $1`,
+      [id],
+    );
+
     await this.dataSource.transaction(async (manager) => {
       await manager.getRepository(HikeCategoryMap).delete({ hike_id: id });
       await manager.getRepository(HikeTrack).delete({ hike_id: id });
       await manager.getRepository(Hike).delete(id);
     });
+
+    // 紀錄刪了，R2 上那份完整軌跡沒人會再讀，留著只是個仍可公開存取的孤兒
+    await this.uploadsService.deleteByUrl(track[0]?.track_url);
   }
 }

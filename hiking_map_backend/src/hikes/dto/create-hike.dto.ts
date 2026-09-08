@@ -14,8 +14,9 @@ export class CreateHikeDto {
   @ApiProperty({ example: '2026-07-20' })
   date: string;
 
-  @ApiProperty({ example: 5.2 })
-  distance_km: number;
+  // 目前不採用：距離一律由後端用 PostGIS 從軌跡重算，確保與編輯後的數字同一套定義
+  @ApiPropertyOptional({ example: 5.2, description: '已忽略，距離由後端從軌跡計算' })
+  distance_km?: number;
 
   @ApiPropertyOptional({ example: true })
   is_public?: boolean;

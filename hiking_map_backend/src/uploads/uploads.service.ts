@@ -1,5 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
 import { gzip } from 'zlib';
 import { promisify } from 'util';
@@ -11,6 +11,7 @@ const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 
 @Injectable()
 export class UploadsService {
+  private readonly logger = new Logger(UploadsService.name);
   private client: S3Client;
   private bucket: string;
   private publicUrl: string;
@@ -28,10 +29,7 @@ export class UploadsService {
     });
   }
 
-  async uploadImage(
-    file: Express.Multer.File,
-    folder: string,
-  ): Promise<string> {
+  async uploadImage(file: Express.Multer.File, folder: string): Promise<string> {
     if (!ALLOWED_MIME_TYPES.has(file.mimetype)) {
       throw new BadRequestException('僅支援 JPEG、PNG、WebP 格式的圖片');
     }
@@ -76,5 +74,21 @@ export class UploadsService {
     );
 
     return `${this.publicUrl}/${key}`;
+  }
+
+  // 依公開網址刪除物件。軌跡被編輯過後舊的那份就沒人會再讀，
+  // 留著只是讓一個仍可公開存取的網址永遠飄在外面——而不可預測的 key
+  // 正是私人紀錄唯一的保護，所以孤兒檔等於永久外流。
+  //
+  // 刪不掉不該讓呼叫端的流程失敗：資料本身已經寫好了，這只是清垃圾。
+  async deleteByUrl(url: string | null | undefined): Promise<void> {
+    if (!url?.startsWith(`${this.publicUrl}/`)) return;
+
+    const key = url.slice(this.publicUrl.length + 1);
+    try {
+      await this.client.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: key }));
+    } catch (error) {
+      this.logger.warn(`R2 物件 ${key} 沒能刪除，需要時再手動清理：${String(error)}`);
+    }
   }
 }
