@@ -9,13 +9,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { GoogleStrategy } from './google.strategy';
 import { PasswordResetToken } from './password-reset-token.entity';
 import { MailModule } from '../mail/mail.module';
+import { getJwtSecret } from '../common/jwt-secret';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, AuditLog, Profile, PasswordResetToken]),
     MailModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'your-secret-key',
+      secret: getJwtSecret(),
       signOptions: { expiresIn: '7d' },
     }),
   ],

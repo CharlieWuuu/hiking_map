@@ -24,6 +24,7 @@ import { Request } from 'express';
 import { UseGuards } from '@nestjs/common';
 import { JwtRequiredGuard } from '../../auth/jwt-required.guard';
 import { FeatureCollection } from 'geojson';
+import { getJwtSecret } from '../../common/jwt-secret';
 
 @ApiTags('v1 (舊版前端)')
 @Controller('v1/trails')
@@ -49,7 +50,7 @@ export class V1TrailsController {
       const token = authHeader.slice(7);
       try {
         const payload = this.jwtService.verify(token, {
-          secret: process.env.JWT_SECRET || 'your-secret-key',
+          secret: getJwtSecret(),
         });
 
         payload.uuid === ownerUuid && (isLogin = true);
@@ -100,7 +101,7 @@ export class V1TrailsController {
       const token = authHeader.slice(7);
       try {
         const payload = this.jwtService.verify(token, {
-          secret: process.env.JWT_SECRET || 'your-secret-key',
+          secret: getJwtSecret(),
         });
 
         isLogin = true;

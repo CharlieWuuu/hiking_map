@@ -24,6 +24,7 @@ import { GoogleProfile } from './google.strategy';
 import { JwtRequiredGuard } from './jwt-required.guard';
 import { User } from './auth.entity';
 import { AuthMethodsDto, ForgotPasswordDto, ResetPasswordDto, SetEmailDto } from './dto/password-reset.dto';
+import { getJwtSecret } from '../common/jwt-secret';
 
 const AUTH_COOKIE = 'auth_token';
 const AUTH_COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 與 JWT expiresIn 一致
@@ -159,7 +160,7 @@ export class AuthController {
     const token = req.cookies?.[AUTH_COOKIE];
     if (!token) return null;
     try {
-      const payload = this.jwtService.verify(token, { secret: process.env.JWT_SECRET || 'your-secret-key' });
+      const payload = this.jwtService.verify(token, { secret: getJwtSecret() });
       return payload.sub as number;
     } catch {
       return null;
