@@ -36,11 +36,13 @@ async function bootstrap() {
   // whitelist 會剝掉沒有宣告驗證裝飾器的欄位，所以每個 request DTO 都必須
   // 補齊裝飾器，否則該欄位會被靜靜丟掉——新增 DTO 欄位時記得一起加。
   // 這裡刻意不開 forbidNonWhitelisted：多送欄位就無視，不需要因此回 400。
+  // 不開 enableImplicitConversion：它會在驗證「之前」強制轉型，
+  // 於是 @IsString() 欄位收到 { a: 1 } 會先被轉成 "[object Object]" 再通過驗證，
+  // 正好抵銷掉這裡想要的型別把關。需要字串轉數字的地方請在 DTO 上明確標註 @Type()。
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
-      transformOptions: { enableImplicitConversion: true },
     }),
   );
 

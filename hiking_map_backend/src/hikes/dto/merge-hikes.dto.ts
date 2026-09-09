@@ -1,9 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   ArrayMinSize,
   ArrayUnique,
   IsArray,
   IsBoolean,
+  IsDateString,
   IsInt,
   IsOptional,
   IsString,
@@ -21,15 +23,19 @@ export class MergeHikesDto {
   @IsInt({ each: true, message: 'hike_ids 必須是整數陣列' })
   hike_ids: number[];
 
+  // 先 trim 再驗長度，否則純空白的名稱會通過 MinLength(1)
   @ApiProperty({ example: '南二段縱走' })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   @MinLength(1, { message: 'name 不可為空' })
   @MaxLength(100)
   name: string;
 
+  // IsDateString 會連「日期是否真的存在」都檢查，2026-13-45 這種會被擋下來；
+  // 只用正則的話格式對但日期無效，會一路送到 Postgres 才炸成 500
   @ApiPropertyOptional({ example: '2026-07-20', description: '省略時採用來源紀錄中最早的日期' })
   @IsOptional()
-  @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: 'date 格式應為 YYYY-MM-DD' })
+  @IsDateString({ strict: true }, { message: 'date 必須是有效的日期，格式 YYYY-MM-DD' })
   date?: string;
 
   @ApiPropertyOptional({ example: false, description: '合併後是否刪除來源紀錄，預設保留' })
