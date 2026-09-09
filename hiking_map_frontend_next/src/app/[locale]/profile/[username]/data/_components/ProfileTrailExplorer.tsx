@@ -56,13 +56,9 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
   }
 
   return (
-    <div
-      className={`bg-highlight rounded-panel flex h-full w-full gap-px overflow-hidden p-2 ${
-        isMapFullscreen || isTableFullscreen ? '' : 'flex-col lg:flex-row'
-      }`}
-    >
+    <div className={`flex h-full w-full gap-4 ${isMapFullscreen || isTableFullscreen ? '' : 'flex-col lg:flex-row'}`}>
       {!isMapFullscreen && (
-        <div className={`flex w-full flex-col gap-2 p-2 lg:h-full ${isTableFullscreen ? '' : 'lg:max-w-md'}`}>
+        <div className={`bg-highlight rounded-panel flex w-full flex-col gap-2 overflow-hidden p-4 lg:h-full ${isTableFullscreen ? '' : 'lg:max-w-md'}`}>
           <TrailExplorerToolbar
             isTableExpanded={isTableFullscreen}
             onToggleTableExpanded={() => onFullscreenChange(isTableFullscreen ? null : 'table')}
