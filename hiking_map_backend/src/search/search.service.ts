@@ -41,7 +41,9 @@ export class SearchService {
     return rows.map((row: any) => ({ text: row.query }));
   }
 
-  async search(query: string): Promise<SearchResultDto[]> {
+  // userId 有值時（登入狀態）額外把搜尋範圍擴大到自己的健行紀錄，
+  // 未登入則只搜官方步道——封閉系統下沒有「查別人紀錄」這回事，所以永遠只查 userId 自己
+  async search(query: string, userId?: number): Promise<SearchResultDto[]> {
     const q = query.trim();
     if (!q) return [];
 
@@ -50,15 +52,6 @@ export class SearchService {
               (name ILIKE $1) AS matches_name
        FROM trails
        WHERE name ILIKE $1 OR county ILIKE $1 OR town ILIKE $1 OR description ILIKE $1`,
-      [`%${q}%`],
-    );
-
-    const userRows = await this.dataSource.query(
-      `SELECT u.username, p.avatar, p.description,
-              (u.username ILIKE $1) AS matches_name
-       FROM users u
-       JOIN profiles p ON p.user_id = u.id
-       WHERE u.username ILIKE $1 OR p.description ILIKE $1`,
       [`%${q}%`],
     );
 
@@ -72,15 +65,27 @@ export class SearchService {
       match_reason: row.matches_name ? 'name' : 'field',
     }));
 
-    const userResults: SearchResultDto[] = userRows.map((row: any) => ({
-      type: 'user',
-      slug: row.username,
-      display_name: row.username,
-      avatar: row.avatar,
-      match_reason: row.matches_name ? 'name' : 'field',
-    }));
+    let hikeResults: SearchResultDto[] = [];
+    if (userId) {
+      const hikeRows = await this.dataSource.query(
+        `SELECT id, name, county, town, cover_image_url,
+                (name ILIKE $1) AS matches_name
+         FROM hikes
+         WHERE user_id = $2 AND (name ILIKE $1 OR county ILIKE $1 OR town ILIKE $1 OR note ILIKE $1)`,
+        [`%${q}%`, userId],
+      );
+      hikeResults = hikeRows.map((row: any) => ({
+        type: 'hike',
+        slug: String(row.id),
+        display_name: row.name,
+        county: row.county,
+        town: row.town,
+        cover_image_url: row.cover_image_url,
+        match_reason: row.matches_name ? 'name' : 'field',
+      }));
+    }
 
-    return [...trailResults, ...userResults].sort((a, b) =>
+    return [...hikeResults, ...trailResults].sort((a, b) =>
       a.match_reason === b.match_reason ? 0 : a.match_reason === 'name' ? -1 : 1,
     );
   }

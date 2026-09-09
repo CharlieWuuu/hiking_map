@@ -3,10 +3,9 @@ import type { Search as SearchClient } from '../generated/Search';
 import { toCamelCase } from './case';
 
 export type SearchResult = {
-  type: 'trail' | 'user';
+  type: 'trail' | 'hike';
   slug: string;
   displayName: string;
-  avatar?: string | null;
   county?: string | null;
   town?: string | null;
   coverImageUrl?: string | null;

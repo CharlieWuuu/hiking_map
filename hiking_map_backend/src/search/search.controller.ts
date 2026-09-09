@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query, Req, Body } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { SearchService } from './search.service';
 import { SearchResultDto } from './dto/search-result.dto';
@@ -10,10 +10,16 @@ import { LogSearchQueryDto } from './dto/log-search-query.dto';
 export class SearchController {
   constructor(private searchService: SearchService) {}
 
+  // JwtOptionalMiddleware 全域套用，未登入時 req.user 就是 undefined
   @Get()
   @ApiOkResponse({ type: SearchResultDto, isArray: true })
-  search(@Query('q') q?: string, @Query('category') category?: string, @Query('county') county?: string) {
-    if (q) return this.searchService.search(q);
+  search(
+    @Query('q') q: string | undefined,
+    @Query('category') category: string | undefined,
+    @Query('county') county: string | undefined,
+    @Req() req: any,
+  ) {
+    if (q) return this.searchService.search(q, req.user?.user_id);
     if (category || county) return this.searchService.filterTrails(category ?? null, county ?? null);
     return [];
   }

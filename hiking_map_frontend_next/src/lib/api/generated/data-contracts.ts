@@ -289,13 +289,11 @@ export interface Collection {
 
 export interface SearchResultDto {
   /** @example "trail" */
-  type: 'trail' | 'user';
+  type: 'trail' | 'hike';
   /** @example "tataka-trailhead-to-paiyun-lodge" */
   slug: string;
   /** @example "塔塔加登山口至排雲山莊" */
   display_name: string;
-  /** @example "https://example.com/avatar.png" */
-  avatar?: object | null;
   /** @example "南投縣" */
   county?: object | null;
   /** @example "信義鄉" */

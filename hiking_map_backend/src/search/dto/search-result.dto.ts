@@ -1,18 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class SearchResultDto {
-  @ApiProperty({ example: 'trail', enum: ['trail', 'user'] })
-  type: 'trail' | 'user';
+  // hike 是搜尋者自己的紀錄，slug 用 hike id 字串化，前端組 /hikes/:id 連結用；
+  // trail 才有正式的字串 slug
+  @ApiProperty({ example: 'trail', enum: ['trail', 'hike'] })
+  type: 'trail' | 'hike';
 
-  // trail 用 slug、user 用 username，前端組連結用
   @ApiProperty({ example: 'tataka-trailhead-to-paiyun-lodge' })
   slug: string;
 
   @ApiProperty({ example: '塔塔加登山口至排雲山莊' })
   display_name: string;
-
-  @ApiPropertyOptional({ example: 'https://example.com/avatar.png', nullable: true })
-  avatar?: string | null;
 
   @ApiPropertyOptional({ example: '南投縣', nullable: true })
   county?: string | null;

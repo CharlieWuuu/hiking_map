@@ -25,8 +25,8 @@
     "searchLabel": "搜尋"
   },
   "SearchResult": {
-    "user": "使用者",
     "trail": "路線",
+    "hike": "我的紀錄",
     "matchField": "・符合內容"
   },
   "HomePage": {
