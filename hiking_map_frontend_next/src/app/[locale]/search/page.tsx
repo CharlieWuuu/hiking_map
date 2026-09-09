@@ -2,7 +2,6 @@ import { getTranslations } from 'next-intl/server';
 
 import PageLayout from '../../../components/PageLayout';
 import TrailListItem from '../../../components/TrailListItem';
-import UserListItem from '../../../components/UserListItem';
 import { Link } from '../../../i18n/navigation';
 import { apiClient } from '../../../lib/apiClient';
 import { placeholderImage } from '../../../lib/placeholderImage';
@@ -21,7 +20,6 @@ export default async function SearchPage({ searchParams }: Props) {
   const counties = [...new Set(allTrails.map((trail) => trail.county).filter((county): county is string => Boolean(county)))];
   const county = counties.includes(rawCounty ?? '') ? rawCounty! : null;
   const t = await getTranslations('SearchPage');
-  const tResult = await getTranslations('SearchResult');
 
   const isFiltering = Boolean(category || county);
   const results = q ? await apiClient.search.search(q) : isFiltering ? await apiClient.search.filterTrails(category, county) : [];
@@ -34,27 +32,17 @@ export default async function SearchPage({ searchParams }: Props) {
       {!q && isFiltering && results.length === 0 && <p className="text-background-contrary/60 text-center text-sm">{t('noTrails')}</p>}
 
       {(q || isFiltering) && results.length > 0 && (
-        <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
-          {results.map((item) =>
-            item.type === 'user' ? (
-              <UserListItem
-                key={`user-${item.slug}`}
-                href={`/profile/${item.slug}`}
-                displayName={item.displayName}
-                avatar={item.avatar ?? undefined}
-                subtitle={tResult('user')}
-              />
-            ) : (
-              <TrailListItem
-                key={`trail-${item.slug}`}
-                href={`/trails/${item.slug}`}
-                name={item.displayName}
-                county={item.county ?? ''}
-                town={item.town ?? ''}
-                coverImageUrl={item.coverImageUrl}
-              />
-            )
-          )}
+        <div className="scrollbar-subtle flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
+          {results.map((item) => (
+            <TrailListItem
+              key={`trail-${item.slug}`}
+              href={`/trails/${item.slug}`}
+              name={item.displayName}
+              county={item.county ?? ''}
+              town={item.town ?? ''}
+              coverImageUrl={item.coverImageUrl}
+            />
+          ))}
         </div>
       )}
 

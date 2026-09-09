@@ -65,7 +65,7 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
             <div className="flex h-dvh flex-col lg:flex-row">
               <Nav />
               {/* flex 一路傳到頁面，頁面才能用 flex-1 撐滿高度（例如登入頁要垂直置中、地圖頁要滿版） */}
-              <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto p-6 pb-20 lg:px-8 lg:py-12 lg:pb-12">
+              <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto pb-20 lg:p-6">
                 {/* 預設限制閱讀寬度；地圖等需要撐滿版面的頁面用 .page-wide 取消上限 */}
                 <div className="page-content-width mx-auto flex min-h-0 w-full flex-1 flex-col">{children}</div>
               </main>

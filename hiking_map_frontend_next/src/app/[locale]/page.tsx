@@ -30,7 +30,7 @@ export default async function Home() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {currentUser && stats ? (
             <Link
-              href={`/profile/${currentUser.username}`}
+              href="/chart"
               className="bg-accent text-accent-contrast rounded-panel flex flex-col justify-between gap-4 p-6 transition-opacity hover:opacity-90 md:col-span-1"
             >
               <span className="text-sm font-medium opacity-70">{t('yourStats')}</span>
@@ -61,7 +61,7 @@ export default async function Home() {
             {recentTrails.map((hike) => (
               <TrailListItem
                 key={hike.id}
-                href={`/profile/${currentUser.username}/hikes/${hike.id}`}
+                href={`/hikes/${hike.id}`}
                 name={hike.name}
                 county={hike.county ?? ''}
                 town={hike.town ?? ''}

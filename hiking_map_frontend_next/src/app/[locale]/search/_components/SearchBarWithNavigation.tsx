@@ -12,11 +12,7 @@ export default function SearchBarWithNavigation() {
   }
 
   function handleSelectEntity(item: SearchResult) {
-    if (item.type === 'user') {
-      router.push(`/profile/${item.username}`);
-    } else {
-      router.push(`/trails/${item.slug}`);
-    }
+    router.push(`/trails/${item.slug}`);
   }
 
   return <SearchBar onSubmitQuery={handleSubmitQuery} onSelectEntity={handleSelectEntity} />;

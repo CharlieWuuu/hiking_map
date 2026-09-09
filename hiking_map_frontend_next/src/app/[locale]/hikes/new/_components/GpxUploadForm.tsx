@@ -7,7 +7,6 @@ import { useRef, useState } from 'react';
 import TrailLayer from '../../../../../components/MapView/TrailLayer';
 import { useRouter } from '../../../../../i18n/navigation';
 import { apiClient } from '../../../../../lib/apiClient';
-import { useAuth } from '../../../../../lib/authStore';
 import { GpxParseError, parseGpx, toFeatureCollection, type ParsedGpx } from '../../../../../lib/gpx/parseGpx';
 
 const inputClassName = 'bg-panel text-background-contrary w-full rounded px-2 py-1.5 text-sm outline-none';
@@ -15,8 +14,6 @@ const inputClassName = 'bg-panel text-background-contrary w-full rounded px-2 py
 export default function GpxUploadForm() {
   const t = useTranslations('HikeUploadPage');
   const router = useRouter();
-  // 用 selector 訂閱，store 其他欄位變動時不會重畫這個表單
-  const username = useAuth((state) => state.username);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [parsed, setParsed] = useState<ParsedGpx | null>(null);
@@ -64,7 +61,7 @@ export default function GpxUploadForm() {
         note: note || undefined,
         geojson: toFeatureCollection(parsed),
       });
-      router.push(`/profile/${username}/hikes/${hike.id}`);
+      router.push(`/hikes/${hike.id}`);
     } catch {
       setError(t('submitFailed'));
       setIsSubmitting(false);

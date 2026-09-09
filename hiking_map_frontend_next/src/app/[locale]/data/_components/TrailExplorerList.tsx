@@ -1,8 +1,8 @@
 import { useTranslations } from 'next-intl';
 
-import TrailEditCard, { type EditableTrail } from '../../../../../../components/TrailEditCard';
-import TrailListItem from '../../../../../../components/TrailListItem';
-import TrailTable from '../../../../../../components/TrailTable';
+import TrailEditCard, { type EditableTrail } from '../../../../components/TrailEditCard';
+import TrailListItem from '../../../../components/TrailListItem';
+import TrailTable from '../../../../components/TrailTable';
 
 type Trail = EditableTrail & { path: [number, number][] };
 

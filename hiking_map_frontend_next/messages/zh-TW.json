@@ -16,6 +16,7 @@
     "home": "首頁",
     "search": "探索",
     "data": "資料",
+    "upload": "新增紀錄",
     "profile": "統計",
     "settings": "設定"
   },
@@ -87,6 +88,7 @@
     "noTrails": "查無符合條件的步道"
   },
   "ProfilePage": {
+    "title": "統計",
     "totalDistanceLabel": "總覽",
     "totalDistance": "{distance, number, ::.00} 公里",
     "hikeCount": "{count} 次健行",
@@ -95,16 +97,15 @@
     "achievementHundredTrail": "百大必訪步道",
     "trailHistory": "歷次軌跡",
     "goToData": "地圖與資料",
-    "goToCollections": "收藏清單",
-    "uploadHike": "上傳紀錄"
+    "goToCollections": "收藏清單"
   },
   "EditProfileForm": {
-    "edit": "編輯個人資料",
-    "title": "編輯個人資料",
+    "title": "個人檔案",
     "avatar": "大頭貼網址",
     "description": "簡介",
-    "cancel": "取消",
-    "save": "儲存"
+    "save": "儲存",
+    "saved": "已儲存",
+    "saveFailed": "儲存失敗"
   },
   "ProfileDataPage": {
     "title": "地圖與資料",
