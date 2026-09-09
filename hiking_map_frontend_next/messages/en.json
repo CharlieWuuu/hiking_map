@@ -16,6 +16,7 @@
     "home": "Home",
     "search": "Explore",
     "data": "Data",
+    "upload": "Add Record",
     "profile": "Stats",
     "settings": "Settings"
   },
@@ -87,6 +88,7 @@
     "noTrails": "No trails match the current filters"
   },
   "ProfilePage": {
+    "title": "Stats",
     "totalDistanceLabel": "Overview",
     "totalDistance": "{distance, number, ::.00} km",
     "hikeCount": "{count} hikes",
@@ -95,16 +97,15 @@
     "achievementHundredTrail": "Top 100 Trails",
     "trailHistory": "Trail history",
     "goToData": "Map & data",
-    "goToCollections": "Collections",
-    "uploadHike": "Upload hike"
+    "goToCollections": "Collections"
   },
   "EditProfileForm": {
-    "edit": "Edit profile",
-    "title": "Edit profile",
+    "title": "Profile",
     "avatar": "Avatar URL",
     "description": "Bio",
-    "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "saved": "Saved",
+    "saveFailed": "Save failed"
   },
   "ProfileDataPage": {
     "title": "Map & Data",

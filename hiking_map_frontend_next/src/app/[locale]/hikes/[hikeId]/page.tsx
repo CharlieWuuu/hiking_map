@@ -1,10 +1,11 @@
 import { getTranslations } from 'next-intl/server';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
-import BackLink from '../../../../../../components/BackLink';
-import TrailLayer from '../../../../../../components/MapView/TrailLayer';
-import PageLayout from '../../../../../../components/PageLayout';
-import { apiClient } from '../../../../../../lib/apiClient';
+import BackLink from '../../../../components/BackLink';
+import TrailLayer from '../../../../components/MapView/TrailLayer';
+import PageLayout from '../../../../components/PageLayout';
+import { apiClient } from '../../../../lib/apiClient';
+import { getCurrentUser } from '../../../../lib/getCurrentUser';
 
 // 後端 hike_tracks.geom 是 MultiLineString，這裡只取第一條線來畫圖
 function getHikePath(geojson: object | null | undefined): [number, number][] {
@@ -14,13 +15,16 @@ function getHikePath(geojson: object | null | undefined): [number, number][] {
   return [];
 }
 
-export default async function HikeDetailPage({ params }: { params: Promise<{ username: string; hikeId: string }> }) {
-  const { username, hikeId } = await params;
+export default async function HikeDetailPage({ params }: { params: Promise<{ hikeId: string }> }) {
+  const { hikeId } = await params;
   const id = Number(hikeId);
   if (!Number.isInteger(id)) notFound();
 
+  const currentUser = await getCurrentUser();
+  if (!currentUser) redirect('/login');
+
   const hike = await apiClient.hikes.findOne(id).catch(() => null);
-  if (!hike || hike.userId !== (await apiClient.profile.getByUsername(username).catch(() => null))?.userId) notFound();
+  if (!hike || hike.userId !== currentUser.userId) notFound();
 
   const t = await getTranslations('HikeDetailPage');
   const path = getHikePath(hike.geojson);
@@ -30,7 +34,7 @@ export default async function HikeDetailPage({ params }: { params: Promise<{ use
       align="center"
       title={hike.name}
       subtitle={(hike.county || hike.town) && `${hike.county} ${hike.town}`}
-      before={<BackLink href={`/profile/${username}/data`}>{t('backToProfile')}</BackLink>}
+      before={<BackLink href="/data">{t('backToProfile')}</BackLink>}
     >
       <div className="flex flex-wrap justify-around gap-4">
         <div className="flex flex-col items-center">

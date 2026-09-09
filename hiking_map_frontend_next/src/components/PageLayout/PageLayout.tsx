@@ -18,7 +18,7 @@ export default function PageLayout({ title, subtitle, actions, before, align = '
   const hasHeader = Boolean(title || subtitle || actions);
 
   return (
-    <div className="flex min-h-0 w-full flex-1 flex-col gap-10">
+    <div className="flex min-h-0 w-full flex-1 flex-col gap-4">
       {(before || hasHeader) && (
         <div className="flex flex-col gap-4">
           {before}

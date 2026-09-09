@@ -3,10 +3,10 @@
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import TrailsLayer, { type MapTrail } from '../../../../../../components/MapView/TrailsLayer';
-import type { EditableTrail } from '../../../../../../components/TrailEditCard';
-import { apiClient } from '../../../../../../lib/apiClient';
-import { useMapStore } from '../../../../../../lib/mapStore';
+import TrailsLayer, { type MapTrail } from '../../../../components/MapView/TrailsLayer';
+import type { EditableTrail } from '../../../../components/TrailEditCard';
+import { apiClient } from '../../../../lib/apiClient';
+import { useMapStore } from '../../../../lib/mapStore';
 import ExpandToggleButton from './ExpandToggleButton';
 import TrailExplorerList from './TrailExplorerList';
 import TrailExplorerToolbar from './TrailExplorerToolbar';
@@ -58,38 +58,39 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
   return (
     <div className={`flex h-full w-full gap-4 ${isMapFullscreen || isTableFullscreen ? '' : 'flex-col lg:flex-row'}`}>
       {!isMapFullscreen && (
-        <div className={`bg-panel rounded-panel flex w-full flex-col gap-2 overflow-hidden p-3 lg:h-full ${isTableFullscreen ? '' : 'lg:max-w-md'}`}>
-          <TrailExplorerToolbar
-            isTableExpanded={isTableFullscreen}
-            onToggleTableExpanded={() => onFullscreenChange(isTableFullscreen ? null : 'table')}
-            view={view}
-            onToggleView={() => setView((prev) => (prev === 'card' ? 'table' : 'card'))}
-            isOwner={isOwner}
-            isEditMode={isEditMode}
-            onToggleEditMode={onToggleEditMode}
-          />
-
-          {/* 只有清單捲動，工具列與分頁才會一直留在畫面上 */}
-          <div className="scrollbar-subtle flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
-            <TrailExplorerList
-              trails={pagedTrails}
+        <div className={`flex w-full flex-col gap-2`}>
+          <div className={`rounded-panel flex w-full flex-col gap-2 overflow-hidden lg:h-full ${isTableFullscreen ? '' : 'lg:max-w-md'}`}>
+            <TrailExplorerToolbar
+              isTableExpanded={isTableFullscreen}
+              onToggleTableExpanded={() => onFullscreenChange(isTableFullscreen ? null : 'table')}
               view={view}
-              activeSlug={activeSlug}
+              onToggleView={() => setView((prev) => (prev === 'card' ? 'table' : 'card'))}
+              isOwner={isOwner}
               isEditMode={isEditMode}
-              onHoverChange={setHoverSlug}
-              onSelect={setActiveSlug}
-              onSaveTrailPatch={saveTrailPatch}
-              onDeleteTrail={deleteTrail}
+              onToggleEditMode={onToggleEditMode}
             />
-          </div>
 
+            {/* 只有清單捲動，工具列與分頁才會一直留在畫面上 */}
+            <div className="scrollbar-subtle flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
+              <TrailExplorerList
+                trails={pagedTrails}
+                view={view}
+                activeSlug={activeSlug}
+                isEditMode={isEditMode}
+                onHoverChange={setHoverSlug}
+                onSelect={setActiveSlug}
+                onSaveTrailPatch={saveTrailPatch}
+                onDeleteTrail={deleteTrail}
+              />
+            </div>
+          </div>
           <TrailListPagination page={page} pageCount={pageCount} onPageChange={changePage} />
         </div>
       )}
 
       {!isTableFullscreen && (
-        <div className={`bg-panel rounded-panel relative p-3 ${isMapFullscreen ? 'h-125 w-full lg:h-full' : 'h-100 w-full flex-1 lg:h-full'}`}>
-          <div className="absolute top-5 right-5 z-1000">
+        <div className={`relative ${isMapFullscreen ? 'h-125 w-full lg:h-full' : 'h-100 w-full flex-1 lg:h-full'}`}>
+          <div className="absolute top-2 right-2 z-1000">
             <ExpandToggleButton
               isExpanded={isMapFullscreen}
               onToggle={() => onFullscreenChange(isMapFullscreen ? null : 'map')}

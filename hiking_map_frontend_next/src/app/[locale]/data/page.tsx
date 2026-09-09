@@ -1,13 +1,12 @@
 import { getTranslations } from 'next-intl/server';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
-import PageLayout from '../../../../../components/PageLayout';
-import { apiClient } from '../../../../../lib/apiClient';
-import { getCurrentUser } from '../../../../../lib/getCurrentUser';
+import PageLayout from '../../../components/PageLayout';
+import { apiClient } from '../../../lib/apiClient';
+import { getCurrentUser } from '../../../lib/getCurrentUser';
 import ProfileTrailExplorerWithNavigation from './_components/ProfileTrailExplorerWithNavigation';
 
 type Props = {
-  params: Promise<{ username: string }>;
   searchParams: Promise<{ fullscreen?: string; edit?: string }>;
 };
 
@@ -20,18 +19,15 @@ function getHikePath(geojson: object | null | undefined): [number, number][] {
   return [];
 }
 
-export default async function ProfileDataPage({ params, searchParams }: Props) {
-  const { username } = await params;
+export default async function DataPage({ searchParams }: Props) {
   const { fullscreen: rawFullscreen, edit } = await searchParams;
   const fullscreen = rawFullscreen === 'map' ? 'map' : rawFullscreen === 'table' ? 'table' : null;
   const currentUser = await getCurrentUser();
-  const isOwner = currentUser?.username === username;
-  const isEditMode = edit === 'true' && isOwner;
+  if (!currentUser) redirect('/login');
+  const isOwner = true;
+  const isEditMode = edit === 'true';
 
-  const profile = await apiClient.profile.getByUsername(username).catch(() => null);
-  if (!profile) notFound();
-
-  const hikes = await apiClient.hikes.findAll(String(profile.userId), true);
+  const hikes = await apiClient.hikes.findAll(String(currentUser.userId), true);
   const trails = hikes.map((hike) => ({
     slug: String(hike.id),
     name: hike.name,
@@ -55,7 +51,7 @@ export default async function ProfileDataPage({ params, searchParams }: Props) {
   return (
     <PageLayout title={t('title')} subtitle={t('subtitle', { count: trails.length })}>
       <div className="page-wide min-h-150 flex-1">
-        <ProfileTrailExplorerWithNavigation username={username} trails={trails} fullscreen={fullscreen} isEditMode={isEditMode} isOwner={isOwner} />
+        <ProfileTrailExplorerWithNavigation trails={trails} fullscreen={fullscreen} isEditMode={isEditMode} isOwner={isOwner} />
       </div>
     </PageLayout>
   );

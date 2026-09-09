@@ -23,7 +23,7 @@ type Story = StoryObj<typeof TrailListItem>;
 // 導航模式：點擊後跳轉到 href，用於個人健行紀錄、路線清單
 export const Navigation: Story = {
   args: {
-    href: '/profile/charliewu/hikes/xueshan-main-peak-20260312',
+    href: '/hikes/xueshan-main-peak-20260312',
     name: '雪山主峰步道',
     county: '台中市',
     town: '和平區',

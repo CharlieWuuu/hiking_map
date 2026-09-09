@@ -19,7 +19,7 @@ export default async function NewHikePage({ params }: Props) {
   if (!currentUser) redirect(`/${locale}/login`);
 
   return (
-    <PageLayout title={t('title')} subtitle={t('subtitle')} before={<BackLink href={`/profile/${currentUser.username}`}>{t('backToProfile')}</BackLink>}>
+    <PageLayout title={t('title')} subtitle={t('subtitle')} before={<BackLink href="/chart">{t('backToProfile')}</BackLink>}>
       <GpxUploadForm />
     </PageLayout>
   );

@@ -5,7 +5,6 @@ import { MOCK_POPULAR_QUERIES, MOCK_RESULTS } from './search.data';
 export const RESULTS_PER_PAGE = 5;
 
 function fieldsToSearch(item: SearchResult): string[] {
-  if (item.type === 'user') return [item.displayName, item.bio ?? ''];
   return [item.displayName, item.county ?? '', item.town ?? '', item.note ?? ''];
 }
 
