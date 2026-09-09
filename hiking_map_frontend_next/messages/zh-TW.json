@@ -139,6 +139,7 @@
     "distance": "距離",
     "distanceValue": "{distance, number, ::.00} 公里",
     "public": "公開",
+    "categories": "分類",
     "hundred": "百岳",
     "smallHundred": "小百岳",
     "hundredTrail": "百大必訪步道",

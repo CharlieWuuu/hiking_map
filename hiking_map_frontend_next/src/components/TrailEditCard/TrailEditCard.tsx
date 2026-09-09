@@ -35,6 +35,22 @@ const saveButtonClassName =
 const deleteButtonClassName =
   'bg-panel-active text-red-500 hover:bg-red-500 hover:text-background flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-150 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
 
+// 分類（百岳／小百岳／百大必訪）是互不排斥的多選標籤，用可切換的 tag 呈現比 checkbox 更符合語意
+function TagToggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (checked: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={checked}
+      onClick={() => onChange(!checked)}
+      className={`rounded-full px-3 py-1 text-sm transition-colors duration-150 ${
+        checked ? 'bg-accent text-background' : 'bg-panel-active text-background-contrary hover:bg-panel-active-lighten'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
 export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Props) {
   const t = useTranslations('TrailEditCard');
   const [patch, setPatch] = useState<Partial<EditableTrail>>({});
@@ -122,7 +138,7 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-6">
+      <div className="flex flex-wrap items-start gap-6">
         <label className="flex w-fit flex-col items-start gap-1">
           <span className="text-sm">{t('public')}</span>
           <input
@@ -132,33 +148,23 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
             className="accent-accent h-6 w-6 cursor-pointer"
           />
         </label>
-        <label className="flex w-fit flex-col items-start gap-1">
-          <span className="text-sm">{t('hundred')}</span>
-          <input
-            type="checkbox"
-            defaultChecked={trail.isHundred}
-            onChange={(e) => updateField('isHundred', e.target.checked)}
-            className="accent-accent h-6 w-6 cursor-pointer"
-          />
-        </label>
-        <label className="flex w-fit flex-col items-start gap-1">
-          <span className="text-sm">{t('smallHundred')}</span>
-          <input
-            type="checkbox"
-            defaultChecked={trail.isSmallHundred}
-            onChange={(e) => updateField('isSmallHundred', e.target.checked)}
-            className="accent-accent h-6 w-6 cursor-pointer"
-          />
-        </label>
-        <label className="flex w-fit flex-col items-start gap-1">
-          <span className="text-sm">{t('hundredTrail')}</span>
-          <input
-            type="checkbox"
-            defaultChecked={trail.isHundredTrail}
-            onChange={(e) => updateField('isHundredTrail', e.target.checked)}
-            className="accent-accent h-6 w-6 cursor-pointer"
-          />
-        </label>
+
+        <div className="flex flex-col items-start gap-1">
+          <span className="text-sm">{t('categories')}</span>
+          <div className="flex flex-wrap gap-2">
+            <TagToggle label={t('hundred')} checked={patch.isHundred ?? trail.isHundred} onChange={(checked) => updateField('isHundred', checked)} />
+            <TagToggle
+              label={t('smallHundred')}
+              checked={patch.isSmallHundred ?? trail.isSmallHundred}
+              onChange={(checked) => updateField('isSmallHundred', checked)}
+            />
+            <TagToggle
+              label={t('hundredTrail')}
+              checked={patch.isHundredTrail ?? trail.isHundredTrail}
+              onChange={(checked) => updateField('isHundredTrail', checked)}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="flex w-full flex-col items-start gap-2">

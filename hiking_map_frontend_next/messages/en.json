@@ -139,6 +139,7 @@
     "distance": "Distance",
     "distanceValue": "{distance, number, ::.00} km",
     "public": "Public",
+    "categories": "Categories",
     "hundred": "Hundred Peaks",
     "smallHundred": "Small Hundred Peaks",
     "hundredTrail": "Top 100 Trails",
