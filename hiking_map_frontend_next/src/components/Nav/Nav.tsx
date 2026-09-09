@@ -29,9 +29,16 @@ const collapsedStore = {
   },
 };
 
-function isActive(pathname: string, href: string) {
-  if (href === '/') return pathname === '/';
-  return pathname.startsWith(href);
+// data 的路徑（/profile/x/data）是 profile 路徑（/profile/x）的子路徑，
+// 兩個 href 對同一個 pathname 都會 startsWith 成功，需要挑「最長匹配」
+// 才能讓同一時間只有一個項目被標成 active。
+function findActiveHref(pathname: string, hrefs: string[]): string | null {
+  if (pathname === '/') return hrefs.includes('/') ? '/' : null;
+
+  const matches = hrefs.filter((href) => href !== '/' && pathname.startsWith(href));
+  if (matches.length === 0) return null;
+
+  return matches.reduce((longest, current) => (current.length > longest.length ? current : longest));
 }
 
 export default function Nav() {
@@ -40,6 +47,10 @@ export default function Nav() {
   // 只訂閱 username，不然登入狀態任何一個欄位變動都會讓整個 Nav 重畫
   const username = useAuth((state) => state.username);
   const navItems = getNavItems(username);
+  const activeHref = findActiveHref(
+    pathname,
+    navItems.map((item) => item.href)
+  );
   const isCollapsed = useSyncExternalStore(collapsedStore.subscribe, collapsedStore.getSnapshot, collapsedStore.getServerSnapshot);
 
   function toggleCollapsed() {
@@ -55,9 +66,9 @@ export default function Nav() {
       <nav className="bg-nav border-nav-border fixed right-0 bottom-0 left-0 z-50 flex justify-around border-t py-4 lg:hidden">
         {navItems.map(({ messageKey, href, Icon }) => (
           <Link
-            key={href}
+            key={messageKey}
             href={href}
-            className={`flex flex-col items-center gap-1 text-xs ${isActive(pathname, href) ? 'text-accent' : 'text-background-contrary'}`}
+            className={`flex flex-col items-center gap-1 text-xs ${href === activeHref ? 'text-accent' : 'text-background-contrary'}`}
           >
             <Icon className="h-6 w-6" />
             {t(messageKey)}
@@ -74,12 +85,12 @@ export default function Nav() {
         <div className="flex flex-col gap-1">
           {navItems.map(({ messageKey, href, Icon }) => (
             <Link
-              key={href}
+              key={messageKey}
               href={href}
               title={isCollapsed ? t(messageKey) : undefined}
               className={`hover:bg-panel-active-lighten/50 rounded-panel flex items-center gap-2 py-2 text-sm transition-colors duration-150 ${
                 isCollapsed ? 'justify-center px-0' : 'px-3'
-              } ${isActive(pathname, href) ? 'text-accent' : 'text-background-contrary'}`}
+              } ${href === activeHref ? 'text-accent' : 'text-background-contrary'}`}
             >
               <Icon className="h-4.5 w-4.5 shrink-0" />
               {!isCollapsed && t(messageKey)}

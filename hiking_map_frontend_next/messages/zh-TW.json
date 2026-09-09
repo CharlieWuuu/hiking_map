@@ -13,7 +13,8 @@
   "Nav": {
     "home": "首頁",
     "search": "探索",
-    "profile": "個人頁",
+    "data": "資料",
+    "profile": "統計",
     "settings": "設定"
   },
   "SearchBar": {
@@ -27,7 +28,7 @@
   },
   "HomePage": {
     "yourStats": "我的統計",
-    "goToProfile": "查看完整個人頁",
+    "goToProfile": "查看完整統計",
     "loginPrompt": "登入後即可看到自己的健行統計",
     "loginCta": "前往登入",
     "recentTrails": "近期路線",
@@ -100,7 +101,7 @@
     "save": "儲存"
   },
   "ProfileDataPage": {
-    "backToProfile": "返回個人頁",
+    "backToProfile": "返回統計",
     "noTrails": "還沒有任何紀錄",
     "expand": "展開",
     "collapse": "收合",
@@ -143,7 +144,7 @@
   "ProfileCollectionsPage": {
     "title": "收藏清單",
     "empty": "還沒有收藏任何路線",
-    "backToProfile": "返回個人頁"
+    "backToProfile": "返回統計"
   },
   "HikeDetailPage": {
     "backToProfile": "返回地圖與資料",
@@ -230,7 +231,7 @@
   "HikeUploadPage": {
     "title": "上傳紀錄",
     "subtitle": "選擇 GPX 檔案，確認內容後儲存",
-    "backToProfile": "返回個人頁",
+    "backToProfile": "返回統計",
     "choosePrompt": "選擇 GPX 檔案",
     "chooseHint": "支援登山 App 匯出的 .gpx",
     "parseFailed": "檔案讀取失敗",
