@@ -8,7 +8,9 @@
   },
   "HikeStatsCharts": {
     "monthlyDistance": "Monthly distance",
-    "countyStats": "County stats"
+    "peakMonth": "Peak {month}: {distance} km",
+    "countyStats": "County stats",
+    "topCounty": "Top: {county} ({count})"
   },
   "Nav": {
     "home": "Home",
@@ -29,10 +31,13 @@
   "HomePage": {
     "yourStats": "Your Stats",
     "goToProfile": "View full stats",
+    "totalDistanceValue": "{distance, number, ::.00} km",
+    "hikeCountValue": "{count} hikes",
     "loginPrompt": "Sign in to see your hiking stats",
     "loginCta": "Go to sign in",
     "recentTrails": "Recent Trails",
     "recommendedTrails": "Recommended Trails",
+    "featuredTrail": "Featured this week",
     "recommendedDistance": "Distance",
     "recommendedDistanceValue": "{distance, number, ::.00} km"
   },
@@ -82,6 +87,7 @@
     "noTrails": "No trails match the current filters"
   },
   "ProfilePage": {
+    "totalDistanceLabel": "Overview",
     "totalDistance": "{distance, number, ::.00} km",
     "hikeCount": "{count} hikes",
     "achievementHundred": "Hundred Peaks",
@@ -101,6 +107,12 @@
     "save": "Save"
   },
   "ProfileDataPage": {
+    "title": "Map & Data",
+    "subtitle": "{count} records",
+    "badgeHundred": "Hundred Peaks",
+    "badgeSmallHundred": "Small Hundred",
+    "badgeHundredTrail": "Top 100 Trails",
+    "badgePrivate": "Private",
     "backToProfile": "Back to stats",
     "noTrails": "No records yet",
     "expand": "Expand",

@@ -6,6 +6,16 @@ import TrailTable from '../../../../../../components/TrailTable';
 
 type Trail = EditableTrail & { path: [number, number][] };
 
+// 只標最具代表性的成就，避免一張卡片被標籤塞滿；不公開路線額外提示，因為只有本人看得到
+function trailBadges(trail: Trail, t: ReturnType<typeof useTranslations<'ProfileDataPage'>>) {
+  const badges: { label: string; tone?: 'accent' | 'neutral' }[] = [];
+  if (trail.isHundred) badges.push({ label: t('badgeHundred') });
+  else if (trail.isSmallHundred) badges.push({ label: t('badgeSmallHundred') });
+  else if (trail.isHundredTrail) badges.push({ label: t('badgeHundredTrail') });
+  if (!trail.isPublic) badges.push({ label: t('badgePrivate'), tone: 'neutral' });
+  return badges;
+}
+
 type Props = {
   trails: Trail[];
   view: 'card' | 'table';
@@ -71,6 +81,7 @@ export default function TrailExplorerList({ trails, view, activeSlug, isEditMode
             town={trail.town}
             date={trail.date}
             distanceKm={trail.distanceKm}
+            badges={trailBadges(trail, t)}
             isActive={trail.slug === activeSlug}
             onMouseEnter={() => onHoverChange(trail.slug)}
             onMouseLeave={() => onHoverChange(null)}

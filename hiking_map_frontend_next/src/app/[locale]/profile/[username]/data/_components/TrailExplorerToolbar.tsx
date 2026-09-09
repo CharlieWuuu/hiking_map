@@ -27,7 +27,7 @@ export default function TrailExplorerToolbar({ isTableExpanded, onToggleTableExp
           type="button"
           onClick={onToggleView}
           title={view === 'card' ? t('viewTable') : t('viewCard')}
-          className="text-background-contrary/60 hover:text-background-contrary flex items-center gap-1 text-xs"
+          className="bg-panel hover:bg-panel-active rounded-panel flex items-center gap-1 px-2 py-1 text-xs transition-colors"
         >
           {view === 'card' ? <Table className="h-3 w-3" /> : <LayoutGrid className="h-3 w-3" />}
         </button>

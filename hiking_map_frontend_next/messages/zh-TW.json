@@ -8,7 +8,9 @@
   },
   "HikeStatsCharts": {
     "monthlyDistance": "每月里程",
-    "countyStats": "縣市統計"
+    "peakMonth": "{month} 最高 {distance} 公里",
+    "countyStats": "縣市統計",
+    "topCounty": "{county} 最多 {count} 次"
   },
   "Nav": {
     "home": "首頁",
@@ -29,10 +31,13 @@
   "HomePage": {
     "yourStats": "我的統計",
     "goToProfile": "查看完整統計",
+    "totalDistanceValue": "{distance, number, ::.00} 公里",
+    "hikeCountValue": "{count} 次健行",
     "loginPrompt": "登入後即可看到自己的健行統計",
     "loginCta": "前往登入",
     "recentTrails": "近期路線",
     "recommendedTrails": "推薦路線",
+    "featuredTrail": "本週精選",
     "recommendedDistance": "距離",
     "recommendedDistanceValue": "{distance, number, ::.00} 公里"
   },
@@ -82,6 +87,7 @@
     "noTrails": "查無符合條件的步道"
   },
   "ProfilePage": {
+    "totalDistanceLabel": "總覽",
     "totalDistance": "{distance, number, ::.00} 公里",
     "hikeCount": "{count} 次健行",
     "achievementHundred": "百岳",
@@ -101,6 +107,12 @@
     "save": "儲存"
   },
   "ProfileDataPage": {
+    "title": "地圖與資料",
+    "subtitle": "共 {count} 筆紀錄",
+    "badgeHundred": "百岳",
+    "badgeSmallHundred": "小百岳",
+    "badgeHundredTrail": "百大必訪步道",
+    "badgePrivate": "不公開",
     "backToProfile": "返回統計",
     "noTrails": "還沒有任何紀錄",
     "expand": "展開",

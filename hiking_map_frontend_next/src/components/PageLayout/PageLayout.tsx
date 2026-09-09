@@ -18,22 +18,22 @@ export default function PageLayout({ title, subtitle, actions, before, align = '
   const hasHeader = Boolean(title || subtitle || actions);
 
   return (
-    <div className="flex w-full flex-1 flex-col gap-10">
+    <div className="flex min-h-0 w-full flex-1 flex-col gap-10">
       {(before || hasHeader) && (
         <div className="flex flex-col gap-4">
           {before}
           {hasHeader && (
             <header className={`flex flex-col gap-2 ${align === 'center' ? 'items-center text-center' : ''}`}>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className={`flex flex-wrap items-center gap-3 ${align === 'center' ? 'justify-center' : ''}`}>
                 {title && <h1 className="text-3xl font-bold">{title}</h1>}
+                {subtitle && <p className="text-background-contrary/60 text-lg">{subtitle}</p>}
                 {actions}
               </div>
-              {subtitle && <p className="text-background-contrary/60 text-lg">{subtitle}</p>}
             </header>
           )}
         </div>
       )}
-      {children}
+      <div className="flex min-h-0 flex-1 flex-col">{children}</div>
     </div>
   );
 }
