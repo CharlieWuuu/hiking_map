@@ -2,6 +2,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response, NextFunction } from 'express';
+import { getJwtSecret } from '../common/jwt-secret';
 
 @Injectable()
 export class JwtOptionalMiddleware implements NestMiddleware {
@@ -13,7 +14,7 @@ export class JwtOptionalMiddleware implements NestMiddleware {
     if (token) {
       try {
         const payload = this.jwtService.verify(token, {
-          secret: process.env.JWT_SECRET || 'your-secret-key',
+          secret: getJwtSecret(),
         });
         req.user = {
           user_id: payload.sub,

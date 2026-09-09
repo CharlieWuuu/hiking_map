@@ -1,15 +1,4 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Post,
-  Put,
-  Body,
-  Req,
-  Res,
-  UseGuards,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, Body, Req, Res, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -24,6 +13,7 @@ import { GoogleProfile } from './google.strategy';
 import { JwtRequiredGuard } from './jwt-required.guard';
 import { User } from './auth.entity';
 import { AuthMethodsDto, ForgotPasswordDto, ResetPasswordDto, SetEmailDto } from './dto/password-reset.dto';
+import { getJwtSecret } from '../common/jwt-secret';
 
 const AUTH_COOKIE = 'auth_token';
 const AUTH_COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 與 JWT expiresIn 一致
@@ -63,10 +53,7 @@ export class AuthController {
   @ApiBody({ type: LoginDto }) // 👈 這行讓 Swagger 知道你要什麼欄位
   @ApiOkResponse({ type: LoginResponseDto })
   async login(@Body() body: LoginDto, @Req() req: any, @Res({ passthrough: true }) res: Response) {
-    const user = await this.authService.validateUser(
-      body.username,
-      body.password,
-    );
+    const user = await this.authService.validateUser(body.username, body.password);
     if (!user) throw new UnauthorizedException('帳號或密碼錯誤');
 
     const ip = req.ip;
@@ -159,7 +146,7 @@ export class AuthController {
     const token = req.cookies?.[AUTH_COOKIE];
     if (!token) return null;
     try {
-      const payload = this.jwtService.verify(token, { secret: process.env.JWT_SECRET || 'your-secret-key' });
+      const payload = this.jwtService.verify(token, { secret: getJwtSecret() });
       return payload.sub as number;
     } catch {
       return null;

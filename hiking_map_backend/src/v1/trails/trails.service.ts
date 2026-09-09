@@ -7,7 +7,7 @@ import {
   convertShpToGeojson,
   convertGeojsonToCsv,
   convertGeojsonToGpx,
-} from '../utils/covert.utils';
+} from '../../common/utils/geo-convert.utils';
 import { TrailsInfoDto } from '../dto/trails_info.dio';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid'; // 如果你使用 UUID
@@ -21,13 +21,7 @@ export class V1TrailsService {
     private readonly trailRepo: Repository<Trail>,
   ) {}
 
-  async getTrails(
-    isLogin: boolean,
-    ownerUuid: string,
-    type: string,
-    uuid?: string,
-    share?: string,
-  ) {
+  async getTrails(isLogin: boolean, ownerUuid: string, type: string, uuid?: string, share?: string) {
     let rows: any;
     if (type === 'user') {
       const whereClauses = ['users_trails.owner_uuid = $1'];
@@ -116,10 +110,7 @@ export class V1TrailsService {
           uuid: row.uuid,
           id: row.id,
           length: row.length,
-          center: [
-            JSON.parse(row.center).coordinates[0],
-            JSON.parse(row.center).coordinates[1],
-          ],
+          center: [JSON.parse(row.center).coordinates[0], JSON.parse(row.center).coordinates[1]],
           bounds: JSON.parse(row.bounds).coordinates[0],
           name: row.name,
           county: row.county,
@@ -218,10 +209,7 @@ export class V1TrailsService {
 
     // 寫入資料庫
     for (const feature of geojson.features) {
-      if (
-        feature.geometry.type === 'LineString' ||
-        feature.geometry.type === 'MultiLineString'
-      ) {
+      if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
         const geomJSON = JSON.stringify(feature.geometry);
 
         // 1. 去除副檔名
@@ -320,13 +308,8 @@ export class V1TrailsService {
   }
 
   async delete(uuid: string) {
-    await this.trailRepo.query(
-      `DELETE from users_trails_info WHERE uuid = $1`,
-      [uuid],
-    );
-    await this.trailRepo.query(`DELETE from users_trails WHERE uuid = $1`, [
-      uuid,
-    ]);
+    await this.trailRepo.query(`DELETE from users_trails_info WHERE uuid = $1`, [uuid]);
+    await this.trailRepo.query(`DELETE from users_trails WHERE uuid = $1`, [uuid]);
     return { success: true, message: `資料 uuid=${uuid} 已刪除` };
   }
 
@@ -360,23 +343,11 @@ export class V1TrailsService {
     return { success: true, message: `uuid=${uuid} 資料已更新` };
   }
 
-  async getExport(
-    res: Response,
-    type: string,
-    isLogin: boolean,
-    owner_uuid: string,
-  ) {
-    const geojson: FeatureCollection = await this.getTrails(
-      isLogin,
-      owner_uuid,
-      'user',
-    );
+  async getExport(res: Response, type: string, isLogin: boolean, owner_uuid: string) {
+    const geojson: FeatureCollection = await this.getTrails(isLogin, owner_uuid, 'user');
 
     if (type === 'geojson') {
-      res.setHeader(
-        'Content-Disposition',
-        'attachment; filename="trails.geojson"',
-      );
+      res.setHeader('Content-Disposition', 'attachment; filename="trails.geojson"');
       return res.json(geojson);
     }
 

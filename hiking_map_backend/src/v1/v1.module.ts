@@ -9,6 +9,7 @@ import { Trail } from './trails/trail.entity';
 import { V1TrailsController } from './trails/trails.controller';
 import { V1TrailsService } from './trails/trails.service';
 import { V1AuthController } from './auth/v1-auth.controller';
+import { getJwtSecret } from '../common/jwt-secret';
 
 /**
  * 舊版前端（v1）用的 API，掛在 /v1/* 底下。
@@ -20,7 +21,10 @@ import { V1AuthController } from './auth/v1-auth.controller';
  * 程式碼原封不動取自 commit 65739d5^，只改了路由前綴與類別名稱。
  */
 @Module({
-  imports: [TypeOrmModule.forFeature([Trail, Owner]), JwtModule.register({ secret: process.env.JWT_SECRET || 'your-secret-key', signOptions: { expiresIn: '7d' } })],
+  imports: [
+    TypeOrmModule.forFeature([Trail, Owner]),
+    JwtModule.register({ secret: getJwtSecret(), signOptions: { expiresIn: '7d' } }),
+  ],
   controllers: [V1TrailsController, V1OwnerController, V1AuthController],
   providers: [V1TrailsService, V1OwnerService],
 })

@@ -26,10 +26,9 @@ export class V1AuthController {
   @Post('login')
   @ApiBody({ type: LoginDto })
   async login(@Body() body: LoginDto, @Req() req: Request) {
-    const [user] = await this.dataSource.query<{ id: number; username: string; password: string | null; uuid: string }[]>(
-      `SELECT id, username, password, uuid::text FROM users WHERE username = $1`,
-      [body.username],
-    );
+    const [user] = await this.dataSource.query<
+      { id: number; username: string; password: string | null; uuid: string }[]
+    >(`SELECT id, username, password, uuid::text FROM users WHERE username = $1`, [body.username]);
 
     if (!user?.password || !(await bcrypt.compare(body.password, user.password))) {
       throw new UnauthorizedException('帳號或密碼錯誤');
@@ -37,12 +36,10 @@ export class V1AuthController {
 
     const token = this.jwtService.sign({ id: user.id, username: user.username, uuid: user.uuid });
 
-    await this.dataSource.query(`INSERT INTO users_log (user_id, ip_address, user_agent, uuid) VALUES ($1, $2, $3, $4)`, [
-      user.id,
-      req.ip,
-      req.headers['user-agent'],
-      user.uuid,
-    ]);
+    await this.dataSource.query(
+      `INSERT INTO users_log (user_id, ip_address, user_agent, uuid) VALUES ($1, $2, $3, $4)`,
+      [user.id, req.ip, req.headers['user-agent'], user.uuid],
+    );
 
     return { token };
   }

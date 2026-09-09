@@ -48,7 +48,10 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   const port = process.env.PORT || 3000;
-  await app.listen(port);
+
+  // 一定要綁 0.0.0.0：Nest 預設只聽 localhost，容器外部（例如 Render 的
+  // 健康檢查）連不進來，會判定「no open ports detected」而讓部署失敗。
+  await app.listen(port, '0.0.0.0');
 
   console.log(`📘 Swagger docs: http://localhost:${port}/api-docs`);
 }
