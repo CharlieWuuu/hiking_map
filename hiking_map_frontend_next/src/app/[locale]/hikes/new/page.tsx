@@ -1,7 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 
-import BackLink from '../../../../components/BackLink';
 import PageLayout from '../../../../components/PageLayout';
 import { getCurrentUser } from '../../../../lib/getCurrentUser';
 import GpxUploadForm from './_components/GpxUploadForm';
@@ -19,7 +18,7 @@ export default async function NewHikePage({ params }: Props) {
   if (!currentUser) redirect(`/${locale}/login`);
 
   return (
-    <PageLayout title={t('title')} subtitle={t('subtitle')} before={<BackLink href="/chart">{t('backToProfile')}</BackLink>}>
+    <PageLayout title={t('title')} subtitle={t('subtitle')}>
       <GpxUploadForm />
     </PageLayout>
   );

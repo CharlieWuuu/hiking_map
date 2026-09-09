@@ -244,7 +244,6 @@
   "HikeUploadPage": {
     "title": "上傳紀錄",
     "subtitle": "選擇 GPX 檔案，確認內容後儲存",
-    "backToProfile": "返回統計",
     "choosePrompt": "選擇 GPX 檔案",
     "chooseHint": "支援登山 App 匯出的 .gpx",
     "parseFailed": "檔案讀取失敗",
