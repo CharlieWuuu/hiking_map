@@ -9,7 +9,6 @@ import {
   IsInt,
   IsOptional,
   IsString,
-  Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -25,7 +24,7 @@ export class MergeHikesDto {
 
   // 先 trim 再驗長度，否則純空白的名稱會通過 MinLength(1)
   @ApiProperty({ example: '南二段縱走' })
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(({ value }): unknown => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   @MinLength(1, { message: 'name 不可為空' })
   @MaxLength(100)
