@@ -36,11 +36,11 @@ type Props = NavigationProps | InteractiveProps;
 function TrailThumbnail({ coverImageUrl }: { coverImageUrl?: string | null }) {
   if (coverImageUrl) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={coverImageUrl} alt="" className="h-20 w-20 shrink-0 object-cover" />;
+    return <img src={coverImageUrl} alt="" className="h-auto w-20 shrink-0 self-stretch object-cover" />;
   }
 
   return (
-    <span className="bg-panel-active flex h-20 w-20 shrink-0 items-center justify-center">
+    <span className="bg-panel-active flex w-20 shrink-0 items-center justify-center self-stretch">
       <Map className="text-background-contrary/60 h-8 w-8" />
     </span>
   );

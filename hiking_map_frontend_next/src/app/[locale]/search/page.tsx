@@ -67,10 +67,10 @@ export default async function SearchPage({ searchParams }: Props) {
                 <Link
                   key={item}
                   href={{ pathname: '/search', query: { category: item } }}
-                  className="rounded-panel relative h-24 overflow-hidden bg-cover bg-center px-4 py-6 text-center text-lg font-bold text-white transition-opacity hover:opacity-90"
+                  className="rounded-panel relative flex h-24 items-center justify-center overflow-hidden bg-cover bg-center px-4 text-center text-lg font-bold text-white transition-opacity hover:opacity-90"
                   style={{ backgroundImage: `url(${placeholderImage(`category-${item}`)})` }}
                 >
-                  <span className="absolute inset-0 bg-black/40" />
+                  <span className="absolute inset-0 bg-black/20" />
                   <span className="relative">{t(item)}</span>
                 </Link>
               ))}
@@ -84,10 +84,10 @@ export default async function SearchPage({ searchParams }: Props) {
                 <Link
                   key={item}
                   href={{ pathname: '/search', query: { county: item } }}
-                  className="rounded-panel relative h-24 overflow-hidden bg-cover bg-center px-4 py-6 text-center text-lg font-bold text-white transition-opacity hover:opacity-90"
+                  className="rounded-panel relative flex h-24 items-center justify-center overflow-hidden bg-cover bg-center px-4 text-center text-lg font-bold text-white transition-opacity hover:opacity-90"
                   style={{ backgroundImage: `url(${placeholderImage(`county-${item}`)})` }}
                 >
-                  <span className="absolute inset-0 bg-black/40" />
+                  <span className="absolute inset-0 bg-black/20" />
                   <span className="relative">{item}</span>
                 </Link>
               ))}

@@ -1,8 +1,8 @@
 // 先用代圖：依 seed 產生穩定的漸層色塊 data URI，之後可換成真實圖片
 // 飽和度／明度固定，只有色相依 seed 變化，讓多張卡片維持同一套質感而非隨機撞色
-const SATURATION = 45;
-const LIGHTNESS_START = 32;
-const LIGHTNESS_END = 22;
+const SATURATION = 60;
+const LIGHTNESS_START = 42;
+const LIGHTNESS_END = 30;
 
 export function placeholderImage(seed: string): string {
   let hash = 0;
