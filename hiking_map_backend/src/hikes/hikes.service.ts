@@ -16,7 +16,8 @@ import { HikeStatsDto } from './dto/hike-stats.dto';
 import { UploadsService } from '../uploads/uploads.service';
 import { MergeHikesDto } from './dto/merge-hikes.dto';
 import { TrimTrackDto } from './dto/trim-track.dto';
-import { TrackGeometry, countPoints, mergeTracks, trimTrack } from './track-edit.utils';
+import { DropSegmentDto } from './dto/drop-segment.dto';
+import { TrackGeometry, countPoints, dropSegment, mergeTracks, toSegments, trimTrack } from './track-edit.utils';
 
 // 簡化軌跡的容差，單位是經緯度的「度」。0.00045 度在台灣的緯度約等於 45～50 公尺。
 // 敢壓這麼兇是因為放大到看得出差別的時候，前端會另外去 R2 抓完整軌跡換掉。
@@ -393,6 +394,36 @@ export class HikesService {
     });
 
     await this.storeFullTrack(hikeId, trimmed);
+    return this.findOne(hikeId);
+  }
+
+  // 刪掉整段 segment，用於 GPS 飄移產生的雜訊段
+  async dropTrackSegment(hikeId: number, userId: number, dto: DropSegmentDto) {
+    await this.findOwnedHike(hikeId, userId);
+
+    const result = await this.dataSource.transaction(async (manager) => {
+      const geometry = await this.loadTrackGeometry(hikeId, manager, true);
+
+      const segmentCount = toSegments(geometry).length;
+      if (dto.expected_segment_count !== undefined && dto.expected_segment_count !== segmentCount) {
+        throw new ConflictException(
+          `軌跡有 ${segmentCount} 段，與你送出的 ${dto.expected_segment_count} 不符。請重新載入後再操作`,
+        );
+      }
+
+      let dropped: TrackGeometry;
+      try {
+        dropped = dropSegment(geometry, dto.segment_index);
+      } catch (error) {
+        throw new BadRequestException((error as Error).message);
+      }
+
+      await this.writeTrack(manager, hikeId, dropped);
+      await this.recalcDistance(manager, hikeId);
+      return dropped;
+    });
+
+    await this.storeFullTrack(hikeId, result);
     return this.findOne(hikeId);
   }
 

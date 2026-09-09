@@ -1,5 +1,5 @@
 import { LineString, MultiLineString } from 'geojson';
-import { countPoints, mergeTracks, toSegments, trimTrack } from './track-edit.utils';
+import { countPoints, dropSegment, mergeTracks, toSegments, trimTrack } from './track-edit.utils';
 
 // 產生一條每點遞增的線，方便用座標值反推它原本是第幾個點
 const line = (from: number, count: number): LineString => ({
@@ -106,5 +106,40 @@ describe('mergeTracks', () => {
 
   it('少於兩筆就拒絕', () => {
     expect(() => mergeTracks([line(0, 3)])).toThrow('至少需要兩筆');
+  });
+});
+
+describe('dropSegment', () => {
+  it('刪掉指定的那一段，其餘保留原順序', () => {
+    const result = dropSegment(multi(line(0, 3), line(100, 3), line(200, 3)), 1);
+    expect(serials(result)).toEqual([
+      [0, 1, 2],
+      [200, 201, 202],
+    ]);
+  });
+
+  it('可以刪第一段', () => {
+    const result = dropSegment(multi(line(0, 3), line(100, 3)), 0);
+    expect(serials(result)).toEqual([[100, 101, 102]]);
+  });
+
+  it('原始 geometry 不會被就地修改', () => {
+    const source = multi(line(0, 3), line(100, 3));
+    const before = JSON.stringify(source);
+    dropSegment(source, 0);
+    expect(JSON.stringify(source)).toBe(before);
+  });
+
+  it('只剩一段時拒絕刪除', () => {
+    expect(() => dropSegment(line(0, 5), 0)).toThrow('只剩一段時不能刪除');
+  });
+
+  it('索引超出範圍', () => {
+    expect(() => dropSegment(multi(line(0, 3), line(100, 3)), 2)).toThrow('超出範圍');
+    expect(() => dropSegment(multi(line(0, 3), line(100, 3)), -1)).toThrow('超出範圍');
+  });
+
+  it('非整數索引', () => {
+    expect(() => dropSegment(multi(line(0, 3), line(100, 3)), 0.5)).toThrow('必須是整數');
   });
 });
