@@ -21,6 +21,7 @@ import { CreateHikeDto } from './dto/create-hike.dto';
 import { HikeStatsDto } from './dto/hike-stats.dto';
 import { MergeHikesDto } from './dto/merge-hikes.dto';
 import { TrimTrackDto } from './dto/trim-track.dto';
+import { DropSegmentDto } from './dto/drop-segment.dto';
 import { JwtRequiredGuard } from '../auth/jwt-required.guard';
 import { Hike } from './hike.entity';
 import { User } from '../auth/auth.entity';
@@ -54,6 +55,13 @@ export class HikesController {
   @ApiOkResponse({ type: Hike, description: '裁切後的紀錄，距離已重算' })
   trimTrack(@Param('id', ParseIntPipe) id: number, @Body() dto: TrimTrackDto, @Req() req: any) {
     return this.hikesService.trimTrack(id, req.user.user_id, dto);
+  }
+
+  @Patch(':id/track/drop-segment')
+  @UseGuards(JwtRequiredGuard)
+  @ApiOkResponse({ type: Hike, description: '刪除該段後的紀錄，距離已重算' })
+  dropTrackSegment(@Param('id', ParseIntPipe) id: number, @Body() dto: DropSegmentDto, @Req() req: any) {
+    return this.hikesService.dropTrackSegment(id, req.user.user_id, dto);
   }
 
   @Get()

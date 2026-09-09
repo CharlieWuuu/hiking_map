@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -29,6 +30,21 @@ async function bootstrap() {
   // 上傳 GPX 時整條軌跡會以 GeoJSON 放在 body 裡，動輒數百 KB
   // （一趟六千多個點約 256 KB），Express 預設的 100kb 會直接回 413
   app.useBodyParser('json', { limit: '10mb' });
+
+  // 在此之前所有 DTO 都只是型別宣告，執行期擋不住任何東西。
+  //
+  // whitelist 會剝掉沒有宣告驗證裝飾器的欄位，所以每個 request DTO 都必須
+  // 補齊裝飾器，否則該欄位會被靜靜丟掉——新增 DTO 欄位時記得一起加。
+  // 這裡刻意不開 forbidNonWhitelisted：多送欄位就無視，不需要因此回 400。
+  // 不開 enableImplicitConversion：它會在驗證「之前」強制轉型，
+  // 於是 @IsString() 欄位收到 { a: 1 } 會先被轉成 "[object Object]" 再通過驗證，
+  // 正好抵銷掉這裡想要的型別把關。需要字串轉數字的地方請在 DTO 上明確標註 @Type()。
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
 
   app.use(cookieParser());
   app.enableCors({

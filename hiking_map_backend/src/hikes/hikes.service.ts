@@ -16,7 +16,8 @@ import { HikeStatsDto } from './dto/hike-stats.dto';
 import { UploadsService } from '../uploads/uploads.service';
 import { MergeHikesDto } from './dto/merge-hikes.dto';
 import { TrimTrackDto } from './dto/trim-track.dto';
-import { TrackGeometry, countPoints, mergeTracks, trimTrack } from './track-edit.utils';
+import { DropSegmentDto } from './dto/drop-segment.dto';
+import { TrackGeometry, countPoints, dropSegment, mergeTracks, toSegments, trimTrack } from './track-edit.utils';
 
 // 簡化軌跡的容差，單位是經緯度的「度」。0.00045 度在台灣的緯度約等於 45～50 公尺。
 // 敢壓這麼兇是因為放大到看得出差別的時候，前端會另外去 R2 抓完整軌跡換掉。
@@ -396,27 +397,42 @@ export class HikesService {
     return this.findOne(hikeId);
   }
 
+  // 刪掉整段 segment，用於 GPS 飄移產生的雜訊段
+  async dropTrackSegment(hikeId: number, userId: number, dto: DropSegmentDto) {
+    await this.findOwnedHike(hikeId, userId);
+
+    const result = await this.dataSource.transaction(async (manager) => {
+      const geometry = await this.loadTrackGeometry(hikeId, manager, true);
+
+      const segmentCount = toSegments(geometry).length;
+      if (dto.expected_segment_count !== undefined && dto.expected_segment_count !== segmentCount) {
+        throw new ConflictException(
+          `軌跡有 ${segmentCount} 段，與你送出的 ${dto.expected_segment_count} 不符。請重新載入後再操作`,
+        );
+      }
+
+      let dropped: TrackGeometry;
+      try {
+        dropped = dropSegment(geometry, dto.segment_index);
+      } catch (error) {
+        throw new BadRequestException((error as Error).message);
+      }
+
+      await this.writeTrack(manager, hikeId, dropped);
+      await this.recalcDistance(manager, hikeId);
+      return dropped;
+    });
+
+    await this.storeFullTrack(hikeId, result);
+    return this.findOne(hikeId);
+  }
+
   // 把多筆紀錄的軌跡合併成一筆新紀錄（例如多日縱走各天分開上傳）。
   // 來源預設保留，要刪得明確指定 delete_sources。
   async merge(userId: number, dto: MergeHikesDto) {
-    // 專案目前沒有全域 ValidationPipe，DTO 只是型別宣告，執行期擋不住任何東西，
-    // 所以這裡自己驗。移除前請先確認 main.ts 已掛上 ValidationPipe。
-    const ids = dto.hike_ids ?? [];
-    if (!Array.isArray(ids) || ids.some((id) => !Number.isInteger(id))) {
-      throw new BadRequestException('hike_ids 必須是整數陣列');
-    }
-    if (typeof dto.name !== 'string' || dto.name.trim() === '') {
-      throw new BadRequestException('name 不可為空');
-    }
-    if (dto.date !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(dto.date)) {
-      throw new BadRequestException('date 格式應為 YYYY-MM-DD');
-    }
-    if (new Set(ids).size !== ids.length) {
-      throw new BadRequestException('hike_ids 不可重複');
-    }
-    if (ids.length < 2) {
-      throw new BadRequestException('合併至少需要兩筆紀錄');
-    }
+    // 型別、長度、重複與日期格式都由 MergeHikesDto 的驗證裝飾器擋掉了，
+    // 這裡只處理需要查資料庫才知道的規則。
+    const ids = dto.hike_ids;
 
     const hikes = await this.hikesRepo.find({ where: { id: In(ids) } });
     if (hikes.length !== ids.length) {
