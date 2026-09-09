@@ -24,6 +24,8 @@ export type MapTrail = {
 
 type Props = {
   trails: MapTrail[];
+  // 外層容器（例如全螢幕切換）尺寸明確變化時傳入新值，強制地圖重新量測——見 MapView 的 resizeKey
+  resizeKey?: unknown;
 };
 
 const DEFAULT_CENTER: [number, number] = [23.7, 120.9];
@@ -113,7 +115,7 @@ function ActiveTrailPopup({ trail, position }: { trail: MapTrail; position: [num
   );
 }
 
-export default function TrailsLayer({ trails }: Props) {
+export default function TrailsLayer({ trails, resizeKey }: Props) {
   const hoverSlug = useMapStore((state) => state.hoverSlug);
   const activeSlug = useMapStore((state) => state.activeSlug);
   const setHoverSlug = useMapStore((state) => state.setHoverSlug);
@@ -125,7 +127,7 @@ export default function TrailsLayer({ trails }: Props) {
   const activeTrailMidpoint = activeTrailPath?.[Math.floor(activeTrailPath.length / 2)];
 
   return (
-    <MapView center={DEFAULT_CENTER} zoom={DEFAULT_ZOOM} className="rounded-panel h-full w-full overflow-hidden">
+    <MapView center={DEFAULT_CENTER} zoom={DEFAULT_ZOOM} className="rounded-panel h-full w-full overflow-hidden" resizeKey={resizeKey}>
       <PanToActiveEffect trail={activeTrail} />
       <DetailTrackLoader trails={trails} />
 

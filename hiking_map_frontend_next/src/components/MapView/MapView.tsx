@@ -20,6 +20,9 @@ type Props = {
   showLayerSwitcher?: boolean;
   className?: string;
   children?: ReactNode;
+  // 外部容器尺寸有明確切換時（例如全螢幕/縮回）傳入變化的值，
+  // 強制重新量測地圖尺寸，不完全依賴 ResizeObserver
+  resizeKey?: unknown;
 };
 
 // 讓底圖依目前選擇的圖層套用透明度/飽和度，襯托上層的路線描邊或標點
@@ -61,7 +64,23 @@ function ResizeEffect({ isResizing }: { isResizing: boolean }) {
   return null;
 }
 
-export default function MapView({ center, zoom, showZoomControl = true, showLayerSwitcher = true, className, children }: Props) {
+// ResizeObserver 有時候沒能在 class 切換造成的版面重排（例如全螢幕/縮回）時
+// 正確觸發，導致 Leaflet 停留在舊尺寸、地圖看起來是空的。這裡收到外部的切換訊號時
+// 強制補一次 invalidateSize，不依賴 ResizeObserver 是否有抓到
+function FullscreenToggleEffect({ toggleKey }: { toggleKey: unknown }) {
+  const map = useMap();
+
+  useEffect(() => {
+    // 切換當下容器可能還在 CSS transition 過程中，量到的是過渡期尺寸；
+    // 下一個 frame 再量一次確保拿到最終尺寸
+    const raf = requestAnimationFrame(() => map.invalidateSize());
+    return () => cancelAnimationFrame(raf);
+  }, [toggleKey, map]);
+
+  return null;
+}
+
+export default function MapView({ center, zoom, showZoomControl = true, showLayerSwitcher = true, className, children, resizeKey }: Props) {
   const [activeKey, setActiveKey] = useState<BaseMapKey>(DEFAULT_BASE_MAP);
   const [styleOverrides, setStyleOverrides] = useState(
     Object.fromEntries(Object.entries(BASE_MAPS).map(([key, setting]) => [key, { opacity: setting.opacity, saturate: setting.saturate }])) as Record<
@@ -82,6 +101,7 @@ export default function MapView({ center, zoom, showZoomControl = true, showLaye
         <TileLayer url={BASE_MAPS[activeKey].url} />
         {showZoomControl && <ZoomControl position="bottomright" />}
         <ResizeEffect isResizing={isResizing} />
+        <FullscreenToggleEffect toggleKey={resizeKey} />
 
         {showLayerSwitcher && (
           <LayerSwitcher

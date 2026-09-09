@@ -97,7 +97,7 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
               label={isMapFullscreen ? t('collapse') : t('expand')}
             />
           </div>
-          <TrailsLayer trails={trails} />
+          <TrailsLayer trails={trails} resizeKey={fullscreen} />
         </div>
       )}
     </div>
