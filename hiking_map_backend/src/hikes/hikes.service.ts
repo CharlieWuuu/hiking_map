@@ -399,24 +399,9 @@ export class HikesService {
   // 把多筆紀錄的軌跡合併成一筆新紀錄（例如多日縱走各天分開上傳）。
   // 來源預設保留，要刪得明確指定 delete_sources。
   async merge(userId: number, dto: MergeHikesDto) {
-    // 專案目前沒有全域 ValidationPipe，DTO 只是型別宣告，執行期擋不住任何東西，
-    // 所以這裡自己驗。移除前請先確認 main.ts 已掛上 ValidationPipe。
-    const ids = dto.hike_ids ?? [];
-    if (!Array.isArray(ids) || ids.some((id) => !Number.isInteger(id))) {
-      throw new BadRequestException('hike_ids 必須是整數陣列');
-    }
-    if (typeof dto.name !== 'string' || dto.name.trim() === '') {
-      throw new BadRequestException('name 不可為空');
-    }
-    if (dto.date !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(dto.date)) {
-      throw new BadRequestException('date 格式應為 YYYY-MM-DD');
-    }
-    if (new Set(ids).size !== ids.length) {
-      throw new BadRequestException('hike_ids 不可重複');
-    }
-    if (ids.length < 2) {
-      throw new BadRequestException('合併至少需要兩筆紀錄');
-    }
+    // 型別、長度、重複與日期格式都由 MergeHikesDto 的驗證裝飾器擋掉了，
+    // 這裡只處理需要查資料庫才知道的規則。
+    const ids = dto.hike_ids;
 
     const hikes = await this.hikesRepo.find({ where: { id: In(ids) } });
     if (hikes.length !== ids.length) {
