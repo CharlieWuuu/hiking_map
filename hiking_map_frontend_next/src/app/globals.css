@@ -23,3 +23,46 @@ button:not(:disabled) {
 /* * {
   box-shadow: inset 0 0 0 1px var(--color-background-contrary);
 } */
+
+/* 頁面預設限制閱讀寬度；內容裡有 .page-wide（例如地圖＋清單）時，改為撐滿版面寬度 */
+.page-content-width {
+  max-width: 60rem;
+}
+.page-content-width:has(.page-wide) {
+  max-width: none;
+}
+
+/* 地圖上選中路線的懸浮卡：拔掉 Leaflet 預設泡泡的白底／陰影／箭頭，改用內層自己的 bg-panel 卡片樣式 */
+.hiking-map-popup .leaflet-popup-content-wrapper {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+}
+.hiking-map-popup .leaflet-popup-content {
+  margin: 0;
+  color: inherit;
+}
+.hiking-map-popup .leaflet-popup-tip-container {
+  display: none;
+}
+
+/* 細窄、跟卡片同色系的捲軸，取代瀏覽器預設樣式（僅 WebKit／Blink，Firefox 用 scrollbar-color 兜底） */
+.scrollbar-subtle {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-panel-active) transparent;
+}
+.scrollbar-subtle::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-subtle::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-subtle::-webkit-scrollbar-thumb {
+  background-color: var(--color-panel-active);
+  border-radius: 9999px;
+}
+.scrollbar-subtle::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-panel-active-lighten);
+}

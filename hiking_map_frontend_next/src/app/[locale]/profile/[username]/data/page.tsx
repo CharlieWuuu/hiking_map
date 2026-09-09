@@ -1,7 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
-import BackLink from '../../../../../components/BackLink';
 import PageLayout from '../../../../../components/PageLayout';
 import { apiClient } from '../../../../../lib/apiClient';
 import { getCurrentUser } from '../../../../../lib/getCurrentUser';
@@ -54,8 +53,8 @@ export default async function ProfileDataPage({ params, searchParams }: Props) {
   const t = await getTranslations('ProfileDataPage');
 
   return (
-    <PageLayout before={<BackLink href={`/profile/${username}`}>{t('backToProfile')}</BackLink>}>
-      <div className="h-150">
+    <PageLayout title={t('title')} subtitle={t('subtitle', { count: trails.length })}>
+      <div className="page-wide min-h-150 flex-1">
         <ProfileTrailExplorerWithNavigation username={username} trails={trails} fullscreen={fullscreen} isEditMode={isEditMode} isOwner={isOwner} />
       </div>
     </PageLayout>

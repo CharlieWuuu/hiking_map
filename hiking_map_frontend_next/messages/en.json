@@ -8,12 +8,15 @@
   },
   "HikeStatsCharts": {
     "monthlyDistance": "Monthly distance",
-    "countyStats": "County stats"
+    "peakMonth": "Peak {month}: {distance} km",
+    "countyStats": "County stats",
+    "topCounty": "Top: {county} ({count})"
   },
   "Nav": {
     "home": "Home",
     "search": "Explore",
-    "profile": "Profile",
+    "data": "Data",
+    "profile": "Stats",
     "settings": "Settings"
   },
   "SearchBar": {
@@ -27,11 +30,14 @@
   },
   "HomePage": {
     "yourStats": "Your Stats",
-    "goToProfile": "View full profile",
+    "goToProfile": "View full stats",
+    "totalDistanceValue": "{distance, number, ::.00} km",
+    "hikeCountValue": "{count} hikes",
     "loginPrompt": "Sign in to see your hiking stats",
     "loginCta": "Go to sign in",
     "recentTrails": "Recent Trails",
     "recommendedTrails": "Recommended Trails",
+    "featuredTrail": "Featured this week",
     "recommendedDistance": "Distance",
     "recommendedDistanceValue": "{distance, number, ::.00} km"
   },
@@ -81,6 +87,7 @@
     "noTrails": "No trails match the current filters"
   },
   "ProfilePage": {
+    "totalDistanceLabel": "Overview",
     "totalDistance": "{distance, number, ::.00} km",
     "hikeCount": "{count} hikes",
     "achievementHundred": "Hundred Peaks",
@@ -100,7 +107,13 @@
     "save": "Save"
   },
   "ProfileDataPage": {
-    "backToProfile": "Back to profile",
+    "title": "Map & Data",
+    "subtitle": "{count} records",
+    "badgeHundred": "Hundred Peaks",
+    "badgeSmallHundred": "Small Hundred",
+    "badgeHundredTrail": "Top 100 Trails",
+    "badgePrivate": "Private",
+    "backToProfile": "Back to stats",
     "noTrails": "No records yet",
     "expand": "Expand",
     "collapse": "Collapse",
@@ -143,7 +156,7 @@
   "ProfileCollectionsPage": {
     "title": "Collections",
     "empty": "No trails collected yet",
-    "backToProfile": "Back to profile"
+    "backToProfile": "Back to stats"
   },
   "HikeDetailPage": {
     "backToProfile": "Back to map & data",
@@ -230,7 +243,7 @@
   "HikeUploadPage": {
     "title": "Upload a hike",
     "subtitle": "Pick a GPX file, review it, then save",
-    "backToProfile": "Back to profile",
+    "backToProfile": "Back to stats",
     "choosePrompt": "Choose a GPX file",
     "chooseHint": "Supports .gpx exported from hiking apps",
     "parseFailed": "Could not read the file",

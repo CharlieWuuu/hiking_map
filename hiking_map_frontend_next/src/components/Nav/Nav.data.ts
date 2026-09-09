@@ -1,4 +1,4 @@
-import { CircleUserRound, Home, Search, Settings } from 'lucide-react';
+import { ChartPie, Home, Map, Search, Settings } from 'lucide-react';
 
 import type { NavItem } from './Nav.types';
 
@@ -7,7 +7,9 @@ export function getNavItems(username: string | null): NavItem[] {
   return [
     { messageKey: 'home', href: '/', Icon: Home },
     { messageKey: 'search', href: '/search', Icon: Search },
-    { messageKey: 'profile', href: username ? `/profile/${username}` : '/login', Icon: CircleUserRound },
+    // 未登入時沒有自己的 data 頁可去，跟個人頁一樣導去登入頁
+    { messageKey: 'data', href: username ? `/profile/${username}/data` : '/login', Icon: Map },
+    { messageKey: 'profile', href: username ? `/profile/${username}` : '/login', Icon: ChartPie },
     { messageKey: 'settings', href: '/settings', Icon: Settings },
   ];
 }

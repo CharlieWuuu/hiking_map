@@ -3,6 +3,8 @@ import { useTranslations } from 'next-intl';
 
 import { Link } from '../../i18n/navigation';
 
+type Badge = { label: string; tone?: 'accent' | 'neutral' };
+
 type DisplayProps = {
   name: string;
   county: string;
@@ -10,6 +12,7 @@ type DisplayProps = {
   date?: string;
   distanceKm?: number;
   coverImageUrl?: string | null;
+  badges?: Badge[];
 };
 
 type NavigationProps = DisplayProps & {
@@ -33,17 +36,17 @@ type Props = NavigationProps | InteractiveProps;
 function TrailThumbnail({ coverImageUrl }: { coverImageUrl?: string | null }) {
   if (coverImageUrl) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={coverImageUrl} alt="" className="h-20 w-20 shrink-0 object-cover" />;
+    return <img src={coverImageUrl} alt="" className="h-auto w-20 shrink-0 self-stretch object-cover" />;
   }
 
   return (
-    <span className="bg-panel-active flex h-20 w-20 shrink-0 items-center justify-center">
+    <span className="bg-panel-active flex w-20 shrink-0 items-center justify-center self-stretch">
       <Map className="text-background-contrary/60 h-8 w-8" />
     </span>
   );
 }
 
-function TrailListItemContent({ name, county, town, date, distanceKm }: DisplayProps) {
+function TrailListItemContent({ name, county, town, date, distanceKm, badges }: DisplayProps) {
   const t = useTranslations('TrailListItem');
   const hasStats = date !== undefined || distanceKm !== undefined;
 
@@ -54,6 +57,20 @@ function TrailListItemContent({ name, county, town, date, distanceKm }: DisplayP
         <span className="text-background-contrary/60 text-sm">
           {county} {town}
         </span>
+        {badges && badges.length > 0 && (
+          <div className="mt-1 flex flex-wrap gap-1">
+            {badges.map((badge) => (
+              <span
+                key={badge.label}
+                className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                  badge.tone === 'neutral' ? 'bg-panel-active text-background-contrary/70' : 'bg-accent text-accent-contrast'
+                }`}
+              >
+                {badge.label}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {hasStats && (
@@ -104,7 +121,7 @@ export default function TrailListItem(props: Props) {
       onMouseLeave={onMouseLeave}
       onClick={onClick}
       className={`rounded-panel relative flex w-full shrink-0 cursor-pointer items-stretch gap-4 overflow-hidden text-left transition-colors duration-150 ${
-        isActive ? 'bg-panel-active' : 'bg-panel hover:bg-panel-active'
+        isActive ? 'bg-panel-active outline-accent outline-2 -outline-offset-2' : 'bg-panel hover:bg-panel-active'
       }`}
     >
       <TrailThumbnail coverImageUrl={props.coverImageUrl} />

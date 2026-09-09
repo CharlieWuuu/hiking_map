@@ -1,8 +1,9 @@
 'use client';
 
 import L from 'leaflet';
+import { useTranslations } from 'next-intl';
 import { Fragment, useEffect } from 'react';
-import { Polyline, useMap, useMapEvents } from 'react-leaflet';
+import { Polyline, Popup, useMap, useMapEvents } from 'react-leaflet';
 
 import { useMapStore, type LngLat } from '../../../lib/mapStore';
 import MapView from '../MapView';
@@ -14,6 +15,11 @@ export type MapTrail = {
   trackUrl?: string | null;
   // [minLng, minLat, maxLng, maxLat]，用來判斷是否進入視野
   bbox?: [number, number, number, number] | null;
+  // 有給的話，選中路線時會在地圖上浮現這張資訊卡
+  name?: string;
+  county?: string;
+  town?: string;
+  distanceKm?: number;
 };
 
 type Props = {
@@ -87,6 +93,26 @@ function intersects(bbox: MapTrail['bbox'], view: [number, number, number, numbe
   return bbox[0] <= view[2] && bbox[2] >= view[0] && bbox[1] <= view[3] && bbox[3] >= view[1];
 }
 
+// 選中路線時，浮現一張跟版面其他卡片同一套語言的懸浮資訊卡，取代 Leaflet 預設的白底泡泡。
+// Popup 直接掛在 MapContainer 底下（沒有依附任何 layer）時，react-leaflet 掛載時就會自動開啟
+function ActiveTrailPopup({ trail, position }: { trail: MapTrail; position: [number, number] }) {
+  const t = useTranslations('TrailListItem');
+
+  if (!trail.name) return null;
+
+  return (
+    <Popup position={position} closeButton={false} autoPan={false} className="hiking-map-popup" minWidth={180}>
+      <div className="bg-panel rounded-panel flex flex-col gap-1 p-3">
+        <span className="text-base font-bold">{trail.name}</span>
+        <span className="text-background-contrary/60 text-xs">
+          {trail.county} {trail.town}
+        </span>
+        {trail.distanceKm !== undefined && <span className="text-accent mt-1 text-sm font-semibold">{t('distanceValue', { distance: trail.distanceKm })}</span>}
+      </div>
+    </Popup>
+  );
+}
+
 export default function TrailsLayer({ trails }: Props) {
   const hoverSlug = useMapStore((state) => state.hoverSlug);
   const activeSlug = useMapStore((state) => state.activeSlug);
@@ -95,11 +121,17 @@ export default function TrailsLayer({ trails }: Props) {
   const tracks = useMapStore((state) => state.tracks);
 
   const activeTrail = trails.find((trail) => trail.slug === activeSlug) ?? null;
+  const activeTrailPath = activeTrail ? (tracks.get(activeTrail.slug)?.path ?? activeTrail.path) : null;
+  const activeTrailMidpoint = activeTrailPath?.[Math.floor(activeTrailPath.length / 2)];
 
   return (
     <MapView center={DEFAULT_CENTER} zoom={DEFAULT_ZOOM} className="rounded-panel h-full w-full overflow-hidden">
       <PanToActiveEffect trail={activeTrail} />
       <DetailTrackLoader trails={trails} />
+
+      {activeTrail && activeTrailMidpoint && (
+        <ActiveTrailPopup key={activeTrail.slug} trail={activeTrail} position={[activeTrailMidpoint[1], activeTrailMidpoint[0]]} />
+      )}
 
       {trails.map((trail) => {
         // 完整軌跡還沒到就先畫簡化線，載好再換掉，中間不要出現空白
@@ -109,10 +141,10 @@ export default function TrailsLayer({ trails }: Props) {
         const isHover = trail.slug === hoverSlug;
 
         const [outlineColor, outlineWeight, coreColor, coreWeight] = isActive
-          ? ['#000000', 8, '#90C8D0', 4]
+          ? ['#000000', 8, '#FFFF3C', 4]
           : isHover
-            ? ['#ffffff', 8, '#CFCF13', 4]
-            : ['#ffffff', 6, '#747009', 3];
+            ? ['#ffffff', 8, '#FFFF3C', 4]
+            : ['#ffffff', 6, '#A67C00', 3];
 
         return (
           <Fragment key={trail.slug}>

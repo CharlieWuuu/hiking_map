@@ -56,16 +56,18 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
           }}
         />
       </head>
-      <body className="flex min-h-full flex-col">
+      <body className="flex h-full flex-col">
         <NextIntlClientProvider messages={messages}>
           <DebugSetup>
             <AuthInitializer />
-            {/* 寬螢幕時是 Nav 與 main 並排的 flex 容器，Nav 佔的寬度由它自己決定 */}
-            <div className="flex min-h-dvh flex-col lg:flex-row">
+            {/* 寬螢幕時是 Nav 與 main 並排的 flex 容器，Nav 佔的寬度由它自己決定。
+                固定在 dvh，讓 main 自己捲動，才有明確高度上限可以讓 flex-1 的頁面（例如地圖）真正撐滿視窗而不是被內容撐高 */}
+            <div className="flex h-dvh flex-col lg:flex-row">
               <Nav />
-              {/* flex 一路傳到頁面，頁面才能用 flex-1 撐滿高度（例如登入頁要垂直置中） */}
-              <main className="flex min-w-0 flex-1 flex-col p-6 pb-20 lg:px-8 lg:py-12 lg:pb-12">
-                <div className="mx-auto flex w-full max-w-240 flex-1 flex-col">{children}</div>
+              {/* flex 一路傳到頁面，頁面才能用 flex-1 撐滿高度（例如登入頁要垂直置中、地圖頁要滿版） */}
+              <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto p-6 pb-20 lg:px-8 lg:py-12 lg:pb-12">
+                {/* 預設限制閱讀寬度；地圖等需要撐滿版面的頁面用 .page-wide 取消上限 */}
+                <div className="page-content-width mx-auto flex min-h-0 w-full flex-1 flex-col">{children}</div>
               </main>
             </div>
           </DebugSetup>

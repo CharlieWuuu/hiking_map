@@ -1,4 +1,4 @@
-import { CircleUserRound, Upload } from 'lucide-react';
+import { Bookmark, CircleUserRound, MapPinned, Upload } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
@@ -57,33 +57,43 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
               </Link>
             )}
           </div>
-          <div className="flex flex-wrap gap-4 text-lg">
-            <span>{t('totalDistance', { distance: stats.totalDistanceKm })}</span>
-            <span>{t('hikeCount', { count: stats.hikeCount })}</span>
-          </div>
           {profile.description && <p className="text-background-contrary/80">{profile.description}</p>}
         </div>
       </div>
 
-      {/* 成就 */}
-      <div className="flex flex-wrap justify-around gap-4">
-        <ChartRing label={t('achievementHundred')} value={stats.achievements.hundred} />
-        <ChartRing label={t('achievementSmallHundred')} value={stats.achievements.smallHundred} />
-        <ChartRing label={t('achievementHundredTrail')} value={stats.achievements.hundredTrail} />
+      {/* Bento：總覽數據 + 成就 + 圖表 */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="bg-accent text-accent-contrast rounded-panel flex flex-col justify-between gap-6 p-6 md:col-span-1 md:row-span-2">
+          <span className="text-sm font-medium opacity-70">{t('totalDistanceLabel')}</span>
+          <div className="flex flex-1 flex-col items-start justify-center gap-2">
+            <span className="text-6xl font-bold">{t('totalDistance', { distance: stats.totalDistanceKm })}</span>
+            <span className="text-sm opacity-70">{t('hikeCount', { count: stats.hikeCount })}</span>
+          </div>
+        </div>
+        <div className="bg-highlight text-highlight-contrast rounded-panel flex flex-wrap items-center justify-around gap-4 p-6 md:col-span-2">
+          <ChartRing label={t('achievementHundred')} value={stats.achievements.hundred} />
+          <ChartRing label={t('achievementSmallHundred')} value={stats.achievements.smallHundred} />
+          <ChartRing label={t('achievementHundredTrail')} value={stats.achievements.hundredTrail} />
+        </div>
+        <div className="md:col-span-2">
+          <HikeStatsCharts stats={stats} />
+        </div>
       </div>
 
-      {/* 統計圖表 */}
-      <HikeStatsCharts stats={stats} />
-
       {/* 地圖／表格導覽 */}
-      <div className="flex gap-4">
-        <Link href={`/profile/${username}/data`} className="bg-panel hover:bg-panel-active rounded-panel flex-1 py-4 text-center text-lg transition-colors">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <Link
+          href={`/profile/${username}/data`}
+          className="bg-panel hover:bg-panel-active rounded-panel flex items-center gap-3 p-5 text-lg transition-colors md:col-span-2"
+        >
+          <MapPinned className="text-accent h-6 w-6 shrink-0" />
           {t('goToData')}
         </Link>
         <Link
           href={`/profile/${username}/collections`}
-          className="bg-panel hover:bg-panel-active rounded-panel flex-1 py-4 text-center text-lg transition-colors"
+          className="bg-panel hover:bg-panel-active rounded-panel flex items-center gap-3 p-5 text-lg transition-colors"
         >
+          <Bookmark className="text-accent h-6 w-6 shrink-0" />
           {t('goToCollections')}
         </Link>
       </div>
