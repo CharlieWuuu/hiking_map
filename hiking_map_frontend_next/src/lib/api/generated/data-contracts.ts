@@ -15,6 +15,8 @@ export interface RegisterDto {
   username: string;
   /** @example "password123" */
   password: string;
+  /** @example "hiker01@example.com" */
+  email?: string;
 }
 
 export interface RegisterResponseDto {
@@ -36,6 +38,48 @@ export interface LoginResponseDto {
   token: string;
 }
 
+export interface AuthMethodsDto {
+  /** @example "hiker01@example.com" */
+  email?: object | null;
+  /**
+   * 是否設定過密碼
+   * @example true
+   */
+  has_password: boolean;
+  /**
+   * 是否綁定 Google
+   * @example false
+   */
+  has_google: boolean;
+}
+
+export interface SetEmailDto {
+  /** @example "hiker01@example.com" */
+  email: string;
+}
+
+export interface ForgotPasswordDto {
+  /** @example "hiker01@example.com" */
+  email: string;
+}
+
+export interface ResetPasswordDto {
+  /** @example "5f1c…（信裡連結帶的 token）" */
+  token: string;
+  /** @example "newPassword123" */
+  password: string;
+}
+
+export interface TrailsInfoDto {
+  name?: string;
+  county?: string;
+  town?: string;
+  time?: string;
+  url?: string;
+  note?: string;
+  public?: boolean;
+}
+
 export interface Profile {
   /** @example 1 */
   id: number;
@@ -43,8 +87,6 @@ export interface Profile {
   user_id: number;
   /** @example "https://example.com/avatar.png" */
   avatar: string;
-  /** @example "中級" */
-  level: string;
   /** @example "喜歡爬百岳的登山愛好者" */
   description: string;
 }
@@ -52,8 +94,6 @@ export interface Profile {
 export interface UpdateProfileDto {
   /** @example "https://example.com/avatar.png" */
   avatar?: string;
-  /** @example "中級" */
-  level?: string;
   /** @example "喜歡爬百岳的登山愛好者" */
   description?: string;
 }
@@ -222,8 +262,6 @@ export interface CollectionItemDto {
   username?: object | null;
   /** @example "https://example.com/avatar.png" */
   avatar?: object | null;
-  /** @example "中級" */
-  level?: object | null;
 }
 
 export interface CreateCollectionDto {
@@ -262,8 +300,6 @@ export interface SearchResultDto {
   county?: object | null;
   /** @example "信義鄉" */
   town?: object | null;
-  /** @example "中級" */
-  level?: object | null;
   /** @example "https://pub-xxxx.r2.dev/trails/1/cover.jpg" */
   cover_image_url?: object | null;
   /** @example "name" */

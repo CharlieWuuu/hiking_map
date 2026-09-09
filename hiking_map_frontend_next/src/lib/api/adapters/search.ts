@@ -9,7 +9,6 @@ export type SearchResult = {
   avatar?: string | null;
   county?: string | null;
   town?: string | null;
-  level?: string | null;
   coverImageUrl?: string | null;
   matchReason: 'name' | 'field';
 };

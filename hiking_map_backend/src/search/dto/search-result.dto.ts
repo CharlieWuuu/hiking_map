@@ -20,9 +20,6 @@ export class SearchResultDto {
   @ApiPropertyOptional({ example: '信義鄉', nullable: true })
   town?: string | null;
 
-  @ApiPropertyOptional({ example: '中級', nullable: true })
-  level?: string | null;
-
   @ApiPropertyOptional({ example: 'https://pub-xxxx.r2.dev/trails/1/cover.jpg', nullable: true })
   cover_image_url?: string | null;
 

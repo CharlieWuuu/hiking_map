@@ -1,6 +1,8 @@
 import {
+  BadRequestException,
   Controller,
   Get,
+  Patch,
   Post,
   Delete,
   Body,
@@ -17,6 +19,8 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { HikesService } from './hikes.service';
 import { CreateHikeDto } from './dto/create-hike.dto';
 import { HikeStatsDto } from './dto/hike-stats.dto';
+import { MergeHikesDto } from './dto/merge-hikes.dto';
+import { TrimTrackDto } from './dto/trim-track.dto';
 import { JwtRequiredGuard } from '../auth/jwt-required.guard';
 import { Hike } from './hike.entity';
 import { User } from '../auth/auth.entity';
@@ -37,10 +41,36 @@ export class HikesController {
     return this.hikesService.create(req.user.user_id, dto);
   }
 
+  // 合併必須擺在 @Get(':id') 之前無妨（方法不同），但擺在這裡比較好讀
+  @Post('merge')
+  @UseGuards(JwtRequiredGuard)
+  @ApiCreatedResponse({ type: Hike, description: '合併後新建的紀錄' })
+  merge(@Body() dto: MergeHikesDto, @Req() req: any) {
+    return this.hikesService.merge(req.user.user_id, dto);
+  }
+
+  @Patch(':id/track/trim')
+  @UseGuards(JwtRequiredGuard)
+  @ApiOkResponse({ type: Hike, description: '裁切後的紀錄，距離已重算' })
+  trimTrack(@Param('id', ParseIntPipe) id: number, @Body() dto: TrimTrackDto, @Req() req: any) {
+    return this.hikesService.trimTrack(id, req.user.user_id, dto);
+  }
+
   @Get()
   @ApiOkResponse({ type: Hike, isArray: true })
   findAll(@Query('userId') userId?: string, @Query('includeGeojson') includeGeojson?: string) {
     return this.hikesService.findAll(userId ? Number(userId) : undefined, includeGeojson === 'true');
+  }
+
+  // bbox 格式為 minLng,minLat,maxLng,maxLat
+  @Get('in-view')
+  @ApiOkResponse({ description: '目前視野內的紀錄，含 center / bbox 與簡化軌跡' })
+  findInView(@Query('bbox') bbox: string, @Query('userId') userId?: string) {
+    const parts = (bbox ?? '').split(',').map(Number);
+    if (parts.length !== 4 || parts.some(Number.isNaN)) {
+      throw new BadRequestException('bbox 格式應為 minLng,minLat,maxLng,maxLat');
+    }
+    return this.hikesService.findInView(parts as [number, number, number, number], userId ? Number(userId) : undefined);
   }
 
   @Get('stats')

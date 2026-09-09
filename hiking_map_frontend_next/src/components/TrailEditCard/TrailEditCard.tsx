@@ -77,7 +77,7 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
   }
 
   return (
-    <div className="bg-panel text-background-contrary flex w-full flex-col gap-6 rounded-lg p-4">
+    <div className="bg-panel text-background-contrary flex w-full shrink-0 flex-col gap-6 rounded-lg p-4">
       <div className="border-accent flex items-end justify-between gap-4 border-b pb-3">
         <div className="flex flex-1 items-end gap-2">
           <input

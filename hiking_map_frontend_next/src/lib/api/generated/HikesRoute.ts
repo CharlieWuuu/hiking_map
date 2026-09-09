@@ -47,6 +47,23 @@ export namespace Hikes {
   /**
    * No description
    * @tags Hikes
+   * @name HikesControllerFindInView
+   * @request GET:/hikes/in-view
+   */
+  export namespace HikesControllerFindInView {
+    export type RequestParams = {};
+    export type RequestQuery = {
+      bbox: string;
+      userId: string;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = void;
+  }
+
+  /**
+   * No description
+   * @tags Hikes
    * @name HikesControllerGetStats
    * @request GET:/hikes/stats
    */

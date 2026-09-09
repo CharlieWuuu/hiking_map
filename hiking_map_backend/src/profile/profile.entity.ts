@@ -20,10 +20,6 @@ export class Profile {
   @Column()
   avatar: string;
 
-  @ApiProperty({ example: '中級' })
-  @Column()
-  level: string;
-
   @ApiProperty({ example: '喜歡爬百岳的登山愛好者' })
   @Column()
   description: string;

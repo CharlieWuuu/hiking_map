@@ -6,13 +6,14 @@ import { notFound } from 'next/navigation';
 
 import '../globals.css';
 
-import LandingAnimation, { AppReveal } from '../../components/LandingAnimation';
+import { COMMIT_HOOK_INSTALLER } from 'react-component-overlay';
+
 import Nav from '../../components/Nav';
 import { NAV_COLLAPSED_STORAGE_KEY } from '../../components/Nav/Nav.const';
 import { routing } from '../../i18n/routing';
 import AuthInitializer from '../../lib/AuthInitializer';
-import { COMMIT_HOOK_INSTALLER, DebugOverlay, DebugProvider } from '../../lib/debug';
 import { THEME_STORAGE_KEY } from '../../lib/theme';
+import DebugSetup from './DebugSetup';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 
@@ -57,18 +58,17 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
       </head>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
-          <DebugProvider>
-            <LandingAnimation />
+          <DebugSetup>
             <AuthInitializer />
-            <AppReveal>
+            {/* 寬螢幕時是 Nav 與 main 並排的 flex 容器，Nav 佔的寬度由它自己決定 */}
+            <div className="flex min-h-dvh flex-col lg:flex-row">
               <Nav />
               {/* flex 一路傳到頁面，頁面才能用 flex-1 撐滿高度（例如登入頁要垂直置中） */}
               <main className="flex min-w-0 flex-1 flex-col p-6 pb-20 lg:px-8 lg:py-12 lg:pb-12">
                 <div className="mx-auto flex w-full max-w-240 flex-1 flex-col">{children}</div>
               </main>
-            </AppReveal>
-            <DebugOverlay />
-          </DebugProvider>
+            </div>
+          </DebugSetup>
         </NextIntlClientProvider>
       </body>
     </html>

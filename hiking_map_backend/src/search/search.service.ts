@@ -54,7 +54,7 @@ export class SearchService {
     );
 
     const userRows = await this.dataSource.query(
-      `SELECT u.username, p.avatar, p.level, p.description,
+      `SELECT u.username, p.avatar, p.description,
               (u.username ILIKE $1) AS matches_name
        FROM users u
        JOIN profiles p ON p.user_id = u.id
@@ -77,23 +77,15 @@ export class SearchService {
       slug: row.username,
       display_name: row.username,
       avatar: row.avatar,
-      level: row.level,
       match_reason: row.matches_name ? 'name' : 'field',
     }));
 
     return [...trailResults, ...userResults].sort((a, b) =>
-      a.match_reason === b.match_reason
-        ? 0
-        : a.match_reason === 'name'
-          ? -1
-          : 1,
+      a.match_reason === b.match_reason ? 0 : a.match_reason === 'name' ? -1 : 1,
     );
   }
 
-  async filterTrails(
-    categoryKey: string | null,
-    county: string | null,
-  ): Promise<SearchResultDto[]> {
+  async filterTrails(categoryKey: string | null, county: string | null): Promise<SearchResultDto[]> {
     const conditions: string[] = [];
     const params: unknown[] = [];
 

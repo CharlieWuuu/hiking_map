@@ -19,7 +19,6 @@ export type CollectionItem = Collection & {
   trailSlug?: string | null;
   username?: string | null;
   avatar?: string | null;
-  level?: string | null;
 };
 
 export type CreateCollectionDto = {

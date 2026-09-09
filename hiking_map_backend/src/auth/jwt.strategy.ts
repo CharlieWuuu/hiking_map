@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
+import { getJwtSecret } from '../common/jwt-secret';
 
 function extractFromCookie(req: Request): string | null {
   return req?.cookies?.auth_token || null;
@@ -18,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         extractFromCookie, // 或是從 httpOnly cookie 抽出
       ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'your-secret-key',
+      secretOrKey: getJwtSecret(),
     });
   }
 

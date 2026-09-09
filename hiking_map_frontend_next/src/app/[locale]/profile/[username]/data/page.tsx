@@ -12,7 +12,8 @@ type Props = {
   searchParams: Promise<{ fullscreen?: string; edit?: string }>;
 };
 
-// 後端 hike_tracks.geom 是 MultiLineString，這裡只取第一條線來畫圖
+// 後端回傳的是簡化過的 MultiLineString，這裡只取第一條線來畫圖。
+// 放大到 DETAIL_ZOOM 以上時，地圖會自己去 R2 換上完整軌跡
 function getHikePath(geojson: object | null | undefined): [number, number][] {
   if (!geojson || !('type' in geojson) || !('coordinates' in geojson)) return [];
   if (geojson.type === 'LineString') return geojson.coordinates as [number, number][];
@@ -46,6 +47,8 @@ export default async function ProfileDataPage({ params, searchParams }: Props) {
     urls: hike.urls,
     note: hike.note ?? undefined,
     path: getHikePath(hike.geojson),
+    trackUrl: hike.trackUrl,
+    bbox: hike.bbox,
   }));
 
   const t = await getTranslations('ProfileDataPage');

@@ -25,7 +25,7 @@ export default async function ProfileCollectionsPage({ params }: { params: Promi
                 href={`/profile/${item.username}`}
                 displayName={item.username ?? ''}
                 avatar={item.avatar ?? undefined}
-                subtitle={item.level ?? tResult('user')}
+                subtitle={tResult('user')}
               />
             ) : item.itemType === 'trail' ? (
               <TrailListItem key={`trail-${item.id}`} href={`/trails/${item.trailSlug}`} name={item.trailName ?? ''} county="" town="" />

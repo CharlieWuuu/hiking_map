@@ -117,6 +117,9 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.8.1
         version: 0.8.1(@ianvs/prettier-plugin-sort-imports@4.7.1(prettier@3.9.5))(prettier@3.9.5)
+      react-component-overlay:
+        specifier: ^0.1.0
+        version: 0.1.0(react@19.2.4)
       storybook:
         specifier: ^10.5.2
         version: 10.5.2(@types/react@19.1.17)(prettier@3.9.5)(react@19.2.4)
@@ -5315,6 +5318,11 @@ packages:
 
   rc9@3.0.1:
     resolution: {integrity: sha512-gMDyleLWVE+i6Sgtc0QbbY6pEKqYs97NGi6isHQPqYlLemPoO8dxQ3uGi0f4NiP98c+jMW6cG1Kx9dDwfvqARQ==}
+
+  react-component-overlay@0.1.0:
+    resolution: {integrity: sha512-DnfRKf4V5Kpd/ybE4sStRCxnOC7svuEa0jmMnCXa3P28uTp8WONz2MdTq9pag0toAAc7/dOENl0ny3Lh9s8pJg==}
+    peerDependencies:
+      react: '>=18'
 
   react-docgen-typescript@2.4.0:
     resolution: {integrity: sha512-ZtAp5XTO5HRzQctjPU0ybY0RRCQO19X/8fxn3w7y2VVTUbGHDKULPTL4ky3vB05euSgG5NpALhEhDPvQ56wvXg==}
@@ -11407,6 +11415,10 @@ snapshots:
     dependencies:
       defu: 6.1.7
       destr: 2.0.5
+
+  react-component-overlay@0.1.0(react@19.2.4):
+    dependencies:
+      react: 19.2.4
 
   react-docgen-typescript@2.4.0(typescript@5.9.3):
     dependencies:

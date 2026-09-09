@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Collection } from './collection.entity';
@@ -48,8 +44,7 @@ export class SocialService {
   async removeCollection(userId: number, id: number) {
     const collection = await this.collectionsRepo.findOne({ where: { id } });
     if (!collection) throw new NotFoundException('找不到這筆收藏');
-    if (collection.user_id !== userId)
-      throw new NotFoundException('找不到這筆收藏');
+    if (collection.user_id !== userId) throw new NotFoundException('找不到這筆收藏');
 
     await this.collectionsRepo.delete(id);
   }
@@ -61,28 +56,16 @@ export class SocialService {
     });
     if (collections.length === 0) return [];
 
-    const trailIds = collections
-      .filter((c) => c.item_type === 'trail')
-      .map((c) => c.item_id);
-    const userIds = collections
-      .filter((c) => c.item_type === 'user')
-      .map((c) => c.item_id);
+    const trailIds = collections.filter((c) => c.item_type === 'trail').map((c) => c.item_id);
+    const userIds = collections.filter((c) => c.item_type === 'user').map((c) => c.item_id);
 
-    const trails = trailIds.length
-      ? await this.trailsRepo.findBy({ id: In(trailIds) })
-      : [];
+    const trails = trailIds.length ? await this.trailsRepo.findBy({ id: In(trailIds) }) : [];
     const trailsById = new Map(trails.map((trail) => [trail.id, trail]));
 
-    const users = userIds.length
-      ? await this.usersRepo.findBy({ id: In(userIds) })
-      : [];
+    const users = userIds.length ? await this.usersRepo.findBy({ id: In(userIds) }) : [];
     const usersById = new Map(users.map((user) => [user.id, user]));
-    const profiles = userIds.length
-      ? await this.profilesRepo.findBy({ user_id: In(userIds) })
-      : [];
-    const profilesByUserId = new Map(
-      profiles.map((profile) => [profile.user_id, profile]),
-    );
+    const profiles = userIds.length ? await this.profilesRepo.findBy({ user_id: In(userIds) }) : [];
+    const profilesByUserId = new Map(profiles.map((profile) => [profile.user_id, profile]));
 
     return collections.map((collection) => {
       if (collection.item_type === 'trail') {
@@ -100,7 +83,6 @@ export class SocialService {
           ...collection,
           username: user?.username ?? null,
           avatar: profile?.avatar ?? null,
-          level: profile?.level ?? null,
         };
       }
       return { ...collection };

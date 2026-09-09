@@ -1,13 +1,17 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 import PageLayout from '../../../components/PageLayout';
 import { Link } from '../../../i18n/navigation';
+import { getAuthMethods } from '../../../lib/getAuthMethods';
+import AccountSecurity from './_components/AccountSecurity';
 import LocaleSelector from './_components/LocaleSelector';
 import LogoutButton from './_components/LogoutButton';
 import ThemeSwitcher from './_components/ThemeSwitcher';
 
-export default function SettingsPage() {
-  const t = useTranslations('SettingsPage');
+export default async function SettingsPage() {
+  const t = await getTranslations('SettingsPage');
+  // 未登入時拿不到，帳號安全區塊就整段不顯示
+  const authMethods = await getAuthMethods();
   return (
     <PageLayout title={t('title')}>
       <div className="flex flex-col gap-4">
@@ -15,6 +19,8 @@ export default function SettingsPage() {
           <LocaleSelector />
           <ThemeSwitcher />
         </div>
+        {authMethods && <AccountSecurity initialMethods={authMethods} />}
+
         <div className="bg-panel rounded-panel px-4">
           <Link href="/settings/intro" className="text-accent flex w-full items-center justify-between py-3">
             {t('goToIntro')}

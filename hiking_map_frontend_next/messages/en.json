@@ -6,6 +6,10 @@
   "Common": {
     "noData": "No data"
   },
+  "HikeStatsCharts": {
+    "monthlyDistance": "Monthly distance",
+    "countyStats": "County stats"
+  },
   "Nav": {
     "home": "Home",
     "search": "Explore",
@@ -23,8 +27,6 @@
   },
   "HomePage": {
     "yourStats": "Your Stats",
-    "monthlyDistance": "Monthly distance",
-    "countyStats": "County stats",
     "goToProfile": "View full profile",
     "loginPrompt": "Sign in to see your hiking stats",
     "loginCta": "Go to sign in",
@@ -42,7 +44,27 @@
     "orDivider": "or",
     "oauth": {
       "google": "Continue with Google"
-    }
+    },
+    "forgotPassword": "Forgot password?"
+  },
+  "ForgotPasswordPage": {
+    "title": "Forgot password",
+    "description": "Enter the email on your account and we will send you a reset link.",
+    "email": "Email",
+    "submit": "Send reset link",
+    "sentTitle": "Check your inbox",
+    "sentDescription": "If that email matches an account, a reset link is on its way. It expires in an hour. Check your spam folder too.",
+    "backToLogin": "Back to login"
+  },
+  "ResetPasswordPage": {
+    "title": "Set a new password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "submit": "Update password",
+    "mismatch": "The two passwords do not match",
+    "expired": "This link is no longer valid. Please request a new one.",
+    "invalidTitle": "Incomplete link",
+    "requestAgain": "Request a new link"
   },
   "NotFoundPage": {
     "title": "Page not found",
@@ -64,17 +86,15 @@
     "achievementHundred": "Hundred Peaks",
     "achievementSmallHundred": "Small Hundred Peaks",
     "achievementHundredTrail": "Top 100 Trails",
-    "monthlyDistance": "Monthly distance",
-    "countyStats": "County stats",
     "trailHistory": "Trail history",
     "goToData": "Map & data",
-    "goToCollections": "Collections"
+    "goToCollections": "Collections",
+    "uploadHike": "Upload hike"
   },
   "EditProfileForm": {
     "edit": "Edit profile",
     "title": "Edit profile",
     "avatar": "Avatar URL",
-    "level": "Level",
     "description": "Bio",
     "cancel": "Cancel",
     "save": "Save"
@@ -161,6 +181,22 @@
     "logout": "Log out",
     "login": "Log in"
   },
+  "AccountSecurity": {
+    "title": "Account security",
+    "email": "Email",
+    "emailHint": "Password reset links are sent here.",
+    "emailMissingHint": "Not set. Without an email you cannot reset your own password.",
+    "saveEmail": "Save",
+    "saved": "Saved",
+    "saveFailed": "Could not save. That email may already be used by another account.",
+    "google": "Google account",
+    "googleHint": "Once linked, you can sign in with Google if you forget your password.",
+    "googleLinked": "Linked",
+    "googleLink": "Link",
+    "googleUnlink": "Unlink",
+    "googleUnlinkBlocked": "This account has no password. Unlinking would lock you out.",
+    "googleConflict": "That Google account is already linked to another account."
+  },
   "SettingsIntroPage": {
     "title": "About this site",
     "backToSettings": "Back to settings",
@@ -190,5 +226,26 @@
     "problemPain2": "Google Maps works for display but has limited layers, forcing all trails into one file and full rewrites on every update",
     "problemPain3": "Lacks flexibility and extensibility for further chart analysis or multi-user sharing",
     "problemConclusion": "So I extended this need into a full web app, simulating an open platform that supports multi-user uploads, interactive queries, and achievement visualization."
+  },
+  "HikeUploadPage": {
+    "title": "Upload a hike",
+    "subtitle": "Pick a GPX file, review it, then save",
+    "backToProfile": "Back to profile",
+    "choosePrompt": "Choose a GPX file",
+    "chooseHint": "Supports .gpx exported from hiking apps",
+    "parseFailed": "Could not read the file",
+    "submitFailed": "Saving failed, please try again",
+    "distance": "Distance",
+    "distanceValue": "{distance, number, ::.00} km",
+    "elevationGain": "Elevation gain",
+    "elevationGainValue": "{meters, number} m",
+    "segments": "Segments",
+    "points": "Points",
+    "name": "Name",
+    "date": "Date",
+    "note": "Note",
+    "isPublic": "Make this hike public",
+    "submit": "Save hike",
+    "submitting": "Saving…"
   }
 }

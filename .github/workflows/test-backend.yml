@@ -1,0 +1,37 @@
+name: Backend Tests
+
+on:
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - 'hiking_map_backend/**'
+      - '.github/workflows/test-backend.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hiking_map_backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: hiking_map_backend/package-lock.json
+
+      - run: npm ci
+
+      # 型別錯誤在 jest 裡不一定會浮現，先擋一層
+      - name: Typecheck
+        run: npx tsc --noEmit -p tsconfig.json
+
+      # 單元測試不連資料庫，所以 CI 不需要任何祕密。
+      # 但 app.module 在載入時就會讀 JWT_SECRET，給個假的讓它能起來。
+      - name: Test
+        run: npm test
+        env:
+          JWT_SECRET: ci-placeholder-not-a-real-secret

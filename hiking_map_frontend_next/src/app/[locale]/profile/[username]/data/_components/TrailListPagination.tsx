@@ -18,7 +18,7 @@ export default function TrailListPagination({ page, pageCount, onPageChange }: P
   if (pageCount <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center gap-3 py-2">
+    <div className="flex shrink-0 items-center justify-center gap-3 py-2">
       <button type="button" onClick={() => onPageChange(page - 1)} disabled={page <= 1} title={t('previousPage')} className={buttonClassName}>
         <ChevronLeft className="h-4 w-4" />
       </button>

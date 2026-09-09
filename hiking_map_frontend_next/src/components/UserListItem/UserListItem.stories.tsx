@@ -22,7 +22,7 @@ export default meta;
 type Story = StoryObj<typeof UserListItem>;
 
 export const WithAvatar: Story = {
-  args: { avatar: 'https://i.pravatar.cc/64', subtitle: '資深' },
+  args: { avatar: 'https://i.pravatar.cc/64', subtitle: '使用者' },
 };
 
 export const WithoutAvatar: Story = {
