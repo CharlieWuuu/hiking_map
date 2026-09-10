@@ -11,9 +11,11 @@ import { Repository, DataSource, EntityManager, In } from 'typeorm';
 import { Hike } from './hike.entity';
 import { HikeTrack } from './hike-track.entity';
 import { HikeCategoryMap } from './hike-category-map.entity';
+import { HikeMountainMap } from './hike-mountain-map.entity';
 import { CreateHikeDto } from './dto/create-hike.dto';
 import { UpdateHikeDto } from './dto/update-hike.dto';
 import { HikeStatsDto } from './dto/hike-stats.dto';
+import { MountainProgressDto } from './dto/mountain-progress.dto';
 import { UploadsService } from '../uploads/uploads.service';
 import { MergeHikesDto } from './dto/merge-hikes.dto';
 import { TrimTrackDto } from './dto/trim-track.dto';
@@ -136,6 +138,15 @@ export class HikesService {
         );
       }
 
+      if (dto.mountain_ids?.length) {
+        await manager.getRepository(HikeMountainMap).insert(
+          dto.mountain_ids.map((mountain_id) => ({
+            hike_id: hike.id,
+            mountain_id,
+          })),
+        );
+      }
+
       return hike;
     });
 
@@ -183,6 +194,19 @@ export class HikesService {
           );
         } else {
           await manager.getRepository(HikeCategoryMap).delete({ hike_id: id, category_id: categoryId });
+        }
+      }
+
+      // mountain_ids 是整批取代（不是像分類那樣逐個開關），前端每次都送完整清單比較好操作
+      if (dto.mountain_ids !== undefined) {
+        await manager.getRepository(HikeMountainMap).delete({ hike_id: id });
+        if (dto.mountain_ids.length) {
+          await manager.getRepository(HikeMountainMap).insert(
+            dto.mountain_ids.map((mountain_id) => ({
+              hike_id: id,
+              mountain_id,
+            })),
+          );
         }
       }
     });
@@ -274,10 +298,16 @@ export class HikesService {
       [id],
     );
 
+    const mountainRows: { mountain_id: number }[] = await this.dataSource.query(
+      `SELECT mountain_id FROM hike_mountains WHERE hike_id = $1`,
+      [id],
+    );
+
     return {
       ...hike,
       ...(track[0] ? toTrackMeta(track[0]) : { center: null, bbox: null, point_count: null, track_url: null }),
       geojson: track[0]?.geojson ? JSON.parse(track[0].geojson) : null,
+      mountain_ids: mountainRows.map((row) => row.mountain_id),
     };
   }
 
@@ -314,6 +344,17 @@ export class HikesService {
     );
     const trackByHikeId = new Map(trackRows.map((row) => [row.hike_id, row]));
 
+    // 讓清單頁進編輯模式時不必再另外打一次 findOne 才能顯示已標記的山頭
+    const mountainRows: { hike_id: number; mountain_id: number }[] = await this.dataSource.query(
+      `SELECT hike_id, mountain_id FROM hike_mountains WHERE hike_id = ANY($1)`,
+      [hikes.map((hike) => hike.id)],
+    );
+    const mountainIdsByHikeId = new Map<number, number[]>();
+    for (const row of mountainRows) {
+      if (!mountainIdsByHikeId.has(row.hike_id)) mountainIdsByHikeId.set(row.hike_id, []);
+      mountainIdsByHikeId.get(row.hike_id)!.push(row.mountain_id);
+    }
+
     return hikes.map((hike) => {
       const keys = categoryKeysByHikeId.get(hike.id) ?? new Set();
       const track = trackByHikeId.get(hike.id);
@@ -322,6 +363,7 @@ export class HikesService {
         is_hundred: keys.has('hundred'),
         is_small_hundred: keys.has('small_hundred'),
         is_hundred_trail: keys.has('hundred_trail'),
+        mountain_ids: mountainIdsByHikeId.get(hike.id) ?? [],
         ...(track ? toTrackMeta(track) : { center: null, bbox: null, point_count: null, track_url: null }),
         ...(includeGeojson ? { geojson: track?.geojson ? JSON.parse(track.geojson) : null } : {}),
       };
@@ -381,21 +423,35 @@ export class HikesService {
       [userId],
     );
 
-    const achievementRows = await this.dataSource.query(
-      `SELECT c.name AS category_name, COUNT(DISTINCT h.trail_id) AS count
-       FROM hikes h
-       JOIN trail_category_map tcm ON tcm.trail_id = h.trail_id
-       JOIN categories c ON c.id = tcm.category_id
-       WHERE h.user_id = $1 AND h.trail_id IS NOT NULL
+    // 百岳／小百岳：透過 hike_mountains 算「不重複完成幾座山」，不依賴幾乎沒人填的 trail_id。
+    // 同一座山爬了三次也只算一座，這是「完成度」的正確定義（跟 hike 筆數不同）
+    const mountainAchievementRows = await this.dataSource.query(
+      `SELECT c.name AS category_name, COUNT(DISTINCT hm.mountain_id) AS count
+       FROM hike_mountains hm
+       JOIN hikes h ON h.id = hm.hike_id
+       JOIN mountain_category_map mcm ON mcm.mountain_id = hm.mountain_id
+       JOIN categories c ON c.id = mcm.category_id
+       WHERE h.user_id = $1
        GROUP BY c.name`,
       [userId],
     );
 
+    // 百大必訪步道：本來就是路線層級的屬性（TrailEditCard 上打的 tag），跟具體是哪座山無關，維持用 hike_category_map
+    const hundredTrailRows = await this.dataSource.query(
+      `SELECT COUNT(DISTINCT h.id) AS count
+       FROM hikes h
+       JOIN hike_category_map hcm ON hcm.hike_id = h.id
+       JOIN categories c ON c.id = hcm.category_id
+       WHERE h.user_id = $1 AND c.name = '百大必訪步道'`,
+      [userId],
+    );
+
     const achievements = { hundred: 0, small_hundred: 0, hundred_trail: 0 };
-    for (const row of achievementRows) {
+    for (const row of mountainAchievementRows) {
       const key = CATEGORY_NAME_TO_ACHIEVEMENT_KEY[row.category_name];
       if (key) achievements[key] = Number(row.count);
     }
+    achievements.hundred_trail = Number(hundredTrailRows[0]?.count ?? 0);
 
     return {
       total_distance_km: Number(totals[0].total_distance_km),
@@ -410,6 +466,44 @@ export class HikesService {
         count: Number(row.count),
       })),
     };
+  }
+
+  // 百岳／小百岳完成度：依分類列出「已完成」與「還缺」的山頭清單，
+  // 跟 getStats 的 achievements 用同一份 hike_mountains 資料，只是這裡要逐座列出來而不是只給數字
+  async getMountainProgress(userId: number): Promise<MountainProgressDto> {
+    const rows: {
+      category_name: string;
+      id: number;
+      name: string;
+      elevation_m: number;
+      completed: boolean;
+    }[] = await this.dataSource.query(
+      `SELECT c.name AS category_name, m.id, m.name, m.elevation_m,
+              EXISTS(
+                SELECT 1 FROM hike_mountains hm
+                JOIN hikes h ON h.id = hm.hike_id
+                WHERE hm.mountain_id = m.id AND h.user_id = $1
+              ) AS completed
+       FROM mountains m
+       JOIN mountain_category_map mcm ON mcm.mountain_id = m.id
+       JOIN categories c ON c.id = mcm.category_id
+       WHERE c.name IN ('百岳', '小百岳')
+       ORDER BY c.name, m.name`,
+      [userId],
+    );
+
+    const grouped: MountainProgressDto = {
+      hundred: { completed: [], missing: [] },
+      small_hundred: { completed: [], missing: [] },
+    };
+
+    for (const row of rows) {
+      const key = row.category_name === '百岳' ? 'hundred' : 'small_hundred';
+      const bucket = row.completed ? grouped[key].completed : grouped[key].missing;
+      bucket.push({ id: row.id, name: row.name, elevation_m: row.elevation_m });
+    }
+
+    return grouped;
   }
 
   // 裁切軌跡頭尾。索引是攤平後的點序號，由前端從 point_count 或完整軌跡推得。

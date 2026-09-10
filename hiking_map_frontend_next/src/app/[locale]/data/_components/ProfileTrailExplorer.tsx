@@ -56,6 +56,7 @@ export default function ProfileTrailExplorer({ trails: initialTrails, userId, fu
               isHundred: saved.isHundred ?? false,
               isSmallHundred: saved.isSmallHundred ?? false,
               isHundredTrail: saved.isHundredTrail ?? false,
+              mountainIds: saved.mountainIds ?? [],
               urls: saved.urls,
               note: saved.note ?? undefined,
             }

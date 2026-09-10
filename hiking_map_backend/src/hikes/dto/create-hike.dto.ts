@@ -84,6 +84,12 @@ export class CreateHikeDto {
   @IsInt({ each: true })
   category_ids?: number[];
 
+  @ApiPropertyOptional({ example: [1, 2], description: '這趟紀錄完成的山頭 id 清單' })
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  mountain_ids?: number[];
+
   // 幾何結構本身交給 PostGIS 的 ST_GeomFromGeoJSON 把關——在這裡逐層宣告巢狀型別
   // 既冗長又容易跟規格脫節。但至少要確認 features 陣列存在且非空：
   // create() 會直接取 features[0]，空陣列會在服務層炸成 500 而不是回 400。

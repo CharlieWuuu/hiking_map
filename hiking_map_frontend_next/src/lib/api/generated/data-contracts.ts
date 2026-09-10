@@ -121,6 +121,8 @@ export interface CreateHikeDto {
   trail_id?: number;
   /** @example [1,2] */
   category_ids?: string[];
+  /** @example [1,2] */
+  mountain_ids?: number[];
   /** @example {"type":"FeatureCollection","features":[]} */
   geojson: object;
 }
@@ -146,6 +148,8 @@ export interface UpdateHikeDto {
   urls?: string[];
   /** @example "天氣很好，view 很棒" */
   note?: string;
+  /** @example [1,2] */
+  mountain_ids?: number[];
 }
 
 export interface Hike {
@@ -178,6 +182,8 @@ export interface Hike {
    * @example "2026-07-20T10:00:00.000Z"
    */
   created_at: string;
+  /** GET /hikes/:id 才會附帶，這趟紀錄手動標記完成的山頭 id 清單 */
+  mountain_ids?: number[];
 }
 
 export interface InViewHikeDto {
@@ -228,6 +234,25 @@ export interface HikeStatsDto {
   achievements: AchievementsDto;
   monthly_distance: MonthlyDistanceDto[];
   county_stats: CountyStatDto[];
+}
+
+export interface MountainProgressItemDto {
+  /** @example 1 */
+  id: number;
+  /** @example "玉山主峰" */
+  name: string;
+  /** @example 3952 */
+  elevation_m: number;
+}
+
+export interface MountainProgressCategoryDto {
+  completed: MountainProgressItemDto[];
+  missing: MountainProgressItemDto[];
+}
+
+export interface MountainProgressDto {
+  hundred: MountainProgressCategoryDto;
+  small_hundred: MountainProgressCategoryDto;
 }
 
 export interface Mountain {

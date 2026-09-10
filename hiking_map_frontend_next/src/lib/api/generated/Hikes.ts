@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { CreateHikeDto, Hike, HikeStatsDto, InViewHikeDto, UpdateHikeDto } from './data-contracts';
+import { CreateHikeDto, Hike, HikeStatsDto, InViewHikeDto, MountainProgressDto, UpdateHikeDto } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
 export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
@@ -90,6 +90,20 @@ export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
       path: `/hikes/stats`,
       method: 'GET',
       query: query,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Hikes
+   * @name HikesControllerGetMountainProgress
+   * @request GET:/hikes/mountain-progress
+   */
+  hikesControllerGetMountainProgress = (params: RequestParams = {}) =>
+    this.request<MountainProgressDto, any>({
+      path: `/hikes/mountain-progress`,
+      method: 'GET',
       format: 'json',
       ...params,
     });

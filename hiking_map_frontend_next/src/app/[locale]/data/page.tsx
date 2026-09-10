@@ -39,6 +39,7 @@ export default async function DataPage({ searchParams }: Props) {
     isHundred: hike.isHundred ?? false,
     isSmallHundred: hike.isSmallHundred ?? false,
     isHundredTrail: hike.isHundredTrail ?? false,
+    mountainIds: hike.mountainIds ?? [],
     urls: hike.urls,
     note: hike.note ?? undefined,
     path: getHikePath(hike.geojson),

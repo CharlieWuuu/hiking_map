@@ -4,6 +4,8 @@ import { Plus, Save, Trash2, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
+import MountainMultiSelect from './MountainMultiSelect';
+
 export type EditableTrail = {
   slug: string;
   name: string;
@@ -17,6 +19,7 @@ export type EditableTrail = {
   isHundredTrail: boolean;
   urls: string[];
   note?: string;
+  mountainIds: number[];
 };
 
 type Props = {
@@ -177,6 +180,13 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
           </div>
         </div>
       </div>
+
+      <MountainMultiSelect
+        label={t('mountains')}
+        searchPlaceholder={t('mountainsSearchPlaceholder')}
+        selectedIds={patch.mountainIds ?? trail.mountainIds}
+        onChange={(ids) => updateField('mountainIds', ids)}
+      />
 
       <div className="flex w-full flex-col items-start gap-2">
         <span className="text-sm">{t('links')}</span>

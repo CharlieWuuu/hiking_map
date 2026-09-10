@@ -3,6 +3,7 @@ import type {
   Hike as RawHike,
   HikeStatsDto as RawHikeStatsDto,
   InViewHikeDto as RawInViewHikeDto,
+  MountainProgressDto as RawMountainProgressDto,
   UpdateHikeDto as RawUpdateHikeDto,
 } from '../generated/data-contracts';
 import type { Hikes as HikesClient } from '../generated/Hikes';
@@ -34,6 +35,8 @@ export type Hike = {
   trackUrl: string | null;
   // GET /hikes?includeGeojson=true 才會附帶，且只有簡化過的線
   geojson?: object | null;
+  // GET /hikes/:id 才會附帶，這趟紀錄手動標記完成的山頭 id 清單
+  mountainIds?: number[];
 };
 
 export type CreateHikeDto = {
@@ -48,6 +51,7 @@ export type CreateHikeDto = {
   coverImageUrl?: string;
   trailId?: number;
   categoryIds?: string[];
+  mountainIds?: number[];
   geojson: object;
 };
 
@@ -62,6 +66,18 @@ export type UpdateHikeDto = {
   isHundredTrail?: boolean;
   urls?: string[];
   note?: string;
+  mountainIds?: number[];
+};
+
+export type MountainProgressItem = {
+  id: number;
+  name: string;
+  elevationM: number;
+};
+
+export type MountainProgress = {
+  hundred: { completed: MountainProgressItem[]; missing: MountainProgressItem[] };
+  smallHundred: { completed: MountainProgressItem[]; missing: MountainProgressItem[] };
 };
 
 export type InViewHike = {
@@ -99,6 +115,10 @@ export function adaptInViewHike(raw: RawInViewHikeDto): InViewHike {
   return toCamelCase<RawInViewHikeDto>(raw) as InViewHike;
 }
 
+export function adaptMountainProgress(raw: RawMountainProgressDto): MountainProgress {
+  return toCamelCase<RawMountainProgressDto>(raw) as MountainProgress;
+}
+
 export function toCreateHikeDto(dto: CreateHikeDto): RawCreateHikeDto {
   return {
     name: dto.name,
@@ -112,6 +132,7 @@ export function toCreateHikeDto(dto: CreateHikeDto): RawCreateHikeDto {
     cover_image_url: dto.coverImageUrl,
     trail_id: dto.trailId,
     category_ids: dto.categoryIds,
+    mountain_ids: dto.mountainIds,
     geojson: dto.geojson,
   };
 }
@@ -128,6 +149,7 @@ export function toUpdateHikeDto(dto: UpdateHikeDto): RawUpdateHikeDto {
     is_hundred_trail: dto.isHundredTrail,
     urls: dto.urls,
     note: dto.note,
+    mountain_ids: dto.mountainIds,
   };
 }
 
@@ -148,5 +170,6 @@ export function createHikesService(client: HikesClient) {
     update: async (id: number, dto: UpdateHikeDto) => adaptHike(await client.hikesControllerUpdate(id, toUpdateHikeDto(dto))),
     remove: (id: number) => client.hikesControllerRemove(id),
     getStats: async (username: string) => adaptHikeStats(await client.hikesControllerGetStats({ username })),
+    getMountainProgress: async () => adaptMountainProgress(await client.hikesControllerGetMountainProgress()),
   };
 }

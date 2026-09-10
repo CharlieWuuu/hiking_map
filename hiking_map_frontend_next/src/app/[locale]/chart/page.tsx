@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 
 import ChartRing from '../../../components/ChartRing';
 import HikeStatsCharts from '../../../components/HikeStatsCharts';
+import MountainProgress from '../../../components/MountainProgress';
 import PageLayout from '../../../components/PageLayout';
 import TrailListItem from '../../../components/TrailListItem';
 import { Link } from '../../../i18n/navigation';
@@ -16,7 +17,10 @@ export default async function ChartPage() {
   const currentUser = await getCurrentUser();
   if (!currentUser) redirect('/login');
 
-  const stats = await apiClient.hikes.getStats(currentUser.username).catch(() => null);
+  const [stats, mountainProgress] = await Promise.all([
+    apiClient.hikes.getStats(currentUser.username).catch(() => null),
+    apiClient.hikes.getMountainProgress().catch(() => null),
+  ]);
   if (!stats) redirect('/login');
 
   const hikes = await apiClient.hikes.findAll(String(currentUser.userId));
@@ -44,6 +48,8 @@ export default async function ChartPage() {
           <HikeStatsCharts stats={stats} />
         </div>
       </div>
+
+      {mountainProgress && <MountainProgress progress={mountainProgress} />}
 
       {/* 地圖／表格導覽 */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

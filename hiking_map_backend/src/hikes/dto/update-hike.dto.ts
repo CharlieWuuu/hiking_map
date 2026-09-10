@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsDateString, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsArray, IsBoolean, IsDateString, IsInt, IsOptional, IsString, MaxLength } from 'class-validator';
 
 // 只涵蓋 TrailEditCard 會送出的一般屬性；軌跡本身的編輯走 track/trim 與 track/drop-segment，不走這裡
 export class UpdateHikeDto {
@@ -57,4 +57,10 @@ export class UpdateHikeDto {
   @IsString()
   @MaxLength(5000)
   note?: string;
+
+  @ApiPropertyOptional({ example: [1, 2], description: '這趟紀錄完成的山頭 id 清單，會整批取代原本標記的山頭' })
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  mountain_ids?: number[];
 }

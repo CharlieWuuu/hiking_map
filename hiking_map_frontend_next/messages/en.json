@@ -99,6 +99,14 @@
     "goToData": "Map & data",
     "goToCollections": "Collections"
   },
+  "MountainProgress": {
+    "title": "Progress",
+    "hundred": "Hundred Peaks",
+    "smallHundred": "Small Hundred Peaks",
+    "progressCount": "{completed} / {total}",
+    "missing": "Missing",
+    "completed": "Completed"
+  },
   "EditProfileForm": {
     "title": "Profile",
     "avatar": "Avatar URL",
@@ -144,6 +152,8 @@
     "hundred": "Hundred Peaks",
     "smallHundred": "Small Hundred Peaks",
     "hundredTrail": "Top 100 Trails",
+    "mountains": "Peaks completed",
+    "mountainsSearchPlaceholder": "Search a peak to add",
     "links": "Route links",
     "linksPlaceholder": "https://",
     "addLink": "Add link",
@@ -259,6 +269,8 @@
     "name": "Name",
     "date": "Date",
     "note": "Note",
+    "mountains": "Peaks completed",
+    "mountainsSearchPlaceholder": "Search a peak to add",
     "isPublic": "Make this hike public",
     "submit": "Save hike",
     "submitting": "Saving…"

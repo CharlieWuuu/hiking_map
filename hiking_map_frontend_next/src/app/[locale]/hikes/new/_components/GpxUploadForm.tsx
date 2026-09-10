@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 
 import TrailLayer from '../../../../../components/MapView/TrailLayer';
+import MountainMultiSelect from '../../../../../components/TrailEditCard/MountainMultiSelect';
 import { useRouter } from '../../../../../i18n/navigation';
 import { apiClient } from '../../../../../lib/apiClient';
 import { GpxParseError, parseGpx, toFeatureCollection, type ParsedGpx } from '../../../../../lib/gpx/parseGpx';
@@ -26,6 +27,7 @@ export default function GpxUploadForm() {
   const [date, setDate] = useState('');
   const [note, setNote] = useState('');
   const [isPublic, setIsPublic] = useState(true);
+  const [mountainIds, setMountainIds] = useState<number[]>([]);
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -59,6 +61,7 @@ export default function GpxUploadForm() {
         distanceKm: Number(parsed.distanceKm.toFixed(2)),
         isPublic,
         note: note || undefined,
+        mountainIds,
         geojson: toFeatureCollection(parsed),
       });
       router.push(`/hikes/${hike.id}`);
@@ -125,6 +128,8 @@ export default function GpxUploadForm() {
             <span className="text-background-contrary/60 text-sm">{t('note')}</span>
             <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} className={inputClassName} />
           </label>
+
+          <MountainMultiSelect label={t('mountains')} searchPlaceholder={t('mountainsSearchPlaceholder')} selectedIds={mountainIds} onChange={setMountainIds} />
 
           <label className="flex cursor-pointer items-center gap-2 text-sm">
             <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} />
