@@ -14,12 +14,12 @@ export default async function Home() {
   const t = await getTranslations('HomePage');
   const currentUser = await getCurrentUser();
 
-  const [stats, recentHikes, allTrails] = await Promise.all([
+  const [stats, hikes, allTrails] = await Promise.all([
     currentUser ? apiClient.hikes.getStats(currentUser.username).catch(() => null) : Promise.resolve(null),
     currentUser ? apiClient.hikes.findAll(String(currentUser.userId)) : Promise.resolve([]),
     apiClient.trails.findAll(),
   ]);
-  const recentTrails = [...recentHikes].sort((a, b) => b.date.localeCompare(a.date)).slice(0, RECENT_TRAILS_COUNT);
+  const recentTrails = [...hikes].sort((a, b) => b.date.localeCompare(a.date)).slice(0, RECENT_TRAILS_COUNT);
   const recommendedTrails = allTrails.slice(0, RECOMMENDED_TRAILS_COUNT);
 
   return (
@@ -49,7 +49,7 @@ export default async function Home() {
             </div>
           )}
           <div className="md:col-span-2">
-            <HikeStatsCharts stats={stats} />
+            <HikeStatsCharts stats={stats} hikes={hikes} />
           </div>
         </div>
       </section>

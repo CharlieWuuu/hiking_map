@@ -10,7 +10,29 @@
     "monthlyDistance": "每月里程",
     "peakMonth": "{month} 最高 {distance} 公里",
     "countyStats": "縣市統計",
-    "topCounty": "{county} 最多 {count} 次"
+    "topCounty": "{county} 最多 {count} 次",
+    "distanceTrend": "距離趨勢",
+    "weekdayStats": "星期分布",
+    "peakWeekday": "{weekday} 最多 {count} 次",
+    "distanceBucket": "距離區間",
+    "monthlyHeatmap": "月度熱度",
+    "weekday": {
+      "mon": "一",
+      "tue": "二",
+      "wed": "三",
+      "thu": "四",
+      "fri": "五",
+      "sat": "六",
+      "sun": "日"
+    },
+    "distanceBucketLabel": {
+      "under3": "3km 以下",
+      "3to5": "3-5km",
+      "5to8": "5-8km",
+      "8to12": "8-12km",
+      "12to20": "12-20km",
+      "over20": "20km 以上"
+    }
   },
   "Nav": {
     "home": "首頁",
@@ -94,10 +116,7 @@
     "hikeCount": "{count} 次健行",
     "achievementHundred": "百岳",
     "achievementSmallHundred": "小百岳",
-    "achievementHundredTrail": "百大必訪步道",
-    "trailHistory": "歷次軌跡",
-    "goToData": "地圖與資料",
-    "goToCollections": "收藏清單"
+    "achievementHundredTrail": "百大必訪步道"
   },
   "MountainProgress": {
     "title": "完成度",

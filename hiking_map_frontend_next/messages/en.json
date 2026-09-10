@@ -10,7 +10,29 @@
     "monthlyDistance": "Monthly distance",
     "peakMonth": "Peak {month}: {distance} km",
     "countyStats": "County stats",
-    "topCounty": "Top: {county} ({count})"
+    "topCounty": "Top: {county} ({count})",
+    "distanceTrend": "Distance trend",
+    "weekdayStats": "Day of week",
+    "peakWeekday": "Most on {weekday} ({count})",
+    "distanceBucket": "Distance range",
+    "monthlyHeatmap": "Monthly heatmap",
+    "weekday": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "distanceBucketLabel": {
+      "under3": "< 3km",
+      "3to5": "3-5km",
+      "5to8": "5-8km",
+      "8to12": "8-12km",
+      "12to20": "12-20km",
+      "over20": "20km+"
+    }
   },
   "Nav": {
     "home": "Home",
@@ -94,10 +116,7 @@
     "hikeCount": "{count} hikes",
     "achievementHundred": "Hundred Peaks",
     "achievementSmallHundred": "Small Hundred Peaks",
-    "achievementHundredTrail": "Top 100 Trails",
-    "trailHistory": "Trail history",
-    "goToData": "Map & data",
-    "goToCollections": "Collections"
+    "achievementHundredTrail": "Top 100 Trails"
   },
   "MountainProgress": {
     "title": "Progress",
