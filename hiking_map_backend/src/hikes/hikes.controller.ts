@@ -73,10 +73,20 @@ export class HikesController {
     return this.hikesService.dropTrackSegment(id, req.user.user_id, dto);
   }
 
+  // limit 沒給時維持舊行為（回傳完整陣列）；有給 limit 才會走分頁，回傳 { items, total_count, next_cursor }
   @Get()
   @ApiOkResponse({ type: Hike, isArray: true })
-  findAll(@Query('userId') userId?: string, @Query('includeGeojson') includeGeojson?: string) {
-    return this.hikesService.findAll(userId ? Number(userId) : undefined, includeGeojson === 'true');
+  findAll(
+    @Query('userId') userId?: string,
+    @Query('includeGeojson') includeGeojson?: string,
+    @Query('cursor') cursor?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.hikesService.findAll(
+      userId ? Number(userId) : undefined,
+      includeGeojson === 'true',
+      limit ? { cursor, limit: Number(limit) } : undefined,
+    );
   }
 
   // bbox 格式為 minLng,minLat,maxLng,maxLat

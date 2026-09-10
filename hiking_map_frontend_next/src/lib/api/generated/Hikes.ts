@@ -55,6 +55,29 @@ export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
    * No description
    *
    * @tags Hikes
+   * @name HikesControllerFindAllPaginated
+   * @request GET:/hikes
+   */
+  hikesControllerFindAllPaginated = (
+    query: {
+      userId: string;
+      includeGeojson: string;
+      cursor?: string;
+      limit: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<{ items: Hike[]; total_count: number; next_cursor: string | null }, any>({
+      path: `/hikes`,
+      method: 'GET',
+      query: query,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Hikes
    * @name HikesControllerFindInView
    * @request GET:/hikes/in-view
    */

@@ -18,6 +18,8 @@ const PAGE_SIZE = 20;
 
 type Props = {
   trails: Trail[];
+  totalCount: number;
+  initialNextCursor: string | null;
   userId: string;
   fullscreen: 'map' | 'table' | null;
   isEditMode: boolean;
@@ -26,7 +28,25 @@ type Props = {
   onToggleEditMode: () => void;
 };
 
-export default function ProfileTrailExplorer({ trails: initialTrails, userId, fullscreen, isEditMode, isOwner, onFullscreenChange, onToggleEditMode }: Props) {
+// 後端回傳的是簡化過的 MultiLineString，這裡只取第一條線來畫圖
+function getHikePath(geojson: object | null | undefined): [number, number][] {
+  if (!geojson || !('type' in geojson) || !('coordinates' in geojson)) return [];
+  if (geojson.type === 'LineString') return geojson.coordinates as [number, number][];
+  if (geojson.type === 'MultiLineString') return (geojson.coordinates as [number, number][][])[0] ?? [];
+  return [];
+}
+
+export default function ProfileTrailExplorer({
+  trails: initialTrails,
+  totalCount,
+  initialNextCursor,
+  userId,
+  fullscreen,
+  isEditMode,
+  isOwner,
+  onFullscreenChange,
+  onToggleEditMode,
+}: Props) {
   const t = useTranslations('ProfileDataPage');
   const [trails, setTrails] = useState(initialTrails);
   // hover/選取狀態放在 map store，清單與地圖不必再靠 props 互相轉發
@@ -34,12 +54,59 @@ export default function ProfileTrailExplorer({ trails: initialTrails, userId, fu
   const setHoverSlug = useMapStore((state) => state.setHoverSlug);
   const setActiveSlug = useMapStore((state) => state.setActiveSlug);
   const [view, setView] = useState<'card' | 'table'>('card');
+
+  // cursor 分頁天生只能往後走，要能往前翻頁就得自己記住走過的每一頁的 cursor。
+  // cursorsByPage[p] = 「取得第 p 頁」要送出的 cursor；第 1 頁固定是 undefined，
+  // 第 p+1 頁的 cursor 要等實際載入第 p 頁、拿到它的 nextCursor 後才知道
   const [page, setPage] = useState(1);
+  const [cursorsByPage, setCursorsByPage] = useState<Record<number, string | undefined>>({
+    1: undefined,
+    2: initialNextCursor ?? undefined,
+  });
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
+
+  const pageCount = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+
+  async function goToPage(nextPage: number) {
+    const clamped = Math.min(Math.max(nextPage, 1), pageCount);
+    if (clamped === page) return;
+    // 還沒走過的頁面，cursor 不存在，代表使用者用不到的按鈕（分頁 UI 本來就會 disable 掉這種情況）
+    if (!(clamped in cursorsByPage)) return;
+
+    setIsLoadingPage(true);
+    try {
+      const result = await apiClient.hikes.findAllPaginated(userId, PAGE_SIZE, cursorsByPage[clamped], true);
+      setTrails(
+        result.items.map((hike) => ({
+          slug: String(hike.id),
+          name: hike.name,
+          county: hike.county ?? '',
+          town: hike.town ?? '',
+          date: hike.date,
+          distanceKm: hike.distanceKm,
+          isPublic: hike.isPublic,
+          isHundred: hike.isHundred ?? false,
+          isSmallHundred: hike.isSmallHundred ?? false,
+          isHundredTrail: hike.isHundredTrail ?? false,
+          mountainIds: hike.mountainIds ?? [],
+          urls: hike.urls,
+          note: hike.note ?? undefined,
+          path: getHikePath(hike.geojson),
+          trackUrl: hike.trackUrl,
+          bbox: hike.bbox,
+        }))
+      );
+      setPage(clamped);
+      if (result.nextCursor !== null || clamped + 1 <= pageCount) {
+        setCursorsByPage((prev) => ({ ...prev, [clamped + 1]: result.nextCursor ?? undefined }));
+      }
+    } finally {
+      setIsLoadingPage(false);
+    }
+  }
 
   const isMapFullscreen = fullscreen === 'map';
   const isTableFullscreen = fullscreen === 'table';
-  const pageCount = Math.max(1, Math.ceil(trails.length / PAGE_SIZE));
-  const pagedTrails = trails.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   async function saveTrailPatch(slug: string, patch: Partial<EditableTrail>) {
     const saved = await apiClient.hikes.update(Number(slug), patch);
@@ -69,11 +136,8 @@ export default function ProfileTrailExplorer({ trails: initialTrails, userId, fu
     await apiClient.hikes.remove(Number(slug));
     setTrails((prev) => prev.filter((trail) => trail.slug !== slug));
     if (activeSlug === slug) setActiveSlug(null);
-    setPage((prev) => Math.min(prev, Math.max(1, Math.ceil((trails.length - 1) / PAGE_SIZE))));
-  }
-
-  function changePage(next: number) {
-    setPage(Math.min(Math.max(next, 1), pageCount));
+    // 刪除後總數變了，簡單起見重新載入目前這頁
+    void goToPage(page);
   }
 
   return (
@@ -92,9 +156,9 @@ export default function ProfileTrailExplorer({ trails: initialTrails, userId, fu
             />
 
             {/* 只有清單捲動，工具列與分頁才會一直留在畫面上 */}
-            <div className="scrollbar-subtle flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
+            <div className={`scrollbar-subtle flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto ${isLoadingPage ? 'opacity-50' : ''}`}>
               <TrailExplorerList
-                trails={pagedTrails}
+                trails={trails}
                 view={view}
                 activeSlug={activeSlug}
                 isEditMode={isEditMode}
@@ -105,7 +169,7 @@ export default function ProfileTrailExplorer({ trails: initialTrails, userId, fu
               />
             </div>
           </div>
-          <TrailListPagination page={page} pageCount={pageCount} onPageChange={changePage} />
+          <TrailListPagination page={page} pageCount={pageCount} onPageChange={goToPage} />
         </div>
       )}
 

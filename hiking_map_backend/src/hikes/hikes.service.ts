@@ -311,13 +311,46 @@ export class HikesService {
     };
   }
 
-  async findAll(userId?: number, includeGeojson = false) {
+  // cursor 沒給時維持原本行為（回傳完整陣列，不分頁）——首頁、chart 頁要拿全部紀錄去算統計/圖表，
+  // 硬分頁反而要它們自己再迴圈把每頁串起來，划不來。只有 /data 清單頁需要真正分頁，帶 cursor 才會走分頁邏輯。
+  // cursor 用 `date_id`（例如 '2026-07-20_42'）編碼，(date, id) 複合排序才不會因為同一天多筆而重複/漏筆
+  async findAll(userId?: number, includeGeojson = false, pagination?: { cursor?: string; limit: number }) {
     const where = userId ? { user_id: userId } : {};
-    const hikes = await this.hikesRepo.find({
-      where,
-      order: { date: 'DESC' },
-    });
-    if (hikes.length === 0) return [];
+
+    let totalCount: number | undefined;
+    let nextCursor: string | null = null;
+    let hikes: Hike[];
+
+    if (pagination) {
+      totalCount = await this.hikesRepo.count({ where });
+
+      const qb = this.hikesRepo
+        .createQueryBuilder('hike')
+        .where(userId ? 'hike.user_id = :userId' : '1=1', { userId })
+        .orderBy('hike.date', 'DESC')
+        .addOrderBy('hike.id', 'DESC')
+        .take(pagination.limit + 1); // 多拿一筆用來判斷還有沒有下一頁，不必另外查一次
+
+      if (pagination.cursor) {
+        const [cursorDate, cursorIdRaw] = pagination.cursor.split('_');
+        const cursorId = Number(cursorIdRaw);
+        if (!cursorDate || Number.isNaN(cursorId)) throw new BadRequestException('cursor 格式錯誤');
+        qb.andWhere('(hike.date < :cursorDate OR (hike.date = :cursorDate AND hike.id < :cursorId))', {
+          cursorDate,
+          cursorId,
+        });
+      }
+
+      const rows = await qb.getMany();
+      const hasMore = rows.length > pagination.limit;
+      hikes = hasMore ? rows.slice(0, pagination.limit) : rows;
+      const last = hikes[hikes.length - 1];
+      nextCursor = hasMore && last ? `${last.date}_${last.id}` : null;
+    } else {
+      hikes = await this.hikesRepo.find({ where, order: { date: 'DESC' } });
+    }
+
+    if (hikes.length === 0) return pagination ? { items: [], total_count: totalCount ?? 0, next_cursor: null } : [];
 
     const categoryRows = await this.dataSource.query(
       `SELECT h.id AS hike_id, c.name AS category_name
@@ -355,7 +388,7 @@ export class HikesService {
       mountainIdsByHikeId.get(row.hike_id)!.push(row.mountain_id);
     }
 
-    return hikes.map((hike) => {
+    const items = hikes.map((hike) => {
       const keys = categoryKeysByHikeId.get(hike.id) ?? new Set();
       const track = trackByHikeId.get(hike.id);
       return {
@@ -368,6 +401,8 @@ export class HikesService {
         ...(includeGeojson ? { geojson: track?.geojson ? JSON.parse(track.geojson) : null } : {}),
       };
     });
+
+    return pagination ? { items, total_count: totalCount ?? 0, next_cursor: nextCursor } : items;
   }
 
   // 只回傳 bbox 與目前視野相交的紀錄。走 hike_tracks 的 GiST 索引，

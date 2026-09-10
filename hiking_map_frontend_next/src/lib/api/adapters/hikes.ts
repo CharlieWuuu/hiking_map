@@ -91,6 +91,12 @@ export type InViewHike = {
   geojson?: object | null;
 };
 
+export type PaginatedHikes = {
+  items: Hike[];
+  totalCount: number;
+  nextCursor: string | null;
+};
+
 export type HikeStats = {
   totalDistanceKm: number;
   hikeCount: number;
@@ -158,6 +164,19 @@ export function createHikesService(client: HikesClient) {
     create: async (dto: CreateHikeDto) => adaptHike(await client.hikesControllerCreate(toCreateHikeDto(dto))),
     findAll: async (userId: string, includeGeojson = false) =>
       (await client.hikesControllerFindAll({ userId, includeGeojson: includeGeojson ? 'true' : 'false' })).map(adaptHike),
+    findAllPaginated: async (userId: string, limit: number, cursor?: string, includeGeojson = false): Promise<PaginatedHikes> => {
+      const raw = await client.hikesControllerFindAllPaginated({
+        userId,
+        includeGeojson: includeGeojson ? 'true' : 'false',
+        limit: String(limit),
+        cursor,
+      });
+      return {
+        items: raw.items.map(adaptHike),
+        totalCount: raw.total_count,
+        nextCursor: raw.next_cursor,
+      };
+    },
     findOne: async (id: number) => adaptHike(await client.hikesControllerFindOne(id)),
     findInView: async (bbox: [number, number, number, number], userId?: string, includeGeojson = false) =>
       (

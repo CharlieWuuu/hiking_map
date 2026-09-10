@@ -58,6 +58,8 @@ const meta: Meta<typeof ProfileTrailExplorer> = {
   ],
   args: {
     trails,
+    totalCount: trails.length,
+    initialNextCursor: null,
     userId: '1',
     fullscreen: null,
     isEditMode: false,
