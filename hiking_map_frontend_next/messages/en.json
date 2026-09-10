@@ -47,8 +47,8 @@
     "searchLabel": "Search"
   },
   "SearchResult": {
-    "user": "User",
     "trail": "Trail",
+    "hike": "My record",
     "matchField": "・matched content"
   },
   "HomePage": {
@@ -118,6 +118,14 @@
     "achievementSmallHundred": "Small Hundred Peaks",
     "achievementHundredTrail": "Top 100 Trails"
   },
+  "MountainProgress": {
+    "title": "Progress",
+    "hundred": "Hundred Peaks",
+    "smallHundred": "Small Hundred Peaks",
+    "progressCount": "{completed} / {total}",
+    "missing": "Missing",
+    "completed": "Completed"
+  },
   "EditProfileForm": {
     "title": "Profile",
     "avatar": "Avatar URL",
@@ -149,6 +157,7 @@
   },
   "TrailEditCard": {
     "save": "Save",
+    "saveFailed": "Save failed, please try again",
     "close": "Close",
     "delete": "Delete record",
     "confirmDelete": "Are you sure you want to delete this hike record? This cannot be undone.",
@@ -158,9 +167,12 @@
     "distance": "Distance",
     "distanceValue": "{distance, number, ::.00} km",
     "public": "Public",
+    "categories": "Categories",
     "hundred": "Hundred Peaks",
     "smallHundred": "Small Hundred Peaks",
     "hundredTrail": "Top 100 Trails",
+    "mountains": "Peaks completed",
+    "mountainsSearchPlaceholder": "Search a peak to add",
     "links": "Route links",
     "linksPlaceholder": "https://",
     "addLink": "Add link",
@@ -276,6 +288,8 @@
     "name": "Name",
     "date": "Date",
     "note": "Note",
+    "mountains": "Peaks completed",
+    "mountainsSearchPlaceholder": "Search a peak to add",
     "isPublic": "Make this hike public",
     "submit": "Save hike",
     "submitting": "Saving…"

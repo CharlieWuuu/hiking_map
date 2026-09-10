@@ -4,6 +4,8 @@ import { Plus, Save, Trash2, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
+import MountainMultiSelect from './MountainMultiSelect';
+
 export type EditableTrail = {
   slug: string;
   name: string;
@@ -17,13 +19,13 @@ export type EditableTrail = {
   isHundredTrail: boolean;
   urls: string[];
   note?: string;
+  mountainIds: number[];
 };
 
 type Props = {
   trail: EditableTrail;
   onClose: () => void;
-  // 之後接上真的後端 API 後，這裡會改成打 PATCH /trails/:uuid/properties
-  onSave: (patch: Partial<EditableTrail>) => void;
+  onSave: (patch: Partial<EditableTrail>) => void | Promise<void>;
   onDelete: () => void;
 };
 
@@ -35,11 +37,29 @@ const saveButtonClassName =
 const deleteButtonClassName =
   'bg-panel-active text-red-500 hover:bg-red-500 hover:text-background flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-150 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50';
 
+// 分類（百岳／小百岳／百大必訪）是互不排斥的多選標籤，用可切換的 tag 呈現比 checkbox 更符合語意
+function TagToggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (checked: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={checked}
+      onClick={() => onChange(!checked)}
+      className={`rounded-full px-3 py-1 text-sm transition-colors duration-150 ${
+        checked ? 'bg-accent text-background' : 'bg-panel-active text-background-contrary hover:bg-panel-active-lighten'
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
 export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Props) {
   const t = useTranslations('TrailEditCard');
   const [patch, setPatch] = useState<Partial<EditableTrail>>({});
   const [urls, setUrls] = useState(trail.urls);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   function updateField<K extends keyof EditableTrail>(field: K, value: EditableTrail[K]) {
     setPatch((prev) => ({ ...prev, [field]: value }));
@@ -61,9 +81,17 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
     updateField('urls', next);
   }
 
-  function handleSave() {
-    onSave(patch);
-    setPatch({});
+  async function handleSave() {
+    setIsSaving(true);
+    setSaveError(false);
+    try {
+      await onSave(patch);
+      setPatch({});
+    } catch {
+      setSaveError(true);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   async function handleDelete() {
@@ -91,7 +119,7 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
           <button type="button" onClick={handleDelete} disabled={isDeleting} title={t('delete')} className={deleteButtonClassName}>
             <Trash2 className="h-4 w-4" />
           </button>
-          <button type="button" onClick={handleSave} title={t('save')} className={saveButtonClassName}>
+          <button type="button" onClick={handleSave} disabled={isSaving} title={t('save')} className={saveButtonClassName}>
             <Save className="h-4 w-4" />
           </button>
           <button type="button" onClick={onClose} title={t('close')} className={iconButtonClassName}>
@@ -99,6 +127,8 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
           </button>
         </div>
       </div>
+
+      {saveError && <p className="text-sm text-red-500">{t('saveFailed')}</p>}
 
       <div className="flex flex-wrap justify-between gap-4">
         <label className="flex min-w-24 flex-1 flex-col items-start gap-1">
@@ -122,7 +152,7 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-6">
+      <div className="flex flex-wrap items-start gap-6">
         <label className="flex w-fit flex-col items-start gap-1">
           <span className="text-sm">{t('public')}</span>
           <input
@@ -132,34 +162,31 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
             className="accent-accent h-6 w-6 cursor-pointer"
           />
         </label>
-        <label className="flex w-fit flex-col items-start gap-1">
-          <span className="text-sm">{t('hundred')}</span>
-          <input
-            type="checkbox"
-            defaultChecked={trail.isHundred}
-            onChange={(e) => updateField('isHundred', e.target.checked)}
-            className="accent-accent h-6 w-6 cursor-pointer"
-          />
-        </label>
-        <label className="flex w-fit flex-col items-start gap-1">
-          <span className="text-sm">{t('smallHundred')}</span>
-          <input
-            type="checkbox"
-            defaultChecked={trail.isSmallHundred}
-            onChange={(e) => updateField('isSmallHundred', e.target.checked)}
-            className="accent-accent h-6 w-6 cursor-pointer"
-          />
-        </label>
-        <label className="flex w-fit flex-col items-start gap-1">
-          <span className="text-sm">{t('hundredTrail')}</span>
-          <input
-            type="checkbox"
-            defaultChecked={trail.isHundredTrail}
-            onChange={(e) => updateField('isHundredTrail', e.target.checked)}
-            className="accent-accent h-6 w-6 cursor-pointer"
-          />
-        </label>
+
+        <div className="flex flex-col items-start gap-1">
+          <span className="text-sm">{t('categories')}</span>
+          <div className="flex flex-wrap gap-2">
+            <TagToggle label={t('hundred')} checked={patch.isHundred ?? trail.isHundred} onChange={(checked) => updateField('isHundred', checked)} />
+            <TagToggle
+              label={t('smallHundred')}
+              checked={patch.isSmallHundred ?? trail.isSmallHundred}
+              onChange={(checked) => updateField('isSmallHundred', checked)}
+            />
+            <TagToggle
+              label={t('hundredTrail')}
+              checked={patch.isHundredTrail ?? trail.isHundredTrail}
+              onChange={(checked) => updateField('isHundredTrail', checked)}
+            />
+          </div>
+        </div>
       </div>
+
+      <MountainMultiSelect
+        label={t('mountains')}
+        searchPlaceholder={t('mountainsSearchPlaceholder')}
+        selectedIds={patch.mountainIds ?? trail.mountainIds}
+        onChange={(ids) => updateField('mountainIds', ids)}
+      />
 
       <div className="flex w-full flex-col items-start gap-2">
         <span className="text-sm">{t('links')}</span>

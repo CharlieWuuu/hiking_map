@@ -11,8 +11,11 @@ import { Repository, DataSource, EntityManager, In } from 'typeorm';
 import { Hike } from './hike.entity';
 import { HikeTrack } from './hike-track.entity';
 import { HikeCategoryMap } from './hike-category-map.entity';
+import { HikeMountainMap } from './hike-mountain-map.entity';
 import { CreateHikeDto } from './dto/create-hike.dto';
+import { UpdateHikeDto } from './dto/update-hike.dto';
 import { HikeStatsDto } from './dto/hike-stats.dto';
+import { MountainProgressDto } from './dto/mountain-progress.dto';
 import { UploadsService } from '../uploads/uploads.service';
 import { MergeHikesDto } from './dto/merge-hikes.dto';
 import { TrimTrackDto } from './dto/trim-track.dto';
@@ -135,6 +138,15 @@ export class HikesService {
         );
       }
 
+      if (dto.mountain_ids?.length) {
+        await manager.getRepository(HikeMountainMap).insert(
+          dto.mountain_ids.map((mountain_id) => ({
+            hike_id: hike.id,
+            mountain_id,
+          })),
+        );
+      }
+
       return hike;
     });
 
@@ -143,6 +155,63 @@ export class HikesService {
     await this.storeFullTrack(hike.id, feature.geometry);
 
     return hike;
+  }
+
+  // 只更新一般屬性（名稱、縣市、日期、公開狀態、分類、連結、說明），不碰軌跡本身
+  async update(id: number, userId: number, dto: UpdateHikeDto) {
+    await this.findOwnedHike(id, userId);
+
+    await this.dataSource.transaction(async (manager) => {
+      const fields: Record<string, unknown> = {};
+      if (dto.name !== undefined) fields.name = dto.name;
+      if (dto.county !== undefined) fields.county = dto.county;
+      if (dto.town !== undefined) fields.town = dto.town;
+      if (dto.date !== undefined) fields.date = dto.date;
+      if (dto.is_public !== undefined) fields.is_public = dto.is_public;
+      if (dto.urls !== undefined) fields.urls = dto.urls;
+      if (dto.note !== undefined) fields.note = dto.note;
+
+      if (Object.keys(fields).length > 0) {
+        await manager.getRepository(Hike).update(id, fields);
+      }
+
+      const categoryPatch: [string, boolean | undefined][] = [
+        ['百岳', dto.is_hundred],
+        ['小百岳', dto.is_small_hundred],
+        ['百大必訪步道', dto.is_hundred_trail],
+      ];
+      for (const [categoryName, checked] of categoryPatch) {
+        if (checked === undefined) continue;
+
+        const rows: { id: number }[] = await manager.query(`SELECT id FROM categories WHERE name = $1`, [categoryName]);
+        const categoryId = rows[0]?.id;
+        if (!categoryId) continue; // 分類清單本身沒有這一筆，不該發生但不值得為此炸整個請求
+
+        if (checked) {
+          await manager.query(
+            `INSERT INTO hike_category_map (hike_id, category_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+            [id, categoryId],
+          );
+        } else {
+          await manager.getRepository(HikeCategoryMap).delete({ hike_id: id, category_id: categoryId });
+        }
+      }
+
+      // mountain_ids 是整批取代（不是像分類那樣逐個開關），前端每次都送完整清單比較好操作
+      if (dto.mountain_ids !== undefined) {
+        await manager.getRepository(HikeMountainMap).delete({ hike_id: id });
+        if (dto.mountain_ids.length) {
+          await manager.getRepository(HikeMountainMap).insert(
+            dto.mountain_ids.map((mountain_id) => ({
+              hike_id: id,
+              mountain_id,
+            })),
+          );
+        }
+      }
+    });
+
+    return this.findOne(id);
   }
 
   // 寫入（或覆蓋）一筆軌跡。簡化線與 point_count 都在同一句 SQL 由 geom 推導，
@@ -229,20 +298,59 @@ export class HikesService {
       [id],
     );
 
+    const mountainRows: { mountain_id: number }[] = await this.dataSource.query(
+      `SELECT mountain_id FROM hike_mountains WHERE hike_id = $1`,
+      [id],
+    );
+
     return {
       ...hike,
       ...(track[0] ? toTrackMeta(track[0]) : { center: null, bbox: null, point_count: null, track_url: null }),
       geojson: track[0]?.geojson ? JSON.parse(track[0].geojson) : null,
+      mountain_ids: mountainRows.map((row) => row.mountain_id),
     };
   }
 
-  async findAll(userId?: number, includeGeojson = false) {
+  // cursor 沒給時維持原本行為（回傳完整陣列，不分頁）——首頁、chart 頁要拿全部紀錄去算統計/圖表，
+  // 硬分頁反而要它們自己再迴圈把每頁串起來，划不來。只有 /data 清單頁需要真正分頁，帶 cursor 才會走分頁邏輯。
+  // cursor 用 `date_id`（例如 '2026-07-20_42'）編碼，(date, id) 複合排序才不會因為同一天多筆而重複/漏筆
+  async findAll(userId?: number, includeGeojson = false, pagination?: { cursor?: string; limit: number }) {
     const where = userId ? { user_id: userId } : {};
-    const hikes = await this.hikesRepo.find({
-      where,
-      order: { date: 'DESC' },
-    });
-    if (hikes.length === 0) return [];
+
+    let totalCount: number | undefined;
+    let nextCursor: string | null = null;
+    let hikes: Hike[];
+
+    if (pagination) {
+      totalCount = await this.hikesRepo.count({ where });
+
+      const qb = this.hikesRepo
+        .createQueryBuilder('hike')
+        .where(userId ? 'hike.user_id = :userId' : '1=1', { userId })
+        .orderBy('hike.date', 'DESC')
+        .addOrderBy('hike.id', 'DESC')
+        .take(pagination.limit + 1); // 多拿一筆用來判斷還有沒有下一頁，不必另外查一次
+
+      if (pagination.cursor) {
+        const [cursorDate, cursorIdRaw] = pagination.cursor.split('_');
+        const cursorId = Number(cursorIdRaw);
+        if (!cursorDate || Number.isNaN(cursorId)) throw new BadRequestException('cursor 格式錯誤');
+        qb.andWhere('(hike.date < :cursorDate OR (hike.date = :cursorDate AND hike.id < :cursorId))', {
+          cursorDate,
+          cursorId,
+        });
+      }
+
+      const rows = await qb.getMany();
+      const hasMore = rows.length > pagination.limit;
+      hikes = hasMore ? rows.slice(0, pagination.limit) : rows;
+      const last = hikes[hikes.length - 1];
+      nextCursor = hasMore && last ? `${last.date}_${last.id}` : null;
+    } else {
+      hikes = await this.hikesRepo.find({ where, order: { date: 'DESC' } });
+    }
+
+    if (hikes.length === 0) return pagination ? { items: [], total_count: totalCount ?? 0, next_cursor: null } : [];
 
     const categoryRows = await this.dataSource.query(
       `SELECT h.id AS hike_id, c.name AS category_name
@@ -269,7 +377,18 @@ export class HikesService {
     );
     const trackByHikeId = new Map(trackRows.map((row) => [row.hike_id, row]));
 
-    return hikes.map((hike) => {
+    // 讓清單頁進編輯模式時不必再另外打一次 findOne 才能顯示已標記的山頭
+    const mountainRows: { hike_id: number; mountain_id: number }[] = await this.dataSource.query(
+      `SELECT hike_id, mountain_id FROM hike_mountains WHERE hike_id = ANY($1)`,
+      [hikes.map((hike) => hike.id)],
+    );
+    const mountainIdsByHikeId = new Map<number, number[]>();
+    for (const row of mountainRows) {
+      if (!mountainIdsByHikeId.has(row.hike_id)) mountainIdsByHikeId.set(row.hike_id, []);
+      mountainIdsByHikeId.get(row.hike_id)!.push(row.mountain_id);
+    }
+
+    const items = hikes.map((hike) => {
       const keys = categoryKeysByHikeId.get(hike.id) ?? new Set();
       const track = trackByHikeId.get(hike.id);
       return {
@@ -277,25 +396,32 @@ export class HikesService {
         is_hundred: keys.has('hundred'),
         is_small_hundred: keys.has('small_hundred'),
         is_hundred_trail: keys.has('hundred_trail'),
+        mountain_ids: mountainIdsByHikeId.get(hike.id) ?? [],
         ...(track ? toTrackMeta(track) : { center: null, bbox: null, point_count: null, track_url: null }),
         ...(includeGeojson ? { geojson: track?.geojson ? JSON.parse(track.geojson) : null } : {}),
       };
     });
+
+    return pagination ? { items, total_count: totalCount ?? 0, next_cursor: nextCursor } : items;
   }
 
   // 只回傳 bbox 與目前視野相交的紀錄。走 hike_tracks 的 GiST 索引，
   // 資料量長大以後就不必再把整個人的軌跡一次送到前端。
-  async findInView(bbox: [number, number, number, number], userId?: number) {
+  async findInView(bbox: [number, number, number, number], userId?: number, includeGeojson = false) {
     const [minLng, minLat, maxLng, maxLat] = bbox;
 
-    const rows: (TrackRow & { id: number; name: string })[] = await this.dataSource.query(
+    // 簡化過的軌跡座標最多也才 59 個點，但視野內紀錄一多還是會累積成有感的頻寬，
+    // 遠 zoom 只需要點位置，geojson 欄位整個不查、不傳
+    const geojsonSelect = includeGeojson ? `, ST_AsGeoJSON(t.geom_simplified, ${GEOJSON_PRECISION}) AS geojson` : '';
+
+    const rows: (TrackRow & { id: number; name: string; geojson?: string | null })[] = await this.dataSource.query(
       `SELECT h.id, h.name,
               t.hike_id,
               ST_X(t.center) AS lng, ST_Y(t.center) AS lat,
               ST_XMin(t.bbox) AS min_lng, ST_YMin(t.bbox) AS min_lat,
               ST_XMax(t.bbox) AS max_lng, ST_YMax(t.bbox) AS max_lat,
-              t.point_count, t.track_url,
-              ST_AsGeoJSON(t.geom_simplified, ${GEOJSON_PRECISION}) AS geojson
+              t.point_count, t.track_url
+              ${geojsonSelect}
        FROM hike_tracks t
        JOIN hikes h ON h.id = t.hike_id
        WHERE t.bbox && ST_MakeEnvelope($1, $2, $3, $4, 4326)
@@ -332,21 +458,35 @@ export class HikesService {
       [userId],
     );
 
-    const achievementRows = await this.dataSource.query(
-      `SELECT c.name AS category_name, COUNT(DISTINCT h.trail_id) AS count
-       FROM hikes h
-       JOIN trail_category_map tcm ON tcm.trail_id = h.trail_id
-       JOIN categories c ON c.id = tcm.category_id
-       WHERE h.user_id = $1 AND h.trail_id IS NOT NULL
+    // 百岳／小百岳：透過 hike_mountains 算「不重複完成幾座山」，不依賴幾乎沒人填的 trail_id。
+    // 同一座山爬了三次也只算一座，這是「完成度」的正確定義（跟 hike 筆數不同）
+    const mountainAchievementRows = await this.dataSource.query(
+      `SELECT c.name AS category_name, COUNT(DISTINCT hm.mountain_id) AS count
+       FROM hike_mountains hm
+       JOIN hikes h ON h.id = hm.hike_id
+       JOIN mountain_category_map mcm ON mcm.mountain_id = hm.mountain_id
+       JOIN categories c ON c.id = mcm.category_id
+       WHERE h.user_id = $1
        GROUP BY c.name`,
       [userId],
     );
 
+    // 百大必訪步道：本來就是路線層級的屬性（TrailEditCard 上打的 tag），跟具體是哪座山無關，維持用 hike_category_map
+    const hundredTrailRows = await this.dataSource.query(
+      `SELECT COUNT(DISTINCT h.id) AS count
+       FROM hikes h
+       JOIN hike_category_map hcm ON hcm.hike_id = h.id
+       JOIN categories c ON c.id = hcm.category_id
+       WHERE h.user_id = $1 AND c.name = '百大必訪步道'`,
+      [userId],
+    );
+
     const achievements = { hundred: 0, small_hundred: 0, hundred_trail: 0 };
-    for (const row of achievementRows) {
+    for (const row of mountainAchievementRows) {
       const key = CATEGORY_NAME_TO_ACHIEVEMENT_KEY[row.category_name];
       if (key) achievements[key] = Number(row.count);
     }
+    achievements.hundred_trail = Number(hundredTrailRows[0]?.count ?? 0);
 
     return {
       total_distance_km: Number(totals[0].total_distance_km),
@@ -361,6 +501,44 @@ export class HikesService {
         count: Number(row.count),
       })),
     };
+  }
+
+  // 百岳／小百岳完成度：依分類列出「已完成」與「還缺」的山頭清單，
+  // 跟 getStats 的 achievements 用同一份 hike_mountains 資料，只是這裡要逐座列出來而不是只給數字
+  async getMountainProgress(userId: number): Promise<MountainProgressDto> {
+    const rows: {
+      category_name: string;
+      id: number;
+      name: string;
+      elevation_m: number;
+      completed: boolean;
+    }[] = await this.dataSource.query(
+      `SELECT c.name AS category_name, m.id, m.name, m.elevation_m,
+              EXISTS(
+                SELECT 1 FROM hike_mountains hm
+                JOIN hikes h ON h.id = hm.hike_id
+                WHERE hm.mountain_id = m.id AND h.user_id = $1
+              ) AS completed
+       FROM mountains m
+       JOIN mountain_category_map mcm ON mcm.mountain_id = m.id
+       JOIN categories c ON c.id = mcm.category_id
+       WHERE c.name IN ('百岳', '小百岳')
+       ORDER BY c.name, m.name`,
+      [userId],
+    );
+
+    const grouped: MountainProgressDto = {
+      hundred: { completed: [], missing: [] },
+      small_hundred: { completed: [], missing: [] },
+    };
+
+    for (const row of rows) {
+      const key = row.category_name === '百岳' ? 'hundred' : 'small_hundred';
+      const bucket = row.completed ? grouped[key].completed : grouped[key].missing;
+      bucket.push({ id: row.id, name: row.name, elevation_m: row.elevation_m });
+    }
+
+    return grouped;
   }
 
   // 裁切軌跡頭尾。索引是攤平後的點序號，由前端從 point_count 或完整軌跡推得。

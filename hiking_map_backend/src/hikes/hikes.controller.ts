@@ -18,7 +18,9 @@ import { Repository } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { HikesService } from './hikes.service';
 import { CreateHikeDto } from './dto/create-hike.dto';
+import { UpdateHikeDto } from './dto/update-hike.dto';
 import { HikeStatsDto } from './dto/hike-stats.dto';
+import { MountainProgressDto } from './dto/mountain-progress.dto';
 import { MergeHikesDto } from './dto/merge-hikes.dto';
 import { TrimTrackDto } from './dto/trim-track.dto';
 import { DropSegmentDto } from './dto/drop-segment.dto';
@@ -50,6 +52,13 @@ export class HikesController {
     return this.hikesService.merge(req.user.user_id, dto);
   }
 
+  @Patch(':id')
+  @UseGuards(JwtRequiredGuard)
+  @ApiOkResponse({ type: Hike, description: '更新後的紀錄' })
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateHikeDto, @Req() req: any) {
+    return this.hikesService.update(id, req.user.user_id, dto);
+  }
+
   @Patch(':id/track/trim')
   @UseGuards(JwtRequiredGuard)
   @ApiOkResponse({ type: Hike, description: '裁切後的紀錄，距離已重算' })
@@ -64,21 +73,41 @@ export class HikesController {
     return this.hikesService.dropTrackSegment(id, req.user.user_id, dto);
   }
 
+  // limit 沒給時維持舊行為（回傳完整陣列）；有給 limit 才會走分頁，回傳 { items, total_count, next_cursor }
   @Get()
   @ApiOkResponse({ type: Hike, isArray: true })
-  findAll(@Query('userId') userId?: string, @Query('includeGeojson') includeGeojson?: string) {
-    return this.hikesService.findAll(userId ? Number(userId) : undefined, includeGeojson === 'true');
+  findAll(
+    @Query('userId') userId?: string,
+    @Query('includeGeojson') includeGeojson?: string,
+    @Query('cursor') cursor?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.hikesService.findAll(
+      userId ? Number(userId) : undefined,
+      includeGeojson === 'true',
+      limit ? { cursor, limit: Number(limit) } : undefined,
+    );
   }
 
   // bbox 格式為 minLng,minLat,maxLng,maxLat
+  // includeGeojson=false 時只回 center/bbox，不含簡化軌跡座標——
+  // 遠 zoom 只需要標出位置，畫線是浪費頻寬
   @Get('in-view')
-  @ApiOkResponse({ description: '目前視野內的紀錄，含 center / bbox 與簡化軌跡' })
-  findInView(@Query('bbox') bbox: string, @Query('userId') userId?: string) {
+  @ApiOkResponse({ description: '目前視野內的紀錄，含 center / bbox，includeGeojson=true 時另含簡化軌跡' })
+  findInView(
+    @Query('bbox') bbox: string,
+    @Query('userId') userId?: string,
+    @Query('includeGeojson') includeGeojson?: string,
+  ) {
     const parts = (bbox ?? '').split(',').map(Number);
     if (parts.length !== 4 || parts.some(Number.isNaN)) {
       throw new BadRequestException('bbox 格式應為 minLng,minLat,maxLng,maxLat');
     }
-    return this.hikesService.findInView(parts as [number, number, number, number], userId ? Number(userId) : undefined);
+    return this.hikesService.findInView(
+      parts as [number, number, number, number],
+      userId ? Number(userId) : undefined,
+      includeGeojson === 'true',
+    );
   }
 
   @Get('stats')
@@ -87,6 +116,15 @@ export class HikesController {
     const user = await this.usersRepo.findOne({ where: { username } });
     if (!user) throw new NotFoundException('找不到使用者');
     return this.hikesService.getStats(user.id);
+  }
+
+  // 只有本人能看自己的完成度，跟 getStats 不同——那個是給 username 查任何人的公開統計，
+  // 這裡是封閉系統下才有意義的「我還缺哪幾座」，不開放查別人
+  @Get('mountain-progress')
+  @UseGuards(JwtRequiredGuard)
+  @ApiOkResponse({ type: MountainProgressDto })
+  getMountainProgress(@Req() req: any) {
+    return this.hikesService.getMountainProgress(req.user.user_id);
   }
 
   @Get(':id')

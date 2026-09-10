@@ -12,7 +12,7 @@ export default function SearchBarWithNavigation() {
   }
 
   function handleSelectEntity(item: SearchResult) {
-    router.push(`/trails/${item.slug}`);
+    router.push(item.type === 'hike' ? `/hikes/${item.slug}` : `/trails/${item.slug}`);
   }
 
   return <SearchBar onSubmitQuery={handleSubmitQuery} onSelectEntity={handleSelectEntity} />;

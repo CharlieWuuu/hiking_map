@@ -19,6 +19,8 @@ function getHikePath(geojson: object | null | undefined): [number, number][] {
   return [];
 }
 
+const PAGE_SIZE = 20;
+
 export default async function DataPage({ searchParams }: Props) {
   const { fullscreen: rawFullscreen, edit } = await searchParams;
   const fullscreen = rawFullscreen === 'map' ? 'map' : rawFullscreen === 'table' ? 'table' : null;
@@ -27,7 +29,9 @@ export default async function DataPage({ searchParams }: Props) {
   const isOwner = true;
   const isEditMode = edit === 'true';
 
-  const hikes = await apiClient.hikes.findAll(String(currentUser.userId), true);
+  // 清單只拿第一頁；往後翻頁由 ProfileTrailExplorer 在瀏覽器端用 cursor 逐頁向後端要，
+  // 不再一次把所有紀錄（含簡化 geojson）都撈回來
+  const { items: hikes, totalCount, nextCursor } = await apiClient.hikes.findAllPaginated(String(currentUser.userId), PAGE_SIZE, undefined, true);
   const trails = hikes.map((hike) => ({
     slug: String(hike.id),
     name: hike.name,
@@ -39,6 +43,7 @@ export default async function DataPage({ searchParams }: Props) {
     isHundred: hike.isHundred ?? false,
     isSmallHundred: hike.isSmallHundred ?? false,
     isHundredTrail: hike.isHundredTrail ?? false,
+    mountainIds: hike.mountainIds ?? [],
     urls: hike.urls,
     note: hike.note ?? undefined,
     path: getHikePath(hike.geojson),
@@ -49,9 +54,17 @@ export default async function DataPage({ searchParams }: Props) {
   const t = await getTranslations('ProfileDataPage');
 
   return (
-    <PageLayout title={t('title')} subtitle={t('subtitle', { count: trails.length })}>
+    <PageLayout title={t('title')} subtitle={t('subtitle', { count: totalCount })}>
       <div className="page-wide min-h-150 flex-1">
-        <ProfileTrailExplorerWithNavigation trails={trails} fullscreen={fullscreen} isEditMode={isEditMode} isOwner={isOwner} />
+        <ProfileTrailExplorerWithNavigation
+          trails={trails}
+          totalCount={totalCount}
+          initialNextCursor={nextCursor}
+          userId={String(currentUser.userId)}
+          fullscreen={fullscreen}
+          isEditMode={isEditMode}
+          isOwner={isOwner}
+        />
       </div>
     </PageLayout>
   );

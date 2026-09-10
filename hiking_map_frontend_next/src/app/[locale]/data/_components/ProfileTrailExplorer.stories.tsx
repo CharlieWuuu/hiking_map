@@ -15,6 +15,7 @@ const trails = [
     isHundred: true,
     isSmallHundred: false,
     isHundredTrail: false,
+    mountainIds: [1],
     urls: [],
     path: [
       [121.2, 24.4],
@@ -33,6 +34,7 @@ const trails = [
     isHundred: false,
     isSmallHundred: false,
     isHundredTrail: false,
+    mountainIds: [],
     urls: [],
     path: [
       [121.27, 24.14],
@@ -56,6 +58,9 @@ const meta: Meta<typeof ProfileTrailExplorer> = {
   ],
   args: {
     trails,
+    totalCount: trails.length,
+    initialNextCursor: null,
+    userId: '1',
     fullscreen: null,
     isEditMode: false,
     isOwner: true,

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 
 import ChartRing from '../../../components/ChartRing';
 import HikeStatsCharts from '../../../components/HikeStatsCharts';
+import MountainProgress from '../../../components/MountainProgress';
 import PageLayout from '../../../components/PageLayout';
 import { apiClient } from '../../../lib/apiClient';
 import { getCurrentUser } from '../../../lib/getCurrentUser';
@@ -11,7 +12,10 @@ export default async function ChartPage() {
   const currentUser = await getCurrentUser();
   if (!currentUser) redirect('/login');
 
-  const stats = await apiClient.hikes.getStats(currentUser.username).catch(() => null);
+  const [stats, mountainProgress] = await Promise.all([
+    apiClient.hikes.getStats(currentUser.username).catch(() => null),
+    apiClient.hikes.getMountainProgress().catch(() => null),
+  ]);
   if (!stats) redirect('/login');
 
   const hikes = await apiClient.hikes.findAll(String(currentUser.userId));
@@ -38,6 +42,8 @@ export default async function ChartPage() {
             <ChartRing label={t('achievementHundredTrail')} value={stats.achievements.hundredTrail} />
           </div>
         </div>
+
+        {mountainProgress && <MountainProgress progress={mountainProgress} />}
 
         {/* 圖表：兩兩一排 */}
         <HikeStatsCharts stats={stats} hikes={hikes} />

@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { CreateHikeDto, Hike, HikeStatsDto } from './data-contracts';
+import { CreateHikeDto, Hike, HikeStatsDto, InViewHikeDto, MountainProgressDto, UpdateHikeDto } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
 export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
@@ -55,20 +55,45 @@ export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
    * No description
    *
    * @tags Hikes
+   * @name HikesControllerFindAllPaginated
+   * @request GET:/hikes
+   */
+  hikesControllerFindAllPaginated = (
+    query: {
+      userId: string;
+      includeGeojson: string;
+      cursor?: string;
+      limit: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<{ items: Hike[]; total_count: number; next_cursor: string | null }, any>({
+      path: `/hikes`,
+      method: 'GET',
+      query: query,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Hikes
    * @name HikesControllerFindInView
    * @request GET:/hikes/in-view
    */
   hikesControllerFindInView = (
     query: {
       bbox: string;
-      userId: string;
+      userId?: string;
+      includeGeojson?: string;
     },
     params: RequestParams = {}
   ) =>
-    this.request<void, any>({
+    this.request<InViewHikeDto[], any>({
       path: `/hikes/in-view`,
       method: 'GET',
       query: query,
+      format: 'json',
       ...params,
     });
   /**
@@ -95,6 +120,20 @@ export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
    * No description
    *
    * @tags Hikes
+   * @name HikesControllerGetMountainProgress
+   * @request GET:/hikes/mountain-progress
+   */
+  hikesControllerGetMountainProgress = (params: RequestParams = {}) =>
+    this.request<MountainProgressDto, any>({
+      path: `/hikes/mountain-progress`,
+      method: 'GET',
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Hikes
    * @name HikesControllerFindOne
    * @request GET:/hikes/{id}
    */
@@ -102,6 +141,22 @@ export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
     this.request<Hike, any>({
       path: `/hikes/${id}`,
       method: 'GET',
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Hikes
+   * @name HikesControllerUpdate
+   * @request PATCH:/hikes/{id}
+   */
+  hikesControllerUpdate = (id: number, data: UpdateHikeDto, params: RequestParams = {}) =>
+    this.request<Hike, any>({
+      path: `/hikes/${id}`,
+      method: 'PATCH',
+      body: data,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });

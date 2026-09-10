@@ -47,8 +47,8 @@
     "searchLabel": "搜尋"
   },
   "SearchResult": {
-    "user": "使用者",
     "trail": "路線",
+    "hike": "我的紀錄",
     "matchField": "・符合內容"
   },
   "HomePage": {
@@ -118,6 +118,14 @@
     "achievementSmallHundred": "小百岳",
     "achievementHundredTrail": "百大必訪步道"
   },
+  "MountainProgress": {
+    "title": "完成度",
+    "hundred": "百岳",
+    "smallHundred": "小百岳",
+    "progressCount": "{completed} / {total}",
+    "missing": "還缺",
+    "completed": "已完成"
+  },
   "EditProfileForm": {
     "title": "個人檔案",
     "avatar": "大頭貼網址",
@@ -149,6 +157,7 @@
   },
   "TrailEditCard": {
     "save": "儲存",
+    "saveFailed": "儲存失敗，請稍後再試",
     "close": "關閉",
     "delete": "刪除紀錄",
     "confirmDelete": "確定要刪除這筆健行紀錄嗎？此操作無法復原。",
@@ -158,9 +167,12 @@
     "distance": "距離",
     "distanceValue": "{distance, number, ::.00} 公里",
     "public": "公開",
+    "categories": "分類",
     "hundred": "百岳",
     "smallHundred": "小百岳",
     "hundredTrail": "百大必訪步道",
+    "mountains": "完成的山頭",
+    "mountainsSearchPlaceholder": "搜尋山名加入",
     "links": "路線連結",
     "linksPlaceholder": "https://",
     "addLink": "新增連結",
@@ -276,6 +288,8 @@
     "name": "名稱",
     "date": "日期",
     "note": "備註",
+    "mountains": "完成的山頭",
+    "mountainsSearchPlaceholder": "搜尋山名加入",
     "isPublic": "公開這筆紀錄",
     "submit": "儲存紀錄",
     "submitting": "儲存中…"

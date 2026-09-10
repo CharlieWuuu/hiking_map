@@ -18,7 +18,7 @@ export default function SearchResultItem({ item, onSelect }: Props) {
       <span className="flex flex-col items-start">
         <span className="font-bold">{item.displayName}</span>
         <span className="text-background-contrary/60 text-xs">
-          {t('trail')}
+          {item.type === 'hike' ? t('hike') : t('trail')}
           {item.matchReason === 'field' && t('matchField')}
         </span>
       </span>

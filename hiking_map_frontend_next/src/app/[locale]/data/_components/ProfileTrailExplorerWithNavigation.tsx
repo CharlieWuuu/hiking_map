@@ -9,12 +9,15 @@ type Trail = EditableTrail & Pick<MapTrail, 'path' | 'trackUrl' | 'bbox'>;
 
 type Props = {
   trails: Trail[];
+  totalCount: number;
+  initialNextCursor: string | null;
+  userId: string;
   fullscreen: 'map' | 'table' | null;
   isEditMode: boolean;
   isOwner: boolean;
 };
 
-export default function ProfileTrailExplorerWithNavigation({ trails, fullscreen, isEditMode, isOwner }: Props) {
+export default function ProfileTrailExplorerWithNavigation({ trails, totalCount, initialNextCursor, userId, fullscreen, isEditMode, isOwner }: Props) {
   const router = useRouter();
 
   function handleFullscreenChange(next: 'map' | 'table' | null) {
@@ -28,6 +31,9 @@ export default function ProfileTrailExplorerWithNavigation({ trails, fullscreen,
   return (
     <ProfileTrailExplorer
       trails={trails}
+      totalCount={totalCount}
+      initialNextCursor={initialNextCursor}
+      userId={userId}
       fullscreen={fullscreen}
       isEditMode={isEditMode}
       isOwner={isOwner}

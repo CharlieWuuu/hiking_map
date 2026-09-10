@@ -35,8 +35,8 @@ export default async function SearchPage({ searchParams }: Props) {
         <div className="scrollbar-subtle flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
           {results.map((item) => (
             <TrailListItem
-              key={`trail-${item.slug}`}
-              href={`/trails/${item.slug}`}
+              key={`${item.type}-${item.slug}`}
+              href={item.type === 'hike' ? `/hikes/${item.slug}` : `/trails/${item.slug}`}
               name={item.displayName}
               county={item.county ?? ''}
               town={item.town ?? ''}
