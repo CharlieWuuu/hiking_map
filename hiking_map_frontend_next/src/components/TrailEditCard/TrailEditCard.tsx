@@ -22,8 +22,7 @@ export type EditableTrail = {
 type Props = {
   trail: EditableTrail;
   onClose: () => void;
-  // 之後接上真的後端 API 後，這裡會改成打 PATCH /trails/:uuid/properties
-  onSave: (patch: Partial<EditableTrail>) => void;
+  onSave: (patch: Partial<EditableTrail>) => void | Promise<void>;
   onDelete: () => void;
 };
 
@@ -56,6 +55,8 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
   const [patch, setPatch] = useState<Partial<EditableTrail>>({});
   const [urls, setUrls] = useState(trail.urls);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   function updateField<K extends keyof EditableTrail>(field: K, value: EditableTrail[K]) {
     setPatch((prev) => ({ ...prev, [field]: value }));
@@ -77,9 +78,17 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
     updateField('urls', next);
   }
 
-  function handleSave() {
-    onSave(patch);
-    setPatch({});
+  async function handleSave() {
+    setIsSaving(true);
+    setSaveError(false);
+    try {
+      await onSave(patch);
+      setPatch({});
+    } catch {
+      setSaveError(true);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   async function handleDelete() {
@@ -107,7 +116,7 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
           <button type="button" onClick={handleDelete} disabled={isDeleting} title={t('delete')} className={deleteButtonClassName}>
             <Trash2 className="h-4 w-4" />
           </button>
-          <button type="button" onClick={handleSave} title={t('save')} className={saveButtonClassName}>
+          <button type="button" onClick={handleSave} disabled={isSaving} title={t('save')} className={saveButtonClassName}>
             <Save className="h-4 w-4" />
           </button>
           <button type="button" onClick={onClose} title={t('close')} className={iconButtonClassName}>
@@ -115,6 +124,8 @@ export default function TrailEditCard({ trail, onClose, onSave, onDelete }: Prop
           </button>
         </div>
       </div>
+
+      {saveError && <p className="text-sm text-red-500">{t('saveFailed')}</p>}
 
       <div className="flex flex-wrap justify-between gap-4">
         <label className="flex min-w-24 flex-1 flex-col items-start gap-1">

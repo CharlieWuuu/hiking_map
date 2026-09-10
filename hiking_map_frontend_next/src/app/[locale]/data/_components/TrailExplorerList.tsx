@@ -23,7 +23,7 @@ type Props = {
   isEditMode: boolean;
   onHoverChange: (slug: string | null) => void;
   onSelect: (slug: string | null) => void;
-  onSaveTrailPatch: (slug: string, patch: Partial<EditableTrail>) => void;
+  onSaveTrailPatch: (slug: string, patch: Partial<EditableTrail>) => void | Promise<void>;
   onDeleteTrail: (slug: string) => void;
 };
 

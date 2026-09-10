@@ -125,6 +125,29 @@ export interface CreateHikeDto {
   geojson: object;
 }
 
+export interface UpdateHikeDto {
+  /** @example "合歡山主峰步道" */
+  name?: string;
+  /** @example "南投縣" */
+  county?: string;
+  /** @example "仁愛鄉" */
+  town?: string;
+  /** @example "2026-07-20" */
+  date?: string;
+  /** @example true */
+  is_public?: boolean;
+  /** @example true */
+  is_hundred?: boolean;
+  /** @example false */
+  is_small_hundred?: boolean;
+  /** @example false */
+  is_hundred_trail?: boolean;
+  /** @example ["https://example.com/track.gpx"] */
+  urls?: string[];
+  /** @example "天氣很好，view 很棒" */
+  note?: string;
+}
+
 export interface Hike {
   /** @example 1 */
   id: number;

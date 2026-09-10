@@ -12,6 +12,7 @@ import { Hike } from './hike.entity';
 import { HikeTrack } from './hike-track.entity';
 import { HikeCategoryMap } from './hike-category-map.entity';
 import { CreateHikeDto } from './dto/create-hike.dto';
+import { UpdateHikeDto } from './dto/update-hike.dto';
 import { HikeStatsDto } from './dto/hike-stats.dto';
 import { UploadsService } from '../uploads/uploads.service';
 import { MergeHikesDto } from './dto/merge-hikes.dto';
@@ -143,6 +144,50 @@ export class HikesService {
     await this.storeFullTrack(hike.id, feature.geometry);
 
     return hike;
+  }
+
+  // 只更新一般屬性（名稱、縣市、日期、公開狀態、分類、連結、說明），不碰軌跡本身
+  async update(id: number, userId: number, dto: UpdateHikeDto) {
+    await this.findOwnedHike(id, userId);
+
+    await this.dataSource.transaction(async (manager) => {
+      const fields: Record<string, unknown> = {};
+      if (dto.name !== undefined) fields.name = dto.name;
+      if (dto.county !== undefined) fields.county = dto.county;
+      if (dto.town !== undefined) fields.town = dto.town;
+      if (dto.date !== undefined) fields.date = dto.date;
+      if (dto.is_public !== undefined) fields.is_public = dto.is_public;
+      if (dto.urls !== undefined) fields.urls = dto.urls;
+      if (dto.note !== undefined) fields.note = dto.note;
+
+      if (Object.keys(fields).length > 0) {
+        await manager.getRepository(Hike).update(id, fields);
+      }
+
+      const categoryPatch: [string, boolean | undefined][] = [
+        ['百岳', dto.is_hundred],
+        ['小百岳', dto.is_small_hundred],
+        ['百大必訪步道', dto.is_hundred_trail],
+      ];
+      for (const [categoryName, checked] of categoryPatch) {
+        if (checked === undefined) continue;
+
+        const rows: { id: number }[] = await manager.query(`SELECT id FROM categories WHERE name = $1`, [categoryName]);
+        const categoryId = rows[0]?.id;
+        if (!categoryId) continue; // 分類清單本身沒有這一筆，不該發生但不值得為此炸整個請求
+
+        if (checked) {
+          await manager.query(
+            `INSERT INTO hike_category_map (hike_id, category_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+            [id, categoryId],
+          );
+        } else {
+          await manager.getRepository(HikeCategoryMap).delete({ hike_id: id, category_id: categoryId });
+        }
+      }
+    });
+
+    return this.findOne(id);
   }
 
   // 寫入（或覆蓋）一筆軌跡。簡化線與 point_count 都在同一句 SQL 由 geom 推導，

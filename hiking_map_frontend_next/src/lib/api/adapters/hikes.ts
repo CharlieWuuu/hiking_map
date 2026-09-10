@@ -1,4 +1,9 @@
-import type { CreateHikeDto as RawCreateHikeDto, Hike as RawHike, HikeStatsDto as RawHikeStatsDto } from '../generated/data-contracts';
+import type {
+  CreateHikeDto as RawCreateHikeDto,
+  Hike as RawHike,
+  HikeStatsDto as RawHikeStatsDto,
+  UpdateHikeDto as RawUpdateHikeDto,
+} from '../generated/data-contracts';
 import type { Hikes as HikesClient } from '../generated/Hikes';
 import { toCamelCase } from './case';
 
@@ -45,6 +50,19 @@ export type CreateHikeDto = {
   geojson: object;
 };
 
+export type UpdateHikeDto = {
+  name?: string;
+  county?: string;
+  town?: string;
+  date?: string;
+  isPublic?: boolean;
+  isHundred?: boolean;
+  isSmallHundred?: boolean;
+  isHundredTrail?: boolean;
+  urls?: string[];
+  note?: string;
+};
+
 export type HikeStats = {
   totalDistanceKm: number;
   hikeCount: number;
@@ -82,12 +100,28 @@ export function toCreateHikeDto(dto: CreateHikeDto): RawCreateHikeDto {
   };
 }
 
+export function toUpdateHikeDto(dto: UpdateHikeDto): RawUpdateHikeDto {
+  return {
+    name: dto.name,
+    county: dto.county,
+    town: dto.town,
+    date: dto.date,
+    is_public: dto.isPublic,
+    is_hundred: dto.isHundred,
+    is_small_hundred: dto.isSmallHundred,
+    is_hundred_trail: dto.isHundredTrail,
+    urls: dto.urls,
+    note: dto.note,
+  };
+}
+
 export function createHikesService(client: HikesClient) {
   return {
     create: async (dto: CreateHikeDto) => adaptHike(await client.hikesControllerCreate(toCreateHikeDto(dto))),
     findAll: async (userId: string, includeGeojson = false) =>
       (await client.hikesControllerFindAll({ userId, includeGeojson: includeGeojson ? 'true' : 'false' })).map(adaptHike),
     findOne: async (id: number) => adaptHike(await client.hikesControllerFindOne(id)),
+    update: async (id: number, dto: UpdateHikeDto) => adaptHike(await client.hikesControllerUpdate(id, toUpdateHikeDto(dto))),
     remove: (id: number) => client.hikesControllerRemove(id),
     getStats: async (username: string) => adaptHikeStats(await client.hikesControllerGetStats({ username })),
   };

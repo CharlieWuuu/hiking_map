@@ -40,8 +40,27 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
   const pageCount = Math.max(1, Math.ceil(trails.length / PAGE_SIZE));
   const pagedTrails = trails.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  function saveTrailPatch(slug: string, patch: Partial<EditableTrail>) {
-    setTrails((prev) => prev.map((trail) => (trail.slug === slug ? { ...trail, ...patch } : trail)));
+  async function saveTrailPatch(slug: string, patch: Partial<EditableTrail>) {
+    const saved = await apiClient.hikes.update(Number(slug), patch);
+    setTrails((prev) =>
+      prev.map((trail) =>
+        trail.slug === slug
+          ? {
+              ...trail,
+              name: saved.name,
+              county: saved.county ?? '',
+              town: saved.town ?? '',
+              date: saved.date,
+              isPublic: saved.isPublic,
+              isHundred: saved.isHundred ?? false,
+              isSmallHundred: saved.isSmallHundred ?? false,
+              isHundredTrail: saved.isHundredTrail ?? false,
+              urls: saved.urls,
+              note: saved.note ?? undefined,
+            }
+          : trail
+      )
+    );
   }
 
   async function deleteTrail(slug: string) {

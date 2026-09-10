@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { CreateHikeDto, Hike, HikeStatsDto } from './data-contracts';
+import { CreateHikeDto, Hike, HikeStatsDto, UpdateHikeDto } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
 export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
@@ -102,6 +102,22 @@ export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
     this.request<Hike, any>({
       path: `/hikes/${id}`,
       method: 'GET',
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Hikes
+   * @name HikesControllerUpdate
+   * @request PATCH:/hikes/{id}
+   */
+  hikesControllerUpdate = (id: number, data: UpdateHikeDto, params: RequestParams = {}) =>
+    this.request<Hike, any>({
+      path: `/hikes/${id}`,
+      method: 'PATCH',
+      body: data,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });

@@ -18,6 +18,7 @@ import { Repository } from 'typeorm';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { HikesService } from './hikes.service';
 import { CreateHikeDto } from './dto/create-hike.dto';
+import { UpdateHikeDto } from './dto/update-hike.dto';
 import { HikeStatsDto } from './dto/hike-stats.dto';
 import { MergeHikesDto } from './dto/merge-hikes.dto';
 import { TrimTrackDto } from './dto/trim-track.dto';
@@ -48,6 +49,13 @@ export class HikesController {
   @ApiCreatedResponse({ type: Hike, description: '合併後新建的紀錄' })
   merge(@Body() dto: MergeHikesDto, @Req() req: any) {
     return this.hikesService.merge(req.user.user_id, dto);
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtRequiredGuard)
+  @ApiOkResponse({ type: Hike, description: '更新後的紀錄' })
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateHikeDto, @Req() req: any) {
+    return this.hikesService.update(id, req.user.user_id, dto);
   }
 
   @Patch(':id/track/trim')
