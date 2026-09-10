@@ -2,6 +2,7 @@ import type {
   CreateHikeDto as RawCreateHikeDto,
   Hike as RawHike,
   HikeStatsDto as RawHikeStatsDto,
+  InViewHikeDto as RawInViewHikeDto,
   UpdateHikeDto as RawUpdateHikeDto,
 } from '../generated/data-contracts';
 import type { Hikes as HikesClient } from '../generated/Hikes';
@@ -63,6 +64,17 @@ export type UpdateHikeDto = {
   note?: string;
 };
 
+export type InViewHike = {
+  id: number;
+  name: string;
+  center: [number, number] | null;
+  bbox: [number, number, number, number] | null;
+  pointCount: number | null;
+  trackUrl: string | null;
+  // 只有 includeGeojson=true 時才有值，這裡固定回 undefined 以外一律是簡化線
+  geojson?: object | null;
+};
+
 export type HikeStats = {
   totalDistanceKm: number;
   hikeCount: number;
@@ -81,6 +93,10 @@ export function adaptHike(raw: RawHike): Hike {
 
 export function adaptHikeStats(raw: RawHikeStatsDto): HikeStats {
   return toCamelCase<RawHikeStatsDto>(raw) as HikeStats;
+}
+
+export function adaptInViewHike(raw: RawInViewHikeDto): InViewHike {
+  return toCamelCase<RawInViewHikeDto>(raw) as InViewHike;
 }
 
 export function toCreateHikeDto(dto: CreateHikeDto): RawCreateHikeDto {
@@ -121,6 +137,14 @@ export function createHikesService(client: HikesClient) {
     findAll: async (userId: string, includeGeojson = false) =>
       (await client.hikesControllerFindAll({ userId, includeGeojson: includeGeojson ? 'true' : 'false' })).map(adaptHike),
     findOne: async (id: number) => adaptHike(await client.hikesControllerFindOne(id)),
+    findInView: async (bbox: [number, number, number, number], userId?: string, includeGeojson = false) =>
+      (
+        await client.hikesControllerFindInView({
+          bbox: bbox.join(','),
+          userId,
+          includeGeojson: includeGeojson ? 'true' : 'false',
+        })
+      ).map(adaptInViewHike),
     update: async (id: number, dto: UpdateHikeDto) => adaptHike(await client.hikesControllerUpdate(id, toUpdateHikeDto(dto))),
     remove: (id: number) => client.hikesControllerRemove(id),
     getStats: async (username: string) => adaptHikeStats(await client.hikesControllerGetStats({ username })),

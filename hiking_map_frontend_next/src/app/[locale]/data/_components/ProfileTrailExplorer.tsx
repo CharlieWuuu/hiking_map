@@ -18,6 +18,7 @@ const PAGE_SIZE = 20;
 
 type Props = {
   trails: Trail[];
+  userId: string;
   fullscreen: 'map' | 'table' | null;
   isEditMode: boolean;
   isOwner: boolean;
@@ -25,7 +26,7 @@ type Props = {
   onToggleEditMode: () => void;
 };
 
-export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen, isEditMode, isOwner, onFullscreenChange, onToggleEditMode }: Props) {
+export default function ProfileTrailExplorer({ trails: initialTrails, userId, fullscreen, isEditMode, isOwner, onFullscreenChange, onToggleEditMode }: Props) {
   const t = useTranslations('ProfileDataPage');
   const [trails, setTrails] = useState(initialTrails);
   // hover/選取狀態放在 map store，清單與地圖不必再靠 props 互相轉發
@@ -116,7 +117,7 @@ export default function ProfileTrailExplorer({ trails: initialTrails, fullscreen
               label={isMapFullscreen ? t('collapse') : t('expand')}
             />
           </div>
-          <TrailsLayer trails={trails} resizeKey={fullscreen} />
+          <TrailsLayer userId={userId} resizeKey={fullscreen} />
         </div>
       )}
     </div>

@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { CreateHikeDto, Hike, HikeStatsDto, UpdateHikeDto } from './data-contracts';
+import { CreateHikeDto, Hike, HikeStatsDto, InViewHikeDto, UpdateHikeDto } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
 export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
@@ -61,14 +61,16 @@ export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
   hikesControllerFindInView = (
     query: {
       bbox: string;
-      userId: string;
+      userId?: string;
+      includeGeojson?: string;
     },
     params: RequestParams = {}
   ) =>
-    this.request<void, any>({
+    this.request<InViewHikeDto[], any>({
       path: `/hikes/in-view`,
       method: 'GET',
       query: query,
+      format: 'json',
       ...params,
     });
   /**

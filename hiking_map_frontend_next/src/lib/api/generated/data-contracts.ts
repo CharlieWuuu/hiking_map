@@ -180,6 +180,23 @@ export interface Hike {
   created_at: string;
 }
 
+export interface InViewHikeDto {
+  /** @example 1 */
+  id: number;
+  /** @example "合歡山主峰步道" */
+  name: string;
+  /** @example [121.5,25.0] */
+  center: number[] | null;
+  /** @example [121.4,24.9,121.6,25.1] */
+  bbox: number[] | null;
+  /** @example 42 */
+  point_count: number | null;
+  /** @example "https://pub-xxxx.r2.dev/hikes/1/track.json" */
+  track_url: string | null;
+  /** includeGeojson=true 才會有值，簡化過的軌跡座標 */
+  geojson?: object | null;
+}
+
 export interface AchievementsDto {
   /** @example 12 */
   hundred: number;

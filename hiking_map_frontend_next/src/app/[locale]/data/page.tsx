@@ -51,7 +51,13 @@ export default async function DataPage({ searchParams }: Props) {
   return (
     <PageLayout title={t('title')} subtitle={t('subtitle', { count: trails.length })}>
       <div className="page-wide min-h-150 flex-1">
-        <ProfileTrailExplorerWithNavigation trails={trails} fullscreen={fullscreen} isEditMode={isEditMode} isOwner={isOwner} />
+        <ProfileTrailExplorerWithNavigation
+          trails={trails}
+          userId={String(currentUser.userId)}
+          fullscreen={fullscreen}
+          isEditMode={isEditMode}
+          isOwner={isOwner}
+        />
       </div>
     </PageLayout>
   );

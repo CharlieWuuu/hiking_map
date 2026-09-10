@@ -330,17 +330,21 @@ export class HikesService {
 
   // 只回傳 bbox 與目前視野相交的紀錄。走 hike_tracks 的 GiST 索引，
   // 資料量長大以後就不必再把整個人的軌跡一次送到前端。
-  async findInView(bbox: [number, number, number, number], userId?: number) {
+  async findInView(bbox: [number, number, number, number], userId?: number, includeGeojson = false) {
     const [minLng, minLat, maxLng, maxLat] = bbox;
 
-    const rows: (TrackRow & { id: number; name: string })[] = await this.dataSource.query(
+    // 簡化過的軌跡座標最多也才 59 個點，但視野內紀錄一多還是會累積成有感的頻寬，
+    // 遠 zoom 只需要點位置，geojson 欄位整個不查、不傳
+    const geojsonSelect = includeGeojson ? `, ST_AsGeoJSON(t.geom_simplified, ${GEOJSON_PRECISION}) AS geojson` : '';
+
+    const rows: (TrackRow & { id: number; name: string; geojson?: string | null })[] = await this.dataSource.query(
       `SELECT h.id, h.name,
               t.hike_id,
               ST_X(t.center) AS lng, ST_Y(t.center) AS lat,
               ST_XMin(t.bbox) AS min_lng, ST_YMin(t.bbox) AS min_lat,
               ST_XMax(t.bbox) AS max_lng, ST_YMax(t.bbox) AS max_lat,
-              t.point_count, t.track_url,
-              ST_AsGeoJSON(t.geom_simplified, ${GEOJSON_PRECISION}) AS geojson
+              t.point_count, t.track_url
+              ${geojsonSelect}
        FROM hike_tracks t
        JOIN hikes h ON h.id = t.hike_id
        WHERE t.bbox && ST_MakeEnvelope($1, $2, $3, $4, 4326)
