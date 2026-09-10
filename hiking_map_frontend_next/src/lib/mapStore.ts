@@ -25,8 +25,11 @@ type MapState = {
   // 移進來之後清單與地圖不必再靠 props 互相轉發
   hoverSlug: string | null;
   activeSlug: string | null;
+  // 清單本身就有選中這筆的 bbox，選中當下順便帶過來，PanToActiveEffect 才能立即
+  // fitBounds，不必等 findOne 打回來才知道要飛去哪裡（那支 API 主要是補 popup 文字用的）
+  activeBbox: [number, number, number, number] | null;
   setHoverSlug: (slug: string | null) => void;
-  setActiveSlug: (slug: string | null) => void;
+  setActiveSlug: (slug: string | null, bbox?: [number, number, number, number] | null) => void;
 
   // 目前地圖的縮放層級與視野範圍，決定要不要載入完整軌跡，也是 fetchInView 的輸入
   zoom: number;
@@ -50,8 +53,9 @@ type MapState = {
 export const useMapStore = create<MapState>((set, get) => ({
   hoverSlug: null,
   activeSlug: null,
+  activeBbox: null,
   setHoverSlug: (slug) => set({ hoverSlug: slug }),
-  setActiveSlug: (slug) => set({ activeSlug: slug }),
+  setActiveSlug: (slug, bbox) => set({ activeSlug: slug, activeBbox: slug ? (bbox ?? null) : null }),
 
   zoom: 7,
   bounds: null,
@@ -68,9 +72,8 @@ export const useMapStore = create<MapState>((set, get) => ({
   fetchInView: async (bbox, zoom, userId) => {
     set({ markersLoading: true });
     try {
-      // < CLUSTER_ZOOM 時只需要點位置去畫 cluster，不必連簡化線一起抓
-      const includeGeojson = zoom >= CLUSTER_ZOOM;
-      const markers = await apiClient.hikes.findInView(bbox, userId, includeGeojson);
+      // 後端依 zoom 判斷要回點位／簡化線／完整軌跡，這裡直接把 zoom 轉交過去就好
+      const markers = await apiClient.hikes.findInView(bbox, userId, zoom);
       set({ markers });
     } catch {
       // 失敗就維持上一次抓到的結果，不清空畫面

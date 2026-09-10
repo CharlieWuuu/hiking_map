@@ -1,29 +1,58 @@
 import { getTranslations } from 'next-intl/server';
 
-import HikeStatsCharts from '../../components/HikeStatsCharts';
+import ChartLine from '../../components/ChartLine';
 import PageLayout from '../../components/PageLayout';
 import TrailListItem from '../../components/TrailListItem';
 import { Link } from '../../i18n/navigation';
 import { apiClient } from '../../lib/apiClient';
+import { fillMonthlyDistance } from '../../lib/fillMonthlyDistance';
 import { getCurrentUser } from '../../lib/getCurrentUser';
 
-const RECENT_TRAILS_COUNT = 5;
-const RECOMMENDED_TRAILS_COUNT = 5;
+const MONTHLY_DISTANCE_MONTHS_COUNT = 12;
 
 export default async function Home() {
   const t = await getTranslations('HomePage');
+  const tCharts = await getTranslations('HikeStatsCharts');
+  const tCommon = await getTranslations('Common');
   const currentUser = await getCurrentUser();
 
-  const [stats, hikes, allTrails] = await Promise.all([
+  const [stats, hikes] = await Promise.all([
     currentUser ? apiClient.hikes.getStats(currentUser.username).catch(() => null) : Promise.resolve(null),
     currentUser ? apiClient.hikes.findAll(String(currentUser.userId)) : Promise.resolve([]),
-    apiClient.trails.findAll(),
   ]);
-  const recentTrails = [...hikes].sort((a, b) => b.date.localeCompare(a.date)).slice(0, RECENT_TRAILS_COUNT);
-  const recommendedTrails = allTrails.slice(0, RECOMMENDED_TRAILS_COUNT);
+  // 首頁只當一份摘要，最近一次紀錄取一筆就好；完整清單去 /data 看
+  const latestHike = [...hikes].sort((a, b) => b.date.localeCompare(a.date))[0] ?? null;
+  // 統計只留一張最能一眼看出趨勢的圖，完整的六張圖表去 /chart 頁看。
+  // 改成每月總距離而不是每筆紀錄一個點：紀錄一多，逐筆畫在同一張窄圖上會擠成一團看不出趨勢，
+  // 按月加總後資料點數固定（近 12 個月），時間軸間距也均勻
+  const trendData = fillMonthlyDistance(stats?.monthlyDistance ?? [], MONTHLY_DISTANCE_MONTHS_COUNT).map((d) => ({
+    date: `${d.month}-01`,
+    value: d.distanceKm,
+  }));
 
   return (
     <PageLayout>
+      {currentUser && (
+        <section>
+          <h1 className="text-3xl font-bold">{t('greeting', { username: currentUser.username })}</h1>
+        </section>
+      )}
+
+      {currentUser && latestHike && (
+        <section className="flex flex-col gap-4">
+          <h2 className="text-2xl font-bold">{t('latestHike')}</h2>
+          <TrailListItem
+            href={`/hikes/${latestHike.id}`}
+            name={latestHike.name}
+            county={latestHike.county ?? ''}
+            town={latestHike.town ?? ''}
+            date={latestHike.date}
+            distanceKm={latestHike.distanceKm}
+            coverImageUrl={latestHike.coverImageUrl}
+          />
+        </section>
+      )}
+
       {/* 統計一律顯示。未登入時圖表仍畫出空的座標軸，並提示登入 */}
       <section className="flex flex-col gap-4">
         <h2 className="text-2xl font-bold">{t('yourStats')}</h2>
@@ -48,86 +77,12 @@ export default async function Home() {
               </Link>
             </div>
           )}
-          <div className="md:col-span-2">
-            <HikeStatsCharts stats={stats} hikes={hikes} />
+          <div className="bg-panel rounded-panel flex h-50 flex-col gap-4 p-4 md:col-span-2">
+            <span className="text-background-contrary/60 text-sm">{tCharts('distanceTrend')}</span>
+            <ChartLine data={trendData} emptyLabel={tCommon('noData')} />
           </div>
         </div>
       </section>
-
-      {currentUser && recentTrails.length > 0 && (
-        <section className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold">{t('recentTrails')}</h2>
-          <div className="flex flex-col gap-3">
-            {recentTrails.map((hike) => (
-              <TrailListItem
-                key={hike.id}
-                href={`/hikes/${hike.id}`}
-                name={hike.name}
-                county={hike.county ?? ''}
-                town={hike.town ?? ''}
-                date={hike.date}
-                distanceKm={hike.distanceKm}
-                coverImageUrl={hike.coverImageUrl}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {recommendedTrails.length > 0 && (
-        <section className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold">{t('recommendedTrails')}</h2>
-          <div className="grid grid-cols-1 gap-3">
-            {recommendedTrails.map((trail, index) =>
-              index === 0 ? (
-                <Link
-                  key={trail.slug}
-                  href={`/trails/${trail.slug}`}
-                  className="bg-highlight text-highlight-contrast rounded-panel flex w-full flex-col justify-between gap-6 p-6 transition-opacity hover:opacity-90"
-                >
-                  <span className="bg-accent text-accent-contrast w-fit rounded-full px-2 py-0.5 text-xs font-semibold">{t('featuredTrail')}</span>
-                  <div className="flex items-end justify-between gap-4">
-                    <div className="flex min-w-0 flex-col gap-1">
-                      <span className="truncate text-2xl font-bold">{trail.name}</span>
-                      <span className="opacity-60">
-                        {trail.county} {trail.town}
-                      </span>
-                    </div>
-                    {trail.distanceKm !== null && (
-                      <div className="flex shrink-0 flex-col items-end">
-                        <span className="text-xs opacity-60">{t('recommendedDistance')}</span>
-                        <span className="text-xl font-bold">{t('recommendedDistanceValue', { distance: trail.distanceKm })}</span>
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              ) : (
-                <Link
-                  key={trail.slug}
-                  href={`/trails/${trail.slug}`}
-                  className="bg-panel hover:bg-panel-active rounded-panel flex w-full items-center gap-4 p-4 transition-colors duration-150"
-                >
-                  <div className="flex min-w-0 flex-1 flex-col gap-1">
-                    <span className="truncate text-lg font-bold">{trail.name}</span>
-                    <span className="text-background-contrary/60 text-sm">
-                      {trail.county} {trail.town}
-                    </span>
-                  </div>
-
-                  <div className="bg-panel-active w-0.5 shrink-0 self-stretch" />
-
-                  {trail.distanceKm !== null && (
-                    <div className="flex shrink-0 flex-col items-end">
-                      <span className="text-background-contrary/60 text-xs">{t('recommendedDistance')}</span>
-                      <span className="font-bold">{t('recommendedDistanceValue', { distance: trail.distanceKm })}</span>
-                    </div>
-                  )}
-                </Link>
-              )
-            )}
-          </div>
-        </section>
-      )}
     </PageLayout>
   );
 }

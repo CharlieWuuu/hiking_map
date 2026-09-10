@@ -5,7 +5,7 @@ import 'react-leaflet-cluster/dist/assets/MarkerCluster.Default.css';
 
 import L from 'leaflet';
 import { useTranslations } from 'next-intl';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, memo, useEffect, useMemo, useState } from 'react';
 import { CircleMarker, Polyline, Popup, useMap, useMapEvents } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 
@@ -36,24 +36,36 @@ type Props = {
   userId?: string;
   // 外層容器（例如全螢幕切換）尺寸明確變化時傳入新值，強制地圖重新量測——見 MapView 的 resizeKey
   resizeKey?: unknown;
+  // 網址帶著的初始視野（動態模式專用）；沒有就用預設的全台視野
+  initialViewport?: { center: [number, number]; zoom: number };
 };
 
 const DEFAULT_CENTER: [number, number] = [23.7, 120.9];
 const DEFAULT_ZOOM = 7;
 
-// 選中路線變更時，讓地圖平移縮放到該路線範圍
-function PanToActiveEffect({ trail }: { trail: MapTrail | null }) {
+// 選中路線變更時，讓地圖平移縮放到該路線範圍。
+// 吃 slug + bbox 而不是整個 trail 物件：動態模式下 bbox 來自清單點擊當下就有的資料
+// （見 mapStore 的 activeBbox），不必等 findOne 打回來才知道要飛去哪裡——那支 API
+// 只是用來補 popup 需要的縣市/距離等文字，跟「該不該移動地圖」無關
+function PanToActiveEffect({ slug, bbox, fallbackPath }: { slug: string | null; bbox: MapTrail['bbox']; fallbackPath: LngLat[] }) {
   const map = useMap();
+  const setViewport = useMapStore((state) => state.setViewport);
 
   useEffect(() => {
-    if (!trail) return;
+    if (!slug) return;
     // 有 bbox 就直接用，不必為了算範圍走過整條路徑
-    const bounds = trail.bbox
-      ? L.latLngBounds([trail.bbox[1], trail.bbox[0]], [trail.bbox[3], trail.bbox[2]])
-      : L.latLngBounds(trail.path.map(([lng, lat]) => [lat, lng] as [number, number]));
+    const bounds = bbox
+      ? L.latLngBounds([bbox[1], bbox[0]], [bbox[3], bbox[2]])
+      : L.latLngBounds(fallbackPath.map(([lng, lat]) => [lat, lng] as [number, number]));
     if (!bounds.isValid()) return;
     map.fitBounds(bounds, { padding: [40, 40] });
-  }, [trail, map]);
+    // fitBounds 如果目標範圍剛好已經在視野內、zoom 也沒變，Leaflet 不會真的觸發 moveend/zoomend，
+    // ViewportSync 就抓不到這次移動，資料要等使用者自己再動一下地圖才會刷新。這裡主動同步一次，
+    // 確保不管有沒有觸發事件，viewport 狀態一定會更新，該載的資料才會照常載入
+    const newBounds = map.getBounds();
+    setViewport(map.getZoom(), [newBounds.getWest(), newBounds.getSouth(), newBounds.getEast(), newBounds.getNorth()]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, map]);
 
   return null;
 }
@@ -87,6 +99,9 @@ function ViewportSync({ trails, userId }: { trails?: MapTrail[]; userId?: string
     void fetchInView(bounds, zoom, userId);
   }, [isDynamic, bounds, zoom, userId, fetchInView]);
 
+  // 動態模式不需要再額外去 R2 抓完整軌跡：後端 findInView 已經依 zoom 判斷，
+  // >= DETAIL_ZOOM 時 markers 的 geojson 本身就是完整軌跡，不是簡化線
+
   // 固定模式：視野內的紀錄放大到 DETAIL_ZOOM 才換完整軌跡
   useEffect(() => {
     if (isDynamic || !trails || !bounds) return;
@@ -103,11 +118,65 @@ function ViewportSync({ trails, userId }: { trails?: MapTrail[]; userId?: string
   return null;
 }
 
+// 動態模式：把目前視野中心／zoom 寫回網址，重新整理或分享連結都能回到原本看的位置。
+// 直接改 history 而不走 next-intl 的 router，避免每次拖曳地圖都觸發一次 server round-trip
+function ViewportUrlSync() {
+  const map = useMap();
+
+  useMapEvents({
+    moveend: () => {
+      const center = map.getCenter();
+      const url = new URL(window.location.href);
+      url.searchParams.set('lat', center.lat.toFixed(5));
+      url.searchParams.set('lng', center.lng.toFixed(5));
+      url.searchParams.set('z', String(map.getZoom()));
+      window.history.replaceState(null, '', url);
+    },
+  });
+
+  return null;
+}
+
 // bbox 缺漏時一律當作在視野內，寧可多載入也不要整條線消失
 function intersects(bbox: MapTrail['bbox'], view: [number, number, number, number]) {
   if (!bbox) return true;
   return bbox[0] <= view[2] && bbox[2] >= view[0] && bbox[1] <= view[3] && bbox[3] >= view[1];
 }
+
+// 單一路線的三條線（熱區＋外框＋內線）。用 memo 包起來，hover/選取切換時只有
+// 真正變化的那一條會重新算 pathOptions，其餘路線的 Polyline 不會跟著重新 render——
+// 不然清單 hover 一晃，畫面上所有路線的線都會被判定成「props 變了」重畫一次，看起來像閃爍
+const TrailPolylines = memo(function TrailPolylines({ slug, path, isActive, isHover }: { slug: string; path: LngLat[]; isActive: boolean; isHover: boolean }) {
+  const setHoverSlug = useMapStore((state) => state.setHoverSlug);
+  const setActiveSlug = useMapStore((state) => state.setActiveSlug);
+
+  // path 本身（來自 tracks Map 或 trail.path）是穩定參照，只有真的重新載入才會變，
+  // 這裡才 useMemo，避免每次 render 都重新配置新陣列讓 memo 失效
+  const latLngPath = useMemo<[number, number][]>(() => path.map(([lng, lat]) => [lat, lng]), [path]);
+
+  const [outlineColor, outlineWeight, coreColor, coreWeight] = isActive
+    ? ['#000000', 8, '#FFFF3C', 4]
+    : isHover
+      ? ['#ffffff', 8, '#FFFF3C', 4]
+      : ['#ffffff', 6, '#A67C00', 3];
+
+  return (
+    <Fragment key={slug}>
+      {/* 透明加寬的點擊/hover 熱區 */}
+      <Polyline
+        positions={latLngPath}
+        pathOptions={{ color: 'transparent', weight: 16 }}
+        eventHandlers={{
+          mouseover: () => setHoverSlug(slug),
+          mouseout: () => setHoverSlug(null),
+          click: () => setActiveSlug(isActive ? null : slug),
+        }}
+      />
+      <Polyline positions={latLngPath} pathOptions={{ color: outlineColor, weight: outlineWeight }} interactive={false} />
+      <Polyline positions={latLngPath} pathOptions={{ color: coreColor, weight: coreWeight }} interactive={false} />
+    </Fragment>
+  );
+});
 
 // 選中路線時，浮現一張跟版面其他卡片同一套語言的懸浮資訊卡，取代 Leaflet 預設的白底泡泡。
 // Popup 直接掛在 MapContainer 底下（沒有依附任何 layer）時，react-leaflet 掛載時就會自動開啟
@@ -118,7 +187,7 @@ function ActiveTrailPopup({ trail, position }: { trail: MapTrail; position: [num
 
   return (
     <Popup position={position} closeButton={false} autoPan={false} className="hiking-map-popup" minWidth={180}>
-      <div className="bg-panel rounded-panel flex flex-col gap-1 p-3">
+      <div className="bg-panel text-background-contrary rounded-panel flex flex-col gap-1 p-3">
         <span className="text-base font-bold">{trail.name}</span>
         <span className="text-background-contrary/60 text-xs">
           {trail.county} {trail.town}
@@ -154,10 +223,10 @@ function useActiveHikeDetail(activeSlug: string | null, isDynamic: boolean) {
   return isDynamic && activeSlug && String(detail?.id) === activeSlug ? detail : null;
 }
 
-export default function TrailsLayer({ trails, userId, resizeKey }: Props) {
+export default function TrailsLayer({ trails, userId, resizeKey, initialViewport }: Props) {
   const hoverSlug = useMapStore((state) => state.hoverSlug);
   const activeSlug = useMapStore((state) => state.activeSlug);
-  const setHoverSlug = useMapStore((state) => state.setHoverSlug);
+  const activeBbox = useMapStore((state) => state.activeBbox);
   const setActiveSlug = useMapStore((state) => state.setActiveSlug);
   const tracks = useMapStore((state) => state.tracks);
   const markers = useMapStore((state) => state.markers);
@@ -184,6 +253,7 @@ export default function TrailsLayer({ trails, userId, resizeKey }: Props) {
       ? {
           slug: String(activeHikeDetail.id),
           path: [],
+          trackUrl: activeHikeDetail.trackUrl,
           name: activeHikeDetail.name,
           county: activeHikeDetail.county,
           town: activeHikeDetail.town,
@@ -196,18 +266,34 @@ export default function TrailsLayer({ trails, userId, resizeKey }: Props) {
     ? (tracks.get(activeTrail.slug)?.path ?? lineTrails.find((trail) => trail.slug === activeTrail.slug)?.path ?? activeTrail.path)
     : null;
   const activeTrailMidpoint = activeTrailPath?.[Math.floor(activeTrailPath.length / 2)];
+  const activeTrailMidpointLng = activeTrailMidpoint?.[0];
+  const activeTrailMidpointLat = activeTrailMidpoint?.[1];
+  // Popup 的 position 得是穩定參照：activeTrailMidpoint 的數值就算沒變，
+  // 這裡如果每次 render 都 new 一個 [lat, lng] 陣列，react-leaflet 的 Popup 會被判定成
+  // position 變了而重新觸發開啟動畫，hover 造成的無關 re-render 就會讓 popup 看起來反覆重新彈出。
+  // 這張卡片本來就是跟著「被選中的那條路線」走：換 slug 必然換一批座標資料，中點數值會跟著變；
+  // 同一個 slug 完整軌跡載入完成時，中點數值也會更新一次——用座標數值當依賴，兩種情況都能正確觸發
+  const activeTrailPopupPosition = useMemo<[number, number] | null>(
+    () => (activeTrailMidpointLat !== undefined && activeTrailMidpointLng !== undefined ? [activeTrailMidpointLat, activeTrailMidpointLng] : null),
+    [activeTrailMidpointLat, activeTrailMidpointLng]
+  );
 
-  // < CLUSTER_ZOOM 只畫點位（走 cluster），達到門檻才畫線；固定模式一律畫線，本來資料量就小
+  // < CLUSTER_ZOOM 只畫點位（走 cluster），達到門檻才畫線；固定模式一律畫線，本來資料量就小。
+  // focus 純粹是 UI 狀態（外框樣式、popup），不影響地圖該載什麼——資料完全由 zoom/視野決定
   const showClusterOnly = isDynamic && zoom < CLUSTER_ZOOM;
 
   return (
-    <MapView center={DEFAULT_CENTER} zoom={DEFAULT_ZOOM} className="rounded-panel h-full w-full overflow-hidden" resizeKey={resizeKey}>
-      <PanToActiveEffect trail={activeTrail} />
+    <MapView
+      center={initialViewport?.center ?? DEFAULT_CENTER}
+      zoom={initialViewport?.zoom ?? DEFAULT_ZOOM}
+      className="rounded-panel h-full w-full overflow-hidden"
+      resizeKey={resizeKey}
+    >
+      <PanToActiveEffect slug={activeSlug} bbox={(isDynamic ? activeBbox : null) ?? activeTrail?.bbox ?? null} fallbackPath={activeTrail?.path ?? []} />
       <ViewportSync trails={trails} userId={userId} />
+      {isDynamic && <ViewportUrlSync />}
 
-      {activeTrail && activeTrailMidpoint && (
-        <ActiveTrailPopup key={activeTrail.slug} trail={activeTrail} position={[activeTrailMidpoint[1], activeTrailMidpoint[0]]} />
-      )}
+      {activeTrail && activeTrailPopupPosition && <ActiveTrailPopup key={activeTrail.slug} trail={activeTrail} position={activeTrailPopupPosition} />}
 
       {showClusterOnly ? (
         <MarkerClusterGroup chunkedLoading>
@@ -218,7 +304,7 @@ export default function TrailsLayer({ trails, userId, resizeKey }: Props) {
                 center={[marker.center[1], marker.center[0]]}
                 radius={6}
                 pathOptions={{ color: '#ffffff', weight: 2, fillColor: '#A67C00', fillOpacity: 1 }}
-                eventHandlers={{ click: () => setActiveSlug(activeSlug === String(marker.id) ? null : String(marker.id)) }}
+                eventHandlers={{ click: () => setActiveSlug(activeSlug === String(marker.id) ? null : String(marker.id), marker.bbox) }}
               />
             ) : null
           )}
@@ -227,32 +313,7 @@ export default function TrailsLayer({ trails, userId, resizeKey }: Props) {
         lineTrails.map((trail) => {
           // 完整軌跡還沒到就先畫簡化線，載好再換掉，中間不要出現空白
           const path = tracks.get(trail.slug)?.path ?? trail.path;
-          const latLngPath: [number, number][] = path.map(([lng, lat]) => [lat, lng]);
-          const isActive = trail.slug === activeSlug;
-          const isHover = trail.slug === hoverSlug;
-
-          const [outlineColor, outlineWeight, coreColor, coreWeight] = isActive
-            ? ['#000000', 8, '#FFFF3C', 4]
-            : isHover
-              ? ['#ffffff', 8, '#FFFF3C', 4]
-              : ['#ffffff', 6, '#A67C00', 3];
-
-          return (
-            <Fragment key={trail.slug}>
-              {/* 透明加寬的點擊/hover 熱區 */}
-              <Polyline
-                positions={latLngPath}
-                pathOptions={{ color: 'transparent', weight: 16 }}
-                eventHandlers={{
-                  mouseover: () => setHoverSlug(trail.slug),
-                  mouseout: () => setHoverSlug(null),
-                  click: () => setActiveSlug(isActive ? null : trail.slug),
-                }}
-              />
-              <Polyline positions={latLngPath} pathOptions={{ color: outlineColor, weight: outlineWeight }} interactive={false} />
-              <Polyline positions={latLngPath} pathOptions={{ color: coreColor, weight: coreWeight }} interactive={false} />
-            </Fragment>
-          );
+          return <TrailPolylines key={trail.slug} slug={trail.slug} path={path} isActive={trail.slug === activeSlug} isHover={trail.slug === hoverSlug} />;
         })
       )}
     </MapView>

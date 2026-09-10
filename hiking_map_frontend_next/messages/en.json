@@ -52,17 +52,14 @@
     "matchField": "・matched content"
   },
   "HomePage": {
+    "greeting": "{username}",
+    "latestHike": "Latest hike",
     "yourStats": "Your Stats",
     "goToProfile": "View full stats",
     "totalDistanceValue": "{distance, number, ::.00} km",
     "hikeCountValue": "{count} hikes",
     "loginPrompt": "Sign in to see your hiking stats",
-    "loginCta": "Go to sign in",
-    "recentTrails": "Recent Trails",
-    "recommendedTrails": "Recommended Trails",
-    "featuredTrail": "Featured this week",
-    "recommendedDistance": "Distance",
-    "recommendedDistanceValue": "{distance, number, ::.00} km"
+    "loginCta": "Go to sign in"
   },
   "LoginPage": {
     "title": "Log in",

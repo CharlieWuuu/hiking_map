@@ -178,12 +178,13 @@ export function createHikesService(client: HikesClient) {
       };
     },
     findOne: async (id: number) => adaptHike(await client.hikesControllerFindOne(id)),
-    findInView: async (bbox: [number, number, number, number], userId?: string, includeGeojson = false) =>
+    // zoom 給後端判斷要回點位／簡化線／完整軌跡，前端不用自己算該不該多打一次 R2 請求
+    findInView: async (bbox: [number, number, number, number], userId?: string, zoom = 0) =>
       (
         await client.hikesControllerFindInView({
           bbox: bbox.join(','),
           userId,
-          includeGeojson: includeGeojson ? 'true' : 'false',
+          zoom: String(zoom),
         })
       ).map(adaptInViewHike),
     update: async (id: number, dto: UpdateHikeDto) => adaptHike(await client.hikesControllerUpdate(id, toUpdateHikeDto(dto))),

@@ -7,7 +7,7 @@ import { getCurrentUser } from '../../../lib/getCurrentUser';
 import ProfileTrailExplorerWithNavigation from './_components/ProfileTrailExplorerWithNavigation';
 
 type Props = {
-  searchParams: Promise<{ fullscreen?: string; edit?: string }>;
+  searchParams: Promise<{ fullscreen?: string; edit?: string; lat?: string; lng?: string; z?: string }>;
 };
 
 // 後端回傳的是簡化過的 MultiLineString，這裡只取第一條線來畫圖。
@@ -22,12 +22,21 @@ function getHikePath(geojson: object | null | undefined): [number, number][] {
 const PAGE_SIZE = 20;
 
 export default async function DataPage({ searchParams }: Props) {
-  const { fullscreen: rawFullscreen, edit } = await searchParams;
+  const { fullscreen: rawFullscreen, edit, lat, lng, z } = await searchParams;
   const fullscreen = rawFullscreen === 'map' ? 'map' : rawFullscreen === 'table' ? 'table' : null;
   const currentUser = await getCurrentUser();
   if (!currentUser) redirect('/login');
   const isOwner = true;
   const isEditMode = edit === 'true';
+
+  // 網址帶著地圖視野走，重新整理／分享連結都能回到原本看的位置
+  const parsedLat = Number(lat);
+  const parsedLng = Number(lng);
+  const parsedZoom = Number(z);
+  const initialViewport =
+    Number.isFinite(parsedLat) && Number.isFinite(parsedLng) && Number.isFinite(parsedZoom)
+      ? { center: [parsedLat, parsedLng] as [number, number], zoom: parsedZoom }
+      : null;
 
   // 清單只拿第一頁；往後翻頁由 ProfileTrailExplorer 在瀏覽器端用 cursor 逐頁向後端要，
   // 不再一次把所有紀錄（含簡化 geojson）都撈回來
@@ -64,6 +73,7 @@ export default async function DataPage({ searchParams }: Props) {
           fullscreen={fullscreen}
           isEditMode={isEditMode}
           isOwner={isOwner}
+          initialViewport={initialViewport}
         />
       </div>
     </PageLayout>

@@ -89,15 +89,15 @@ export class HikesController {
     );
   }
 
-  // bbox 格式為 minLng,minLat,maxLng,maxLat
-  // includeGeojson=false 時只回 center/bbox，不含簡化軌跡座標——
-  // 遠 zoom 只需要標出位置，畫線是浪費頻寬
+  // bbox 格式為 minLng,minLat,maxLng,maxLat。zoom 決定回傳細緻度：
+  // 遠景只回 center/bbox，中景加簡化線，近景直接給完整軌跡——由後端統一判斷，
+  // 前端不用自己算該不該多打一次 R2 請求
   @Get('in-view')
-  @ApiOkResponse({ description: '目前視野內的紀錄，含 center / bbox，includeGeojson=true 時另含簡化軌跡' })
+  @ApiOkResponse({ description: '目前視野內的紀錄，含 center / bbox；zoom 到達門檻時另含簡化線或完整軌跡' })
   findInView(
     @Query('bbox') bbox: string,
     @Query('userId') userId?: string,
-    @Query('includeGeojson') includeGeojson?: string,
+    @Query('zoom') zoom?: string,
   ) {
     const parts = (bbox ?? '').split(',').map(Number);
     if (parts.length !== 4 || parts.some(Number.isNaN)) {
@@ -106,7 +106,7 @@ export class HikesController {
     return this.hikesService.findInView(
       parts as [number, number, number, number],
       userId ? Number(userId) : undefined,
-      includeGeojson === 'true',
+      zoom ? Number(zoom) : undefined,
     );
   }
 
