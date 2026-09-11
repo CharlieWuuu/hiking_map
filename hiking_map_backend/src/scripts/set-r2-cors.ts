@@ -13,6 +13,8 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3000',
   'https://hiking-map.vercel.app',
   'https://hiking-map-git-main-charliewuuus-projects.vercel.app',
+  'https://hiking-track-next.vercel.app',
+  'https://hiking-track-next-git-main-charliewuuus-projects.vercel.app',
 ];
 
 async function main() {
