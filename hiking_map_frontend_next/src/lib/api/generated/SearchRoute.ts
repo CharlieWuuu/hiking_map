@@ -34,6 +34,37 @@ export namespace Search {
   /**
    * No description
    * @tags Search
+   * @name SearchControllerNearby
+   * @request GET:/search/nearby
+   */
+  export namespace SearchControllerNearby {
+    export type RequestParams = {};
+    export type RequestQuery = {
+      lat: string;
+      lng: string;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = SearchResultDto[];
+  }
+
+  /**
+   * No description
+   * @tags Search
+   * @name SearchControllerLastLocation
+   * @request GET:/search/last-location
+   */
+  export namespace SearchControllerLastLocation {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = { lat: number; lng: number } | null;
+  }
+
+  /**
+   * No description
+   * @tags Search
    * @name SearchControllerPopularQueries
    * @request GET:/search/popular
    */

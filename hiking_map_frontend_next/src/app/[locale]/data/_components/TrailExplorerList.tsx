@@ -7,7 +7,7 @@ import TrailTable from '../../../../components/TrailTable';
 import type { Mountain } from '../../../../lib/api';
 import TrailDetailExpanded from './TrailDetailExpanded';
 
-type Trail = EditableTrail & { path: [number, number][]; bbox?: [number, number, number, number] | null };
+type Trail = EditableTrail & { path: [number, number][]; bbox?: [number, number, number, number] | null; categoryNames?: string[] };
 
 type Props = {
   trails: Trail[];
@@ -114,6 +114,7 @@ export default function TrailExplorerList({
             distanceKm={trail.distanceKm}
             isPublic={trail.isPublic}
             isActive={false}
+            badges={trail.categoryNames?.map((categoryName) => ({ label: categoryName, tone: 'neutral' as const }))}
             onMouseEnter={() => onHoverChange(trail.slug)}
             onMouseLeave={() => onHoverChange(null)}
             onClick={() => onSelect(trail.slug, trail.bbox)}

@@ -5,13 +5,14 @@ import type { EditableTrail } from '../../../../components/TrailEditCard';
 import { useRouter } from '../../../../i18n/navigation';
 import ProfileTrailExplorer from './ProfileTrailExplorer';
 
-type Trail = EditableTrail & Pick<MapTrail, 'path' | 'trackUrl' | 'bbox'>;
+type Trail = EditableTrail & Pick<MapTrail, 'path' | 'trackUrl' | 'bbox'> & { categoryNames?: string[] };
 
 type Props = {
   trails: Trail[];
   totalCount: number;
   initialNextCursor: string | null;
   userId: string;
+  category?: string;
   fullscreen: 'map' | 'table' | null;
   isEditMode: boolean;
   isOwner: boolean;
@@ -23,6 +24,7 @@ export default function ProfileTrailExplorerWithNavigation({
   totalCount,
   initialNextCursor,
   userId,
+  category,
   fullscreen,
   isEditMode,
   isOwner,
@@ -44,6 +46,7 @@ export default function ProfileTrailExplorerWithNavigation({
       totalCount={totalCount}
       initialNextCursor={initialNextCursor}
       userId={userId}
+      category={category}
       fullscreen={fullscreen}
       isEditMode={isEditMode}
       isOwner={isOwner}

@@ -23,4 +23,10 @@ export class SearchResultDto {
 
   @ApiProperty({ example: 'name', enum: ['name', 'field'] })
   match_reason: 'name' | 'field';
+
+  @ApiPropertyOptional({ example: 12.3, description: '距離查詢座標的距離（公里），只有 nearby 查詢會帶這個欄位' })
+  distance_km?: number;
+
+  @ApiPropertyOptional({ example: '百岳', description: '分類名稱（百岳/小百岳/百大必訪步道），只有 nearby 查詢會帶這個欄位' })
+  category_name?: string;
 }

@@ -33,6 +33,8 @@ export type Hike = {
   geojson?: object | null;
   // GET /hikes/:id 才會附帶，這趟紀錄手動標記完成的山頭 id 清單
   mountainIds?: number[];
+  // 這趟紀錄屬於哪些分類（百岳/小百岳/百大必訪步道），findAll/findAllPaginated 才會附帶
+  categoryNames?: string[];
 };
 
 export type CreateHikeDto = {
@@ -150,14 +152,15 @@ export function toUpdateHikeDto(dto: UpdateHikeDto): RawUpdateHikeDto {
 export function createHikesService(client: HikesClient) {
   return {
     create: async (dto: CreateHikeDto) => adaptHike(await client.hikesControllerCreate(toCreateHikeDto(dto))),
-    findAll: async (userId: string, includeGeojson = false) =>
-      (await client.hikesControllerFindAll({ userId, includeGeojson: includeGeojson ? 'true' : 'false' })).map(adaptHike),
-    findAllPaginated: async (userId: string, limit: number, cursor?: string, includeGeojson = false): Promise<PaginatedHikes> => {
+    findAll: async (userId: string, includeGeojson = false, category?: string) =>
+      (await client.hikesControllerFindAll({ userId, includeGeojson: includeGeojson ? 'true' : 'false', category })).map(adaptHike),
+    findAllPaginated: async (userId: string, limit: number, cursor?: string, includeGeojson = false, category?: string): Promise<PaginatedHikes> => {
       const raw = await client.hikesControllerFindAllPaginated({
         userId,
         includeGeojson: includeGeojson ? 'true' : 'false',
         limit: String(limit),
         cursor,
+        category,
       });
       return {
         items: raw.items.map(adaptHike),
@@ -169,12 +172,13 @@ export function createHikesService(client: HikesClient) {
     // 地圖點某條路線時，清單要跳到它所在的那一頁；回傳的 cursor 是「跳到該頁」要帶的 cursor
     getPageInfo: async (id: number, userId: string, limit: number) => client.hikesControllerGetPageInfo(id, { userId: Number(userId), limit }),
     // zoom 給後端判斷要回點位／簡化線／完整軌跡，前端不用自己算該不該多打一次 R2 請求
-    findInView: async (bbox: [number, number, number, number], userId?: string, zoom = 0) =>
+    findInView: async (bbox: [number, number, number, number], userId?: string, zoom = 0, category?: string) =>
       (
         await client.hikesControllerFindInView({
           bbox: bbox.join(','),
           userId,
           zoom: String(zoom),
+          category,
         })
       ).map(adaptInViewHike),
     update: async (id: number, dto: UpdateHikeDto) => adaptHike(await client.hikesControllerUpdate(id, toUpdateHikeDto(dto))),

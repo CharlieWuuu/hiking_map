@@ -64,10 +64,16 @@ if (localStorage.getItem('${NAV_COLLAPSED_STORAGE_KEY}') === 'true') document.do
                 固定在 dvh，讓 main 自己捲動，才有明確高度上限可以讓 flex-1 的頁面（例如地圖）真正撐滿視窗而不是被內容撐高 */}
             <div className="flex h-dvh flex-col lg:flex-row">
               <Nav />
-              {/* flex 一路傳到頁面，頁面才能用 flex-1 撐滿高度（例如登入頁要垂直置中、地圖頁要滿版） */}
-              <main className="scrollbar-subtle flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto p-4 pb-20 lg:p-6">
-                {/* 預設限制閱讀寬度；地圖等需要撐滿版面的頁面用 .page-wide 取消上限 */}
-                <div className="page-content-width mx-auto flex min-h-0 w-full flex-1 flex-col">{children}</div>
+              {/* main 是捲動容器，用 grid 而不是 flex：grid 的 align-content 預設會讓 row 高度以
+                  內容為準，內容比視窗高時整個 grid 自然撐高，padding 兩端都會確實計入捲動範圍。
+                  （flex + flex-1 子元素會讓 Chrome 漏算 padding-bottom，捲到底時內容貼齊視窗底部。）
+                  row 用 minmax(min-content,1fr)：內容不足一頁時撐滿高度（地圖頁才能滿版），
+                  內容超過時以 min-content 為準讓 main 正常捲動 */}
+              <main className="scrollbar-subtle grid min-h-0 min-w-0 flex-1 grid-rows-[minmax(min-content,1fr)] overflow-y-auto p-4 lg:p-6 lg:pb-12">
+                {/* 預設限制閱讀寬度；地圖等需要撐滿版面的頁面用 .page-wide 取消上限。
+                    grid item 預設 stretch 會撐滿 row 的高度，min-h-0 讓內部的 flex-1／overflow
+                    子元素（例如資料頁的地圖）能收縮到這個高度內，而不是被內容撐開 */}
+                <div className="page-content-width mx-auto flex min-h-0 w-full min-w-0 flex-col">{children}</div>
               </main>
             </div>
           </DebugSetup>

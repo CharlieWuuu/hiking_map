@@ -41,7 +41,7 @@ export default function HikeDetailCard({ hike: initialHike, mountainNames: initi
 
     return (
       <TrailEditCard
-        className="min-h-full"
+        className="lg:min-h-full"
         trail={editableTrail}
         onClose={() => setIsEditing(false)}
         onSave={async (patch) => {
@@ -65,7 +65,7 @@ export default function HikeDetailCard({ hike: initialHike, mountainNames: initi
 
   return (
     <TrailDetailCardBody
-      className="min-h-full"
+      className="lg:min-h-full"
       name={hike.name}
       county={hike.county ?? ''}
       town={hike.town ?? ''}

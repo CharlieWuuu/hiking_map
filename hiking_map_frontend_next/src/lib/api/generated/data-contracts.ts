@@ -299,6 +299,8 @@ export interface TrailDetailDto {
    * @example {"type":"LineString","coordinates":[[120.9,23.47]]}
    */
   geojson?: object | null;
+  /** @example ["百岳","百大必訪步道"] */
+  category_names: string[];
 }
 
 export interface CollectionItemDto {
@@ -361,6 +363,16 @@ export interface SearchResultDto {
   cover_image_url?: object | null;
   /** @example "name" */
   match_reason: 'name' | 'field';
+  /**
+   * 距離查詢座標的距離（公里），只有 nearby 查詢會帶這個欄位
+   * @example 12.3
+   */
+  distance_km?: number;
+  /**
+   * 分類名稱（百岳/小百岳/百大必訪步道），只有 nearby 查詢會帶這個欄位
+   * @example "百岳"
+   */
+  category_name?: string;
 }
 
 export interface PopularQueryDto {

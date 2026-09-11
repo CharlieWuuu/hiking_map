@@ -57,7 +57,10 @@
   },
   "HomePage": {
     "greeting": "{username}",
-    "latestHike": "Latest hike",
+    "latestHike": "Recent hikes",
+    "viewAllHikes": "View all hikes",
+    "recommendedTrails": "Recommended trails",
+    "exploreMoreTrails": "Explore more trails",
     "yourStats": "Your Stats",
     "goToProfile": "View full stats",
     "totalDistanceValue": "{distance, number, ::.##} km",
@@ -107,8 +110,11 @@
     "smallHundred": "Small Hundred Peaks",
     "hundredTrail": "Top 100 Trails",
     "categoryFilter": "Category",
-    "countyFilter": "County",
-    "noTrails": "No trails match the current filters"
+    "noTrails": "No trails match the current filters",
+    "nearbyTitle": "Nearby Trails",
+    "nearbyLoadFailed": "Couldn't load nearby trails, please try again",
+    "nearbyRetry": "Retry",
+    "nearbyEmpty": "No nearby trails found"
   },
   "ProfilePage": {
     "title": "Stats",
@@ -138,6 +144,7 @@
   "ProfileDataPage": {
     "title": "Map & Data",
     "subtitle": "{count} records",
+    "subtitleWithCategory": "{category} · {count} records",
     "badgePrivate": "Private",
     "backToProfile": "Back to stats",
     "noTrails": "No records yet",
@@ -214,6 +221,7 @@
     "date": "Date",
     "distance": "Distance",
     "distanceValue": "{distance, number, ::.##} km",
+    "distanceUnit": "km",
     "links": "Route links",
     "linkLabel": "Link {index}",
     "note": "Note",

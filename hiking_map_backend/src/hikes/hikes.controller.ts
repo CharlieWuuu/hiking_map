@@ -81,11 +81,13 @@ export class HikesController {
     @Query('includeGeojson') includeGeojson?: string,
     @Query('cursor') cursor?: string,
     @Query('limit') limit?: string,
+    @Query('category') category?: string,
   ) {
     return this.hikesService.findAll(
       userId ? Number(userId) : undefined,
       includeGeojson === 'true',
       limit ? { cursor, limit: Number(limit) } : undefined,
+      category,
     );
   }
 
@@ -98,6 +100,7 @@ export class HikesController {
     @Query('bbox') bbox: string,
     @Query('userId') userId?: string,
     @Query('zoom') zoom?: string,
+    @Query('category') category?: string,
   ) {
     const parts = (bbox ?? '').split(',').map(Number);
     if (parts.length !== 4 || parts.some(Number.isNaN)) {
@@ -107,6 +110,7 @@ export class HikesController {
       parts as [number, number, number, number],
       userId ? Number(userId) : undefined,
       zoom ? Number(zoom) : undefined,
+      category,
     );
   }
 

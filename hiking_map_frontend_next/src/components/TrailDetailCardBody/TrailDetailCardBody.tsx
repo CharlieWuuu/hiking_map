@@ -10,7 +10,7 @@ type Props = {
   name: string;
   county: string;
   town: string;
-  distanceKm: number;
+  distanceKm?: number;
   distanceUnitLabel: string;
   date?: string;
   urls: string[];
@@ -88,13 +88,17 @@ export default function TrailDetailCardBody({
         {(county || town) && <p className="text-background-contrary/60 text-sm">{[county, town].filter(Boolean).join(' ')}</p>}
       </div>
 
-      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-4 sm:px-5">
-        <p className="text-accent leading-none font-bold">
-          <span className="text-2xl sm:text-4xl">{distanceFormatter.format(distanceKm)}</span>
-          <span className="ml-1 text-sm sm:text-base">{distanceUnitLabel}</span>
-        </p>
-        {date && <p className="text-background-contrary/60 text-base sm:text-lg">{date}</p>}
-      </div>
+      {(distanceKm !== undefined || date) && (
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-4 sm:px-5">
+          {distanceKm !== undefined && (
+            <p className="text-accent leading-none font-bold">
+              <span className="text-2xl sm:text-4xl">{distanceFormatter.format(distanceKm)}</span>
+              <span className="ml-1 text-sm sm:text-base">{distanceUnitLabel}</span>
+            </p>
+          )}
+          {date && <p className="text-background-contrary/60 text-base sm:text-lg">{date}</p>}
+        </div>
+      )}
 
       {note && (
         <div className="flex flex-col gap-2 p-4 sm:p-5">

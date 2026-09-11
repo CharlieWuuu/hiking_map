@@ -34,6 +34,8 @@ type Props = {
   trails?: MapTrail[];
   // 動態模式底下要抓誰的紀錄
   userId?: string;
+  // 動態模式下篩選特定分類（百岳/小百岳/百大必訪步道），跟頁面清單的篩選保持一致
+  category?: string;
   // 外層容器（例如全螢幕切換）尺寸明確變化時傳入新值，強制地圖重新量測——見 MapView 的 resizeKey
   resizeKey?: unknown;
   // 網址帶著的初始視野（動態模式專用）；沒有就用預設的全台視野
@@ -72,7 +74,7 @@ function PanToActiveEffect({ slug, bbox, fallbackPath }: { slug: string | null; 
 
 // 把地圖目前的縮放與範圍同步進 store。動態模式下由這裡驅動 fetchInView，
 // 固定模式（trails 由外部傳入）則只驅動完整軌跡的載入
-function ViewportSync({ trails, userId }: { trails?: MapTrail[]; userId?: string }) {
+function ViewportSync({ trails, userId, category }: { trails?: MapTrail[]; userId?: string; category?: string }) {
   const zoom = useMapStore((state) => state.zoom);
   const bounds = useMapStore((state) => state.bounds);
   const setViewport = useMapStore((state) => state.setViewport);
@@ -96,8 +98,8 @@ function ViewportSync({ trails, userId }: { trails?: MapTrail[]; userId?: string
   // 動態模式：視野或縮放層級一變就重新跟 findInView 要資料
   useEffect(() => {
     if (!isDynamic || !bounds) return;
-    void fetchInView(bounds, zoom, userId);
-  }, [isDynamic, bounds, zoom, userId, fetchInView]);
+    void fetchInView(bounds, zoom, userId, category);
+  }, [isDynamic, bounds, zoom, userId, category, fetchInView]);
 
   // 動態模式不需要再額外去 R2 抓完整軌跡：後端 findInView 已經依 zoom 判斷，
   // >= DETAIL_ZOOM 時 markers 的 geojson 本身就是完整軌跡，不是簡化線
@@ -249,7 +251,7 @@ function useActiveHikeDetail(activeSlug: string | null, isDynamic: boolean) {
   return isDynamic && activeSlug && String(detail?.id) === activeSlug ? detail : null;
 }
 
-export default function TrailsLayer({ trails, userId, resizeKey, initialViewport }: Props) {
+export default function TrailsLayer({ trails, userId, category, resizeKey, initialViewport }: Props) {
   const hoverSlug = useMapStore((state) => state.hoverSlug);
   const activeSlug = useMapStore((state) => state.activeSlug);
   const activeBbox = useMapStore((state) => state.activeBbox);
@@ -316,7 +318,7 @@ export default function TrailsLayer({ trails, userId, resizeKey, initialViewport
       resizeKey={resizeKey}
     >
       <PanToActiveEffect slug={activeSlug} bbox={(isDynamic ? activeBbox : null) ?? activeTrail?.bbox ?? null} fallbackPath={activeTrail?.path ?? []} />
-      <ViewportSync trails={trails} userId={userId} />
+      <ViewportSync trails={trails} userId={userId} category={category} />
       {isDynamic && <ViewportUrlSync />}
 
       {activeTrail && activeTrailPopupPosition && <ActiveTrailPopup key={activeTrail.slug} trail={activeTrail} position={activeTrailPopupPosition} />}
