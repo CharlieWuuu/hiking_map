@@ -1,16 +1,19 @@
+import { ArrowLeft } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
-import BackLink from '../../../../components/BackLink';
 import TrailLayer from '../../../../components/MapView/TrailLayer';
 import PageLayout from '../../../../components/PageLayout';
+import TrailDetailCardBody from '../../../../components/TrailDetailCardBody';
+import { Link } from '../../../../i18n/navigation';
 import { apiClient } from '../../../../lib/apiClient';
 
-// 後端 geojson 目前是 unknown 形狀的 object，LineString 才有座標可畫地圖
-function getTrailPath(geojson: object | null): [number, number][] | null {
-  if (!geojson || !('type' in geojson) || geojson.type !== 'LineString') return null;
-  if (!('coordinates' in geojson)) return null;
-  return geojson.coordinates as [number, number][];
+// trail_geometries.geom 是 MultiLineString，只取第一條線來畫圖，跟 /hikes/[id] 的處理方式一致
+function getTrailPath(geojson: object | null): [number, number][] {
+  if (!geojson || !('type' in geojson) || !('coordinates' in geojson)) return [];
+  if (geojson.type === 'LineString') return geojson.coordinates as [number, number][];
+  if (geojson.type === 'MultiLineString') return (geojson.coordinates as [number, number][][])[0] ?? [];
+  return [];
 }
 
 export default async function TrailDetailPage({ params }: { params: Promise<{ trailId: string }> }) {
@@ -23,27 +26,36 @@ export default async function TrailDetailPage({ params }: { params: Promise<{ tr
   const path = getTrailPath(trail.geojson);
 
   return (
-    <PageLayout align="center" title={trail.name} before={<BackLink href="/search">{t('back')}</BackLink>}>
-      <div className="flex flex-wrap justify-around gap-4">
-        <div className="flex flex-col items-center">
-          <span className="text-background-contrary/60 text-xs">{t('distance')}</span>
-          <p className="text-lg">{trail.distanceKm !== null ? t('distanceValue', { distance: trail.distanceKm }) : t('noValue')}</p>
+    <PageLayout>
+      <div className="page-wide flex h-full min-h-0 w-full flex-col gap-4 lg:flex-row">
+        <div className="scrollbar-subtle min-h-0 w-full shrink-0 overflow-y-auto lg:h-full lg:max-w-md">
+          <TrailDetailCardBody
+            className="lg:min-h-full"
+            name={trail.name}
+            county={trail.county ?? ''}
+            town={trail.town ?? ''}
+            distanceKm={trail.distanceKm ?? undefined}
+            distanceUnitLabel={t('distanceUnit')}
+            urls={[]}
+            linkLabel={(index) => t('linkLabel', { index: index + 1 })}
+            mountainNames={trail.categoryNames}
+            note={trail.description ?? undefined}
+            noteLabel={t('intro')}
+            coverImageUrl={trail.coverImageUrl}
+            headerActions={
+              <Link
+                href="/search"
+                title={t('back')}
+                className="border-background-contrary/30 hover:bg-panel-active flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Link>
+            }
+          />
         </div>
+
+        <TrailLayer path={path} className="rounded-panel h-100 w-full flex-1 overflow-hidden lg:h-full" />
       </div>
-
-      {trail.description && (
-        <section className="flex flex-col items-start gap-4">
-          <h2 className="text-2xl font-bold">{t('intro')}</h2>
-          <p className="text-background-contrary/80">{trail.description}</p>
-        </section>
-      )}
-
-      {path && (
-        <section className="flex flex-col items-start gap-4">
-          <h2 className="text-2xl font-bold">{t('map')}</h2>
-          <TrailLayer path={path} />
-        </section>
-      )}
     </PageLayout>
   );
 }

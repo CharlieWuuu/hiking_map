@@ -62,8 +62,9 @@ export default function Nav() {
 
   return (
     <>
-      {/* 窄螢幕：底部導覽列 */}
-      <nav className="bg-nav border-nav-border fixed right-0 bottom-0 left-0 z-50 flex justify-around border-t py-4 lg:hidden">
+      {/* 窄螢幕：底部導覽列。跟 main 一起放進外層的 flex-col，佔實際版面空間（不是 fixed 浮在最上層），
+          這樣 main 才知道底部被佔用多少高度，內容捲到底才不會被這排導覽列蓋住 */}
+      <nav className="bg-nav border-nav-border order-2 flex shrink-0 justify-around border-t py-4 lg:hidden">
         {navItems.map(({ messageKey, href, Icon }) => (
           <Link
             key={messageKey}

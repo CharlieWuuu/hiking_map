@@ -57,7 +57,10 @@
   },
   "HomePage": {
     "greeting": "{username}",
-    "latestHike": "最近一次紀錄",
+    "latestHike": "近期紀錄",
+    "viewAllHikes": "查看完整資料",
+    "recommendedTrails": "推薦路線",
+    "exploreMoreTrails": "探索更多路線",
     "yourStats": "我的統計",
     "goToProfile": "查看完整統計",
     "totalDistanceValue": "{distance, number, ::.##} 公里",
@@ -107,8 +110,11 @@
     "smallHundred": "小百岳",
     "hundredTrail": "百大必訪步道",
     "categoryFilter": "分類",
-    "countyFilter": "縣市",
-    "noTrails": "查無符合條件的步道"
+    "noTrails": "查無符合條件的步道",
+    "nearbyTitle": "附近路線推薦",
+    "nearbyLoadFailed": "無法取得附近路線，請稍後再試",
+    "nearbyRetry": "重試",
+    "nearbyEmpty": "附近沒有找到路線"
   },
   "ProfilePage": {
     "title": "統計",
@@ -138,6 +144,7 @@
   "ProfileDataPage": {
     "title": "資料",
     "subtitle": "共 {count} 筆",
+    "subtitleWithCategory": "{category}・共 {count} 筆",
     "badgePrivate": "不公開",
     "backToProfile": "返回統計",
     "noTrails": "還沒有任何紀錄",
@@ -214,6 +221,7 @@
     "date": "日期",
     "distance": "距離",
     "distanceValue": "{distance, number, ::.##} 公里",
+    "distanceUnit": "公里",
     "links": "路線連結",
     "linkLabel": "連結 {index}",
     "note": "說明",

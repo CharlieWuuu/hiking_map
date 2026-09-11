@@ -13,7 +13,7 @@ import TrailExplorerList from './TrailExplorerList';
 import TrailExplorerToolbar from './TrailExplorerToolbar';
 import TrailListPagination from './TrailListPagination';
 
-type Trail = EditableTrail & Pick<MapTrail, 'path' | 'trackUrl' | 'bbox'>;
+type Trail = EditableTrail & Pick<MapTrail, 'path' | 'trackUrl' | 'bbox'> & { categoryNames?: string[] };
 
 const PAGE_SIZE = 20;
 
@@ -22,6 +22,7 @@ type Props = {
   totalCount: number;
   initialNextCursor: string | null;
   userId: string;
+  category?: string;
   fullscreen: 'map' | 'table' | null;
   isEditMode: boolean;
   isOwner: boolean;
@@ -43,6 +44,7 @@ export default function ProfileTrailExplorer({
   totalCount,
   initialNextCursor,
   userId,
+  category,
   fullscreen,
   isEditMode,
   isOwner,
@@ -89,7 +91,7 @@ export default function ProfileTrailExplorer({
     setIsLoadingPage(true);
     try {
       const cursor = cursorOverride ?? cursorsByPage[clamped];
-      const result = await apiClient.hikes.findAllPaginated(userId, PAGE_SIZE, cursor, true);
+      const result = await apiClient.hikes.findAllPaginated(userId, PAGE_SIZE, cursor, true, category);
       setTrails(
         result.items.map((hike) => ({
           slug: String(hike.id),
@@ -100,6 +102,7 @@ export default function ProfileTrailExplorer({
           distanceKm: hike.distanceKm,
           isPublic: hike.isPublic,
           mountainIds: hike.mountainIds ?? [],
+          categoryNames: hike.categoryNames ?? [],
           urls: hike.urls,
           note: hike.note ?? undefined,
           path: getHikePath(hike.geojson),
@@ -207,7 +210,7 @@ export default function ProfileTrailExplorer({
               label={isMapFullscreen ? t('collapse') : t('expand')}
             />
           </div>
-          <TrailsLayer userId={userId} resizeKey={fullscreen} initialViewport={initialViewport ?? undefined} />
+          <TrailsLayer userId={userId} category={category} resizeKey={fullscreen} initialViewport={initialViewport ?? undefined} />
         </div>
       )}
     </div>

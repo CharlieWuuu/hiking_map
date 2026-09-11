@@ -4,25 +4,22 @@ import PageLayout from '../../../components/PageLayout';
 import TrailListItem from '../../../components/TrailListItem';
 import { Link } from '../../../i18n/navigation';
 import { apiClient } from '../../../lib/apiClient';
-import { placeholderImage } from '../../../lib/placeholderImage';
 import { TRAIL_CATEGORIES, type TrailCategory } from '../../../testing/mocks/trails/trails.data';
+import NearbyTrails from './_components/NearbyTrails';
 import SearchBarWithNavigation from './_components/SearchBarWithNavigation';
 
 type Props = {
-  searchParams: Promise<{ q?: string; category?: string; county?: string }>;
+  searchParams: Promise<{ q?: string; category?: string }>;
 };
 
 export default async function SearchPage({ searchParams }: Props) {
-  const { q = '', category: rawCategory, county: rawCounty } = await searchParams;
+  const { q = '', category: rawCategory } = await searchParams;
   const category = TRAIL_CATEGORIES.includes(rawCategory as TrailCategory) ? (rawCategory as TrailCategory) : null;
 
-  const allTrails = await apiClient.trails.findAll();
-  const counties = [...new Set(allTrails.map((trail) => trail.county).filter((county): county is string => Boolean(county)))];
-  const county = counties.includes(rawCounty ?? '') ? rawCounty! : null;
   const t = await getTranslations('SearchPage');
 
-  const isFiltering = Boolean(category || county);
-  const results = q ? await apiClient.search.search(q) : isFiltering ? await apiClient.search.filterTrails(category, county) : [];
+  const isFiltering = Boolean(category);
+  const results = q ? await apiClient.search.search(q) : isFiltering ? await apiClient.search.filterTrails(category, null) : [];
 
   return (
     <PageLayout>
@@ -54,32 +51,15 @@ export default async function SearchPage({ searchParams }: Props) {
                 <Link
                   key={item}
                   href={{ pathname: '/search', query: { category: item } }}
-                  className="rounded-panel relative flex h-24 items-center justify-center overflow-hidden bg-cover bg-center px-4 text-center text-lg font-bold text-white transition-opacity hover:opacity-90"
-                  style={{ backgroundImage: `url(${placeholderImage(`category-${item}`)})` }}
+                  className="bg-panel hover:bg-panel-active text-background-contrary rounded-panel flex h-24 items-center justify-center px-4 text-center text-lg font-bold transition-colors"
                 >
-                  <span className="absolute inset-0 bg-black/20" />
-                  <span className="relative">{t(item)}</span>
+                  {t(item)}
                 </Link>
               ))}
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <span className="text-background-contrary/60 text-sm">{t('countyFilter')}</span>
-            <div className="grid grid-cols-3 gap-3">
-              {counties.map((item) => (
-                <Link
-                  key={item}
-                  href={{ pathname: '/search', query: { county: item } }}
-                  className="rounded-panel relative flex h-24 items-center justify-center overflow-hidden bg-cover bg-center px-4 text-center text-lg font-bold text-white transition-opacity hover:opacity-90"
-                  style={{ backgroundImage: `url(${placeholderImage(`county-${item}`)})` }}
-                >
-                  <span className="absolute inset-0 bg-black/20" />
-                  <span className="relative">{item}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
+          <NearbyTrails />
         </div>
       )}
     </PageLayout>

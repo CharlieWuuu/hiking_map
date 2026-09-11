@@ -33,7 +33,7 @@ export default async function HikeDetailPage({ params }: { params: Promise<{ hik
   return (
     <PageLayout>
       <div className="page-wide flex h-full min-h-0 w-full flex-col gap-4 lg:flex-row">
-        <div className="scrollbar-subtle h-full min-h-0 w-full overflow-y-auto lg:max-w-md lg:shrink-0">
+        <div className="scrollbar-subtle min-h-0 w-full shrink-0 overflow-y-auto lg:h-full lg:max-w-md">
           <HikeDetailCard hike={hike} mountainNames={mountainNames} />
         </div>
 

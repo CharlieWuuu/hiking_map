@@ -40,7 +40,7 @@ type MapState = {
   // 這是地圖自己動態抓的資料，跟頁面一次撈好傳進來的清單資料是分開的兩條線
   markers: InViewHike[];
   markersLoading: boolean;
-  fetchInView: (bbox: [number, number, number, number], zoom: number, userId?: string) => Promise<void>;
+  fetchInView: (bbox: [number, number, number, number], zoom: number, userId?: string, category?: string) => Promise<void>;
 
   // 已經解析成座標陣列的完整軌跡。壓縮檔本身由瀏覽器的 HTTP 快取負責留在磁碟，
   // 這裡只擋「重新解析」的成本，所以不必急著在離開視野時丟掉
@@ -69,11 +69,11 @@ export const useMapStore = create<MapState>((set, get) => ({
 
   markers: [],
   markersLoading: false,
-  fetchInView: async (bbox, zoom, userId) => {
+  fetchInView: async (bbox, zoom, userId, category) => {
     set({ markersLoading: true });
     try {
       // 後端依 zoom 判斷要回點位／簡化線／完整軌跡，這裡直接把 zoom 轉交過去就好
-      const markers = await apiClient.hikes.findInView(bbox, userId, zoom);
+      const markers = await apiClient.hikes.findInView(bbox, userId, zoom, category);
       set({ markers });
     } catch {
       // 失敗就維持上一次抓到的結果，不清空畫面

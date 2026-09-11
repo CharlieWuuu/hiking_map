@@ -15,6 +15,7 @@ export type Trail = {
 
 export type TrailDetail = Trail & {
   geojson: object | null;
+  categoryNames: string[];
 };
 
 export function adaptTrail(raw: RawTrail): Trail {

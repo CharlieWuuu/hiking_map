@@ -32,7 +32,7 @@ export default async function ChartPage() {
           <div className="bg-accent text-accent-contrast rounded-panel flex flex-col justify-between gap-6 p-6">
             <span className="text-sm font-medium opacity-70">{t('totalDistanceLabel')}</span>
             <div className="flex flex-1 flex-col items-start justify-center gap-2">
-              <span className="text-6xl font-bold">{t('totalDistance', { distance: stats.totalDistanceKm })}</span>
+              <span className="text-4xl font-bold sm:text-6xl">{t('totalDistance', { distance: stats.totalDistanceKm })}</span>
               <span className="text-sm opacity-70">{t('hikeCount', { count: stats.hikeCount })}</span>
             </div>
           </div>

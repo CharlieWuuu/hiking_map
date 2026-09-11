@@ -40,6 +40,41 @@ export class Search<SecurityDataType = unknown> extends HttpClient<SecurityDataT
    * No description
    *
    * @tags Search
+   * @name SearchControllerNearby
+   * @request GET:/search/nearby
+   */
+  searchControllerNearby = (
+    query: {
+      lat: string;
+      lng: string;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<SearchResultDto[], any>({
+      path: `/search/nearby`,
+      method: 'GET',
+      query: query,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Search
+   * @name SearchControllerLastLocation
+   * @request GET:/search/last-location
+   */
+  searchControllerLastLocation = (params: RequestParams = {}) =>
+    this.request<{ lat: number; lng: number } | null, any>({
+      path: `/search/last-location`,
+      method: 'GET',
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Search
    * @name SearchControllerPopularQueries
    * @request GET:/search/popular
    */

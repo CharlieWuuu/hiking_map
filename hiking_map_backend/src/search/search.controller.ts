@@ -24,6 +24,20 @@ export class SearchController {
     return [];
   }
 
+  // 附近路線推薦：合併百岳/小百岳（mountains 點資料）與百大必訪步道（trail_geometries.center），依距離排序
+  @Get('nearby')
+  @ApiOkResponse({ type: SearchResultDto, isArray: true })
+  nearby(@Query('lat') lat: string, @Query('lng') lng: string) {
+    return this.searchService.nearby(parseFloat(lat), parseFloat(lng));
+  }
+
+  // 瀏覽器定位失敗時的備援座標：使用者最新一筆 hike 對應路線的中心點
+  @Get('last-location')
+  lastLocation(@Req() req: any) {
+    if (!req.user?.user_id) return null;
+    return this.searchService.lastLocation(req.user.user_id);
+  }
+
   @Get('popular')
   @ApiOkResponse({ type: PopularQueryDto, isArray: true })
   popularQueries() {

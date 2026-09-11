@@ -26,7 +26,7 @@ export default function PageLayout({ title, subtitle, actions, before, align = '
             <header className={`flex flex-col gap-2 ${align === 'center' ? 'items-center text-center' : ''}`}>
               <div className={`flex flex-wrap items-end gap-3 ${align === 'center' ? 'justify-center' : ''}`}>
                 {title && <h1 className="text-3xl font-bold">{title}</h1>}
-                {subtitle && <p className="text-background-contrary/60 text-lg">{subtitle}</p>}
+                {subtitle && <p className="text-background-contrary/60 w-full text-base sm:w-auto sm:text-lg">{subtitle}</p>}
                 {actions}
               </div>
             </header>

@@ -38,6 +38,7 @@ export namespace Hikes {
     export type RequestQuery = {
       userId: string;
       includeGeojson: string;
+      category?: string;
     };
     export type RequestBody = never;
     export type RequestHeaders = {};

@@ -7,7 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, EntityManager, In } from 'typeorm';
+import { Repository, DataSource, EntityManager, In, SelectQueryBuilder } from 'typeorm';
 import { Hike } from './hike.entity';
 import { HikeTrack } from './hike-track.entity';
 import { HikeMountainMap } from './hike-mountain-map.entity';
@@ -40,6 +40,34 @@ const CATEGORY_NAME_TO_ACHIEVEMENT_KEY: Record<string, 'hundred' | 'small_hundre
   小百岳: 'small_hundred',
   百大必訪步道: 'hundred_trail',
 };
+
+// 前端搜尋頁分類 key（camelCase）-> categories.name，跟 search.service.ts 的對照表意義相同
+const CATEGORY_KEY_TO_NAME: Record<string, string> = {
+  hundred: '百岳',
+  smallHundred: '小百岳',
+  hundredTrail: '百大必訪步道',
+};
+
+// 百岳/小百岳靠 hike_mountains 關聯的山是否屬於該分類；百大必訪步道靠 hike.trail_id 對應 trail_category_map。
+// 一筆 hike 只要滿足其中一種就算數，用 EXISTS 子查詢，不會因為一筆 hike 對到多座山/多分類而重複列出
+function applyCategoryFilter(qb: SelectQueryBuilder<Hike>, categoryName: string) {
+  qb.andWhere(
+    `(
+      EXISTS (
+        SELECT 1 FROM hike_mountains hm
+        JOIN mountain_category_map mcm ON mcm.mountain_id = hm.mountain_id
+        JOIN categories c ON c.id = mcm.category_id
+        WHERE hm.hike_id = hike.id AND c.name = :categoryName
+      )
+      OR EXISTS (
+        SELECT 1 FROM trail_category_map tcm
+        JOIN categories c ON c.id = tcm.category_id
+        WHERE tcm.trail_id = hike.trail_id AND c.name = :categoryName
+      )
+    )`,
+    { categoryName },
+  );
+}
 
 // 前端要判斷視野、panTo、畫線所需要的軌跡資訊，不含完整座標
 type TrackMeta = {
@@ -284,15 +312,24 @@ export class HikesService {
   // cursor 沒給時維持原本行為（回傳完整陣列，不分頁）——首頁、chart 頁要拿全部紀錄去算統計/圖表，
   // 硬分頁反而要它們自己再迴圈把每頁串起來，划不來。只有 /data 清單頁需要真正分頁，帶 cursor 才會走分頁邏輯。
   // cursor 用 `date_id`（例如 '2026-07-20_42'）編碼，(date, id) 複合排序才不會因為同一天多筆而重複/漏筆
-  async findAll(userId?: number, includeGeojson = false, pagination?: { cursor?: string; limit: number }) {
+  async findAll(
+    userId?: number,
+    includeGeojson = false,
+    pagination?: { cursor?: string; limit: number },
+    category?: string,
+  ) {
     const where = userId ? { user_id: userId } : {};
+    const categoryName = category ? CATEGORY_KEY_TO_NAME[category] : undefined;
+    if (category && !categoryName) throw new BadRequestException('不明的分類');
 
     let totalCount: number | undefined;
     let nextCursor: string | null = null;
     let hikes: Hike[];
 
     if (pagination) {
-      totalCount = await this.hikesRepo.count({ where });
+      const countQb = this.hikesRepo.createQueryBuilder('hike').where(userId ? 'hike.user_id = :userId' : '1=1', { userId });
+      if (categoryName) applyCategoryFilter(countQb, categoryName);
+      totalCount = await countQb.getCount();
 
       const qb = this.hikesRepo
         .createQueryBuilder('hike')
@@ -300,6 +337,7 @@ export class HikesService {
         .orderBy('hike.date', 'DESC')
         .addOrderBy('hike.id', 'DESC')
         .take(pagination.limit + 1); // 多拿一筆用來判斷還有沒有下一頁，不必另外查一次
+      if (categoryName) applyCategoryFilter(qb, categoryName);
 
       if (pagination.cursor) {
         const [cursorDate, cursorIdRaw] = pagination.cursor.split('_');
@@ -316,6 +354,13 @@ export class HikesService {
       hikes = hasMore ? rows.slice(0, pagination.limit) : rows;
       const last = hikes[hikes.length - 1];
       nextCursor = hasMore && last ? `${last.date}_${last.id}` : null;
+    } else if (categoryName) {
+      const qb = this.hikesRepo
+        .createQueryBuilder('hike')
+        .where(userId ? 'hike.user_id = :userId' : '1=1', { userId })
+        .orderBy('hike.date', 'DESC');
+      applyCategoryFilter(qb, categoryName);
+      hikes = await qb.getMany();
     } else {
       hikes = await this.hikesRepo.find({ where, order: { date: 'DESC' } });
     }
@@ -341,11 +386,33 @@ export class HikesService {
       mountainIdsByHikeId.get(row.hike_id)!.push(row.mountain_id);
     }
 
+    // 清單卡片要顯示分類 tag：百岳/小百岳來自 hike_mountains 關聯的山，百大必訪步道來自 hike.trail_id
+    const categoryRows: { hike_id: number; category_name: string }[] = await this.dataSource.query(
+      `SELECT hm.hike_id, c.name AS category_name
+       FROM hike_mountains hm
+       JOIN mountain_category_map mcm ON mcm.mountain_id = hm.mountain_id
+       JOIN categories c ON c.id = mcm.category_id
+       WHERE hm.hike_id = ANY($1)
+       UNION
+       SELECT h.id AS hike_id, c.name AS category_name
+       FROM hikes h
+       JOIN trail_category_map tcm ON tcm.trail_id = h.trail_id
+       JOIN categories c ON c.id = tcm.category_id
+       WHERE h.id = ANY($1)`,
+      [hikes.map((hike) => hike.id)],
+    );
+    const categoryNamesByHikeId = new Map<number, string[]>();
+    for (const row of categoryRows) {
+      if (!categoryNamesByHikeId.has(row.hike_id)) categoryNamesByHikeId.set(row.hike_id, []);
+      categoryNamesByHikeId.get(row.hike_id)!.push(row.category_name);
+    }
+
     const items = hikes.map((hike) => {
       const track = trackByHikeId.get(hike.id);
       return {
         ...hike,
         mountain_ids: mountainIdsByHikeId.get(hike.id) ?? [],
+        category_names: categoryNamesByHikeId.get(hike.id) ?? [],
         ...(track ? toTrackMeta(track) : { center: null, bbox: null, point_count: null, track_url: null }),
         ...(includeGeojson ? { geojson: track?.geojson ? JSON.parse(track.geojson) : null } : {}),
       };
@@ -388,8 +455,10 @@ export class HikesService {
   // >= DETAIL_ZOOM 直接給完整軌跡——選中單一路線平移過去時常常一步就跨進 DETAIL_ZOOM，
   // 這裡一次到位就不必再讓前端另外跑一趟去 R2 抓完整軌跡，也不會有「先粗後細」的過渡。
   // 走 hike_tracks 的 GiST 索引，資料量長大以後就不必再把整個人的軌跡一次送到前端。
-  async findInView(bbox: [number, number, number, number], userId?: number, zoom = 0) {
+  async findInView(bbox: [number, number, number, number], userId?: number, zoom = 0, category?: string) {
     const [minLng, minLat, maxLng, maxLat] = bbox;
+    const categoryName = category ? CATEGORY_KEY_TO_NAME[category] : undefined;
+    if (category && !categoryName) throw new BadRequestException('不明的分類');
 
     // 遠 zoom 只需要點位置，geojson 欄位整個不查、不傳，省頻寬
     const geojsonSelect =
@@ -398,6 +467,24 @@ export class HikesService {
         : zoom >= CLUSTER_ZOOM
           ? `, ST_AsGeoJSON(t.geom_simplified, ${GEOJSON_PRECISION}) AS geojson`
           : '';
+
+    // 跟 applyCategoryFilter 同一套判斷邏輯（百岳/小百岳看 hike_mountains，百大必訪步道看 h.trail_id），
+    // 這裡是原生 SQL 不是 QueryBuilder，只能重寫一次子查詢
+    const categoryCondition = categoryName
+      ? `AND (
+          EXISTS (
+            SELECT 1 FROM hike_mountains hm
+            JOIN mountain_category_map mcm ON mcm.mountain_id = hm.mountain_id
+            JOIN categories c ON c.id = mcm.category_id
+            WHERE hm.hike_id = h.id AND c.name = $6
+          )
+          OR EXISTS (
+            SELECT 1 FROM trail_category_map tcm
+            JOIN categories c ON c.id = tcm.category_id
+            WHERE tcm.trail_id = h.trail_id AND c.name = $6
+          )
+        )`
+      : '';
 
     const rows: (TrackRow & { id: number; name: string; geojson?: string | null })[] = await this.dataSource.query(
       `SELECT h.id, h.name,
@@ -410,8 +497,9 @@ export class HikesService {
        FROM hike_tracks t
        JOIN hikes h ON h.id = t.hike_id
        WHERE t.bbox && ST_MakeEnvelope($1, $2, $3, $4, 4326)
-         AND ($5::int IS NULL OR h.user_id = $5)`,
-      [minLng, minLat, maxLng, maxLat, userId ?? null],
+         AND ($5::int IS NULL OR h.user_id = $5)
+         ${categoryCondition}`,
+      categoryName ? [minLng, minLat, maxLng, maxLat, userId ?? null, categoryName] : [minLng, minLat, maxLng, maxLat, userId ?? null],
     );
 
     return rows.map((row) => ({
