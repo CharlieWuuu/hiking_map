@@ -1,9 +1,8 @@
-import { Download, LayoutGrid, Pencil, Plus, Table, X } from 'lucide-react';
+import { LayoutGrid, Pencil, Table, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import ExpandToggleButton from './ExpandToggleButton';
-
-const EXPORT_FORMATS = ['GeoJSON', 'GPX', 'CSV'] as const;
+import ExportMenu from './ExportMenu';
 
 type Props = {
   isTableExpanded: boolean;
@@ -19,7 +18,8 @@ export default function TrailExplorerToolbar({ isTableExpanded, onToggleTableExp
   const t = useTranslations('ProfileDataPage');
 
   return (
-    <div className="flex items-center justify-between">
+    // pr-2 補足清單捲動時右側捲軸佔用的寬度，避免工具列跟清單右邊界對不齊
+    <div className="flex items-center justify-between pr-2">
       <ExpandToggleButton isExpanded={isTableExpanded} onToggle={onToggleTableExpanded} label={isTableExpanded ? t('collapse') : t('expand')} />
 
       <div className="flex items-center gap-2">
@@ -44,27 +44,7 @@ export default function TrailExplorerToolbar({ isTableExpanded, onToggleTableExp
           </button>
         )}
 
-        {isEditMode && (
-          <>
-            <button type="button" className="bg-panel hover:bg-panel-active flex h-7 shrink-0 items-center gap-1 rounded-full px-3 text-xs transition-colors">
-              <Plus className="h-3.5 w-3.5" />
-              {t('addTrail')}
-            </button>
-            <label className="bg-panel hover:bg-panel-active flex h-7 shrink-0 cursor-pointer items-center gap-1 rounded-full px-3 text-xs transition-colors">
-              <Download className="h-3.5 w-3.5" />
-              <select defaultValue="" className="cursor-pointer bg-transparent outline-none">
-                <option value="" disabled>
-                  {t('export')}
-                </option>
-                {EXPORT_FORMATS.map((format) => (
-                  <option key={format} value={format}>
-                    {format}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </>
-        )}
+        {isEditMode && <ExportMenu label={t('export')} />}
       </div>
     </div>
   );

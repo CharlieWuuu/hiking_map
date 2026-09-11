@@ -12,9 +12,6 @@ const trails = [
     date: '2026-03-12',
     distanceKm: 10.5,
     isPublic: true,
-    isHundred: true,
-    isSmallHundred: false,
-    isHundredTrail: false,
     mountainIds: [1],
     urls: [],
     path: [
@@ -31,9 +28,6 @@ const trails = [
     date: '2026-02-20',
     distanceKm: 3.2,
     isPublic: true,
-    isHundred: false,
-    isSmallHundred: false,
-    isHundredTrail: false,
     mountainIds: [],
     urls: [],
     path: [

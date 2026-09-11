@@ -23,10 +23,6 @@ export type Hike = {
   urls: string[];
   coverImageUrl: string | null;
   createdAt: string;
-  // GET /hikes 才會附帶，取決於這次紀錄對應的 trail 是否屬於對應分類
-  isHundred?: boolean;
-  isSmallHundred?: boolean;
-  isHundredTrail?: boolean;
   // 軌跡的 meta，很小所以一律附帶
   center: [number, number] | null;
   bbox: [number, number, number, number] | null;
@@ -50,7 +46,6 @@ export type CreateHikeDto = {
   urls?: string[];
   coverImageUrl?: string;
   trailId?: number;
-  categoryIds?: string[];
   mountainIds?: number[];
   geojson: object;
 };
@@ -61,9 +56,6 @@ export type UpdateHikeDto = {
   town?: string;
   date?: string;
   isPublic?: boolean;
-  isHundred?: boolean;
-  isSmallHundred?: boolean;
-  isHundredTrail?: boolean;
   urls?: string[];
   note?: string;
   mountainIds?: number[];
@@ -137,7 +129,6 @@ export function toCreateHikeDto(dto: CreateHikeDto): RawCreateHikeDto {
     urls: dto.urls,
     cover_image_url: dto.coverImageUrl,
     trail_id: dto.trailId,
-    category_ids: dto.categoryIds,
     mountain_ids: dto.mountainIds,
     geojson: dto.geojson,
   };
@@ -150,9 +141,6 @@ export function toUpdateHikeDto(dto: UpdateHikeDto): RawUpdateHikeDto {
     town: dto.town,
     date: dto.date,
     is_public: dto.isPublic,
-    is_hundred: dto.isHundred,
-    is_small_hundred: dto.isSmallHundred,
-    is_hundred_trail: dto.isHundredTrail,
     urls: dto.urls,
     note: dto.note,
     mountain_ids: dto.mountainIds,
@@ -178,6 +166,8 @@ export function createHikesService(client: HikesClient) {
       };
     },
     findOne: async (id: number) => adaptHike(await client.hikesControllerFindOne(id)),
+    // 地圖點某條路線時，清單要跳到它所在的那一頁；回傳的 cursor 是「跳到該頁」要帶的 cursor
+    getPageInfo: async (id: number, userId: string, limit: number) => client.hikesControllerGetPageInfo(id, { userId: Number(userId), limit }),
     // zoom 給後端判斷要回點位／簡化線／完整軌跡，前端不用自己算該不該多打一次 R2 請求
     findInView: async (bbox: [number, number, number, number], userId?: string, zoom = 0) =>
       (

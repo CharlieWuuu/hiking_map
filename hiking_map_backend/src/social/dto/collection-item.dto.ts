@@ -4,8 +4,8 @@ export class CollectionItemDto {
   @ApiProperty({ example: 1 })
   id: number;
 
-  @ApiProperty({ example: 'trail', enum: ['trail', 'hike', 'user'] })
-  item_type: 'trail' | 'hike' | 'user';
+  @ApiProperty({ example: 'trail', enum: ['trail', 'hike'] })
+  item_type: 'trail' | 'hike';
 
   @ApiProperty({ example: 1 })
   item_id: number;
@@ -19,11 +19,4 @@ export class CollectionItemDto {
 
   @ApiPropertyOptional({ example: 'tataka-trailhead-to-paiyun-lodge', nullable: true })
   trail_slug?: string | null;
-
-  // item_type 為 user 時才有值
-  @ApiPropertyOptional({ example: 'hiker01', nullable: true })
-  username?: string | null;
-
-  @ApiPropertyOptional({ example: 'https://example.com/avatar.png', nullable: true })
-  avatar?: string | null;
 }

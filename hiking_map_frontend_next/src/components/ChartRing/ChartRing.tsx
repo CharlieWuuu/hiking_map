@@ -42,6 +42,8 @@ export default function ChartRing({ label, value, size = 120, strokeWidth = 10 }
       .duration(1000)
       .attr('stroke-dashoffset', circumference * (1 - Math.min(value / 100, 1)));
 
+    // 文字用卡片自己的 contrast 色（而不是 accent 或 background-contrary），
+    // 這個元件會被放進不同底色的卡片（例如純黑的 highlight 卡），套用畫面通用的顏色會沒對比度看不到
     group
       .append('text')
       .text(`${value}`)
@@ -49,7 +51,7 @@ export default function ChartRing({ label, value, size = 120, strokeWidth = 10 }
       .attr('dy', '0.15em')
       .attr('font-size', size * 0.28)
       .attr('font-weight', 'bold')
-      .attr('fill', 'var(--color-accent)');
+      .attr('fill', 'currentColor');
 
     group
       .append('text')
@@ -57,14 +59,14 @@ export default function ChartRing({ label, value, size = 120, strokeWidth = 10 }
       .attr('text-anchor', 'middle')
       .attr('dy', size * 0.16)
       .attr('font-size', size * 0.09)
-      .attr('fill', 'var(--color-background-contrary)')
+      .attr('fill', 'currentColor')
       .attr('opacity', 0.6);
   }, [value, size, strokeWidth]);
 
   return (
     <div className="flex flex-col items-center gap-2">
       <svg ref={ref} width={size} height={size} viewBox={`0 0 ${size} ${size}`} />
-      <span className="text-background-contrary text-sm">{label}</span>
+      <span className="text-sm opacity-70">{label}</span>
     </div>
   );
 }

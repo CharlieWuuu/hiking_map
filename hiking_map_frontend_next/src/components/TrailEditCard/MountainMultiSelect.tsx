@@ -4,15 +4,16 @@ import { useEffect, useMemo, useState } from 'react';
 
 import type { Mountain } from '../../lib/api/adapters/mountains';
 import { apiClient } from '../../lib/apiClient';
+import TagBadge from '../TagBadge';
+import { inputClassName } from './fieldStyles';
 
 type Props = {
   selectedIds: number[];
   onChange: (ids: number[]) => void;
-  label: string;
   searchPlaceholder: string;
 };
 
-export default function MountainMultiSelect({ selectedIds, onChange, label, searchPlaceholder }: Props) {
+export default function MountainMultiSelect({ selectedIds, onChange, searchPlaceholder }: Props) {
   const [mountains, setMountains] = useState<Mountain[]>([]);
   const [query, setQuery] = useState('');
 
@@ -34,31 +35,8 @@ export default function MountainMultiSelect({ selectedIds, onChange, label, sear
 
   return (
     <div className="flex w-full flex-col items-start gap-2">
-      <span className="text-sm">{label}</span>
-
-      {selectedMountains.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {selectedMountains.map((mountain) => (
-            <button
-              key={mountain.id}
-              type="button"
-              onClick={() => toggle(mountain.id)}
-              className="bg-accent text-background rounded-full px-3 py-1 text-sm transition-colors duration-150"
-            >
-              {mountain.name} ×
-            </button>
-          ))}
-        </div>
-      )}
-
       <div className="relative w-full">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={searchPlaceholder}
-          className="bg-background text-background-contrary w-full rounded px-1.5 py-0.5 text-sm outline-none"
-        />
+        <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={searchPlaceholder} className={inputClassName} />
         {suggestions.length > 0 && (
           <div className="bg-panel-active rounded-panel absolute top-full left-0 z-10 mt-1 flex w-full flex-col overflow-hidden">
             {suggestions.map((mountain) => (
@@ -69,14 +47,29 @@ export default function MountainMultiSelect({ selectedIds, onChange, label, sear
                   toggle(mountain.id);
                   setQuery('');
                 }}
-                className="hover:bg-panel-active-lighten px-3 py-2 text-left text-sm transition-colors duration-150"
+                className="hover:bg-panel-active-lighten flex items-center justify-between gap-2 px-3 py-2 text-left text-sm transition-colors duration-150"
               >
-                {mountain.name}
+                <span>{mountain.name}</span>
+                {mountain.categories.length > 0 && <span className="text-background-contrary/50 shrink-0 text-xs">{mountain.categories.join('・')}</span>}
               </button>
             ))}
           </div>
         )}
       </div>
+
+      {selectedMountains.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {selectedMountains.map((mountain) => (
+            <TagBadge
+              key={mountain.id}
+              label={mountain.categories.length > 0 ? `${mountain.name}・${mountain.categories.join('・')}` : mountain.name}
+              tone="accent"
+              removable
+              onClick={() => toggle(mountain.id)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

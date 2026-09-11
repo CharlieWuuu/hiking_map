@@ -8,7 +8,8 @@
   },
   "HikeStatsCharts": {
     "monthlyDistance": "Monthly distance",
-    "peakMonth": "Peak {month}: {distance} km",
+    "monthLabel": "Month {month}",
+    "peakMonth": "Peak {month}: {distance, number, ::.##} km",
     "countyStats": "County stats",
     "topCounty": "Top: {county} ({count})",
     "distanceTrend": "Distance trend",
@@ -16,6 +17,9 @@
     "peakWeekday": "Most on {weekday} ({count})",
     "distanceBucket": "Distance range",
     "monthlyHeatmap": "Monthly heatmap",
+    "unitKm": "km",
+    "unitMonth": "",
+    "unitCount": "times",
     "weekday": {
       "mon": "Mon",
       "tue": "Tue",
@@ -26,12 +30,12 @@
       "sun": "Sun"
     },
     "distanceBucketLabel": {
-      "under3": "< 3km",
-      "3to5": "3-5km",
-      "5to8": "5-8km",
-      "8to12": "8-12km",
-      "12to20": "12-20km",
-      "over20": "20km+"
+      "under3": "0-3",
+      "3to5": "3-5",
+      "5to8": "5-8",
+      "8to12": "8-12",
+      "12to20": "12-20",
+      "over20": "20+"
     }
   },
   "Nav": {
@@ -56,7 +60,7 @@
     "latestHike": "Latest hike",
     "yourStats": "Your Stats",
     "goToProfile": "View full stats",
-    "totalDistanceValue": "{distance, number, ::.00} km",
+    "totalDistanceValue": "{distance, number, ::.##} km",
     "hikeCountValue": "{count} hikes",
     "loginPrompt": "Sign in to see your hiking stats",
     "loginCta": "Go to sign in"
@@ -109,7 +113,7 @@
   "ProfilePage": {
     "title": "Stats",
     "totalDistanceLabel": "Overview",
-    "totalDistance": "{distance, number, ::.00} km",
+    "totalDistance": "{distance, number, ::.0} km",
     "hikeCount": "{count} hikes",
     "achievementHundred": "Hundred Peaks",
     "achievementSmallHundred": "Small Hundred Peaks",
@@ -134,15 +138,11 @@
   "ProfileDataPage": {
     "title": "Map & Data",
     "subtitle": "{count} records",
-    "badgeHundred": "Hundred Peaks",
-    "badgeSmallHundred": "Small Hundred",
-    "badgeHundredTrail": "Top 100 Trails",
     "badgePrivate": "Private",
     "backToProfile": "Back to stats",
     "noTrails": "No records yet",
     "expand": "Expand",
     "collapse": "Collapse",
-    "addTrail": "Add trail",
     "export": "Export",
     "viewCard": "Card view",
     "viewTable": "Table view",
@@ -150,7 +150,10 @@
     "exitEdit": "Exit editing",
     "previousPage": "Previous page",
     "nextPage": "Next page",
-    "pageIndicator": "Page {page} of {pageCount}"
+    "pageIndicator": "Page {page} of {pageCount}",
+    "linkLabel": "Link {index}",
+    "viewDetail": "View full page",
+    "distanceUnit": "km"
   },
   "TrailEditCard": {
     "save": "Save",
@@ -158,16 +161,15 @@
     "close": "Close",
     "delete": "Delete record",
     "confirmDelete": "Are you sure you want to delete this hike record? This cannot be undone.",
+    "name": "Name",
     "county": "County",
     "town": "Town",
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance, number, ::.00} km",
+    "distanceValue": "{distance, number, ::.##} km",
     "public": "Public",
-    "categories": "Categories",
-    "hundred": "Hundred Peaks",
-    "smallHundred": "Small Hundred Peaks",
-    "hundredTrail": "Top 100 Trails",
+    "yes": "Yes",
+    "no": "No",
     "mountains": "Peaks completed",
     "mountainsSearchPlaceholder": "Search a peak to add",
     "links": "Route links",
@@ -189,25 +191,29 @@
   },
   "HikeDetailPage": {
     "backToProfile": "Back to map & data",
+    "edit": "Edit",
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance, number, ::.00} km",
+    "distanceValue": "{distance, number, ::.##} km",
+    "distanceUnit": "km",
     "links": "Route links",
     "linkLabel": "Link {index}",
     "note": "Note",
     "noValue": "-",
-    "map": "Map"
+    "map": "Map",
+    "yes": "Yes",
+    "no": "No"
   },
   "TrailListItem": {
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance, number, ::.00} km"
+    "distanceValue": "{distance, number, ::.##} km"
   },
   "TrailDetailPage": {
     "back": "Back to search",
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance, number, ::.00} km",
+    "distanceValue": "{distance, number, ::.##} km",
     "links": "Route links",
     "linkLabel": "Link {index}",
     "note": "Note",
@@ -277,7 +283,7 @@
     "parseFailed": "Could not read the file",
     "submitFailed": "Saving failed, please try again",
     "distance": "Distance",
-    "distanceValue": "{distance, number, ::.00} km",
+    "distanceValue": "{distance, number, ::.##} km",
     "elevationGain": "Elevation gain",
     "elevationGainValue": "{meters, number} m",
     "segments": "Segments",

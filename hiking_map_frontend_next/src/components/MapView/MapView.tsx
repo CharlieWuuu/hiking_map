@@ -5,11 +5,12 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { MapContainer, TileLayer, useMap, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 
 import { useIsResizing } from '../../hooks/useIsResizing';
 import { BASE_MAPS, DEFAULT_BASE_MAP, type BaseMapKey } from './baseMaps';
 import LayerSwitcher from './LayerSwitcher';
+import ZoomButtons from './ZoomButtons';
 
 type Props = {
   center: [number, number];
@@ -99,7 +100,7 @@ export default function MapView({ center, zoom, showZoomControl = true, showLaye
       <MapContainer center={center} zoom={zoom} scrollWheelZoom className="h-full w-full" zoomControl={false}>
         <TileEffect opacity={activeSetting.opacity} saturate={activeSetting.saturate} />
         <TileLayer url={BASE_MAPS[activeKey].url} />
-        {showZoomControl && <ZoomControl position="bottomright" />}
+        {showZoomControl && <ZoomButtons />}
         <ResizeEffect isResizing={isResizing} />
         <FullscreenToggleEffect toggleKey={resizeKey} />
 

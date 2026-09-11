@@ -148,6 +148,21 @@ export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
    * No description
    *
    * @tags Hikes
+   * @name HikesControllerGetPageInfo
+   * @request GET:/hikes/{id}/page
+   */
+  hikesControllerGetPageInfo = (id: number, query: { userId: number; limit: number }, params: RequestParams = {}) =>
+    this.request<{ page: number; cursor: string | null }, any>({
+      path: `/hikes/${id}/page`,
+      method: 'GET',
+      query: query,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Hikes
    * @name HikesControllerUpdate
    * @request PATCH:/hikes/{id}
    */

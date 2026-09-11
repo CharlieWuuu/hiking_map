@@ -47,22 +47,13 @@ button:not(:disabled) {
   display: none;
 }
 
-/* 細窄、跟卡片同色系的捲軸，取代瀏覽器預設樣式（僅 WebKit／Blink，Firefox 用 scrollbar-color 兜底） */
+/* 細窄、跟卡片同色系的捲軸，取代瀏覽器預設樣式。平常捲軸透明不佔視覺份量，滑鼠移進容器才顯示。
+   純用標準 scrollbar-color/-width，不疊加 ::-webkit-scrollbar 系列——兩者同時設定在 Chromium 上
+   會互相干擾導致 hover 沒有效果，只留 scrollbar-color 這一套，跟 :hover 才會確實生效 */
 .scrollbar-subtle {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-panel-active) transparent;
+  scrollbar-color: transparent transparent;
 }
-.scrollbar-subtle::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-.scrollbar-subtle::-webkit-scrollbar-track {
-  background: transparent;
-}
-.scrollbar-subtle::-webkit-scrollbar-thumb {
-  background-color: var(--color-panel-active);
-  border-radius: 9999px;
-}
-.scrollbar-subtle::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-panel-active-lighten);
+.scrollbar-subtle:hover {
+  scrollbar-color: color-mix(in srgb, var(--color-panel-active) 50%, transparent) transparent;
 }

@@ -12,8 +12,26 @@ export class MountainsService {
     private dataSource: DataSource,
   ) {}
 
-  findAll() {
-    return this.mountainsRepo.find({ order: { name: 'ASC' } });
+  // 前端登頂紀錄選單要在山名旁標出百岳/小百岳，一次把所有山的分類撈出來 join 回去，
+  // 避免每座山各打一次查詢
+  async findAll() {
+    const mountains = await this.mountainsRepo.find({ order: { name: 'ASC' } });
+
+    const categoryRows: { mountain_id: number; name: string }[] = await this.dataSource.query(
+      `SELECT mcm.mountain_id, c.name
+       FROM mountain_category_map mcm
+       JOIN categories c ON c.id = mcm.category_id`,
+    );
+    const categoriesByMountainId = new Map<number, string[]>();
+    for (const row of categoryRows) {
+      if (!categoriesByMountainId.has(row.mountain_id)) categoriesByMountainId.set(row.mountain_id, []);
+      categoriesByMountainId.get(row.mountain_id)!.push(row.name);
+    }
+
+    return mountains.map((mountain) => ({
+      ...mountain,
+      categories: categoriesByMountainId.get(mountain.id) ?? [],
+    }));
   }
 
   async findOne(id: number) {
