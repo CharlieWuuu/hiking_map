@@ -22,4 +22,7 @@ export class TrailDetailDto {
     description: '路線座標，GeoJSON LineString',
   })
   geojson: object | null;
+
+  @ApiProperty({ example: ['百岳', '百大必訪步道'], type: [String] })
+  category_names: string[];
 }

@@ -8,12 +8,42 @@
   },
   "HikeStatsCharts": {
     "monthlyDistance": "Monthly distance",
-    "countyStats": "County stats"
+    "monthLabel": "Month {month}",
+    "peakMonth": "Peak {month}: {distance, number, ::.##} km",
+    "countyStats": "County stats",
+    "topCounty": "Top: {county} ({count})",
+    "distanceTrend": "Distance trend",
+    "weekdayStats": "Day of week",
+    "peakWeekday": "Most on {weekday} ({count})",
+    "distanceBucket": "Distance range",
+    "monthlyHeatmap": "Monthly heatmap",
+    "unitKm": "km",
+    "unitMonth": "",
+    "unitCount": "times",
+    "weekday": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "distanceBucketLabel": {
+      "under3": "0-3",
+      "3to5": "3-5",
+      "5to8": "5-8",
+      "8to12": "8-12",
+      "12to20": "12-20",
+      "over20": "20+"
+    }
   },
   "Nav": {
     "home": "Home",
     "search": "Explore",
-    "profile": "Profile",
+    "data": "Data",
+    "upload": "Add Record",
+    "profile": "Stats",
     "settings": "Settings"
   },
   "SearchBar": {
@@ -21,19 +51,22 @@
     "searchLabel": "Search"
   },
   "SearchResult": {
-    "user": "User",
     "trail": "Trail",
+    "hike": "My record",
     "matchField": "・matched content"
   },
   "HomePage": {
+    "greeting": "{username}",
+    "latestHike": "Recent hikes",
+    "viewAllHikes": "View all hikes",
+    "recommendedTrails": "Recommended trails",
+    "exploreMoreTrails": "Explore more trails",
     "yourStats": "Your Stats",
-    "goToProfile": "View full profile",
+    "goToProfile": "View full stats",
+    "totalDistanceValue": "{distance, number, ::.##} km",
+    "hikeCountValue": "{count} hikes",
     "loginPrompt": "Sign in to see your hiking stats",
-    "loginCta": "Go to sign in",
-    "recentTrails": "Recent Trails",
-    "recommendedTrails": "Recommended Trails",
-    "recommendedDistance": "Distance",
-    "recommendedDistanceValue": "{distance, number, ::.00} km"
+    "loginCta": "Go to sign in"
   },
   "LoginPage": {
     "title": "Log in",
@@ -77,34 +110,46 @@
     "smallHundred": "Small Hundred Peaks",
     "hundredTrail": "Top 100 Trails",
     "categoryFilter": "Category",
-    "countyFilter": "County",
-    "noTrails": "No trails match the current filters"
+    "noTrails": "No trails match the current filters",
+    "nearbyTitle": "Nearby Trails",
+    "nearbyLoadFailed": "Couldn't load nearby trails, please try again",
+    "nearbyRetry": "Retry",
+    "nearbyEmpty": "No nearby trails found"
   },
   "ProfilePage": {
-    "totalDistance": "{distance, number, ::.00} km",
+    "title": "Stats",
+    "totalDistanceLabel": "Overview",
+    "totalDistance": "{distance, number, ::.0} km",
     "hikeCount": "{count} hikes",
     "achievementHundred": "Hundred Peaks",
     "achievementSmallHundred": "Small Hundred Peaks",
-    "achievementHundredTrail": "Top 100 Trails",
-    "trailHistory": "Trail history",
-    "goToData": "Map & data",
-    "goToCollections": "Collections",
-    "uploadHike": "Upload hike"
+    "achievementHundredTrail": "Top 100 Trails"
+  },
+  "MountainProgress": {
+    "title": "Progress",
+    "hundred": "Hundred Peaks",
+    "smallHundred": "Small Hundred Peaks",
+    "progressCount": "{completed} / {total}",
+    "missing": "Missing",
+    "completed": "Completed"
   },
   "EditProfileForm": {
-    "edit": "Edit profile",
-    "title": "Edit profile",
+    "title": "Profile",
     "avatar": "Avatar URL",
     "description": "Bio",
-    "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "saved": "Saved",
+    "saveFailed": "Save failed"
   },
   "ProfileDataPage": {
-    "backToProfile": "Back to profile",
+    "title": "Map & Data",
+    "subtitle": "{count} records",
+    "subtitleWithCategory": "{category} · {count} records",
+    "badgePrivate": "Private",
+    "backToProfile": "Back to stats",
     "noTrails": "No records yet",
     "expand": "Expand",
     "collapse": "Collapse",
-    "addTrail": "Add trail",
     "export": "Export",
     "viewCard": "Card view",
     "viewTable": "Table view",
@@ -112,22 +157,28 @@
     "exitEdit": "Exit editing",
     "previousPage": "Previous page",
     "nextPage": "Next page",
-    "pageIndicator": "Page {page} of {pageCount}"
+    "pageIndicator": "Page {page} of {pageCount}",
+    "linkLabel": "Link {index}",
+    "viewDetail": "View full page",
+    "distanceUnit": "km"
   },
   "TrailEditCard": {
     "save": "Save",
+    "saveFailed": "Save failed, please try again",
     "close": "Close",
     "delete": "Delete record",
     "confirmDelete": "Are you sure you want to delete this hike record? This cannot be undone.",
+    "name": "Name",
     "county": "County",
     "town": "Town",
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance, number, ::.00} km",
+    "distanceValue": "{distance, number, ::.##} km",
     "public": "Public",
-    "hundred": "Hundred Peaks",
-    "smallHundred": "Small Hundred Peaks",
-    "hundredTrail": "Top 100 Trails",
+    "yes": "Yes",
+    "no": "No",
+    "mountains": "Peaks completed",
+    "mountainsSearchPlaceholder": "Search a peak to add",
     "links": "Route links",
     "linksPlaceholder": "https://",
     "addLink": "Add link",
@@ -143,29 +194,34 @@
   "ProfileCollectionsPage": {
     "title": "Collections",
     "empty": "No trails collected yet",
-    "backToProfile": "Back to profile"
+    "backToProfile": "Back to stats"
   },
   "HikeDetailPage": {
     "backToProfile": "Back to map & data",
+    "edit": "Edit",
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance, number, ::.00} km",
+    "distanceValue": "{distance, number, ::.##} km",
+    "distanceUnit": "km",
     "links": "Route links",
     "linkLabel": "Link {index}",
     "note": "Note",
     "noValue": "-",
-    "map": "Map"
+    "map": "Map",
+    "yes": "Yes",
+    "no": "No"
   },
   "TrailListItem": {
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance, number, ::.00} km"
+    "distanceValue": "{distance, number, ::.##} km"
   },
   "TrailDetailPage": {
     "back": "Back to search",
     "date": "Date",
     "distance": "Distance",
-    "distanceValue": "{distance, number, ::.00} km",
+    "distanceValue": "{distance, number, ::.##} km",
+    "distanceUnit": "km",
     "links": "Route links",
     "linkLabel": "Link {index}",
     "note": "Note",
@@ -230,13 +286,12 @@
   "HikeUploadPage": {
     "title": "Upload a hike",
     "subtitle": "Pick a GPX file, review it, then save",
-    "backToProfile": "Back to profile",
     "choosePrompt": "Choose a GPX file",
     "chooseHint": "Supports .gpx exported from hiking apps",
     "parseFailed": "Could not read the file",
     "submitFailed": "Saving failed, please try again",
     "distance": "Distance",
-    "distanceValue": "{distance, number, ::.00} km",
+    "distanceValue": "{distance, number, ::.##} km",
     "elevationGain": "Elevation gain",
     "elevationGainValue": "{meters, number} m",
     "segments": "Segments",
@@ -244,6 +299,8 @@
     "name": "Name",
     "date": "Date",
     "note": "Note",
+    "mountains": "Peaks completed",
+    "mountainsSearchPlaceholder": "Search a peak to add",
     "isPublic": "Make this hike public",
     "submit": "Save hike",
     "submitting": "Saving…"

@@ -59,9 +59,11 @@ export default function AccountSecurity({ initialMethods }: Props) {
       <div className="bg-panel rounded-panel divide-background-contrary/10 flex flex-col divide-y px-4">
         <form onSubmit={saveEmail} className="flex flex-col gap-2 py-3">
           <label className="flex flex-col gap-1">
-            <span className="text-sm">{t('email')}</span>
-            {/* 沒有 email 就收不到重設信，這是唯一自助救回帳號的方式 */}
-            <span className="text-background-contrary/60 text-xs">{methods.email ? t('emailHint') : t('emailMissingHint')}</span>
+            <span className="flex items-baseline gap-2">
+              <span className="text-sm">{t('email')}</span>
+              {/* 沒有 email 就收不到重設信，這是唯一自助救回帳號的方式 */}
+              <span className="text-background-contrary/60 text-xs">{methods.email ? t('emailHint') : t('emailMissingHint')}</span>
+            </span>
             <input
               type="email"
               value={email}
@@ -85,8 +87,10 @@ export default function AccountSecurity({ initialMethods }: Props) {
 
         <div className="flex items-center justify-between gap-4 py-3">
           <div className="flex flex-col">
-            <span className="text-sm">{t('google')}</span>
-            <span className="text-background-contrary/60 text-xs">{methods.hasGoogle ? t('googleLinked') : t('googleHint')}</span>
+            <span className="flex items-baseline gap-2">
+              <span className="text-sm">{t('google')}</span>
+              <span className="text-background-contrary/60 text-xs">{methods.hasGoogle ? t('googleLinked') : t('googleHint')}</span>
+            </span>
             {googleLink === 'conflict' && <span className="text-xs text-red-500">{t('googleConflict')}</span>}
           </div>
 

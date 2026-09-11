@@ -1,98 +1,131 @@
+import { CircleUserRound } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
-import HikeStatsCharts from '../../components/HikeStatsCharts';
+import ChartLine from '../../components/ChartLine';
+import ChartRing from '../../components/ChartRing';
 import PageLayout from '../../components/PageLayout';
 import TrailListItem from '../../components/TrailListItem';
 import { Link } from '../../i18n/navigation';
 import { apiClient } from '../../lib/apiClient';
+import { fillMonthlyDistance } from '../../lib/fillMonthlyDistance';
 import { getCurrentUser } from '../../lib/getCurrentUser';
 
-const RECENT_TRAILS_COUNT = 5;
+const MONTHLY_DISTANCE_MONTHS_COUNT = 24;
 const RECOMMENDED_TRAILS_COUNT = 5;
+// 沒有任何紀錄可以判斷活動範圍時的預設地點（台北車站），與探索頁的備援一致
+const TAIPEI_FALLBACK = { lat: 25.033, lng: 121.5654 };
 
 export default async function Home() {
   const t = await getTranslations('HomePage');
+  const tProfile = await getTranslations('ProfilePage');
+  const tCharts = await getTranslations('HikeStatsCharts');
+  const tCommon = await getTranslations('Common');
   const currentUser = await getCurrentUser();
 
-  const [stats, recentHikes, allTrails] = await Promise.all([
+  const [stats, hikes] = await Promise.all([
     currentUser ? apiClient.hikes.getStats(currentUser.username).catch(() => null) : Promise.resolve(null),
     currentUser ? apiClient.hikes.findAll(String(currentUser.userId)) : Promise.resolve([]),
-    apiClient.trails.findAll(),
   ]);
-  const recentTrails = [...recentHikes].sort((a, b) => b.date.localeCompare(a.date)).slice(0, RECENT_TRAILS_COUNT);
-  const recommendedTrails = allTrails.slice(0, RECOMMENDED_TRAILS_COUNT);
+  // 首頁只當一份摘要，近期紀錄取前 5 筆就好；完整清單去 /data 看
+  const RECENT_HIKES_COUNT = 5;
+  const hikesByDateDesc = [...hikes].sort((a, b) => b.date.localeCompare(a.date));
+  const recentHikes = hikesByDateDesc.slice(0, RECENT_HIKES_COUNT);
+
+  // 推薦路線以「最近一次有軌跡的紀錄」為中心找附近的路線；沒有紀錄（或紀錄都沒軌跡）就用台北。
+  // 直接用 hikes 帶回來的 center，不另外打 /search/last-location，省一次請求。
+  // center 是 [lng, lat]
+  const latestCenter = hikesByDateDesc.find((hike) => hike.center)?.center;
+  const recommendOrigin = latestCenter ? { lat: latestCenter[1], lng: latestCenter[0] } : TAIPEI_FALLBACK;
+  // 推薦區塊失敗不該讓整個首頁掛掉，抓不到就當作沒有這一區
+  const recommendedTrails = await apiClient.search
+    .nearby(recommendOrigin.lat, recommendOrigin.lng)
+    .then((results) => results.slice(0, RECOMMENDED_TRAILS_COUNT))
+    .catch(() => []);
+  // 統計只留一張最能一眼看出趨勢的圖，完整的六張圖表去 /chart 頁看。
+  // 改成每月總距離而不是每筆紀錄一個點：紀錄一多，逐筆畫在同一張窄圖上會擠成一團看不出趨勢，
+  // 按月加總後資料點數固定（近 12 個月），時間軸間距也均勻
+  const trendData = fillMonthlyDistance(stats?.monthlyDistance ?? [], MONTHLY_DISTANCE_MONTHS_COUNT).map((d) => ({
+    date: `${d.month}-01`,
+    value: d.distanceKm,
+  }));
 
   return (
     <PageLayout>
-      {/* 統計一律顯示。未登入時圖表仍畫出空的座標軸，並提示登入 */}
-      <section className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold">{t('yourStats')}</h2>
-        <HikeStatsCharts stats={stats} />
-        {currentUser ? (
-          <Link
-            href={`/profile/${currentUser.username}`}
-            className="bg-panel hover:bg-panel-active rounded-panel w-fit self-center px-4 py-2 text-sm transition-colors"
-          >
-            {t('goToProfile')}
-          </Link>
-        ) : (
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-background-contrary/60 text-sm">{t('loginPrompt')}</p>
-            <Link href="/login" className="bg-panel hover:bg-panel-active rounded-panel w-fit px-4 py-2 text-sm transition-colors">
-              {t('loginCta')}
-            </Link>
+      {currentUser && (
+        <div className="flex items-center gap-8">
+          {currentUser.avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={currentUser.avatar} alt="" className="border-accent rounded-panel h-30 w-30 shrink-0 border-4 object-cover" />
+          ) : (
+            <span className="bg-panel-active border-accent rounded-panel flex h-30 w-30 shrink-0 items-center justify-center border-4">
+              <CircleUserRound className="text-background-contrary/60 h-16 w-16" />
+            </span>
+          )}
+          <div className="flex flex-col gap-2">
+            <h1 className="text-accent text-3xl font-bold">{t('greeting', { username: currentUser.username })}</h1>
+            {stats && (
+              <div className="flex flex-wrap gap-4 text-lg">
+                <Link href="/chart" className="hover:underline">
+                  {t('totalDistanceValue', { distance: stats.totalDistanceKm })}
+                </Link>
+                <span>{t('hikeCountValue', { count: stats.hikeCount })}</span>
+              </div>
+            )}
           </div>
-        )}
-      </section>
+        </div>
+      )}
 
-      {currentUser && recentTrails.length > 0 && (
+      {currentUser && stats && (
+        <div className="flex flex-wrap justify-around gap-4">
+          <ChartRing label={tProfile('achievementHundred')} value={stats.achievements.hundred} />
+          <ChartRing label={tProfile('achievementSmallHundred')} value={stats.achievements.smallHundred} />
+          <ChartRing label={tProfile('achievementHundredTrail')} value={stats.achievements.hundredTrail} />
+        </div>
+      )}
+
+      {currentUser && (
+        <div className="bg-panel rounded-panel flex h-50 flex-col gap-4 p-4">
+          <span className="text-background-contrary/60 text-sm">{tCharts('distanceTrend')}</span>
+          <ChartLine data={trendData} emptyLabel={tCommon('noData')} unit={tCharts('unitKm')} />
+        </div>
+      )}
+
+      {currentUser && recentHikes.length > 0 && (
         <section className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold">{t('recentTrails')}</h2>
-          <div className="flex flex-col gap-3">
-            {recentTrails.map((hike) => (
-              <TrailListItem
-                key={hike.id}
-                href={`/profile/${currentUser.username}/hikes/${hike.id}`}
-                name={hike.name}
-                county={hike.county ?? ''}
-                town={hike.town ?? ''}
-                date={hike.date}
-                distanceKm={hike.distanceKm}
-                coverImageUrl={hike.coverImageUrl}
-              />
-            ))}
-          </div>
+          <h2 className="text-2xl font-bold">{t('latestHike')}</h2>
+          {recentHikes.map((hike) => (
+            <TrailListItem
+              key={hike.id}
+              href={`/hikes/${hike.id}`}
+              name={hike.name}
+              county={hike.county ?? ''}
+              town={hike.town ?? ''}
+              date={hike.date}
+              distanceKm={hike.distanceKm}
+            />
+          ))}
+          <Link href="/data" className="bg-panel-active hover:bg-panel-active-lighten rounded-panel mx-auto w-fit px-4 py-2 text-sm transition-colors">
+            {t('viewAllHikes')}
+          </Link>
         </section>
       )}
 
       {recommendedTrails.length > 0 && (
         <section className="flex flex-col gap-4">
           <h2 className="text-2xl font-bold">{t('recommendedTrails')}</h2>
-          <div className="flex flex-col gap-3">
-            {recommendedTrails.map((trail) => (
-              <Link
-                key={trail.slug}
-                href={`/trails/${trail.slug}`}
-                className="bg-panel hover:bg-panel-active rounded-panel flex w-full items-center gap-4 p-4 transition-colors duration-150"
-              >
-                <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <span className="truncate text-lg font-bold">{trail.name}</span>
-                  <span className="text-background-contrary/60 text-sm">
-                    {trail.county} {trail.town}
-                  </span>
-                </div>
-
-                <div className="bg-panel-active w-0.5 shrink-0 self-stretch" />
-
-                {trail.distanceKm !== null && (
-                  <div className="flex shrink-0 flex-col items-end">
-                    <span className="text-background-contrary/60 text-xs">{t('recommendedDistance')}</span>
-                    <span className="font-bold">{t('recommendedDistanceValue', { distance: trail.distanceKm })}</span>
-                  </div>
-                )}
-              </Link>
-            ))}
-          </div>
+          {recommendedTrails.map((trail) => (
+            <TrailListItem
+              key={trail.slug}
+              href={`/trails/${trail.slug}`}
+              name={trail.displayName}
+              county={trail.county ?? ''}
+              town={trail.town ?? ''}
+              badges={trail.categoryName ? [{ label: trail.categoryName, tone: 'neutral' }] : undefined}
+            />
+          ))}
+          <Link href="/search" className="bg-panel-active hover:bg-panel-active-lighten rounded-panel mx-auto w-fit px-4 py-2 text-sm transition-colors">
+            {t('exploreMoreTrails')}
+          </Link>
         </section>
       )}
     </PageLayout>

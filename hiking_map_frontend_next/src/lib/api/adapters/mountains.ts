@@ -9,10 +9,11 @@ export type Mountain = {
   location: object;
   range: string | null;
   county: string | null;
+  categories: string[];
 };
 
 export function adaptMountain(raw: RawMountain): Mountain {
-  return toCamelCase<RawMountain>(raw) as Mountain;
+  return { ...(toCamelCase<RawMountain>(raw) as Mountain), categories: raw.categories ?? [] };
 }
 
 export function createMountainsService(client: MountainsClient) {

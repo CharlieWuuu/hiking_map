@@ -15,7 +15,7 @@
 
 - [x] ~~**JWT_SECRET 的不安全 fallback**~~ — 七處 `|| 'your-secret-key'` 已收斂成 `getJwtSecret()`，缺變數即啟動失敗。⚠️ **部署平台尚未設定 `JWT_SECRET`，推這版程式碼前必須先補上，否則服務起不來**
 
-- [ ] **掛上全域 ValidationPipe**
+- [x] ~~**掛上全域 ValidationPipe**~~ — 已掛上（whitelist + transform），11 個 request DTO 全部補上 class-validator 裝飾器。已實際打 API 驗證，非僅編譯通過
   - `main.ts` 沒有 `ValidationPipe`，16 個 DTO 裡只有 `v1/dto/trails_info.dio.ts` 用了 class-validator
   - 也就是**所有 DTO 目前只是型別宣告，執行期擋不住任何東西**
   - `hikes.service.ts` 的 `merge()` 現在自己手寫驗證當權宜之計，掛上 pipe 後應改回裝飾器
@@ -95,7 +95,7 @@
 ## P4 — 功能
 
 - [ ] **GPX 編輯的前端 UI**：後端 API（`POST /hikes/merge`、`PATCH /hikes/:id/track/trim`）已完成，前端尚未接
-- [ ] **刪除單一 segment**：`track-edit.utils.ts` 的結構已經支援，補一個 `dropSegment` 即可
+- [x] ~~**刪除單一 segment**~~ — 已加 `dropSegment()` 與 `PATCH /hikes/:id/track/drop-segment`，附 6 個測試
 - [ ] **型別安全**：eslint 仍有 249 個錯誤，全是 `no-unsafe-*` 系列
   - 根源是 `dataSource.query()` 一律回傳 `any`，而這個專案大量使用原生 SQL
   - 修法：為每個查詢定義回傳型別（`hikes.service.ts` 的 `TrackRow` 已是這種寫法，可作範本）

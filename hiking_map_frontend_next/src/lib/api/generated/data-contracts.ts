@@ -120,9 +120,28 @@ export interface CreateHikeDto {
   /** @example 1 */
   trail_id?: number;
   /** @example [1,2] */
-  category_ids?: string[];
+  mountain_ids?: number[];
   /** @example {"type":"FeatureCollection","features":[]} */
   geojson: object;
+}
+
+export interface UpdateHikeDto {
+  /** @example "合歡山主峰步道" */
+  name?: string;
+  /** @example "南投縣" */
+  county?: string;
+  /** @example "仁愛鄉" */
+  town?: string;
+  /** @example "2026-07-20" */
+  date?: string;
+  /** @example true */
+  is_public?: boolean;
+  /** @example ["https://example.com/track.gpx"] */
+  urls?: string[];
+  /** @example "天氣很好，view 很棒" */
+  note?: string;
+  /** @example [1,2] */
+  mountain_ids?: number[];
 }
 
 export interface Hike {
@@ -155,6 +174,25 @@ export interface Hike {
    * @example "2026-07-20T10:00:00.000Z"
    */
   created_at: string;
+  /** GET /hikes/:id 才會附帶，這趟紀錄手動標記完成的山頭 id 清單 */
+  mountain_ids?: number[];
+}
+
+export interface InViewHikeDto {
+  /** @example 1 */
+  id: number;
+  /** @example "合歡山主峰步道" */
+  name: string;
+  /** @example [121.5,25.0] */
+  center: number[] | null;
+  /** @example [121.4,24.9,121.6,25.1] */
+  bbox: number[] | null;
+  /** @example 42 */
+  point_count: number | null;
+  /** @example "https://pub-xxxx.r2.dev/hikes/1/track.json" */
+  track_url: string | null;
+  /** includeGeojson=true 才會有值，簡化過的軌跡座標 */
+  geojson?: object | null;
 }
 
 export interface AchievementsDto {
@@ -190,6 +228,25 @@ export interface HikeStatsDto {
   county_stats: CountyStatDto[];
 }
 
+export interface MountainProgressItemDto {
+  /** @example 1 */
+  id: number;
+  /** @example "玉山主峰" */
+  name: string;
+  /** @example 3952 */
+  elevation_m: number;
+}
+
+export interface MountainProgressCategoryDto {
+  completed: MountainProgressItemDto[];
+  missing: MountainProgressItemDto[];
+}
+
+export interface MountainProgressDto {
+  hundred: MountainProgressCategoryDto;
+  small_hundred: MountainProgressCategoryDto;
+}
+
 export interface Mountain {
   /** @example 1 */
   id: number;
@@ -203,6 +260,8 @@ export interface Mountain {
   range?: object | null;
   /** @example "南投縣" */
   county?: object | null;
+  /** @example ["百岳"] */
+  categories?: string[];
 }
 
 export interface Trail {
@@ -240,6 +299,8 @@ export interface TrailDetailDto {
    * @example {"type":"LineString","coordinates":[[120.9,23.47]]}
    */
   geojson?: object | null;
+  /** @example ["百岳","百大必訪步道"] */
+  category_names: string[];
 }
 
 export interface CollectionItemDto {
@@ -289,13 +350,11 @@ export interface Collection {
 
 export interface SearchResultDto {
   /** @example "trail" */
-  type: 'trail' | 'user';
+  type: 'trail' | 'hike';
   /** @example "tataka-trailhead-to-paiyun-lodge" */
   slug: string;
   /** @example "塔塔加登山口至排雲山莊" */
   display_name: string;
-  /** @example "https://example.com/avatar.png" */
-  avatar?: object | null;
   /** @example "南投縣" */
   county?: object | null;
   /** @example "信義鄉" */
@@ -304,6 +363,16 @@ export interface SearchResultDto {
   cover_image_url?: object | null;
   /** @example "name" */
   match_reason: 'name' | 'field';
+  /**
+   * 距離查詢座標的距離（公里），只有 nearby 查詢會帶這個欄位
+   * @example 12.3
+   */
+  distance_km?: number;
+  /**
+   * 分類名稱（百岳/小百岳/百大必訪步道），只有 nearby 查詢會帶這個欄位
+   * @example "百岳"
+   */
+  category_name?: string;
 }
 
 export interface PopularQueryDto {

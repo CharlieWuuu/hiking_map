@@ -44,11 +44,7 @@ export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
       setEntitySuggestions(
         results
           .slice(0, SUGGESTION_LIMIT)
-          .map((item) =>
-            item.type === 'user'
-              ? { type: 'user', username: item.slug, displayName: item.displayName, avatar: item.avatar ?? undefined }
-              : { type: 'trail', slug: item.slug, displayName: item.displayName, county: item.county ?? undefined, town: item.town ?? undefined }
-          )
+          .map((item) => ({ type: item.type, slug: item.slug, displayName: item.displayName, county: item.county ?? undefined, town: item.town ?? undefined }))
       );
     }, SUGGESTION_DEBOUNCE_MS);
 
@@ -115,11 +111,7 @@ export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
             <QuerySuggestionItem key={`query-${item.text}`} item={item} onSelect={handleSelectQuery} />
           ))}
           {visibleEntitySuggestions.map((item) => (
-            <SearchResultItem
-              key={`${item.type}-${item.type === 'user' ? item.username : item.slug}`}
-              item={{ ...item, matchReason: 'name' }}
-              onSelect={handleSelectEntity}
-            />
+            <SearchResultItem key={`${item.type}-${item.slug}`} item={{ ...item, matchReason: 'name' }} onSelect={handleSelectEntity} />
           ))}
         </Popover.Content>
       </Popover.Portal>

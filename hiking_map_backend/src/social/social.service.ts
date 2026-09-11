@@ -4,8 +4,6 @@ import { Repository, In } from 'typeorm';
 import { Collection } from './collection.entity';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { CollectionItemDto } from './dto/collection-item.dto';
-import { User } from '../auth/auth.entity';
-import { Profile } from '../profile/profile.entity';
 import { Trail } from '../trails/trail.entity';
 
 @Injectable()
@@ -13,12 +11,6 @@ export class SocialService {
   constructor(
     @InjectRepository(Collection)
     private collectionsRepo: Repository<Collection>,
-
-    @InjectRepository(User)
-    private usersRepo: Repository<User>,
-
-    @InjectRepository(Profile)
-    private profilesRepo: Repository<Profile>,
 
     @InjectRepository(Trail)
     private trailsRepo: Repository<Trail>,
@@ -57,15 +49,9 @@ export class SocialService {
     if (collections.length === 0) return [];
 
     const trailIds = collections.filter((c) => c.item_type === 'trail').map((c) => c.item_id);
-    const userIds = collections.filter((c) => c.item_type === 'user').map((c) => c.item_id);
 
     const trails = trailIds.length ? await this.trailsRepo.findBy({ id: In(trailIds) }) : [];
     const trailsById = new Map(trails.map((trail) => [trail.id, trail]));
-
-    const users = userIds.length ? await this.usersRepo.findBy({ id: In(userIds) }) : [];
-    const usersById = new Map(users.map((user) => [user.id, user]));
-    const profiles = userIds.length ? await this.profilesRepo.findBy({ user_id: In(userIds) }) : [];
-    const profilesByUserId = new Map(profiles.map((profile) => [profile.user_id, profile]));
 
     return collections.map((collection) => {
       if (collection.item_type === 'trail') {
@@ -74,15 +60,6 @@ export class SocialService {
           ...collection,
           trail_name: trail?.name ?? null,
           trail_slug: trail?.slug ?? null,
-        };
-      }
-      if (collection.item_type === 'user') {
-        const user = usersById.get(collection.item_id);
-        const profile = profilesByUserId.get(collection.item_id);
-        return {
-          ...collection,
-          username: user?.username ?? null,
-          avatar: profile?.avatar ?? null,
         };
       }
       return { ...collection };

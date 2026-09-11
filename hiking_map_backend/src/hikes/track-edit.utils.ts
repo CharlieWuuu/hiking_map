@@ -75,3 +75,24 @@ export function mergeTracks(geometries: TrackGeometry[]): MultiLineString {
 
   return { type: 'MultiLineString', coordinates };
 }
+
+// 整段刪除，用於 GPS 飄移產生的雜訊段。
+// segmentIndex 是 segment 的序號（非攤平後的點索引），對應前端在圖上選取的那一段。
+export function dropSegment(geometry: TrackGeometry, segmentIndex: number): MultiLineString {
+  const segments = toSegments(geometry);
+
+  if (!Number.isInteger(segmentIndex)) {
+    throw new Error('segment 索引必須是整數');
+  }
+  if (segmentIndex < 0 || segmentIndex > segments.length - 1) {
+    throw new Error(`segment 索引超出範圍，這條軌跡有 ${segments.length} 段`);
+  }
+  if (segments.length === 1) {
+    throw new Error('只剩一段時不能刪除，請改用刪除整筆紀錄');
+  }
+
+  return {
+    type: 'MultiLineString',
+    coordinates: segments.filter((_, i) => i !== segmentIndex),
+  };
+}
