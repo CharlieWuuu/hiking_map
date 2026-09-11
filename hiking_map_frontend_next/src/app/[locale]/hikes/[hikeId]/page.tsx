@@ -36,36 +36,38 @@ export default async function HikeDetailPage({ params }: { params: Promise<{ hik
       subtitle={(hike.county || hike.town) && `${hike.county} ${hike.town}`}
       before={<BackLink href="/data">{t('backToProfile')}</BackLink>}
     >
-      <div className="flex flex-wrap justify-around gap-4">
-        <div className="flex flex-col items-center">
+      <div className="bg-panel rounded-panel grid w-full grid-cols-2 gap-4 p-4 sm:grid-cols-4">
+        <div className="flex flex-col items-center gap-1">
           <span className="text-background-contrary/60 text-xs">{t('date')}</span>
-          <p className="text-lg">{hike.date}</p>
+          <p className="text-lg font-bold">{hike.date}</p>
         </div>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-1">
           <span className="text-background-contrary/60 text-xs">{t('distance')}</span>
-          <p className="text-lg">{t('distanceValue', { distance: hike.distanceKm })}</p>
+          <p className="text-lg font-bold">{t('distanceValue', { distance: hike.distanceKm })}</p>
         </div>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-1">
           <span className="text-background-contrary/60 text-xs">{t('links')}</span>
           {hike.urls.length > 0 ? (
             hike.urls.map((url, index) => (
-              <a key={url} href={url} target="_blank" rel="noreferrer" className="text-accent block text-lg">
+              <a key={url} href={url} target="_blank" rel="noreferrer" className="text-accent block text-lg font-bold">
                 {t('linkLabel', { index: index + 1 })}
               </a>
             ))
           ) : (
-            <p className="text-lg">{t('noValue')}</p>
+            <p className="text-lg font-bold">{t('noValue')}</p>
           )}
         </div>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-1">
           <span className="text-background-contrary/60 text-xs">{t('note')}</span>
-          <p className="text-lg">{hike.note ?? t('noValue')}</p>
+          <p className="text-lg font-bold">{hike.note ?? t('noValue')}</p>
         </div>
       </div>
 
-      <section className="flex flex-col items-start gap-4">
+      <section className="flex w-full flex-col items-start gap-4">
         <h2 className="text-2xl font-bold">{t('map')}</h2>
-        <TrailLayer path={path} />
+        <div className="bg-panel rounded-panel w-full overflow-hidden p-2">
+          <TrailLayer path={path} />
+        </div>
       </section>
     </PageLayout>
   );

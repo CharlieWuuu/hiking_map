@@ -73,15 +73,17 @@ export default function GpxUploadForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full flex-col gap-6">
-      <button
-        type="button"
-        onClick={() => fileInputRef.current?.click()}
-        className="border-background-contrary/30 hover:bg-panel flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-dashed px-6 py-10 transition-colors"
-      >
-        <Upload className="text-background-contrary/60 h-6 w-6" />
-        <span className="text-sm">{fileName ?? t('choosePrompt')}</span>
-        <span className="text-background-contrary/60 text-xs">{t('chooseHint')}</span>
-      </button>
+      {!parsed && (
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="border-background-contrary/30 hover:bg-panel flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed px-6 py-10 transition-colors"
+        >
+          <Upload className="text-background-contrary/60 h-6 w-6" />
+          <span className="text-sm">{fileName ?? t('choosePrompt')}</span>
+          <span className="text-background-contrary/60 text-xs">{t('chooseHint')}</span>
+        </button>
+      )}
       <input ref={fileInputRef} type="file" accept=".gpx,application/gpx+xml" onChange={handleFileChange} className="hidden" />
 
       {error && <p className="text-sm text-red-500">{error}</p>}

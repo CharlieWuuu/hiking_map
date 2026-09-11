@@ -4,7 +4,7 @@ import TrailEditCard, { type EditableTrail } from '../../../../components/TrailE
 import TrailListItem from '../../../../components/TrailListItem';
 import TrailTable from '../../../../components/TrailTable';
 
-type Trail = EditableTrail & { path: [number, number][] };
+type Trail = EditableTrail & { path: [number, number][]; bbox?: [number, number, number, number] | null };
 
 // 只標最具代表性的成就，避免一張卡片被標籤塞滿；不公開路線額外提示，因為只有本人看得到
 function trailBadges(trail: Trail, t: ReturnType<typeof useTranslations<'ProfileDataPage'>>) {
@@ -22,7 +22,7 @@ type Props = {
   activeSlug: string | null;
   isEditMode: boolean;
   onHoverChange: (slug: string | null) => void;
-  onSelect: (slug: string | null) => void;
+  onSelect: (slug: string | null, bbox?: [number, number, number, number] | null) => void;
   onSaveTrailPatch: (slug: string, patch: Partial<EditableTrail>) => void | Promise<void>;
   onDeleteTrail: (slug: string) => void;
 };
@@ -41,7 +41,10 @@ export default function TrailExplorerList({ trails, view, activeSlug, isEditMode
         activeSlug={activeSlug}
         onMouseEnter={onHoverChange}
         onMouseLeave={() => onHoverChange(null)}
-        onSelect={(slug) => onSelect(activeSlug === slug ? null : slug)}
+        onSelect={(slug) => {
+          const trail = trails.find((item) => item.slug === slug);
+          onSelect(activeSlug === slug ? null : slug, trail?.bbox);
+        }}
         renderEditRow={
           isEditMode
             ? (slug) => {
@@ -85,7 +88,7 @@ export default function TrailExplorerList({ trails, view, activeSlug, isEditMode
             isActive={trail.slug === activeSlug}
             onMouseEnter={() => onHoverChange(trail.slug)}
             onMouseLeave={() => onHoverChange(null)}
-            onClick={() => onSelect(activeSlug === trail.slug ? null : trail.slug)}
+            onClick={() => onSelect(activeSlug === trail.slug ? null : trail.slug, trail.bbox)}
           />
         )
       )}

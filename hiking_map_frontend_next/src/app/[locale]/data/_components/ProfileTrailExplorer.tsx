@@ -26,6 +26,7 @@ type Props = {
   isOwner: boolean;
   onFullscreenChange: (next: 'map' | 'table' | null) => void;
   onToggleEditMode: () => void;
+  initialViewport: { center: [number, number]; zoom: number } | null;
 };
 
 // 後端回傳的是簡化過的 MultiLineString，這裡只取第一條線來畫圖
@@ -46,6 +47,7 @@ export default function ProfileTrailExplorer({
   isOwner,
   onFullscreenChange,
   onToggleEditMode,
+  initialViewport,
 }: Props) {
   const t = useTranslations('ProfileDataPage');
   const [trails, setTrails] = useState(initialTrails);
@@ -141,10 +143,10 @@ export default function ProfileTrailExplorer({
   }
 
   return (
-    <div className={`flex h-full w-full gap-4 ${isMapFullscreen || isTableFullscreen ? '' : 'flex-col lg:flex-row'}`}>
+    <div className={`flex h-full min-h-0 w-full gap-4 ${isMapFullscreen || isTableFullscreen ? '' : 'flex-col lg:flex-row'}`}>
       {!isMapFullscreen && (
-        <div className={`flex w-full flex-col gap-2`}>
-          <div className={`rounded-panel flex w-full flex-col gap-2 overflow-hidden lg:h-full ${isTableFullscreen ? '' : 'lg:max-w-md'}`}>
+        <div className={`flex min-h-0 w-full flex-col gap-2 ${isTableFullscreen ? '' : 'lg:max-w-md lg:shrink-0'}`}>
+          <div className={`rounded-panel flex min-h-0 w-full flex-col gap-2 overflow-hidden lg:h-full`}>
             <TrailExplorerToolbar
               isTableExpanded={isTableFullscreen}
               onToggleTableExpanded={() => onFullscreenChange(isTableFullscreen ? null : 'table')}
@@ -182,7 +184,7 @@ export default function ProfileTrailExplorer({
               label={isMapFullscreen ? t('collapse') : t('expand')}
             />
           </div>
-          <TrailsLayer userId={userId} resizeKey={fullscreen} />
+          <TrailsLayer userId={userId} resizeKey={fullscreen} initialViewport={initialViewport ?? undefined} />
         </div>
       )}
     </div>

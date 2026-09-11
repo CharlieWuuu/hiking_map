@@ -85,7 +85,7 @@ export class Hikes<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
     query: {
       bbox: string;
       userId?: string;
-      includeGeojson?: string;
+      zoom?: string;
     },
     params: RequestParams = {}
   ) =>

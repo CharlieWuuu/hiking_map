@@ -15,9 +15,19 @@ type Props = {
   fullscreen: 'map' | 'table' | null;
   isEditMode: boolean;
   isOwner: boolean;
+  initialViewport: { center: [number, number]; zoom: number } | null;
 };
 
-export default function ProfileTrailExplorerWithNavigation({ trails, totalCount, initialNextCursor, userId, fullscreen, isEditMode, isOwner }: Props) {
+export default function ProfileTrailExplorerWithNavigation({
+  trails,
+  totalCount,
+  initialNextCursor,
+  userId,
+  fullscreen,
+  isEditMode,
+  isOwner,
+  initialViewport,
+}: Props) {
   const router = useRouter();
 
   function handleFullscreenChange(next: 'map' | 'table' | null) {
@@ -39,6 +49,7 @@ export default function ProfileTrailExplorerWithNavigation({ trails, totalCount,
       isOwner={isOwner}
       onFullscreenChange={handleFullscreenChange}
       onToggleEditMode={handleToggleEditMode}
+      initialViewport={initialViewport}
     />
   );
 }

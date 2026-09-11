@@ -23,8 +23,13 @@ import { DropSegmentDto } from './dto/drop-segment.dto';
 import { TrackGeometry, countPoints, dropSegment, mergeTracks, toSegments, trimTrack } from './track-edit.utils';
 
 // 簡化軌跡的容差，單位是經緯度的「度」。0.00045 度在台灣的緯度約等於 45～50 公尺。
-// 敢壓這麼兇是因為放大到看得出差別的時候，前端會另外去 R2 抓完整軌跡換掉。
+// 敢壓這麼兇是因為放大到看得出差別時，findInView 會依 zoom 直接改選 geom（完整軌跡）欄位。
 const SIMPLIFY_TOLERANCE_DEG = 0.00045;
+
+// zoom 分層門檻，需與前端 lib/mapStore.ts 的 CLUSTER_ZOOM / DETAIL_ZOOM 保持一致——
+// findInView 依這兩個值決定回傳點位 / 簡化線 / 完整軌跡，前端只是照著畫，門檻本身以後端這份為準
+const CLUSTER_ZOOM = 10;
+const DETAIL_ZOOM = 14;
 
 // GeoJSON 輸出的小數位數。6 位約等於 0.1 公尺，對登山軌跡遠遠夠用，
 // 而 PostGIS 預設的 9 位會讓每個座標多出三分之一的長度。
@@ -405,14 +410,21 @@ export class HikesService {
     return pagination ? { items, total_count: totalCount ?? 0, next_cursor: nextCursor } : items;
   }
 
-  // 只回傳 bbox 與目前視野相交的紀錄。走 hike_tracks 的 GiST 索引，
-  // 資料量長大以後就不必再把整個人的軌跡一次送到前端。
-  async findInView(bbox: [number, number, number, number], userId?: number, includeGeojson = false) {
+  // 只回傳 bbox 與目前視野相交的紀錄，同一個端點依 zoom 決定回傳的細緻度：
+  // < CLUSTER_ZOOM 只給點位（遠景 cluster），CLUSTER_ZOOM ~ DETAIL_ZOOM 給簡化線，
+  // >= DETAIL_ZOOM 直接給完整軌跡——選中單一路線平移過去時常常一步就跨進 DETAIL_ZOOM，
+  // 這裡一次到位就不必再讓前端另外跑一趟去 R2 抓完整軌跡，也不會有「先粗後細」的過渡。
+  // 走 hike_tracks 的 GiST 索引，資料量長大以後就不必再把整個人的軌跡一次送到前端。
+  async findInView(bbox: [number, number, number, number], userId?: number, zoom = 0) {
     const [minLng, minLat, maxLng, maxLat] = bbox;
 
-    // 簡化過的軌跡座標最多也才 59 個點，但視野內紀錄一多還是會累積成有感的頻寬，
-    // 遠 zoom 只需要點位置，geojson 欄位整個不查、不傳
-    const geojsonSelect = includeGeojson ? `, ST_AsGeoJSON(t.geom_simplified, ${GEOJSON_PRECISION}) AS geojson` : '';
+    // 遠 zoom 只需要點位置，geojson 欄位整個不查、不傳，省頻寬
+    const geojsonSelect =
+      zoom >= DETAIL_ZOOM
+        ? `, ST_AsGeoJSON(t.geom, ${GEOJSON_PRECISION}) AS geojson`
+        : zoom >= CLUSTER_ZOOM
+          ? `, ST_AsGeoJSON(t.geom_simplified, ${GEOJSON_PRECISION}) AS geojson`
+          : '';
 
     const rows: (TrackRow & { id: number; name: string; geojson?: string | null })[] = await this.dataSource.query(
       `SELECT h.id, h.name,

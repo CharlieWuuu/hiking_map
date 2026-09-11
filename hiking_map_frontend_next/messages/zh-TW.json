@@ -52,17 +52,14 @@
     "matchField": "・符合內容"
   },
   "HomePage": {
+    "greeting": "{username}",
+    "latestHike": "最近一次紀錄",
     "yourStats": "我的統計",
     "goToProfile": "查看完整統計",
     "totalDistanceValue": "{distance, number, ::.00} 公里",
     "hikeCountValue": "{count} 次健行",
     "loginPrompt": "登入後即可看到自己的健行統計",
-    "loginCta": "前往登入",
-    "recentTrails": "近期路線",
-    "recommendedTrails": "推薦路線",
-    "featuredTrail": "本週精選",
-    "recommendedDistance": "距離",
-    "recommendedDistanceValue": "{distance, number, ::.00} 公里"
+    "loginCta": "前往登入"
   },
   "LoginPage": {
     "title": "登入",
@@ -145,12 +142,12 @@
     "noTrails": "還沒有任何紀錄",
     "expand": "展開",
     "collapse": "收合",
-    "addTrail": "新增路線",
+    "addTrail": "新增",
     "export": "匯出",
     "viewCard": "卡片檢視",
     "viewTable": "表格檢視",
-    "goToEdit": "編輯路線",
-    "exitEdit": "結束編輯",
+    "goToEdit": "編輯",
+    "exitEdit": "結束",
     "previousPage": "上一頁",
     "nextPage": "下一頁",
     "pageIndicator": "第 {page} / {pageCount} 頁"
