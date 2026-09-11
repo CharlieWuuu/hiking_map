@@ -133,6 +133,13 @@ export class HikesController {
     return this.hikesService.findOne(id);
   }
 
+  // 給前端「地圖點某條路線時，清單自動跳到那一頁」使用
+  @Get(':id/page')
+  @ApiOkResponse({ description: '該筆紀錄在分頁清單中的頁碼與跳頁用的 cursor' })
+  getPageInfo(@Param('id', ParseIntPipe) id: number, @Query('userId', ParseIntPipe) userId: number, @Query('limit', ParseIntPipe) limit: number) {
+    return this.hikesService.getPageInfo(id, userId, limit);
+  }
+
   @Delete(':id')
   @UseGuards(JwtRequiredGuard)
   remove(@Param('id', ParseIntPipe) id: number, @Req() req: any) {

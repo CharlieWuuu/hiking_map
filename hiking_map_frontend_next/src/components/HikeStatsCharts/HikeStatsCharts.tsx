@@ -9,6 +9,7 @@ import ChartLine from '../ChartLine';
 
 const COUNTY_STATS_COUNT = 7;
 const MONTHLY_DISTANCE_MONTHS_COUNT = 12;
+const TREND_MONTHS_COUNT = 24;
 const WEEKDAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
 const DISTANCE_BUCKET_KEYS = ['under3', '3to5', '5to8', '8to12', '12to20', 'over20'] as const;
 
@@ -23,7 +24,7 @@ export default async function HikeStatsCharts({ stats, hikes }: Props) {
   const tCommon = await getTranslations('Common');
 
   const monthlyData = fillMonthlyDistance(stats?.monthlyDistance ?? [], MONTHLY_DISTANCE_MONTHS_COUNT).map((d) => ({
-    label: d.month.slice(5),
+    label: String(Number(d.month.slice(5))),
     value: d.distanceKm,
   }));
   // 熱度圖要看得出「一路走來」的完整密度，不像趨勢長條圖只截最近 12 個月；
@@ -34,7 +35,10 @@ export default async function HikeStatsCharts({ stats, hikes }: Props) {
   }));
   const countyData = (stats?.countyStats ?? []).slice(0, COUNTY_STATS_COUNT).map((d) => ({ label: d.county, value: d.count }));
 
-  const trendData = [...hikes].sort((a, b) => a.date.localeCompare(b.date)).map((hike) => ({ date: hike.date, value: hike.distanceKm }));
+  const trendData = fillMonthlyDistance(stats?.monthlyDistance ?? [], TREND_MONTHS_COUNT).map((d) => ({
+    date: `${d.month}-01`,
+    value: d.distanceKm,
+  }));
 
   const weekdayData = getWeekdayCounts(hikes).map((d, i) => ({ label: t(`weekday.${WEEKDAY_KEYS[i]}`), value: d.count }));
   const distanceBucketData = getDistanceBucketCounts(hikes).map((d, i) => ({
@@ -58,7 +62,7 @@ export default async function HikeStatsCharts({ stats, hikes }: Props) {
               </span>
             )}
           </div>
-          <ChartBar data={monthlyData} emptyLabel={tCommon('noData')} />
+          <ChartBar data={monthlyData} emptyLabel={tCommon('noData')} unit={t('unitKm')} xAxisUnit={t('unitMonth') || undefined} />
         </div>
 
         <div className="bg-panel rounded-panel flex h-50 flex-col gap-4 p-4">
@@ -70,12 +74,12 @@ export default async function HikeStatsCharts({ stats, hikes }: Props) {
               </span>
             )}
           </div>
-          <ChartBar data={countyData} emptyLabel={tCommon('noData')} />
+          <ChartBar data={countyData} emptyLabel={tCommon('noData')} unit={t('unitCount')} />
         </div>
 
         <div className="bg-panel rounded-panel flex h-50 flex-col gap-4 p-4">
-          <span className="text-background-contrary/60 text-sm">{t('distanceTrend')}</span>
-          <ChartLine data={trendData} emptyLabel={tCommon('noData')} />
+          <span className="text-background-contrary/60 text-sm">{t('distanceBucket')}</span>
+          <ChartBar data={distanceBucketData} emptyLabel={tCommon('noData')} unit={t('unitCount')} xAxisUnit={t('unitKm')} />
         </div>
 
         <div className="bg-panel rounded-panel flex h-50 flex-col gap-4 p-4">
@@ -87,13 +91,14 @@ export default async function HikeStatsCharts({ stats, hikes }: Props) {
               </span>
             )}
           </div>
-          <ChartBar data={weekdayData} emptyLabel={tCommon('noData')} />
+          <ChartBar data={weekdayData} emptyLabel={tCommon('noData')} unit={t('unitCount')} />
         </div>
+      </div>
 
-        <div className="bg-panel rounded-panel flex h-50 flex-col gap-4 p-4 md:col-span-2">
-          <span className="text-background-contrary/60 text-sm">{t('distanceBucket')}</span>
-          <ChartBar data={distanceBucketData} emptyLabel={tCommon('noData')} />
-        </div>
+      {/* 卡片跟其他卡片同寬；左右內距縮小，讓線圖能更貼近卡片邊緣，不要留一大圈空白 */}
+      <div className="bg-panel rounded-panel flex h-50 w-full flex-col gap-4 px-2 py-4">
+        <span className="text-background-contrary/60 px-2 text-sm">{t('distanceTrend')}</span>
+        <ChartLine data={trendData} emptyLabel={tCommon('noData')} unit={t('unitKm')} />
       </div>
 
       {/* 熱度圖是縱向多欄的形狀，跟其他橫長方形圖表比例不同，獨立佔一整排 */}

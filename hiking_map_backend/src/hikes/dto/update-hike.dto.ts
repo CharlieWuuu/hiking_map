@@ -31,21 +31,6 @@ export class UpdateHikeDto {
   @IsBoolean()
   is_public?: boolean;
 
-  @ApiPropertyOptional({ example: true, description: '是否屬於百岳分類' })
-  @IsOptional()
-  @IsBoolean()
-  is_hundred?: boolean;
-
-  @ApiPropertyOptional({ example: false, description: '是否屬於小百岳分類' })
-  @IsOptional()
-  @IsBoolean()
-  is_small_hundred?: boolean;
-
-  @ApiPropertyOptional({ example: false, description: '是否屬於百大必訪步道分類' })
-  @IsOptional()
-  @IsBoolean()
-  is_hundred_trail?: boolean;
-
   @ApiPropertyOptional({ example: ['https://example.com/track.gpx'], type: [String] })
   @IsOptional()
   @IsArray()

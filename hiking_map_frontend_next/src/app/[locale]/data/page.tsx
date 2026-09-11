@@ -49,9 +49,6 @@ export default async function DataPage({ searchParams }: Props) {
     date: hike.date,
     distanceKm: hike.distanceKm,
     isPublic: hike.isPublic,
-    isHundred: hike.isHundred ?? false,
-    isSmallHundred: hike.isSmallHundred ?? false,
-    isHundredTrail: hike.isHundredTrail ?? false,
     mountainIds: hike.mountainIds ?? [],
     urls: hike.urls,
     note: hike.note ?? undefined,
@@ -63,7 +60,7 @@ export default async function DataPage({ searchParams }: Props) {
   const t = await getTranslations('ProfileDataPage');
 
   return (
-    <PageLayout title={t('title')} subtitle={t('subtitle', { count: totalCount })}>
+    <PageLayout title={t('title')} subtitle={<span className="text-sm">{t('subtitle', { count: totalCount })}</span>}>
       <div className="page-wide min-h-150 flex-1">
         <ProfileTrailExplorerWithNavigation
           trails={trails}

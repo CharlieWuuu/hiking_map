@@ -120,8 +120,6 @@ export interface CreateHikeDto {
   /** @example 1 */
   trail_id?: number;
   /** @example [1,2] */
-  category_ids?: string[];
-  /** @example [1,2] */
   mountain_ids?: number[];
   /** @example {"type":"FeatureCollection","features":[]} */
   geojson: object;
@@ -138,12 +136,6 @@ export interface UpdateHikeDto {
   date?: string;
   /** @example true */
   is_public?: boolean;
-  /** @example true */
-  is_hundred?: boolean;
-  /** @example false */
-  is_small_hundred?: boolean;
-  /** @example false */
-  is_hundred_trail?: boolean;
   /** @example ["https://example.com/track.gpx"] */
   urls?: string[];
   /** @example "天氣很好，view 很棒" */
@@ -268,6 +260,8 @@ export interface Mountain {
   range?: object | null;
   /** @example "南投縣" */
   county?: object | null;
+  /** @example ["百岳"] */
+  categories?: string[];
 }
 
 export interface Trail {

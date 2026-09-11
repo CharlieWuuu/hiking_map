@@ -143,6 +143,32 @@ function intersects(bbox: MapTrail['bbox'], view: [number, number, number, numbe
   return bbox[0] <= view[2] && bbox[2] >= view[0] && bbox[1] <= view[3] && bbox[3] >= view[1];
 }
 
+// cluster 圖示改成跟單一路線點位同一個棕色，圓圈大小依照聚合數量分級，數字置中
+const CLUSTER_COLOR = '#A67C00';
+
+function createClusterIcon(cluster: { getChildCount: () => number }) {
+  const count = cluster.getChildCount();
+  const size = count < 10 ? 32 : count < 100 ? 40 : 48;
+
+  return L.divIcon({
+    html: `<div style="
+      width: ${size}px;
+      height: ${size}px;
+      border-radius: 9999px;
+      background: ${CLUSTER_COLOR};
+      border: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: ${count < 100 ? 13 : 12}px;
+    ">${count}</div>`,
+    className: '',
+    iconSize: L.point(size, size, true),
+  });
+}
+
 // 單一路線的三條線（熱區＋外框＋內線）。用 memo 包起來，hover/選取切換時只有
 // 真正變化的那一條會重新算 pathOptions，其餘路線的 Polyline 不會跟著重新 render——
 // 不然清單 hover 一晃，畫面上所有路線的線都會被判定成「props 變了」重畫一次，看起來像閃爍
@@ -296,7 +322,7 @@ export default function TrailsLayer({ trails, userId, resizeKey, initialViewport
       {activeTrail && activeTrailPopupPosition && <ActiveTrailPopup key={activeTrail.slug} trail={activeTrail} position={activeTrailPopupPosition} />}
 
       {showClusterOnly ? (
-        <MarkerClusterGroup chunkedLoading>
+        <MarkerClusterGroup chunkedLoading iconCreateFunction={createClusterIcon}>
           {markers.map((marker) =>
             marker.center ? (
               <CircleMarker

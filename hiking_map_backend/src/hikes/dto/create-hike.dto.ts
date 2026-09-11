@@ -78,12 +78,6 @@ export class CreateHikeDto {
   @IsInt()
   trail_id?: number;
 
-  @ApiPropertyOptional({ example: [1, 2] })
-  @IsOptional()
-  @IsArray()
-  @IsInt({ each: true })
-  category_ids?: number[];
-
   @ApiPropertyOptional({ example: [1, 2], description: '這趟紀錄完成的山頭 id 清單' })
   @IsOptional()
   @IsArray()

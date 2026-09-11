@@ -1,7 +1,7 @@
-import { Map } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { Link } from '../../i18n/navigation';
+import TagBadge from '../TagBadge';
 
 type Badge = { label: string; tone?: 'accent' | 'neutral' };
 
@@ -11,8 +11,9 @@ type DisplayProps = {
   town: string;
   date?: string;
   distanceKm?: number;
-  coverImageUrl?: string | null;
   badges?: Badge[];
+  // 不公開路線不用另外標籤，整張卡片淡化提示只有本人看得到
+  isPublic?: boolean;
 };
 
 type NavigationProps = DisplayProps & {
@@ -33,19 +34,6 @@ type InteractiveProps = DisplayProps & {
 
 type Props = NavigationProps | InteractiveProps;
 
-function TrailThumbnail({ coverImageUrl }: { coverImageUrl?: string | null }) {
-  if (coverImageUrl) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={coverImageUrl} alt="" className="h-auto w-20 shrink-0 self-stretch object-cover" />;
-  }
-
-  return (
-    <span className="bg-panel-active flex w-20 shrink-0 items-center justify-center self-stretch">
-      <Map className="text-background-contrary/60 h-8 w-8" />
-    </span>
-  );
-}
-
 function TrailListItemContent({ name, county, town, date, distanceKm, badges }: DisplayProps) {
   const t = useTranslations('TrailListItem');
   const hasStats = date !== undefined || distanceKm !== undefined;
@@ -53,43 +41,24 @@ function TrailListItemContent({ name, county, town, date, distanceKm, badges }: 
   return (
     <>
       <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <span className="truncate text-lg font-bold">{name}</span>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="truncate text-lg font-bold">{name}</span>
+          {badges &&
+            badges.length > 0 &&
+            badges.map((badge) => <TagBadge key={badge.label} label={badge.label} tone={badge.tone === 'neutral' ? 'neutral' : 'accent'} />)}
+        </div>
         <span className="text-background-contrary/60 text-sm">
           {county} {town}
         </span>
-        {badges && badges.length > 0 && (
-          <div className="mt-1 flex flex-wrap gap-1">
-            {badges.map((badge) => (
-              <span
-                key={badge.label}
-                className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                  badge.tone === 'neutral' ? 'bg-panel-active text-background-contrary/70' : 'bg-accent text-accent-contrast'
-                }`}
-              >
-                {badge.label}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
 
       {hasStats && (
         <>
           <div className="bg-panel-active w-0.5 shrink-0 self-stretch" />
 
-          <div className="flex shrink-0 gap-4">
-            {date !== undefined && (
-              <div className="flex flex-col items-end">
-                <span className="text-background-contrary/60 text-xs">{t('date')}</span>
-                <span className="font-bold">{date}</span>
-              </div>
-            )}
-            {distanceKm !== undefined && (
-              <div className="flex flex-col items-end">
-                <span className="text-background-contrary/60 text-xs">{t('distance')}</span>
-                <span className="font-bold">{t('distanceValue', { distance: distanceKm })}</span>
-              </div>
-            )}
+          <div className="flex w-20 shrink-0 flex-col items-end justify-center gap-1">
+            {date !== undefined && <span className="text-background-contrary/60 text-xs">{date}</span>}
+            {distanceKm !== undefined && <span className="font-bold">{t('distanceValue', { distance: distanceKm })}</span>}
           </div>
         </>
       )}
@@ -104,8 +73,7 @@ export default function TrailListItem(props: Props) {
         href={props.href}
         className="bg-panel hover:bg-panel-active rounded-panel relative flex w-full shrink-0 items-stretch gap-4 overflow-hidden transition-colors duration-150"
       >
-        <TrailThumbnail coverImageUrl={props.coverImageUrl} />
-        <div className="flex min-w-0 flex-1 items-center gap-4 py-4 pr-4">
+        <div className="flex min-w-0 flex-1 items-center gap-4 p-4">
           <TrailListItemContent {...props} />
         </div>
       </Link>
@@ -122,10 +90,9 @@ export default function TrailListItem(props: Props) {
       onClick={onClick}
       className={`rounded-panel relative flex w-full shrink-0 cursor-pointer items-stretch gap-4 overflow-hidden text-left transition-colors duration-150 ${
         isActive ? 'bg-panel-active outline-accent outline-2 -outline-offset-2' : 'bg-panel hover:bg-panel-active'
-      }`}
+      } ${props.isPublic === false ? 'opacity-60' : ''}`}
     >
-      <TrailThumbnail coverImageUrl={props.coverImageUrl} />
-      <div className="flex min-w-0 flex-1 items-center gap-4 py-4 pr-4">
+      <div className="flex min-w-0 flex-1 items-center gap-4 p-4">
         <TrailListItemContent {...props} />
       </div>
     </button>

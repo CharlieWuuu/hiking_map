@@ -40,7 +40,6 @@ export default async function SearchPage({ searchParams }: Props) {
               name={item.displayName}
               county={item.county ?? ''}
               town={item.town ?? ''}
-              coverImageUrl={item.coverImageUrl}
             />
           ))}
         </div>

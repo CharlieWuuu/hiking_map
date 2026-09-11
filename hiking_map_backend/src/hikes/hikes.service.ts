@@ -10,7 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, EntityManager, In } from 'typeorm';
 import { Hike } from './hike.entity';
 import { HikeTrack } from './hike-track.entity';
-import { HikeCategoryMap } from './hike-category-map.entity';
 import { HikeMountainMap } from './hike-mountain-map.entity';
 import { CreateHikeDto } from './dto/create-hike.dto';
 import { UpdateHikeDto } from './dto/update-hike.dto';
@@ -98,9 +97,6 @@ export class HikesService {
     @InjectRepository(HikeTrack)
     private hikeTracksRepo: Repository<HikeTrack>,
 
-    @InjectRepository(HikeCategoryMap)
-    private hikeCategoryMapRepo: Repository<HikeCategoryMap>,
-
     private dataSource: DataSource,
 
     private uploadsService: UploadsService,
@@ -133,15 +129,6 @@ export class HikesService {
       // 距離一律由 PostGIS 從軌跡算，不採用前端送來的 distance_km。
       // 否則新建與編輯會是兩套定義，getStats 等於在加總兩種不同的數字。
       await this.recalcDistance(manager, hike.id);
-
-      if (dto.category_ids?.length) {
-        await manager.getRepository(HikeCategoryMap).insert(
-          dto.category_ids.map((category_id) => ({
-            hike_id: hike.id,
-            category_id,
-          })),
-        );
-      }
 
       if (dto.mountain_ids?.length) {
         await manager.getRepository(HikeMountainMap).insert(
@@ -178,28 +165,6 @@ export class HikesService {
 
       if (Object.keys(fields).length > 0) {
         await manager.getRepository(Hike).update(id, fields);
-      }
-
-      const categoryPatch: [string, boolean | undefined][] = [
-        ['百岳', dto.is_hundred],
-        ['小百岳', dto.is_small_hundred],
-        ['百大必訪步道', dto.is_hundred_trail],
-      ];
-      for (const [categoryName, checked] of categoryPatch) {
-        if (checked === undefined) continue;
-
-        const rows: { id: number }[] = await manager.query(`SELECT id FROM categories WHERE name = $1`, [categoryName]);
-        const categoryId = rows[0]?.id;
-        if (!categoryId) continue; // 分類清單本身沒有這一筆，不該發生但不值得為此炸整個請求
-
-        if (checked) {
-          await manager.query(
-            `INSERT INTO hike_category_map (hike_id, category_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-            [id, categoryId],
-          );
-        } else {
-          await manager.getRepository(HikeCategoryMap).delete({ hike_id: id, category_id: categoryId });
-        }
       }
 
       // mountain_ids 是整批取代（不是像分類那樣逐個開關），前端每次都送完整清單比較好操作
@@ -357,23 +322,6 @@ export class HikesService {
 
     if (hikes.length === 0) return pagination ? { items: [], total_count: totalCount ?? 0, next_cursor: null } : [];
 
-    const categoryRows = await this.dataSource.query(
-      `SELECT h.id AS hike_id, c.name AS category_name
-       FROM hikes h
-       JOIN trail_category_map tcm ON tcm.trail_id = h.trail_id
-       JOIN categories c ON c.id = tcm.category_id
-       WHERE h.id = ANY($1)`,
-      [hikes.map((hike) => hike.id)],
-    );
-
-    const categoryKeysByHikeId = new Map<number, Set<string>>();
-    for (const row of categoryRows) {
-      const key = CATEGORY_NAME_TO_ACHIEVEMENT_KEY[row.category_name];
-      if (!key) continue;
-      if (!categoryKeysByHikeId.has(row.hike_id)) categoryKeysByHikeId.set(row.hike_id, new Set());
-      categoryKeysByHikeId.get(row.hike_id)!.add(key);
-    }
-
     // center / bbox 很小，一律回傳；座標則只給簡化線，完整軌跡永遠不經過這個 API
     const trackRows: TrackRow[] = await this.dataSource.query(
       `${TRACK_META_SELECT}${includeGeojson ? `, ST_AsGeoJSON(geom_simplified, ${GEOJSON_PRECISION}) AS geojson` : ''}
@@ -394,13 +342,9 @@ export class HikesService {
     }
 
     const items = hikes.map((hike) => {
-      const keys = categoryKeysByHikeId.get(hike.id) ?? new Set();
       const track = trackByHikeId.get(hike.id);
       return {
         ...hike,
-        is_hundred: keys.has('hundred'),
-        is_small_hundred: keys.has('small_hundred'),
-        is_hundred_trail: keys.has('hundred_trail'),
         mountain_ids: mountainIdsByHikeId.get(hike.id) ?? [],
         ...(track ? toTrackMeta(track) : { center: null, bbox: null, point_count: null, track_url: null }),
         ...(includeGeojson ? { geojson: track?.geojson ? JSON.parse(track.geojson) : null } : {}),
@@ -408,6 +352,35 @@ export class HikesService {
     });
 
     return pagination ? { items, total_count: totalCount ?? 0, next_cursor: nextCursor } : items;
+  }
+
+  // 給定一筆紀錄，算出它在 findAll 分頁排序（date DESC, id DESC）下位於第幾頁，
+  // 讓地圖點擊某條路線時，清單能自動跳到對應那頁。cursor 沿用 findAll 的 `date_id` 編碼。
+  async getPageInfo(hikeId: number, userId: number, limit: number) {
+    const hike = await this.hikesRepo.findOne({ where: { id: hikeId, user_id: userId } });
+    if (!hike) throw new NotFoundException('找不到這筆紀錄');
+
+    const rankRows = await this.dataSource.query(
+      `SELECT COUNT(*) AS rank FROM hikes
+       WHERE user_id = $1 AND (date > $2 OR (date = $2 AND id > $3))`,
+      [userId, hike.date, hike.id],
+    );
+    const rank = Number(rankRows[0].rank);
+    const page = Math.floor(rank / limit) + 1;
+
+    let cursor: string | null = null;
+    if (rank > 0) {
+      const cursorRows = await this.dataSource.query(
+        `SELECT date, id FROM hikes WHERE user_id = $1
+         ORDER BY date DESC, id DESC
+         OFFSET $2 LIMIT 1`,
+        [userId, rank - 1],
+      );
+      const cursorHike = cursorRows[0];
+      cursor = cursorHike ? `${cursorHike.date instanceof Date ? cursorHike.date.toISOString().slice(0, 10) : cursorHike.date}_${cursorHike.id}` : null;
+    }
+
+    return { page, cursor };
   }
 
   // 只回傳 bbox 與目前視野相交的紀錄，同一個端點依 zoom 決定回傳的細緻度：
@@ -483,12 +456,12 @@ export class HikesService {
       [userId],
     );
 
-    // 百大必訪步道：本來就是路線層級的屬性（TrailEditCard 上打的 tag），跟具體是哪座山無關，維持用 hike_category_map
+    // 百大必訪步道：本來就是路線層級的屬性，跟具體是哪座山無關，靠 hike.trail_id 對應到 trails 的分類
     const hundredTrailRows = await this.dataSource.query(
       `SELECT COUNT(DISTINCT h.id) AS count
        FROM hikes h
-       JOIN hike_category_map hcm ON hcm.hike_id = h.id
-       JOIN categories c ON c.id = hcm.category_id
+       JOIN trail_category_map tcm ON tcm.trail_id = h.trail_id
+       JOIN categories c ON c.id = tcm.category_id
        WHERE h.user_id = $1 AND c.name = '百大必訪步道'`,
       [userId],
     );
@@ -675,24 +648,7 @@ export class HikesService {
       await this.writeTrack(manager, hike.id, merged);
       await this.recalcDistance(manager, hike.id);
 
-      // 成就是用 trail_id 算的（getStats 的 COUNT(DISTINCT h.trail_id)），
-      // 而合併後的新紀錄只留得住第一筆的 trail_id。三天縱走三座百岳若把來源刪掉，
-      // 百岳數會從 3 掉到 1，所以來源的分類對應要一併搬到新紀錄上。
-      const sourceCategories: { category_id: number }[] = await manager.query(
-        `SELECT DISTINCT category_id FROM hike_category_map WHERE hike_id = ANY($1)`,
-        [ids],
-      );
-      if (sourceCategories.length) {
-        await manager.getRepository(HikeCategoryMap).insert(
-          sourceCategories.map((row) => ({
-            hike_id: hike.id,
-            category_id: row.category_id,
-          })),
-        );
-      }
-
       if (dto.delete_sources) {
-        await manager.getRepository(HikeCategoryMap).delete({ hike_id: In(ids) });
         await manager.getRepository(HikeTrack).delete({ hike_id: In(ids) });
         await manager.getRepository(Hike).delete(ids);
       }
@@ -714,7 +670,6 @@ export class HikesService {
     );
 
     await this.dataSource.transaction(async (manager) => {
-      await manager.getRepository(HikeCategoryMap).delete({ hike_id: id });
       await manager.getRepository(HikeTrack).delete({ hike_id: id });
       await manager.getRepository(Hike).delete(id);
     });

@@ -6,13 +6,15 @@ import { useEffect, useRef, useState } from 'react';
 type Props = {
   data: { date: string; value: number }[];
   emptyLabel?: string;
+  // 顯示在 y 軸左上角，例如 'km'、'次'
+  unit?: string;
 };
 
 const FALLBACK_WIDTH = 400;
-const HEIGHT = 180;
-const MARGIN = { top: 10, right: 10, bottom: 20, left: 0 };
+const HEIGHT = 160;
+const MARGIN = { top: 14, right: 0, bottom: 20, left: 0 };
 
-export default function ChartLine({ data, emptyLabel }: Props) {
+export default function ChartLine({ data, emptyLabel, unit }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<SVGSVGElement>(null);
   const isEmpty = data.length === 0;
@@ -56,7 +58,8 @@ export default function ChartLine({ data, emptyLabel }: Props) {
     const line = d3
       .line<{ date: Date; value: number }>()
       .x((d) => x(d.date))
-      .y((d) => y(d.value));
+      .y((d) => y(d.value))
+      .curve(d3.curveMonotoneX);
 
     const path = svg
       .append('path')
@@ -120,17 +123,38 @@ export default function ChartLine({ data, emptyLabel }: Props) {
       .call((g) => g.select('.domain').attr('stroke', 'var(--color-background-contrary)').attr('opacity', 0.2))
       .selectAll('text')
       .attr('fill', 'var(--color-background-contrary)')
-      .style('font-size', '12px');
+      .style('font-size', '14px');
+
+    // 沿用 d3 axis 預設的刻度文字定位規則（tickPadding 3、text-anchor end、dy 0.32em），
+    // 讓自己加的單位文字跟刻度數字完全同一套排版邏輯，不會對不齊
+    const TICK_PADDING = 3;
 
     svg
       .append('g')
       .attr('transform', `translate(${MARGIN.left},0)`)
-      .call(d3.axisLeft(y).ticks(4).tickSizeInner(0).tickSizeOuter(0).tickFormat(d3.format('d')))
+      .call(d3.axisLeft(y).ticks(4).tickSizeInner(0).tickSizeOuter(0).tickPadding(TICK_PADDING).tickFormat(d3.format('d')))
       .call((g) => g.select('.domain').remove())
       .selectAll('text')
       .attr('fill', 'var(--color-background-contrary)')
-      .style('font-size', '12px');
-  }, [data, width]);
+      .style('font-size', '14px');
+
+    if (unit) {
+      // 跟 y 軸最上面那個刻度同一條水平線、垂直置中對齊；
+      // x 用文字實際寬度算出置中位置，而不是憑感覺調偏移量
+      const [, axisTop] = y.range();
+      const unitText = svg
+        .append('text')
+        .text(unit)
+        .attr('y', axisTop - 4)
+        .attr('dy', '0.32em')
+        .attr('text-anchor', 'middle')
+        .attr('fill', 'var(--color-background-contrary)')
+        .attr('opacity', 0.6)
+        .style('font-size', '13px');
+      const textWidth = (unitText.node() as SVGTextElement).getBBox().width;
+      unitText.attr('x', MARGIN.left - TICK_PADDING - textWidth / 2);
+    }
+  }, [data, width, unit]);
 
   return (
     <div ref={containerRef} className="relative min-h-0 w-full flex-1">
