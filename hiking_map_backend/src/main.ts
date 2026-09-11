@@ -12,13 +12,16 @@ const STATIC_ORIGINS = [
   'http://localhost:4219', // 開發時本機（Next.js 前端）
   'http://localhost:3000', // 開發時本機
   'http://localhost:5173', // 開發時本機（舊版 Vite 前端）
-  'https://hiking-map.vercel.app', // 正式部署後的前端網址
-  'https://hiking-map-git-main-charliewuuus-projects.vercel.app', // 正式部署後的前端網址
+  'https://hiking-map.vercel.app', // 舊的正式前端網址
+  'https://hiking-map-git-main-charliewuuus-projects.vercel.app', // 舊的正式前端網址
+  'https://hiking-track-next.vercel.app', // 現在的正式前端網址
+  'https://hiking-track-next-git-main-charliewuuus-projects.vercel.app', // 現在的正式前端網址
 ];
 
 // Vercel 每次 push 都會產生一個新的 preview 網址，沒辦法一個個列進白名單。
-// 只放行自己專案底下的 preview，不是所有 *.vercel.app
-const VERCEL_PREVIEW_ORIGIN = /^https:\/\/hiking-map-[a-z0-9-]+-charliewuuus-projects\.vercel\.app$/;
+// 只放行自己專案底下的 preview，不是所有 *.vercel.app。
+// 兩個專案名（hiking-map 舊、hiking-track-next 現行）都要涵蓋
+const VERCEL_PREVIEW_ORIGIN = /^https:\/\/(hiking-map|hiking-track-next)-[a-z0-9-]+-charliewuuus-projects\.vercel\.app$/;
 
 const ALLOWED_ORIGINS = [...STATIC_ORIGINS, VERCEL_PREVIEW_ORIGIN];
 
