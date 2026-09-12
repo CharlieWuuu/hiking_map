@@ -6,7 +6,8 @@ import ChartRing from '../../components/ChartRing';
 import PageLayout from '../../components/PageLayout';
 import TrailListItem from '../../components/TrailListItem';
 import { Link } from '../../i18n/navigation';
-import { apiClient } from '../../lib/apiClient';
+import { findAllHikes, getHikeStats } from '../../lib/db/hikes';
+import { nearby } from '../../lib/db/search';
 import { fillMonthlyDistance } from '../../lib/fillMonthlyDistance';
 import { getCurrentUser } from '../../lib/getCurrentUser';
 
@@ -23,8 +24,8 @@ export default async function Home() {
   const currentUser = await getCurrentUser();
 
   const [stats, hikes] = await Promise.all([
-    currentUser ? apiClient.hikes.getStats(currentUser.username).catch(() => null) : Promise.resolve(null),
-    currentUser ? apiClient.hikes.findAll(String(currentUser.userId)) : Promise.resolve([]),
+    currentUser ? getHikeStats(Number(currentUser.userId)).catch(() => null) : Promise.resolve(null),
+    currentUser ? findAllHikes(Number(currentUser.userId)) : Promise.resolve([]),
   ]);
   // 首頁只當一份摘要，近期紀錄取前 5 筆就好；完整清單去 /data 看
   const RECENT_HIKES_COUNT = 5;
@@ -37,8 +38,7 @@ export default async function Home() {
   const latestCenter = hikesByDateDesc.find((hike) => hike.center)?.center;
   const recommendOrigin = latestCenter ? { lat: latestCenter[1], lng: latestCenter[0] } : TAIPEI_FALLBACK;
   // 推薦區塊失敗不該讓整個首頁掛掉，抓不到就當作沒有這一區
-  const recommendedTrails = await apiClient.search
-    .nearby(recommendOrigin.lat, recommendOrigin.lng)
+  const recommendedTrails = await nearby(recommendOrigin.lat, recommendOrigin.lng)
     .then((results) => results.slice(0, RECOMMENDED_TRAILS_COUNT))
     .catch(() => []);
   // 統計只留一張最能一眼看出趨勢的圖，完整的六張圖表去 /chart 頁看。

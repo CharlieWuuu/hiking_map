@@ -6,6 +6,7 @@ import HikeStatsCharts from '../../../components/HikeStatsCharts';
 import MountainProgress from '../../../components/MountainProgress';
 import PageLayout from '../../../components/PageLayout';
 import { apiClient } from '../../../lib/apiClient';
+import { findAllHikes, getHikeStats } from '../../../lib/db/hikes';
 import { getCurrentUser } from '../../../lib/getCurrentUser';
 
 export default async function ChartPage() {
@@ -13,12 +14,12 @@ export default async function ChartPage() {
   if (!currentUser) redirect('/login');
 
   const [stats, mountainProgress] = await Promise.all([
-    apiClient.hikes.getStats(currentUser.username).catch(() => null),
+    getHikeStats(Number(currentUser.userId)).catch(() => null),
     apiClient.hikes.getMountainProgress().catch(() => null),
   ]);
   if (!stats) redirect('/login');
 
-  const hikes = await apiClient.hikes.findAll(String(currentUser.userId));
+  const hikes = await findAllHikes(Number(currentUser.userId));
 
   const t = await getTranslations('ProfilePage');
 

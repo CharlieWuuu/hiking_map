@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import PageLayout from '../../../components/PageLayout';
 import TrailListItem from '../../../components/TrailListItem';
 import { Link } from '../../../i18n/navigation';
-import { apiClient } from '../../../lib/apiClient';
+import { filterTrails, search } from '../../../lib/db/search';
 import { TRAIL_CATEGORIES, type TrailCategory } from '../../../testing/mocks/trails/trails.data';
 import NearbyTrails from './_components/NearbyTrails';
 import SearchBarWithNavigation from './_components/SearchBarWithNavigation';
@@ -19,7 +19,7 @@ export default async function SearchPage({ searchParams }: Props) {
   const t = await getTranslations('SearchPage');
 
   const isFiltering = Boolean(category);
-  const results = q ? await apiClient.search.search(q) : isFiltering ? await apiClient.search.filterTrails(category, null) : [];
+  const results = q ? await search(q) : isFiltering ? await filterTrails(category, null) : [];
 
   return (
     <PageLayout>

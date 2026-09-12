@@ -5,8 +5,8 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import TrailListItem from '../../../../components/TrailListItem';
-import type { SearchResult } from '../../../../lib/api/adapters/search';
-import { apiClient } from '../../../../lib/apiClient';
+import type { SearchResult } from '../../../../lib/db/search';
+import { fetchLastLocation, fetchNearbyTrails } from '../actions';
 
 const TAIPEI_FALLBACK = { lat: 25.033, lng: 121.5654 };
 
@@ -27,19 +27,14 @@ function NearbyTrailsContent({ onRetry }: { onRetry: () => void }) {
     const coords = new Promise<{ lat: number; lng: number }>((resolve, reject) =>
       navigator.geolocation.getCurrentPosition((position) => resolve({ lat: position.coords.latitude, lng: position.coords.longitude }), reject)
     ).catch(() =>
-      // 定位失敗時先試使用者最新一筆紀錄的位置，未登入或沒有紀錄則退回台北。
-      // 後端沒有資料時回傳 HTTP 200 + 空 body，axios 會解析成空字串而不是 null，
-      // 所以這裡不能只靠 ?? 判斷，要明確檢查回傳值是不是真的帶了 lat/lng 的物件
-      apiClient.search
-        .lastLocation()
+      // 定位失敗時先試使用者最新一筆紀錄的位置，未登入或沒有紀錄則退回台北
+      fetchLastLocation()
         .catch(() => null)
-        .then((lastLocation) =>
-          lastLocation && typeof lastLocation === 'object' && 'lat' in lastLocation && 'lng' in lastLocation ? lastLocation : TAIPEI_FALLBACK
-        )
+        .then((lastLocation) => lastLocation ?? TAIPEI_FALLBACK)
     );
 
     coords
-      .then(({ lat, lng }) => apiClient.search.nearby(lat, lng))
+      .then(({ lat, lng }) => fetchNearbyTrails(lat, lng))
       .then((nearby) => {
         if (cancelled) return;
         setResults(nearby);
