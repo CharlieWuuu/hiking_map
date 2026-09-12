@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Popover } from 'radix-ui';
 import { useEffect, useState } from 'react';
 
-import { apiClient } from '../../lib/apiClient';
+import { fetchPopularQueries, fetchSearchSuggestions, logSearchQuery } from '../../lib/db/search.actions';
 import QuerySuggestionItem from './QuerySuggestionItem';
 import styles from './SearchBar.module.css';
 import type { QuerySuggestion, SearchResult } from './SearchBar.types';
@@ -27,8 +27,7 @@ export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
   const [popularQueries, setPopularQueries] = useState<string[]>([]);
 
   useEffect(() => {
-    apiClient.search
-      .popularQueries()
+    fetchPopularQueries()
       .then(setPopularQueries)
       .catch(() => {});
   }, []);
@@ -40,7 +39,7 @@ export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
     if (!q) return;
 
     const timer = setTimeout(async () => {
-      const results = await apiClient.search.search(q).catch(() => []);
+      const results = await fetchSearchSuggestions(q).catch(() => []);
       setEntitySuggestions(
         results
           .slice(0, SUGGESTION_LIMIT)
@@ -66,7 +65,7 @@ export default function SearchBar({ onSubmitQuery, onSelectEntity }: Props) {
     setOpen(false);
     const trimmed = q.trim();
     if (!trimmed) return;
-    apiClient.search.logQuery(trimmed).catch(() => {});
+    logSearchQuery(trimmed).catch(() => {});
     onSubmitQuery(trimmed);
   }
 
