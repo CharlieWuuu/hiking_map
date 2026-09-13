@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { sql } from './index';
+import { deleteByUrl, uploadImmutableJson } from './storage';
 
 // 簡化線的容差（度）。約 50 公尺，遠景畫線用這條就夠，
 // 完整軌跡另外存在 R2，放大時才抓
@@ -40,6 +41,23 @@ async function assertOwned(hikeId: number, userId: number): Promise<'ok' | 'not-
   const rows = await sql`SELECT user_id AS "userId" FROM hikes WHERE id = ${hikeId} LIMIT 1`;
   if (rows.length === 0) return 'not-found';
   return Number(rows[0].userId) === userId ? 'ok' : 'forbidden';
+}
+
+// 把完整軌跡另存一份到 R2，供前端在放大或匯出時直接抓。
+// 失敗不該讓整個流程失敗——紀錄本身已經寫好了，前端會退回使用簡化線。
+async function storeFullTrack(hikeId: number, geometry: object): Promise<void> {
+  try {
+    // 編輯過的紀錄會有一份舊的，換上新網址之後那份就沒人讀得到了
+    const previous = await sql`SELECT track_url AS "trackUrl" FROM hike_tracks WHERE hike_id = ${hikeId}`;
+
+    const url = await uploadImmutableJson(geometry, 'tracks');
+    await sql`UPDATE hike_tracks SET track_url = ${url} WHERE hike_id = ${hikeId}`;
+
+    // 新網址寫進資料庫之後才刪舊的，中途失敗也不會留下指向已刪檔案的紀錄
+    await deleteByUrl((previous[0]?.trackUrl as string) ?? null);
+  } catch (error) {
+    console.warn(`hike ${hikeId} 的完整軌跡沒能存進 R2，前端會退回使用簡化線：${String(error)}`);
+  }
 }
 
 export async function createHike(userId: number, input: CreateHikeInput): Promise<WriteResult<{ id: number }>> {
@@ -100,7 +118,12 @@ export async function createHike(userId: number, input: CreateHikeInput): Promis
     throw error;
   }
 
-  return { ok: true, value: { id: Number(rows[0].id) } };
+  const hikeId = Number(rows[0].id);
+
+  // R2 是網路呼叫，放在資料寫入之後才做，失敗也只是少了「高縮放才用得到」的那一層
+  await storeFullTrack(hikeId, input.geometry);
+
+  return { ok: true, value: { id: hikeId } };
 }
 
 export async function updateHike(hikeId: number, userId: number, input: UpdateHikeInput): Promise<WriteResult<{ id: number }>> {

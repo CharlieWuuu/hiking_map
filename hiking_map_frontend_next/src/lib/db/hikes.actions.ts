@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { createHike, deleteHike, updateHike, type CreateHikeInput, type UpdateHikeInput } from './hikes.write';
 import { getSession } from './session';
+import { deleteByUrl } from './storage';
 
 export type HikeActionResult = { ok: true; id: number } | { ok: false; error: 'unauthorized' | 'not-found' | 'forbidden' | 'invalid-geometry' };
 
@@ -42,19 +43,10 @@ export async function deleteHikeAction(hikeId: number): Promise<HikeActionResult
   if (!result.ok) return { ok: false, error: result.reason as 'not-found' | 'forbidden' };
 
   // 紀錄刪了，R2 上那份完整軌跡沒人會再讀，留著只是個仍可公開存取的孤兒。
-  // uploads 還在 NestJS，等它搬過來之後這裡要改成直接刪。
-  // 失敗不影響刪除本身——紀錄已經不在了
-  if (result.value.trackUrl) {
-    await deleteRemoteTrack(result.value.trackUrl).catch(() => {});
-  }
+  // deleteByUrl 本身已吞掉錯誤——刪不掉不該讓刪除流程失敗
+  await deleteByUrl(result.value.trackUrl);
 
   revalidatePath('/', 'layout');
 
   return { ok: true, id: hikeId };
-}
-
-async function deleteRemoteTrack(trackUrl: string): Promise<void> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (!baseUrl) return;
-  await fetch(`${baseUrl}/uploads?url=${encodeURIComponent(trackUrl)}`, { method: 'DELETE' });
 }
