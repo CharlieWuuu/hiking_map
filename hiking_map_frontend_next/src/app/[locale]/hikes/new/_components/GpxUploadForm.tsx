@@ -8,6 +8,7 @@ import TrailLayer from '../../../../../components/MapView/TrailLayer';
 import TrailEditCard, { type EditableTrail } from '../../../../../components/TrailEditCard';
 import { useRouter } from '../../../../../i18n/navigation';
 import { apiClient } from '../../../../../lib/apiClient';
+import { createHikeAction } from '../../../../../lib/db/hikes.actions';
 import { GpxParseError, parseGpx, toFeatureCollection, type ParsedGpx, type TrackPoint } from '../../../../../lib/gpx/parseGpx';
 
 function getBbox(points: TrackPoint[]): [number, number, number, number] {
@@ -89,19 +90,24 @@ export default function GpxUploadForm() {
 
   async function handleSave(patch: Partial<EditableTrail>) {
     const trail = { ...editableTrail, ...patch };
-    const hike = await apiClient.hikes.create({
+    // 距離不送——一律由 PostGIS 從軌跡算，前端算的只用於上傳前的預覽
+    const collection = toFeatureCollection(parsed!);
+    const geometry = collection.features[0]?.geometry;
+    if (!geometry) throw new Error('GPX 中沒有可用的軌跡');
+
+    const result = await createHikeAction({
       name: trail.name,
       county: trail.county || undefined,
       town: trail.town || undefined,
       date: trail.date,
-      distanceKm: trail.distanceKm,
       isPublic: trail.isPublic,
       note: trail.note || undefined,
       urls: trail.urls.filter((url) => url.trim() !== ''),
       mountainIds: trail.mountainIds,
-      geojson: toFeatureCollection(parsed!),
+      geometry,
     });
-    router.push(`/hikes/${hike.id}`);
+    if (!result.ok) throw new Error(result.error);
+    router.push(`/hikes/${result.id}`);
   }
 
   return (

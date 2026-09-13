@@ -7,6 +7,7 @@ import TrailsLayer, { type MapTrail } from '../../../../components/MapView/Trail
 import type { EditableTrail } from '../../../../components/TrailEditCard';
 import type { Mountain } from '../../../../lib/api';
 import { apiClient } from '../../../../lib/apiClient';
+import { deleteHikeAction, updateHikeAction } from '../../../../lib/db/hikes.actions';
 import { useMapStore } from '../../../../lib/mapStore';
 import ExpandToggleButton from './ExpandToggleButton';
 import TrailExplorerList from './TrailExplorerList';
@@ -139,28 +140,22 @@ export default function ProfileTrailExplorer({
   const isTableFullscreen = fullscreen === 'table';
 
   async function saveTrailPatch(slug: string, patch: Partial<EditableTrail>) {
-    const saved = await apiClient.hikes.update(Number(slug), patch);
+    const result = await updateHikeAction(Number(slug), patch);
+    if (!result.ok) throw new Error(result.error);
     setTrails((prev) =>
       prev.map((trail) =>
         trail.slug === slug
-          ? {
-              ...trail,
-              name: saved.name,
-              county: saved.county ?? '',
-              town: saved.town ?? '',
-              date: saved.date,
-              isPublic: saved.isPublic,
-              mountainIds: saved.mountainIds ?? [],
-              urls: saved.urls,
-              note: saved.note ?? undefined,
-            }
+          ? // Server Action 只回傳成功與否，直接套用剛送出的內容即可——
+            // 資料庫實際存的就是這些值，重新整理後也會一致
+            { ...trail, ...patch }
           : trail
       )
     );
   }
 
   async function deleteTrail(slug: string) {
-    await apiClient.hikes.remove(Number(slug));
+    const deleted = await deleteHikeAction(Number(slug));
+    if (!deleted.ok) throw new Error(deleted.error);
     setTrails((prev) => prev.filter((trail) => trail.slug !== slug));
     if (activeSlug === slug) setActiveSlug(null);
     // 刪除後總數變了，簡單起見重新載入目前這頁
