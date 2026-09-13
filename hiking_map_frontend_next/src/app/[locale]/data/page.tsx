@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 
 import PageLayout from '../../../components/PageLayout';
-import { apiClient } from '../../../lib/apiClient';
+import { findHikesPaginated } from '../../../lib/db/hikes';
 import { getCurrentUser } from '../../../lib/getCurrentUser';
 import { TRAIL_CATEGORIES, type TrailCategory } from '../../../testing/mocks/trails/trails.data';
 import ProfileTrailExplorerWithNavigation from './_components/ProfileTrailExplorerWithNavigation';
@@ -42,7 +42,7 @@ export default async function DataPage({ searchParams }: Props) {
 
   // 清單只拿第一頁；往後翻頁由 ProfileTrailExplorer 在瀏覽器端用 cursor 逐頁向後端要，
   // 不再一次把所有紀錄（含簡化 geojson）都撈回來
-  const { items: hikes, totalCount, nextCursor } = await apiClient.hikes.findAllPaginated(String(currentUser.userId), PAGE_SIZE, undefined, true, category);
+  const { items: hikes, totalCount, nextCursor } = await findHikesPaginated(Number(currentUser.userId), PAGE_SIZE, undefined, true, category);
   const trails = hikes.map((hike) => ({
     slug: String(hike.id),
     name: hike.name,

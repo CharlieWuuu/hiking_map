@@ -10,7 +10,7 @@ import { CircleMarker, Polyline, Popup, useMap, useMapEvents } from 'react-leafl
 import MarkerClusterGroup from 'react-leaflet-cluster';
 
 import type { Hike } from '../../../lib/api/adapters/hikes';
-import { apiClient } from '../../../lib/apiClient';
+import { fetchHikeDetail } from '../../../lib/db/hikes.query.actions';
 import { CLUSTER_ZOOM, DETAIL_ZOOM, useMapStore, type LngLat } from '../../../lib/mapStore';
 import MapView from '../MapView';
 
@@ -234,8 +234,7 @@ function useActiveHikeDetail(activeSlug: string | null, isDynamic: boolean) {
   useEffect(() => {
     if (!isDynamic || !activeSlug) return;
     let cancelled = false;
-    apiClient.hikes
-      .findOne(Number(activeSlug))
+    fetchHikeDetail(Number(activeSlug))
       .then((hike) => {
         if (!cancelled) setDetail(hike);
       })

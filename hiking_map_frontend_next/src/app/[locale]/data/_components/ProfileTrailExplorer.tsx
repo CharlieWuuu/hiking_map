@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 
 import TrailsLayer, { type MapTrail } from '../../../../components/MapView/TrailsLayer';
 import type { EditableTrail } from '../../../../components/TrailEditCard';
-import type { Mountain } from '../../../../lib/api';
-import { apiClient } from '../../../../lib/apiClient';
 import { deleteHikeAction, updateHikeAction } from '../../../../lib/db/hikes.actions';
+import { fetchHikePageInfo, fetchHikesPage, fetchMountains } from '../../../../lib/db/hikes.query.actions';
+import type { Mountain } from '../../../../lib/db/mountains';
 import { useMapStore } from '../../../../lib/mapStore';
 import ExpandToggleButton from './ExpandToggleButton';
 import TrailExplorerList from './TrailExplorerList';
@@ -64,8 +64,7 @@ export default function ProfileTrailExplorer({
 
   // 卡片展開顯示山頭名字才需要，晚點抓不影響清單本身的顯示
   useEffect(() => {
-    apiClient.mountains
-      .findAll()
+    fetchMountains()
       .then(setMountains)
       .catch(() => {});
   }, []);
@@ -92,7 +91,7 @@ export default function ProfileTrailExplorer({
     setIsLoadingPage(true);
     try {
       const cursor = cursorOverride ?? cursorsByPage[clamped];
-      const result = await apiClient.hikes.findAllPaginated(userId, PAGE_SIZE, cursor, true, category);
+      const result = await fetchHikesPage(PAGE_SIZE, cursor, category);
       setTrails(
         result.items.map((hike) => ({
           slug: String(hike.id),
@@ -126,9 +125,9 @@ export default function ProfileTrailExplorer({
     if (trails.some((trail) => trail.slug === activeSlug)) return;
 
     let cancelled = false;
-    apiClient.hikes.getPageInfo(Number(activeSlug), userId, PAGE_SIZE).then(({ page: targetPage, cursor }) => {
-      if (cancelled) return;
-      void goToPage(targetPage, cursor ?? undefined);
+    fetchHikePageInfo(Number(activeSlug), PAGE_SIZE).then((info) => {
+      if (cancelled || !info) return;
+      void goToPage(info.page, info.cursor ?? undefined);
     });
     return () => {
       cancelled = true;
